@@ -2800,9 +2800,9 @@ async function fetchFundamentais(tickerSA) {
     } catch { continue; }
   }
 
-  // ── Estratégia 2: brapi.dev básico (sem módulos) — dados parciais ──────────
+  // ── Estratégia 2: brapi.dev básico com token — retorna preço + campos parciais ──
   try {
-    const br = await fetch(`https://brapi.dev/api/quote/${ticker}`, {signal: AbortSignal.timeout(8000)});
+    const br = await fetch(`https://brapi.dev/api/quote/${ticker}?token=${BRAPI_TOKEN}`, {signal: AbortSignal.timeout(8000)});
     if (br.ok) {
       const j = await br.json();
       const r = j?.results?.[0];
@@ -2825,7 +2825,7 @@ async function fetchFundamentais(tickerSA) {
     }
   } catch {}
 
-  // ── Estratégia 3: só preço ─────────────────────────────────────────────────
+  // ── Estratégia 3: só preço via Yahoo (último recurso) ─────────────────────
   try {
     const p = await fetchCotacao(tickerSA);
     if(p) return {preco:p,pl:null,pvp:null,dy:null,roe:null,mgLiq:null,evEbitda:null,
