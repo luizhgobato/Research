@@ -2630,6 +2630,9 @@ async function fetchFromInvestidor10(ticker) {
     const dv = k => dreMap[k] ?? null;
     const ni = k => (typeof ind[k] === 'number' ? ind[k] : null);
 
+    // Se proxy falhou (403/bloqueado), ind e dreMap ficam vazios e preco=null — cai para fallback
+    if (!preco && Object.keys(ind).length === 0 && Object.keys(dreMap).length === 0) return null;
+
     return {
       preco,
       pl:       ni('p_l'),
