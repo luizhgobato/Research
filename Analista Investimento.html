@@ -2227,7 +2227,7 @@ function showToast(msg){const t=document.getElementById('toast');t.textContent=m
 // BASE DE DADOS — Indicadores Fundamentalistas
 // ══════════════════════════════════════════════════════
 
-const BANCOS_TICKERS = ['BBAS3','ITUB3','BBSE3','BRBI11','IRBR3','ITSA4'];
+const BANCOS_TICKERS = ['BBAS3','ITUB3','BRBI11','IRBR3','ITSA4'];
 const FUND_CACHE_KEY = 'fund_cache_v3';
 const BRAPI_TOKEN = '9BpaYC3MrtWYicZWEoWQeP';
 
@@ -3044,7 +3044,7 @@ const HIST_SEED = {
   CXSE3: {
     // Fonte: investidor10.com.br/acoes/cxse3/ (t:590, c:283) — Seguradora (receita/ebitda N/A)
     // 2026 = LTM (ÚLT. 12M 1T2026-2T2025) · 2021-2025 = dados fiscais anuais
-    2026: { preco:20.75, receita:null, custos:null, lucrobruto:null, ebitda:null, ebit:4746658000, imposto: -537406000, lucrolin:4391419000, divbruta: 10022000, divliq:-1099450000, mgBruta:null, mgEbitda:null, mgLiq:null, roe:31.89, roic:30.54, pl:14.21, pvp:4.53, dy: 6.37, evEbitda:null, lpa:1.46, divEbitda:null },
+    2026: { preco:20.75, receita:null, custos:null, lucrobruto:null, ebitda:null, ebit:4746658000, imposto: -537406000, lucrolin:4391419000, divbruta: 10022000, divliq:-1099450000, mgBruta:null, mgEbitda:null, mgLiq:null, roe:31.89, roic:30.54, pl:14.41, pvp:4.60, dy: 6.27, evEbitda:null, lpa:1.46, divEbitda:null },
     2025: { preco:16.62, receita:null, custos:null, lucrobruto:null, ebitda:null, ebit:4647593000, imposto: -538229000, lucrolin:4291560000, divbruta: 10129000, divliq:-1686266000, mgBruta:null, mgEbitda:null, mgLiq:null, roe:31.67, roic:30.30, pl:11.62, pvp:3.68, dy: 7.58, evEbitda:null, lpa:1.43, divEbitda:null },
     2024: { preco:14.30, receita:null, custos:null, lucrobruto:null, ebitda:null, ebit:4223023000, imposto: -571331000, lucrolin:3765184000, divbruta:    null, divliq:-1209921000, mgBruta:null, mgEbitda:null, mgLiq:null, roe:29.21, roic:28.33, pl:11.35, pvp:3.32, dy: 7.47, evEbitda:null, lpa:1.26, divEbitda:null },
     2023: { preco:12.85, receita:null, custos:null, lucrobruto:null, ebitda:null, ebit:3951228000, imposto: -482852000, lucrolin:3582244000, divbruta:    null, divliq: -851249000, mgBruta:null, mgEbitda:null, mgLiq:null, roe:28.46, roic:27.56, pl:10.80, pvp:3.07, dy: 7.75, evEbitda:null, lpa:1.19, divEbitda:null },
@@ -3054,7 +3054,7 @@ const HIST_SEED = {
   BBSE3: {
     // Fonte: investidor10.com.br/acoes/bbse3/ (t:308, c:218) — Seguradora (receita/ebitda N/A)
     // 2026 = LTM (ÚLT. 12M 1T2026-2T2025) · 2021-2025 = dados fiscais anuais
-    2026: { preco:38.60, receita:null, custos:null, lucrobruto:null, ebitda:null, ebit:10005416000, imposto:-1945776000, lucrolin:9192497000, divbruta:null, divliq: -6378334000, mgBruta:null, mgEbitda:null, mgLiq:null, roe:72.72, roic:63.76, pl: 8.16, pvp:5.94, dy:11.60, evEbitda:null, lpa:4.73, divEbitda:null },
+    2026: { preco:38.60, receita:null, custos:null, lucrobruto:null, ebitda:null, ebit:10005416000, imposto:-1945776000, lucrolin:9192497000, divbruta:null, divliq: -6378334000, mgBruta:null, mgEbitda:null, mgLiq:null, roe:72.72, roic:63.76, pl: 8.17, pvp:5.94, dy:11.65, evEbitda:null, lpa:4.73, divEbitda:null },
     2025: { preco:36.10, receita:null, custos:null, lucrobruto:null, ebitda:null, ebit: 9865768000, imposto:-1924039000, lucrolin:9017329000, divbruta:null, divliq:-10044855000, mgBruta:null, mgEbitda:null, mgLiq:null, roe:86.84, roic:76.48, pl: 7.78, pvp:6.76, dy:11.66, evEbitda:null, lpa:4.64, divEbitda:null },
     2024: { preco:36.15, receita:null, custos:null, lucrobruto:null, ebitda:null, ebit: 9757270000, imposto:-1707639000, lucrolin:8703353000, divbruta:null, divliq: -8508976000, mgBruta:null, mgEbitda:null, mgLiq:null, roe:89.77, roic:83.03, pl: 8.07, pvp:7.24, dy: 7.28, evEbitda:null, lpa:4.48, divEbitda:null },
     2023: { preco:33.62, receita:null, custos:null, lucrobruto:null, ebitda:null, ebit: 8905765000, imposto:-1546109000, lucrolin:7947203000, divbruta:null, divliq: -4752742000, mgBruta:null, mgEbitda:null, mgLiq:null, roe:80.96, roic:74.97, pl: 8.22, pvp:6.65, dy:10.25, evEbitda:null, lpa:4.09, divEbitda:null },
