@@ -1,4 +1,5 @@
 ﻿<!DOCTYPE html>
+<!-- ARQUIVO GERADO por scripts/build.py — NÃO EDITE AQUI. Edite js/, css/, data/ e rode: python scripts/build.py -->
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -215,6 +216,29 @@ thead tr.col-header,#fundTable thead tr{overflow:visible;}
   font-family:var(--font);
 }
 .col-tip:hover::after{opacity:1;}
+
+/* ── TOOLTIP DE VARIÁVEIS NAS CÉLULAS (Preço Teto, Margem, Retorno) ── */
+.teto-tip{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:13px;height:13px;border-radius:50%;
+  background:rgba(99,102,241,0.18);color:#6366f1;
+  font-size:9px;font-weight:800;cursor:help;
+  margin-left:3px;vertical-align:middle;flex-shrink:0;line-height:1;font-style:normal;
+  transition:background 0.12s;
+}
+.teto-tip:hover{background:rgba(99,102,241,0.4);color:#4338ca;}
+#cellTipPop{
+  position:fixed;z-index:99999;pointer-events:none;
+  background:#1a1a2e;color:#e2e8f0;
+  padding:9px 11px;border-radius:7px;
+  font-size:11px;font-weight:400;line-height:1.6;
+  white-space:pre-line;max-width:270px;
+  box-shadow:0 6px 20px rgba(0,0,0,0.45);
+  border:1px solid rgba(99,102,241,0.3);
+  font-family:var(--font);text-align:left;
+  opacity:0;transition:opacity 0.12s;
+}
+#cellTipPop.show{opacity:1;}
 
 /* OUTROS INVESTIMENTOS */
 .outros-section{padding:0 2rem 2rem;}
@@ -950,8 +974,148 @@ tbody tr:nth-child(n){animation-delay:calc(var(--i,0)*0.02s);}
       <th data-col="25" class="sep gh-rep" style="cursor:default;"><div class="th-inner">Relatório <span class="col-tip" data-tip="Fonte: Análise própria&#10;Link para o relatório detalhado do ativo com tese, riscos e projeções">ⓘ</span></div></th>
     </tr>
   </thead>
-  <tbody id="tableBody">
-  <tr data-ticker="ALOS3.SA" data-veredicto="pendente" data-segmento="Shoppings" data-empresa="Allos ALOS3" data-preco-teto="" data-carteira="false" data-dy-proj="0.0945">
+  <tbody id="tableBody"><!-- populado por data/radar-rows.data.js --></tbody>
+  </table>
+  </div>
+  </div>
+</div><!-- /page-radar -->
+
+<!-- PÁGINA 3 — BASE DE DADOS -->
+<div class="page" id="page-dados">
+  <div class="dados-header">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+      <div>
+        <h1 style="font-size:20px;font-weight:800;color:var(--text);">📊 Base de Dados</h1>
+        <p style="font-size:12px;color:var(--text3);margin-top:3px;">Indicadores fundamentalistas das empresas do radar · via fundamentus.com.br</p>
+      </div>
+      <div style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;">
+        <button class="btn-update" id="btnUpdateFund" onclick="atualizarFundamentos()">
+          <div class="spinner"></div>⟳ Atualizar Dados
+        </button>
+        <div class="update-status" id="fundStatus"><div class="dot"></div><span id="fundStatusText">Não atualizado</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dados-controls">
+    <div style="position:relative;">
+      <span style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:12px;">🔍</span>
+      <input type="text" class="fund-search" id="fundSearch" placeholder="Buscar empresa ou ticker..." oninput="filtrarDados()">
+    </div>
+    <div class="filter-group" id="fundSegFilter"></div>
+    <div class="sem-legend">
+      <span style="font-size:11px;font-weight:600;color:var(--text2);">Semáforo:</span>
+      <span class="sem-legend-item"><span class="sem-dot sem-green"></span>Bom</span>
+      <span class="sem-legend-item"><span class="sem-dot sem-yellow"></span>Neutro</span>
+      <span class="sem-legend-item"><span class="sem-dot sem-red"></span>Atenção</span>
+      <span class="sem-legend-item"><span class="sem-dot" style="background:#e5e7eb;border:1px solid #ccc;"></span>Sem dado</span>
+    </div>
+  </div>
+
+  <div class="fund-table-wrap">
+    <table id="fundTable">
+      <thead>
+        <tr class="fund-group-header">
+          <th colspan="4">Identificação</th>
+          <th colspan="7" class="sep">DRE (Resultado)</th>
+          <th colspan="2" class="sep">Balanço</th>
+          <th colspan="3" class="sep">Margens</th>
+          <th colspan="2" class="sep">Rentabilidade</th>
+          <th colspan="6" class="sep">Múltiplos</th>
+        </tr>
+        <tr>
+          <th class="left" style="min-width:140px;">Empresa<span class="col-tip" data-tip="Fonte: Manual&#10;Nome completo da empresa">ⓘ</span></th>
+          <th style="min-width:70px;">Ticker<span class="col-tip" data-tip="Fonte: Manual&#10;Código de negociação na B3">ⓘ</span></th>
+          <th style="min-width:85px;">Segmento<span class="col-tip" data-tip="Fonte: Manual&#10;Setor de atuação da empresa">ⓘ</span></th>
+          <th style="min-width:80px;" onclick="sortFund(3)">Preço<span class="sort-arrow"></span><span class="col-tip" data-tip="Fonte: brapi.dev&#10;Cotação atual de mercado">ⓘ</span></th>
+          <th style="min-width:90px;" class="sep" onclick="sortFund(4)">Receita Líq.<span class="sort-arrow"></span><span class="col-tip" data-tip="Fonte: Investidor10&#10;Receita líquida dos últimos 12 meses (LTM)">ⓘ</span></th>
+          <th style="min-width:90px;" onclick="sortFund(5)">Custos<span class="sort-arrow"></span><span class="col-tip" data-tip="Fonte: Investidor10&#10;Custos e despesas operacionais (CPV + SG&A)">ⓘ</span></th>
+          <th style="min-width:90px;" onclick="sortFund(6)">Lucro Bruto<span class="sort-arrow"></span><span class="col-tip" data-tip="Fonte: Investidor10&#10;Receita Líquida − Custo dos Produtos Vendidos">ⓘ</span></th>
+          <th style="min-width:90px;" onclick="sortFund(7)">EBITDA<span class="sort-arrow"></span><span class="col-tip" data-tip="Fonte: Investidor10&#10;Lucro antes de juros, impostos, depreciação e amortização">ⓘ</span></th>
+          <th style="min-width:90px;" onclick="sortFund(8)">EBIT<span class="sort-arrow"></span><span class="col-tip" data-tip="Fonte: Investidor10&#10;Lucro operacional (EBITDA − D&A)">ⓘ</span></th>
+          <th style="min-width:90px;" onclick="sortFund(9)">Imposto<span class="sort-arrow"></span><span class="col-tip" data-tip="Fonte: Investidor10&#10;Imposto de renda e contribuição social sobre o lucro">ⓘ</span></th>
+          <th style="min-width:90px;" onclick="sortFund(10)">Lucro Líq.<span class="sort-arrow"></span><span class="col-tip" data-tip="Fonte: Investidor10&#10;Lucro líquido dos últimos 12 meses (LTM)">ⓘ</span></th>
+          <th style="min-width:90px;" class="sep" onclick="sortFund(11)">Dív. Bruta<span class="sort-arrow"></span><span class="col-tip" data-tip="Fonte: Investidor10&#10;Total de dívida financeira bruta (empréstimos + debêntures)">ⓘ</span></th>
+          <th style="min-width:90px;" onclick="sortFund(12)">Dív. Líquida<span class="sort-arrow"></span><span class="col-tip" data-tip="Fonte: Investidor10&#10;Dívida Bruta − Caixa e equivalentes&#10;Negativo = posição de caixa líquido">ⓘ</span></th>
+          <th style="min-width:80px;" class="sep" onclick="sortFund(13)">Mg. Bruta<span class="sort-arrow"></span><span class="col-tip" data-tip="Fonte: Calculado&#10;Lucro Bruto ÷ Receita Líquida × 100">ⓘ</span></th>
+          <th style="min-width:85px;" onclick="sortFund(14)">Mg. EBITDA<span class="sort-arrow"></span><span class="col-tip" data-tip="Fonte: Calculado&#10;EBITDA ÷ Receita Líquida × 100">ⓘ</span></th>
+          <th style="min-width:80px;" onclick="sortFund(15)">Mg. Líq.<span class="sort-arrow"></span><span class="col-tip" data-tip="Fonte: Investidor10&#10;Lucro Líquido ÷ Receita Líquida × 100">ⓘ</span></th>
+          <th style="min-width:70px;" class="sep" onclick="sortFund(16)">ROE<span class="sort-arrow"></span><span class="col-tip" data-tip="Fonte: Investidor10&#10;Lucro Líquido ÷ Patrimônio Líquido × 100">ⓘ</span></th>
+          <th style="min-width:70px;" onclick="sortFund(17)">ROIC<span class="sort-arrow"></span><span class="col-tip" data-tip="Fonte: Investidor10&#10;NOPAT ÷ Capital Investido × 100&#10;Mede o retorno sobre todo capital empregado">ⓘ</span></th>
+          <th style="min-width:70px;" class="sep" onclick="sortFund(18)">P/L<span class="sort-arrow"></span><span class="col-tip" data-tip="Fonte: Investidor10&#10;Preço ÷ Lucro por ação (LTM)">ⓘ</span></th>
+          <th style="min-width:70px;" onclick="sortFund(19)">P/VP<span class="sort-arrow"></span><span class="col-tip" data-tip="Fonte: Investidor10&#10;Preço ÷ Valor Patrimonial por ação">ⓘ</span></th>
+          <th style="min-width:70px;" onclick="sortFund(20)">DY<span class="sort-arrow"></span><span class="col-tip" data-tip="Fonte: Investidor10&#10;Proventos pagos nos últimos 12 meses ÷ Cotação × 100">ⓘ</span></th>
+          <th style="min-width:85px;" onclick="sortFund(21)">EV/EBITDA<span class="sort-arrow"></span><span class="col-tip" data-tip="Fonte: Investidor10&#10;Valor da empresa (EV) ÷ EBITDA">ⓘ</span></th>
+          <th style="min-width:70px;" onclick="sortFund(22)">Dív/PL<span class="sort-arrow"></span><span class="col-tip" data-tip="Fonte: Investidor10&#10;Dívida Bruta ÷ Patrimônio Líquido">ⓘ</span></th>
+          <th style="min-width:70px;" onclick="sortFund(23)">LPA<span class="sort-arrow"></span><span class="col-tip" data-tip="Fonte: Investidor10&#10;Lucro por ação dos últimos 12 meses">ⓘ</span></th>
+        </tr>
+      </thead>
+      <tbody id="fundBody"></tbody>
+    </table>
+  </div>
+  <p class="fund-note">* Indicadores via Investidor10 · Cotação via brapi.dev · Atualização manual via botão · Cache válido por 24h · Não constitui recomendação de investimento</p>
+</div><!-- /page-dados -->
+
+<!-- PÁGINA 4 — REPORT (SPA) -->
+<div class="page-report" id="page-report">
+  <div class="report-topbar">
+    <button class="btn-voltar" id="btnVoltar" onclick="fecharReport()">← Voltar</button>
+    <div class="report-topbar-info">
+      <span class="report-topbar-ticker" id="reportTicker">—</span>
+      <span class="report-topbar-name" id="reportNome">—</span>
+      <span class="report-topbar-verd" id="reportVerd"></span>
+    </div>
+    <span class="report-topbar-date" id="reportData">—</span>
+  </div>
+  <div class="report-body" id="reportBody"></div>
+</div>
+
+<!-- REPORTS DATA -->
+<script id="reportsData" type="application/json">
+{}
+</script>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const IPCA=0.055, DIV_GROWTH=0.08, PREMIO_IPCA=0.07;
+
+// Cap de crescimento de lucro por segmento (floor universal = IPCA)
+const CRESCIMENTO_SEGMENTO = {
+  'Shoppings':            0.12, // reajuste IGP-M + expansão ABL
+  'Bancos':               0.15, // carteira de crédito + spread (NIM)
+  'Seguradoras':          0.18, // volume de prêmios + resultado financeiro
+  'Energia Elétrica':     0.10, // reajuste tarifário regulado (ANEEL)
+  'Saneamento':           0.10, // reajuste tarifário regulado (ARSESP/ARSAE)
+  'Telecom':              0.10, // ARPU + expansão de clientes (mercado maduro)
+  'Varejo':               0.20, // ciclo econômico + same-store sales
+  'Agronegócio':          0.25, // preço de commodity + volume safra
+  'Tecnologia':           0.30, // receita recorrente (SaaS) + expansão
+  'Saúde':                0.18, // sinistralidade + volume de procedimentos
+  'Construção Civil':     0.20, // VSO + lançamentos + ciclo imobiliário
+  'Mineração':            0.20, // preço commodity + volume de produção
+  'Petróleo e Gás':       0.25, // preço do petróleo + produção (boe/dia)
+  'Transportes':          0.15, // volume + reajuste tarifário de concessões
+  'Alimentos e Bebidas':  0.15, // volume + preço/mix de produtos
+  'Papel e Celulose':     0.20, // preço da celulose (USD) + volume
+  'Locação de Veículos':  0.20, // expansão de frota + diária média
+  'Educação':             0.15, // matrículas + ticket médio
+  'Químico':              0.15, // spread petroquímico + volume
+  'Real Estate':          0.12, // aluguel + vacância (similar a shoppings)
+};
+const COLORS=['#4f46e5','#0891b2','#16a34a','#d97706','#dc2626','#7c3aed','#0d9488','#ea580c','#2563eb','#65a30d'];
+
+
+// ── API TOKENS ──
+// ATENÇÃO: token exposto no client-side. Se o repositório for público,
+// use um token free-tier dedicado ou regenere em https://brapi.dev/dashboard
+const BRAPI_TOKEN = '9BpaYC3MrtWYicZWEoWQeP';
+</script>
+<script>
+// DADOS do radar: 1 linha <tr> por empresa (data-attributes = indicadores)
+// Editar AQUI para incluir/alterar empresas. Auto-popula o tbody ao carregar.
+const RADAR_ROWS_HTML = `
+<tr data-ticker="ALOS3.SA" data-veredicto="pendente" data-segmento="Shoppings" data-empresa="Allos ALOS3" data-preco-teto="" data-carteira="false" data-dy-proj="0.0945">
     <td class="frozen-1 left"><span class="empresa-name">Allos</span></td>
     <td class="frozen-2"><span class="ticker-badge">ALOS3</span></td>
     <td><span class="fund-seg">Shoppings</span></td>
@@ -1203,137 +1367,102 @@ tbody tr:nth-child(n){animation-delay:calc(var(--i,0)*0.02s);}
     <td class="sep"><span class="verd-pendente">⚪ Pendente</span></td>
     <td class="sep report-cell"><span class="btn-ver-off">📄 Pendente</span></td>
   </tr>
-</tbody>
-  </table>
-  </div>
-  </div>
-</div><!-- /page-radar -->
-
-<!-- PÁGINA 3 — BASE DE DADOS -->
-<div class="page" id="page-dados">
-  <div class="dados-header">
-    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
-      <div>
-        <h1 style="font-size:20px;font-weight:800;color:var(--text);">📊 Base de Dados</h1>
-        <p style="font-size:12px;color:var(--text3);margin-top:3px;">Indicadores fundamentalistas das empresas do radar · via fundamentus.com.br</p>
-      </div>
-      <div style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;">
-        <button class="btn-update" id="btnUpdateFund" onclick="atualizarFundamentos()">
-          <div class="spinner"></div>⟳ Atualizar Dados
-        </button>
-        <div class="update-status" id="fundStatus"><div class="dot"></div><span id="fundStatusText">Não atualizado</span></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="dados-controls">
-    <div style="position:relative;">
-      <span style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:12px;">🔍</span>
-      <input type="text" class="fund-search" id="fundSearch" placeholder="Buscar empresa ou ticker..." oninput="filtrarDados()">
-    </div>
-    <div class="filter-group" id="fundSegFilter"></div>
-    <div class="sem-legend">
-      <span style="font-size:11px;font-weight:600;color:var(--text2);">Semáforo:</span>
-      <span class="sem-legend-item"><span class="sem-dot sem-green"></span>Bom</span>
-      <span class="sem-legend-item"><span class="sem-dot sem-yellow"></span>Neutro</span>
-      <span class="sem-legend-item"><span class="sem-dot sem-red"></span>Atenção</span>
-      <span class="sem-legend-item"><span class="sem-dot" style="background:#e5e7eb;border:1px solid #ccc;"></span>Sem dado</span>
-    </div>
-  </div>
-
-  <div class="fund-table-wrap">
-    <table id="fundTable">
-      <thead>
-        <tr class="fund-group-header">
-          <th colspan="4">Identificação</th>
-          <th colspan="7" class="sep">DRE (Resultado)</th>
-          <th colspan="2" class="sep">Balanço</th>
-          <th colspan="3" class="sep">Margens</th>
-          <th colspan="2" class="sep">Rentabilidade</th>
-          <th colspan="6" class="sep">Múltiplos</th>
-        </tr>
-        <tr>
-          <th class="left" style="min-width:140px;">Empresa<span class="col-tip" data-tip="Fonte: Manual&#10;Nome completo da empresa">ⓘ</span></th>
-          <th style="min-width:70px;">Ticker<span class="col-tip" data-tip="Fonte: Manual&#10;Código de negociação na B3">ⓘ</span></th>
-          <th style="min-width:85px;">Segmento<span class="col-tip" data-tip="Fonte: Manual&#10;Setor de atuação da empresa">ⓘ</span></th>
-          <th style="min-width:80px;" onclick="sortFund(3)">Preço<span class="sort-arrow"></span><span class="col-tip" data-tip="Fonte: brapi.dev&#10;Cotação atual de mercado">ⓘ</span></th>
-          <th style="min-width:90px;" class="sep" onclick="sortFund(4)">Receita Líq.<span class="sort-arrow"></span><span class="col-tip" data-tip="Fonte: Investidor10&#10;Receita líquida dos últimos 12 meses (LTM)">ⓘ</span></th>
-          <th style="min-width:90px;" onclick="sortFund(5)">Custos<span class="sort-arrow"></span><span class="col-tip" data-tip="Fonte: Investidor10&#10;Custos e despesas operacionais (CPV + SG&A)">ⓘ</span></th>
-          <th style="min-width:90px;" onclick="sortFund(6)">Lucro Bruto<span class="sort-arrow"></span><span class="col-tip" data-tip="Fonte: Investidor10&#10;Receita Líquida − Custo dos Produtos Vendidos">ⓘ</span></th>
-          <th style="min-width:90px;" onclick="sortFund(7)">EBITDA<span class="sort-arrow"></span><span class="col-tip" data-tip="Fonte: Investidor10&#10;Lucro antes de juros, impostos, depreciação e amortização">ⓘ</span></th>
-          <th style="min-width:90px;" onclick="sortFund(8)">EBIT<span class="sort-arrow"></span><span class="col-tip" data-tip="Fonte: Investidor10&#10;Lucro operacional (EBITDA − D&A)">ⓘ</span></th>
-          <th style="min-width:90px;" onclick="sortFund(9)">Imposto<span class="sort-arrow"></span><span class="col-tip" data-tip="Fonte: Investidor10&#10;Imposto de renda e contribuição social sobre o lucro">ⓘ</span></th>
-          <th style="min-width:90px;" onclick="sortFund(10)">Lucro Líq.<span class="sort-arrow"></span><span class="col-tip" data-tip="Fonte: Investidor10&#10;Lucro líquido dos últimos 12 meses (LTM)">ⓘ</span></th>
-          <th style="min-width:90px;" class="sep" onclick="sortFund(11)">Dív. Bruta<span class="sort-arrow"></span><span class="col-tip" data-tip="Fonte: Investidor10&#10;Total de dívida financeira bruta (empréstimos + debêntures)">ⓘ</span></th>
-          <th style="min-width:90px;" onclick="sortFund(12)">Dív. Líquida<span class="sort-arrow"></span><span class="col-tip" data-tip="Fonte: Investidor10&#10;Dívida Bruta − Caixa e equivalentes&#10;Negativo = posição de caixa líquido">ⓘ</span></th>
-          <th style="min-width:80px;" class="sep" onclick="sortFund(13)">Mg. Bruta<span class="sort-arrow"></span><span class="col-tip" data-tip="Fonte: Calculado&#10;Lucro Bruto ÷ Receita Líquida × 100">ⓘ</span></th>
-          <th style="min-width:85px;" onclick="sortFund(14)">Mg. EBITDA<span class="sort-arrow"></span><span class="col-tip" data-tip="Fonte: Calculado&#10;EBITDA ÷ Receita Líquida × 100">ⓘ</span></th>
-          <th style="min-width:80px;" onclick="sortFund(15)">Mg. Líq.<span class="sort-arrow"></span><span class="col-tip" data-tip="Fonte: Investidor10&#10;Lucro Líquido ÷ Receita Líquida × 100">ⓘ</span></th>
-          <th style="min-width:70px;" class="sep" onclick="sortFund(16)">ROE<span class="sort-arrow"></span><span class="col-tip" data-tip="Fonte: Investidor10&#10;Lucro Líquido ÷ Patrimônio Líquido × 100">ⓘ</span></th>
-          <th style="min-width:70px;" onclick="sortFund(17)">ROIC<span class="sort-arrow"></span><span class="col-tip" data-tip="Fonte: Investidor10&#10;NOPAT ÷ Capital Investido × 100&#10;Mede o retorno sobre todo capital empregado">ⓘ</span></th>
-          <th style="min-width:70px;" class="sep" onclick="sortFund(18)">P/L<span class="sort-arrow"></span><span class="col-tip" data-tip="Fonte: Investidor10&#10;Preço ÷ Lucro por ação (LTM)">ⓘ</span></th>
-          <th style="min-width:70px;" onclick="sortFund(19)">P/VP<span class="sort-arrow"></span><span class="col-tip" data-tip="Fonte: Investidor10&#10;Preço ÷ Valor Patrimonial por ação">ⓘ</span></th>
-          <th style="min-width:70px;" onclick="sortFund(20)">DY<span class="sort-arrow"></span><span class="col-tip" data-tip="Fonte: Investidor10&#10;Proventos pagos nos últimos 12 meses ÷ Cotação × 100">ⓘ</span></th>
-          <th style="min-width:85px;" onclick="sortFund(21)">EV/EBITDA<span class="sort-arrow"></span><span class="col-tip" data-tip="Fonte: Investidor10&#10;Valor da empresa (EV) ÷ EBITDA">ⓘ</span></th>
-          <th style="min-width:70px;" onclick="sortFund(22)">Dív/PL<span class="sort-arrow"></span><span class="col-tip" data-tip="Fonte: Investidor10&#10;Dívida Bruta ÷ Patrimônio Líquido">ⓘ</span></th>
-          <th style="min-width:70px;" onclick="sortFund(23)">LPA<span class="sort-arrow"></span><span class="col-tip" data-tip="Fonte: Investidor10&#10;Lucro por ação dos últimos 12 meses">ⓘ</span></th>
-        </tr>
-      </thead>
-      <tbody id="fundBody"></tbody>
-    </table>
-  </div>
-  <p class="fund-note">* Indicadores via Investidor10 · Cotação via brapi.dev · Atualização manual via botão · Cache válido por 24h · Não constitui recomendação de investimento</p>
-</div><!-- /page-dados -->
-
-<!-- PÁGINA 4 — REPORT (SPA) -->
-<div class="page-report" id="page-report">
-  <div class="report-topbar">
-    <button class="btn-voltar" id="btnVoltar" onclick="fecharReport()">← Voltar</button>
-    <div class="report-topbar-info">
-      <span class="report-topbar-ticker" id="reportTicker">—</span>
-      <span class="report-topbar-name" id="reportNome">—</span>
-      <span class="report-topbar-verd" id="reportVerd"></span>
-    </div>
-    <span class="report-topbar-date" id="reportData">—</span>
-  </div>
-  <div class="report-body" id="reportBody"></div>
-</div>
-
-<!-- REPORTS DATA -->
-<script id="reportsData" type="application/json">
-{}
+`;
+document.getElementById("tableBody").innerHTML = RADAR_ROWS_HTML;
 </script>
-
-<div class="toast" id="toast"></div>
-
 <script>
-const IPCA=0.055, DIV_GROWTH=0.08, PREMIO_IPCA=0.07;
-
-// Cap de crescimento de lucro por segmento (floor universal = IPCA)
-const CRESCIMENTO_SEGMENTO = {
-  'Shoppings':            0.12, // reajuste IGP-M + expansão ABL
-  'Bancos':               0.15, // carteira de crédito + spread (NIM)
-  'Seguradoras':          0.18, // volume de prêmios + resultado financeiro
-  'Energia Elétrica':     0.10, // reajuste tarifário regulado (ANEEL)
-  'Saneamento':           0.10, // reajuste tarifário regulado (ARSESP/ARSAE)
-  'Telecom':              0.10, // ARPU + expansão de clientes (mercado maduro)
-  'Varejo':               0.20, // ciclo econômico + same-store sales
-  'Agronegócio':          0.25, // preço de commodity + volume safra
-  'Tecnologia':           0.30, // receita recorrente (SaaS) + expansão
-  'Saúde':                0.18, // sinistralidade + volume de procedimentos
-  'Construção Civil':     0.20, // VSO + lançamentos + ciclo imobiliário
-  'Mineração':            0.20, // preço commodity + volume de produção
-  'Petróleo e Gás':       0.25, // preço do petróleo + produção (boe/dia)
-  'Transportes':          0.15, // volume + reajuste tarifário de concessões
-  'Alimentos e Bebidas':  0.15, // volume + preço/mix de produtos
-  'Papel e Celulose':     0.20, // preço da celulose (USD) + volume
-  'Locação de Veículos':  0.20, // expansão de frota + diária média
-  'Educação':             0.15, // matrículas + ticket médio
-  'Químico':              0.15, // spread petroquímico + volume
-  'Real Estate':          0.12, // aluguel + vacância (similar a shoppings)
+// DADOS históricos anuais por ticker (Fonte: Investidor10)
+// Para adicionar empresa: incluir aqui + INV10_IDS em js/fundamentos-api.js
+const HIST_SEED = {
+  TIMS3: {
+    // Fonte: investidor10.com.br/acoes/tims3/ (t:202, c:150) — INV10_IDS para atualização automática
+    // 2026 = LTM (ÚLT. 12M) · 2021-2025 = dados fiscais anuais do Investidor10 (balancoresultados + historico-indicadores)
+    2026: { preco:21.89, receita:27037230000, custos:-12424600000, lucrobruto:14612630000, ebitda:13636825000, ebit:6566412000, imposto:-519545000,  lucrolin:4331454000, divbruta: 2831998000, divliq:-3039320000, mgBruta:54.05, mgEbitda:50.44, mgLiq:16.02, roe:17.74, roic:22.19, pl:12.07, pvp:2.14, dy: 6.52, evEbitda:3.61, lpa:1.81, divEbitda:-0.22 },
+    2025: { preco:21.31, receita:26625080000, custos:-12266584000, lucrobruto:14358137000, ebitda:13448665000, ebit:6370894000, imposto:-248028000,   lucrolin:4311983000, divbruta: 2778723000, divliq:-3105917000, mgBruta:53.93, mgEbitda:50.51, mgLiq:16.20, roe:17.98, roic:22.88, pl:11.84, pvp:2.13, dy:11.78, evEbitda:3.56, lpa:1.80, divEbitda:-0.23 },
+    2024: { preco:14.49, receita:25447930000, custos:-11893115000, lucrobruto:13554815000, ebitda:12532723000, ebit:5506688000, imposto:-301902000,   lucrolin:3153881000, divbruta: 3035501000, divliq:-2657683000, mgBruta:53.26, mgEbitda:49.25, mgLiq:12.39, roe:11.94, roic:17.68, pl:10.98, pvp:1.31, dy: 7.88, evEbitda:2.55, lpa:1.32, divEbitda:-0.21 },
+    2023: { preco:18.00, receita:23833633000, custos:-11530897000, lucrobruto:12302736000, ebitda:11833926000, ebit:4717472000, imposto:-347061000,   lucrolin:2836950000, divbruta: 3770946000, divliq:-1265475000, mgBruta:51.62, mgEbitda:49.65, mgLiq:11.90, roe:10.90, roic:14.67, pl:15.12, pvp:1.65, dy: 5.07, evEbitda:3.52, lpa:1.19, divEbitda:-0.11 },
+    2022: { preco:12.43, receita:21530430000, custos:-10655990000, lucrobruto:10874830000, ebitda: 9987090000, ebit:3159930000, imposto: -50490000,   lucrolin:1670760000, divbruta: 4969830000, divliq:  230482000, mgBruta:50.51, mgEbitda:46.39, mgLiq: 7.76, roe: 6.58, roic:10.24, pl:17.75, pvp:1.17, dy: 4.66, evEbitda:2.99, lpa:0.70, divEbitda: 0.02 },
+    2021: { preco:13.19, receita:14091720000, custos: -8443030000, lucrobruto: 9615010000, ebitda:  9447720000, ebit:3756030000, imposto:-146050000,   lucrolin:2957180000, divbruta:12218750000, divliq:        null, mgBruta:68.23, mgEbitda:67.04, mgLiq:20.99, roe:11.78, roic: 9.67, pl:10.64, pvp:1.25, dy: 3.29, evEbitda:4.62, lpa:1.24, divEbitda: 1.29 },
+  },
+  ALOS3: {
+    // Nota: 2021-2022 = dados da Aliansce Sonae (pré-fusão); 2023 inclui ganhos de reavaliação da fusão
+    2026: { preco:26.58, receita:2872377000, custos:-763435000, lucrobruto:2108942000, ebitda:2097666000, ebit:1508128000, imposto:-28458000, lucrolin:934139000, divbruta:null, divliq:-2155694000, mgBruta:73.42, mgEbitda:73.03, mgLiq:28.82, roe:6.39, roic:11.41, pl:16.19, pvp:1.03, dy:9.45, evEbitda:5.36, divPl:null, lpa:1.64, divEbitda:-1.03 },
+    2025: { preco:28.40, receita:2858517000, custos:-746351000, lucrobruto:2112166000, ebitda:2129593000, ebit:1539359000, imposto:-72307000, lucrolin:945292000, divbruta:null, divliq:-2430014000, mgBruta:73.89, mgEbitda:74.50, mgLiq:29.18, roe:6.35, roic:11.16, pl:17.15, pvp:1.09, dy:5.59, evEbitda:5.58, divPl:0.00, lpa:1.65 },
+    2024: { preco:18.10, receita:2739848000, custos:-718981000, lucrobruto:2020867000, ebitda:2071940000, ebit:1453109000, imposto:-56202000, lucrolin:811984000, divbruta:6645024000, divliq:3275919000, mgBruta:73.76, mgEbitda:75.62, mgLiq:25.49, roe:5.23, roic:6.98, pl:13.07, pvp:0.68, dy:8.43, evEbitda:5.99, divPl:0.50, lpa:1.39 },
+    2023: { preco:26.60, receita:2712274000, custos:-826888000, lucrobruto:1885386000, ebitda:6097183000, ebit:5412716000, imposto:-1414926000, lucrolin:3493910000, divbruta:null, divliq:-2133230000, mgBruta:69.51, mgEbitda:224.80, mgLiq:124.88, roe:24.20, roic:28.56, pl:3.95, pvp:0.96, dy:1.95, evEbitda:1.85, divPl:0.00, lpa:6.72 },
+    2022: { preco:17.05, receita:1111270000, custos:310320000,  lucrobruto:1421600000, ebitda:1236370000, ebit:1089560000, imposto:-32320000,  lucrolin:842150000,  divbruta:null, divliq:-2562121000, mgBruta:127.93, mgEbitda:111.26, mgLiq:14.03, roe:1.98,  roic:13.42, pl:55.02, pvp:1.09, dy:2.26, evEbitda:4.86,  divPl:0.00, lpa:0.31 },
+    2021: { preco:21.75, receita:937680000,  custos:-300800000, lucrobruto:636890000,  ebitda:636350000,  ebit:490070000,  imposto:-21490000,  lucrolin:318420000,  divbruta:null, divliq:-14860000,   mgBruta:67.92,  mgEbitda:67.86,  mgLiq:29.31, roe:4.07,  roic:6.94,  pl:39.73, pvp:1.62, dy:1.05, evEbitda:17.14, divPl:0.00, lpa:0.55 },
+  },
+  CXSE3: {
+    // Fonte: investidor10.com.br/acoes/cxse3/ (t:590, c:283) — Seguradora (receita/ebitda N/A)
+    // 2026 = LTM (ÚLT. 12M 1T2026-2T2025) · 2021-2025 = dados fiscais anuais
+    2026: { preco:20.75, receita:null, custos:null, lucrobruto:null, ebitda:null, ebit:4746658000, imposto: -537406000, lucrolin:4391419000, divbruta: 10022000, divliq:-1099450000, mgBruta:null, mgEbitda:null, mgLiq:null, roe:31.89, roic:30.54, pl:14.41, pvp:4.60, dy: 6.27, evEbitda:null, lpa:1.46, divEbitda:null },
+    2025: { preco:16.62, receita:null, custos:null, lucrobruto:null, ebitda:null, ebit:4647593000, imposto: -538229000, lucrolin:4291560000, divbruta: 10129000, divliq:-1686266000, mgBruta:null, mgEbitda:null, mgLiq:null, roe:31.67, roic:30.30, pl:11.62, pvp:3.68, dy: 7.58, evEbitda:null, lpa:1.43, divEbitda:null },
+    2024: { preco:14.30, receita:null, custos:null, lucrobruto:null, ebitda:null, ebit:4223023000, imposto: -571331000, lucrolin:3765184000, divbruta:    null, divliq:-1209921000, mgBruta:null, mgEbitda:null, mgLiq:null, roe:29.21, roic:28.33, pl:11.35, pvp:3.32, dy: 7.47, evEbitda:null, lpa:1.26, divEbitda:null },
+    2023: { preco:12.85, receita:null, custos:null, lucrobruto:null, ebitda:null, ebit:3951228000, imposto: -482852000, lucrolin:3582244000, divbruta:    null, divliq: -851249000, mgBruta:null, mgEbitda:null, mgLiq:null, roe:28.46, roic:27.56, pl:10.80, pvp:3.07, dy: 7.75, evEbitda:null, lpa:1.19, divEbitda:null },
+    2022: { preco: 8.31, receita:null, custos:null, lucrobruto:null, ebitda:null, ebit:3321430000, imposto: -513160000, lucrolin:2952840000, divbruta:    null, divliq: -918060000, mgBruta:null, mgEbitda:null, mgLiq:null, roe:27.12, roic:25.79, pl: 8.48, pvp:2.30, dy: 7.77, evEbitda:null, lpa:0.98, divEbitda:null },
+    2021: { preco: 8.33, receita:null, custos:null, lucrobruto:null, ebitda:null, ebit:2185660000, imposto: -300090000, lucrolin:1896160000, divbruta:    null, divliq: -773424000, mgBruta:null, mgEbitda:null, mgLiq:null, roe:17.96, roic:17.86, pl:13.23, pvp:2.38, dy: 2.93, evEbitda:null, lpa:0.63, divEbitda:null },
+  },
+  BBSE3: {
+    // Fonte: investidor10.com.br/acoes/bbse3/ (t:308, c:218) — Seguradora (receita/ebitda N/A)
+    // 2026 = LTM (ÚLT. 12M 1T2026-2T2025) · 2021-2025 = dados fiscais anuais
+    2026: { preco:38.60, receita:null, custos:null, lucrobruto:null, ebitda:null, ebit:10005416000, imposto:-1945776000, lucrolin:9192497000, divbruta:null, divliq: -6378334000, mgBruta:null, mgEbitda:null, mgLiq:null, roe:72.72, roic:63.76, pl: 8.17, pvp:5.94, dy:11.65, evEbitda:null, lpa:4.73, divEbitda:null },
+    2025: { preco:36.10, receita:null, custos:null, lucrobruto:null, ebitda:null, ebit: 9865768000, imposto:-1924039000, lucrolin:9017329000, divbruta:null, divliq:-10044855000, mgBruta:null, mgEbitda:null, mgLiq:null, roe:86.84, roic:76.48, pl: 7.78, pvp:6.76, dy:11.66, evEbitda:null, lpa:4.64, divEbitda:null },
+    2024: { preco:36.15, receita:null, custos:null, lucrobruto:null, ebitda:null, ebit: 9757270000, imposto:-1707639000, lucrolin:8703353000, divbruta:null, divliq: -8508976000, mgBruta:null, mgEbitda:null, mgLiq:null, roe:89.77, roic:83.03, pl: 8.07, pvp:7.24, dy: 7.28, evEbitda:null, lpa:4.48, divEbitda:null },
+    2023: { preco:33.62, receita:null, custos:null, lucrobruto:null, ebitda:null, ebit: 8905765000, imposto:-1546109000, lucrolin:7947203000, divbruta:null, divliq: -4752742000, mgBruta:null, mgEbitda:null, mgLiq:null, roe:80.96, roic:74.97, pl: 8.22, pvp:6.65, dy:10.25, evEbitda:null, lpa:4.09, divEbitda:null },
+    2022: { preco:33.68, receita:null, custos:null, lucrobruto:null, ebitda:null, ebit: 7045678000, imposto:-1503661000, lucrolin:6044569000, divbruta:null, divliq: -6076620000, mgBruta:null, mgEbitda:null, mgLiq:null, roe:79.57, roic:72.96, pl:10.83, pvp:8.62, dy: 5.79, evEbitda:null, lpa:3.11, divEbitda:null },
+    2021: { preco:20.79, receita:null, custos:null, lucrobruto:null, ebitda:null, ebit: 4932200000, imposto:-1146200000, lucrolin:3933210000, divbruta:null, divliq: -4090560000, mgBruta:null, mgEbitda:null, mgLiq:null, roe:54.02, roic:52.00, pl:10.24, pvp:5.53, dy: 4.80, evEbitda:null, lpa:2.03, divEbitda:null },
+  },
+  BBAS3: {
+    // Fonte: investidor10.com.br/acoes/bbas3/ (t:42, c:35) — Banco (ebitda/divbruta N/A)
+    2026: { preco:19.53, receita:326194593000, custos:-225694308000, lucrobruto:100500285000, ebitda:null, ebit: 6354624000, imposto: 3407361000, lucrolin:15710361000, divbruta:null, divliq:-61693113000, mgBruta:null, mgEbitda:null, mgLiq: 4.82, roe: 6.60, roic: 1.54, pl: 8.84, pvp:0.58, dy: 2.79, evEbitda:null, lpa: 2.21, divEbitda:null },
+    2025: { preco:21.94, receita:319462104000, custos:-218451386000, lucrobruto:101010718000, ebitda:null, ebit: 5613636000, imposto: 5219926000, lucrolin:16781938000, divbruta:null, divliq:       null, mgBruta:null, mgEbitda:null, mgLiq: 5.25, roe: 7.24, roic: 0.21, pl: 9.17, pvp:0.66, dy: 5.34, evEbitda:null, lpa: 2.39, divEbitda:null },
+    2024: { preco:24.19, receita:273505274000, custos:-168990827000, lucrobruto:104514447000, ebitda:null, ebit:27710589000, imposto: 1460975000, lucrolin:29171564000, divbruta:null, divliq:       null, mgBruta:null, mgEbitda:null, mgLiq:10.66, roe:14.67, roic:14.61, pl: 5.25, pvp:0.77, dy:10.75, evEbitda:null, lpa: 4.60, divEbitda:null },
+    2023: { preco:55.42, receita:265438609000, custos:-176689872000, lucrobruto: 88748727000, ebitda:null, ebit:41147192000, imposto:-7981603000, lucrolin:33165589000, divbruta:null, divliq:       null, mgBruta:null, mgEbitda:null, mgLiq:12.49, roe:18.91, roic:19.60, pl: 4.96, pvp:0.94, dy: 8.20, evEbitda:null, lpa:11.17, divEbitda:null },
+    2022: { preco:34.72, receita:236549060000, custos:-162202490000, lucrobruto: 74346570000, ebitda:null, ebit:38301720000, imposto:-8452380000, lucrolin:29849330000, divbruta:null, divliq:       null, mgBruta:null, mgEbitda:null, mgLiq:12.62, roe:18.78, roic:18.78, pl: 3.33, pvp:0.63, dy:11.92, evEbitda:null, lpa:10.42, divEbitda:null },
+    2021: { preco:28.83, receita:125947220000, custos: -66273139000, lucrobruto: 59674081000, ebitda:null, ebit:20068130000, imposto:-1186770000, lucrolin:19722869000, divbruta:null, divliq:       null, mgBruta:null, mgEbitda:null, mgLiq:15.66, roe:12.85, roic:13.23, pl: 4.51, pvp:0.58, dy: 7.84, evEbitda:null, lpa: 6.40, divEbitda:null },
+  },
+  ITUB3: {
+    // Fonte: investidor10.com.br/acoes/itub3/ (t:43, c:36) — Banco (ebitda/divbruta N/A)
+    2026: { preco:44.32, receita:388673000000, custos:-250487000000, lucrobruto:138186000000, ebitda:null, ebit:50073000000, imposto: -3056000000, lucrolin:47017000000, divbruta:null, divliq:-39723000000, mgBruta:null, mgEbitda:null, mgLiq:12.10, roe:21.93, roic:22.42, pl:10.63, pvp:2.33, dy: 7.96, evEbitda:null, lpa:4.17, divEbitda:null },
+    2025: { preco:36.37, receita:387118000000, custos:-248171000000, lucrobruto:138947000000, ebitda:null, ebit:50250000000, imposto: -4401000000, lucrolin:45849000000, divbruta:null, divliq:      null, mgBruta:null, mgEbitda:null, mgLiq:11.84, roe:21.93, roic:22.42, pl: 8.94, pvp:1.96, dy:13.02, evEbitda:null, lpa:4.07, divEbitda:null },
+    2024: { preco:26.90, receita:335328000000, custos:-199589000000, lucrobruto:135739000000, ebitda:null, ebit:47556000000, imposto: -5428000000, lucrolin:42128000000, divbruta:null, divliq:      null, mgBruta:null, mgEbitda:null, mgLiq:12.56, roe:18.57, roic:19.04, pl: 6.37, pvp:1.18, dy: 8.97, evEbitda:null, lpa:4.22, divEbitda:null },
+    2023: { preco:28.83, receita:313221000000, custos:-188695000000, lucrobruto:124526000000, ebitda:null, ebit:39700000000, imposto: -5823000000, lucrolin:33877000000, divbruta:null, divliq:      null, mgBruta:null, mgEbitda:null, mgLiq:10.81, roe:17.41, roic:17.81, pl: 8.48, pvp:1.48, dy: 4.36, evEbitda:null, lpa:3.40, divEbitda:null },
+    2022: { preco:21.89, receita:283372000000, custos:-167802000000, lucrobruto:115570000000, ebitda:null, ebit:37533000000, imposto: -6796000000, lucrolin:30737000000, divbruta:null, divliq:      null, mgBruta:null, mgEbitda:null, mgLiq:10.85, roe:17.68, roic:18.30, pl: 7.17, pvp:1.27, dy: 4.32, evEbitda:null, lpa:3.05, divEbitda:null },
+    2021: { preco:19.10, receita:195679000000, custos: -69305000000, lucrobruto:126374000000, ebitda:null, ebit:42231000000, imposto:-13847000000, lucrolin:28384000000, divbruta:null, divliq:      null, mgBruta:null, mgEbitda:null, mgLiq:14.50, roe:  null, roic:  null, pl: 6.94, pvp:1.19, dy: 4.76, evEbitda:null, lpa:2.75, divEbitda:null },
+  },
+  RANI3: {
+    // Fonte: investidor10.com.br/acoes/rani3/ (t:260, c:193) — Papel e Celulose
+    2026: { preco: 7.88, receita:1673078000, custos:-1020005000, lucrobruto:653073000, ebitda: 613959000, ebit: 404476000, imposto:  -56314000, lucrolin: 202771000, divbruta: 950480000, divliq:  190260000, mgBruta:39.03, mgEbitda:36.70, mgLiq:12.12, roe:13.78, roic:14.38, pl: 8.96, pvp:1.23, dy:6.06, evEbitda: 3.27, lpa:0.88, divEbitda: 0.31 },
+    2025: { preco: 8.68, receita:1686311000, custos:-1011784000, lucrobruto:700242000, ebitda: 651916000, ebit: 460188000, imposto:  -62984000, lucrolin: 242050000, divbruta:1909711000, divliq: 1069877000, mgBruta:41.53, mgEbitda:38.66, mgLiq:14.36, roe:16.67, roic:11.82, pl: 8.27, pvp:1.38, dy:8.45, evEbitda: 4.65, lpa:1.05, divEbitda: 1.64 },
+    2024: { preco: 6.82, receita:1627470000, custos:-1002024000, lucrobruto:625446000, ebitda: 513168000, ebit: 317934000, imposto:   96992000, lucrolin: 304519000, divbruta:1686114000, divliq: 1081882000, mgBruta:38.43, mgEbitda:31.53, mgLiq:18.71, roe:22.28, roic: 7.24, pl: 5.16, pvp:1.15, dy:7.72, evEbitda: 5.17, lpa:1.32, divEbitda: 2.11 },
+    2023: { preco:10.90, receita:1594245000, custos: -907647000, lucrobruto:686598000, ebitda: 664019000, ebit: 551418000, imposto: -176493000, lucrolin: 383434000, divbruta:1626153000, divliq: 1025172000, mgBruta:43.07, mgEbitda:41.65, mgLiq:24.05, roe:29.96, roic:12.90, pl: 6.56, pvp:1.97, dy:7.81, evEbitda: 5.34, lpa:1.66, divEbitda: 1.54 },
+    2022: { preco: 8.04, receita:1686670000, custos: -878600000, lucrobruto:808073000, ebitda: 682888000, ebit: 579859000, imposto: -140160000, lucrolin: 378209000, divbruta:1792175000, divliq:  742967000, mgBruta:47.93, mgEbitda:40.49, mgLiq:22.42, roe:33.62, roic:15.07, pl: 4.91, pvp:1.65, dy:7.94, evEbitda: 3.80, lpa:1.64, divEbitda: 1.09 },
+    2021: { preco: 6.91, receita:1605840000, custos: -973810000, lucrobruto:632030000, ebitda: 528270000, ebit: 435820000, imposto: -104900000, lucrolin: 285320000, divbruta: 892320000, divliq:  386050000, mgBruta:39.36, mgEbitda:32.90, mgLiq:17.77, roe:29.80, roic:17.89, pl: 5.57, pvp:1.66, dy:5.13, evEbitda: 3.74, lpa:1.24, divEbitda: 0.73 },
+  },
+  IRBR3: {
+    // Fonte: investidor10.com.br/acoes/irbr3/ (t:96, c:59) — Resseguradora
+    2026: { preco:54.83, receita:4951585000, custos:-7947980000, lucrobruto: 418502000, ebitda:  79177000, ebit:  396856000, imposto: -198347000, lucrolin:  350413000, divbruta:263868000, divliq:-4777133000, mgBruta: 8.45, mgEbitda:1.60, mgLiq: 7.08, roe: 6.59, roic: 3.56, pl:12.81, pvp:0.84, dy:2.84, evEbitda:null, lpa:4.28, divEbitda:null },
+    2025: { preco:53.73, receita:5211349000, custos:-8047559000, lucrobruto: 578687000, ebitda:       null, ebit:  559916000, imposto: -211616000, lucrolin:  390945000, divbruta:     null, divliq:-5113978000, mgBruta:11.11, mgEbitda:null, mgLiq: 7.50, roe: 7.40, roic: 6.59, pl:11.24, pvp:0.83, dy:0.00, evEbitda:null, lpa:4.78, divEbitda:null },
+    2024: { preco:42.46, receita:6057974000, custos:-5281243000, lucrobruto: 776731000, ebitda:       null, ebit:  790363000, imposto: -390806000, lucrolin:  805740000, divbruta:     null, divliq:-3720537000, mgBruta:12.82, mgEbitda:null, mgLiq:13.30, roe:16.36, roic: 8.11, pl: 4.31, pvp:0.71, dy:0.00, evEbitda:null, lpa:9.84, divEbitda:null },
+    2023: { preco:44.26, receita:5794710000, custos:-6120398000, lucrobruto:-325688000, ebitda:       null, ebit: -378815000, imposto:  133825000, lucrolin: -123851000, divbruta:     null, divliq:-2568226000, mgBruta:-5.62, mgEbitda:null, mgLiq:-2.14, roe:-2.91, roic:-12.04, pl:-29.27, pvp:0.85, dy:0.00, evEbitda:null, lpa:-1.51, divEbitda:null },
+    2022: { preco: 0.87, receita:7047040000, custos:-8486200000, lucrobruto:-1439150000, ebitda:      null, ebit:-1795220000, imposto:  550426000, lucrolin: -630334000, divbruta:     null, divliq:-4154393000, mgBruta:-20.42, mgEbitda:null, mgLiq:-8.95, roe:-15.47, roic:-57.58, pl:-3.35, pvp:0.52, dy:0.00, evEbitda:null, lpa:-0.26, divEbitda:null },
+    2021: { preco: 4.03, receita:7987420000, custos:-9564130000, lucrobruto:-1576710000, ebitda:      null, ebit:-2005550000, imposto:  712770000, lucrolin: -682710000, divbruta:     null, divliq:-4005110000, mgBruta:-19.74, mgEbitda:null, mgLiq:-8.55, roe:-18.78, roic:-74.80, pl:-14.46, pvp:2.72, dy:0.00, evEbitda:null, lpa:-0.28, divEbitda:null },
+  },
+  GMAT3: {
+    // Fonte: investidor10.com.br/acoes/gmat3/ (t:525, c:267) — Varejo
+    2026: { preco: 3.74, receita:39495368000, custos:-30654311000, lucrobruto:8841057000, ebitda:2693683000, ebit:2100932000, imposto:  585217000, lucrolin:1729646000, divbruta:2720121000, divliq:  735883000, mgBruta:22.38, mgEbitda:6.82, mgLiq:4.38, roe:15.80, roic:11.10, pl: 4.99, pvp:0.79, dy:3.27, evEbitda: 3.47, lpa:0.75, divEbitda:0.27 },
+    2025: { preco: 4.51, receita:38424403000, custos:-29817202000, lucrobruto:8607201000, ebitda:2800585000, ebit:2260989000, imposto:  511924000, lucrolin:1857293000, divbruta:2861105000, divliq: 1059393000, mgBruta:22.40, mgEbitda:7.29, mgLiq:4.83, roe:17.61, roic:13.21, pl: 5.68, pvp:1.00, dy:5.53, evEbitda: 4.16, lpa:0.79, divEbitda:0.38 },
+    2024: { preco: 6.38, receita:32085428000, custos:-24825355000, lucrobruto:7260073000, ebitda:2467560000, ebit:2090814000, imposto: -183972000, lucrolin:1334894000, divbruta:2273858000, divliq:  609691000, mgBruta:22.63, mgEbitda:7.69, mgLiq:4.16, roe:13.38, roic:15.73, pl:11.17, pvp:1.49, dy:3.03, evEbitda: 6.30, lpa:0.57, divEbitda:0.25 },
+    2023: { preco: 7.18, receita:26773586000, custos:-20960658000, lucrobruto:5812928000, ebitda:2036004000, ebit:1682612000, imposto:  -42650000, lucrolin:1234639000, divbruta:3742552000, divliq: 2453414000, mgBruta:21.71, mgEbitda:7.60, mgLiq:4.61, roe:14.08, roic:13.21, pl:13.55, pvp:1.91, dy:0.00, evEbitda: 9.42, lpa:0.53, divEbitda:1.20 },
+    2022: { preco: 6.32, receita:21768477000, custos:-16969439000, lucrobruto:4799038000, ebitda:1694460000, ebit:1365287000, imposto:  -23516000, lucrolin:1064791000, divbruta:3168388000, divliq: 1372741000, mgBruta:22.04, mgEbitda:7.78, mgLiq:4.89, roe:14.12, roic:12.63, pl:13.83, pvp:1.95, dy:0.00, evEbitda: 9.44, lpa:0.46, divEbitda:0.81 },
+    2021: { preco: 6.03, receita:15876860000, custos:-12174410000, lucrobruto:3702450000, ebitda: 661560000, ebit: 916170000, imposto:  -18760000, lucrolin: 768790000, divbruta:1994040000, divliq:       null, mgBruta:23.32, mgEbitda:4.17, mgLiq:4.84, roe:12.81, roic:11.36, pl:18.37, pvp:2.35, dy:0.00, evEbitda:  null, lpa:0.33, divEbitda:null },
+  },
 };
-const COLORS=['#4f46e5','#0891b2','#16a34a','#d97706','#dc2626','#7c3aed','#0d9488','#ea580c','#2563eb','#65a30d'];
 
+// Inicializa a página de dados ao acessar pela primeira vez
+</script>
+<script>
 // ── REPORTS DATA ──
 let REPORTS = {};
 try {
@@ -1500,6 +1629,8 @@ function renderDividendos(r){
   const rows = divs.map(d=>`<tr class="rp-row-base"><td class="rp-bold">${d.ano}</td><td>${d.lucro}</td><td class="rp-mono">${d.lpa}</td><td>${d.payout}</td><td class="rp-mono">${d.div}</td><td>${d.dy}</td><td class="rp-mono">${d.acum}</td><td class="rp-bold">${d.pct_cap}</td><td>${d.obs}</td></tr>`).join('');
   return `<div class="rp-section"><div class="rp-section-title">Dividendos Projetados — 5 Anos (cenário base)</div><div class="rp-table-wrap"><table class="rp-table"><thead><tr><th>Ano</th><th>Lucro proj.</th><th>LPA</th><th>Payout</th><th>Div./ação</th><th>DY proj.</th><th>Div. acumulado</th><th>% capital recuperado</th><th>Observação</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
 }
+</script>
+<script>
 function getCarteiraRows(){return Array.from(document.querySelectorAll('#tableBody tr[data-carteira="true"]'));}
 function renderPosicoes(){
   const rows=getCarteiraRows();const tbody=document.getElementById('posTableBody');
@@ -1545,6 +1676,8 @@ function togglePrivacy(){
   renderMobileCards();
 }
 
+</script>
+<script>
 function buildRentAcumChart(){
   const el = document.getElementById('chartRentAcum');
   if(!el) return;
@@ -1763,6 +1896,8 @@ function renderDivProjTable(){const rows=getCarteiraRows().filter(r=>parseFloat(
 function renderToggles(){document.querySelectorAll('#tableBody tr').forEach((row,i)=>{const cell=row.querySelector('.toggle-col');if(!cell)return;const inCart=row.dataset.carteira==='true',id=`tog_${i}`;cell.innerHTML=`<div class="toggle-cart"><input type="checkbox" id="${id}" ${inCart?'checked':''} onchange="toggleCarteira(this,'${i}')"><label for="${id}"></label></div>`;if(inCart)row.classList.add('in-carteira');});}
 function toggleCarteira(cb,idx){const row=document.querySelectorAll('#tableBody tr')[parseInt(idx)];if(!row)return;row.dataset.carteira=cb.checked?'true':'false';row.classList.toggle('in-carteira',cb.checked);refreshCarteira();}
 function refreshCarteira(){renderPosicoes();renderMobileCards();buildCharts();renderDivProjTable();applyFilters();}
+</script>
+<script>
 let filterCarteira=false;
 function toggleCarteiraFilter(){filterCarteira=!filterCarteira;const btn=document.getElementById('btnCarteira');btn.classList.toggle('cart-active',filterCarteira);btn.textContent=filterCarteira?'💼 Carteira ✓':'💼 Carteira';applyFilters();}
 const segs=[...new Set([...document.querySelectorAll('#tableBody tr')].map(r=>r.dataset.segmento).filter(Boolean))].sort();const segDiv=document.getElementById('segFilter');let activeSeg='';
@@ -1774,6 +1909,8 @@ let activeFilter='all';
 document.querySelectorAll('.filter-btn[data-filter]').forEach(btn=>{btn.addEventListener('click',()=>{document.querySelectorAll('.filter-btn[data-filter]').forEach(b=>b.classList.remove('active'));btn.classList.add('active');activeFilter=btn.dataset.filter;applyFilters();});});
 function applyFilters(){const s=document.getElementById('searchInput').value.toLowerCase();let cC=0,cA=0,cT=0,cCart=0;document.querySelectorAll('#tableBody tr').forEach(row=>{const emp=(row.dataset.empresa||'').toLowerCase(),verd=row.dataset.veredicto||'',seg=row.dataset.segmento||'',inCart=row.dataset.carteira==='true';const ok=(s===''||emp.includes(s))&&(activeFilter==='all'||verd===activeFilter)&&(activeSeg===''||seg===activeSeg)&&(!filterCarteira||inCart);row.classList.toggle('hidden',!ok);if(ok){if(verd==='compra')cC++;if(verd==='aguardar')cA++;if(inCart)cCart++;cT++;}});document.getElementById('cnt-compra').textContent=cC;document.getElementById('cnt-aguardar').textContent=cA;document.getElementById('cnt-carteira').textContent=cCart;document.getElementById('cnt-total').textContent=cT;}
 // Fetch individual rápido — só corsproxy.io + Yahoo v8/chart (sem allorigins que trava 10s)
+</script>
+<script>
 async function fetchCotacao(ticker){
   const chartUrls=[
     `https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?interval=1d&range=1d`,
@@ -1856,11 +1993,7 @@ function aplicarPrecoRadar(row, preco){
     if(pm>0)row.dataset.rent=(((preco-pm)/pm)*100>=0?'+':'')+((preco-pm)/pm*100).toFixed(2);
   }
   if(margemCell&&precoTeto){
-    const pct=((precoTeto-preco)/precoTeto)*100;
-    margemCell.innerHTML=margemTag(pct);
-    const valoriz=((precoTeto-preco)/preco)*100,ret=valoriz+(dyProj*100);
-    if(cells[21])cells[21].textContent=(ret>=0?'+':'')+ret.toFixed(1)+'%';
-    if(cells[22]){const iplus=ret-(IPCA*100);cells[22].textContent=iplus<0?'negativo':`IPCA+${iplus.toFixed(1)}%`;cells[22].className=iplus<0?'ipca-cell num-red':'ipca-cell';}
+    renderMargemRetorno(cells, margemCell, precoTeto, preco, dyProj);
   }
 }
 
@@ -1871,13 +2004,23 @@ async function atualizarCotacoes(){
   arr.forEach(r=>{const c=r.querySelector('.cotacao-cell');if(c){c.classList.add('loading');c.textContent='...';}});
   let ok=0,errs=0;
 
-  // Fetch paralelo — todos os tickers ao mesmo tempo via Yahoo Finance
+  // Tenta batch via brapi.dev primeiro; fallback individual via Yahoo Finance
   statusText.textContent='Buscando cotações...';
-  await Promise.all(arr.map(async row=>{
-    const p=await fetchCotacao(row.dataset.ticker);
+  const tickers=arr.map(r=>r.dataset.ticker);
+  const batchMap=await fetchCotacoesBatch(tickers);
+  const fallbackRows=[];
+  for(const row of arr){
+    const p=batchMap[row.dataset.ticker];
     if(p){aplicarPrecoRadar(row,p);ok++;}
-    else{row.querySelector('.cotacao-cell').classList.add('error');row.querySelector('.cotacao-cell').textContent='Erro';errs++;}
-  }));
+    else fallbackRows.push(row);
+  }
+  if(fallbackRows.length>0){
+    await Promise.all(fallbackRows.map(async row=>{
+      const p=await fetchCotacao(row.dataset.ticker);
+      if(p){aplicarPrecoRadar(row,p);ok++;}
+      else{row.querySelector('.cotacao-cell').classList.add('error');row.querySelector('.cotacao-cell').textContent='Erro';errs++;}
+    }));
+  }
   // ── RECALCULA KPI CARDS ──
   recalcularKPIs();
   btn.disabled=false;btn.classList.remove('loading');
@@ -1920,6 +2063,8 @@ function recalcularKPIs(){
   const sub = document.querySelector('.carteira-header p');
   if(sub) sub.textContent=`Patrimônio total: R$ ${Math.round(totalPatr).toLocaleString('pt-BR')} · Ações + Prev. + Renda Fixa + ETFs · Atualizado agora`;
 }
+</script>
+<script>
 // ── MOBILE: esconde células correspondentes às colunas ocultas ──
 // Índices das colunas ocultas no mobile (0-based, contando todas as td):
 // 3=Lucro, 4=LPA, 5=Payout, 8=DYAtual, 9=PLProj, 10=PLHist, 11=Desvio, 12=ROE, 13=DivEBITDA, 14=PreçoTeto, 17=Retorno, 18=IPCA+
@@ -1987,15 +2132,7 @@ function calcularDerivadosRadar() {
     const precoTeto  = parseFloat(row.dataset.precoTeto) || 0;
     const margemCell = row.querySelector('.margem-cell');
     if (precoTeto > 0 && margemCell) {
-      const pct = ((precoTeto - cotacao) / precoTeto) * 100;
-      margemCell.innerHTML = margemTag(pct);
-      const ret = ((precoTeto - cotacao) / cotacao) * 100 + (dyProj * 100);
-      if (cells[21]) cells[21].textContent = (ret >= 0 ? '+' : '') + ret.toFixed(1) + '%';
-      if (cells[22]) {
-        const iplus = ret - (IPCA * 100);
-        cells[22].textContent = iplus < 0 ? 'negativo' : `IPCA+${iplus.toFixed(1)}%`;
-        cells[22].className = iplus < 0 ? 'ipca-cell num-red' : 'ipca-cell';
-      }
+      renderMargemRetorno(cells, margemCell, precoTeto, cotacao, dyProj);
     }
   });
 }
@@ -2009,10 +2146,125 @@ function calcularPrecoTeto(row, cotacaoOverride) {
   const cotacao = cotacaoOverride || parseFloat((cells[19]?.textContent||'').replace(/[^0-9,.]/g,'').replace(',','.')) || 0;
   const dyProj  = parseFloat(row.dataset.dyProj) || 0;
   if (!lpa || !plHist || !cotacao) return;
-  const teto = (dyProj * cotacao + lpa * plHist) / (1 + IPCA + PREMIO_IPCA);
+  const pAlvo = lpa * plHist;             // preço-alvo por múltiplo histórico
+  const dps   = dyProj * cotacao;         // dividendo projetado por ação
+  const desc  = 1 + IPCA + PREMIO_IPCA;   // taxa de desconto exigida
+  const teto  = (dps + pAlvo) / desc;
   row.dataset.precoTeto = teto.toFixed(2);
-  if (cells[18]) cells[18].textContent = `R$ ${teto.toFixed(2).replace('.',',')}`;
+  if (cells[18]) {
+    const tip = [
+      'PREÇO TETO — variáveis','',
+      'LPA proj.: ' + _fmtBR(lpa),
+      'P/L Histórico: ' + _fmtNM(plHist),
+      'DY proj.: ' + _fmtPC(dyProj),
+      'Cotação: ' + _fmtBR(cotacao),
+      '──────────────',
+      'P-alvo = LPA × P/L Hist = ' + _fmtBR(pAlvo),
+      'DPS = DY × Cotação = ' + _fmtBR(dps),
+      'Desconto = 1 + IPCA ' + _fmtPC(IPCA) + ' + Prêmio ' + _fmtPC(PREMIO_IPCA) + ' = ' + _fmtNM(desc, 3),
+      '──────────────',
+      'Teto = (DPS + P-alvo) ÷ Desconto',
+      '= (' + _fmtBR(dps) + ' + ' + _fmtBR(pAlvo) + ') ÷ ' + _fmtNM(desc, 3) + ' = ' + _fmtBR(teto)
+    ].join('\n');
+    cells[18].innerHTML = '';
+    const val = document.createElement('span');
+    val.textContent = _fmtBR(teto);
+    cells[18].appendChild(val);
+    cells[18].appendChild(document.createTextNode(' '));
+    cells[18].appendChild(_varTipBtn(tip));
+  }
 }
+
+// ── Helpers de formatação e tooltip de variáveis ──
+function _fmtBR(v){ return 'R$ ' + v.toFixed(2).replace('.', ','); }
+function _fmtPC(v){ return (v * 100).toFixed(1).replace('.', ',') + '%'; }
+function _fmtNM(v, d){ return v.toFixed(d == null ? 1 : d).replace('.', ','); }
+function _varTipBtn(tip){
+  const b = document.createElement('span');
+  b.className = 'teto-tip';
+  b.textContent = 'ⓘ';
+  b.dataset.tip = tip;
+  return b;
+}
+
+// Renderiza Margem (cell 20), Retorno Total (cell 21) e Retorno Real (cell 22)
+// com botões de tooltip explicando as variáveis de cada coluna.
+function renderMargemRetorno(cells, margemCell, precoTeto, cotacao, dyProj){
+  if (!(precoTeto > 0) || !cotacao) return;
+  const pct     = ((precoTeto - cotacao) / precoTeto) * 100;
+  const valoriz = ((precoTeto - cotacao) / cotacao) * 100;
+  const ret     = valoriz + (dyProj * 100);
+
+  // Margem de Segurança
+  if (margemCell) {
+    margemCell.innerHTML = margemTag(pct);
+    const tipM = [
+      'MARGEM DE SEGURANÇA — variáveis','',
+      'Preço Teto: ' + _fmtBR(precoTeto),
+      'Cotação: ' + _fmtBR(cotacao),
+      '──────────────',
+      'Margem = (Teto − Cotação) ÷ Teto',
+      '= (' + _fmtBR(precoTeto) + ' − ' + _fmtBR(cotacao) + ') ÷ ' + _fmtBR(precoTeto),
+      '= ' + _fmtNM(pct) + '%',
+      (pct >= 0 ? 'Positivo → cotação abaixo do teto (oportunidade)' : 'Negativo → cotação acima do teto')
+    ].join('\n');
+    margemCell.appendChild(document.createTextNode(' '));
+    margemCell.appendChild(_varTipBtn(tipM));
+  }
+
+  // Retorno Total
+  if (cells[21]) {
+    cells[21].innerHTML = '';
+    const v = document.createElement('span');
+    v.textContent = (ret >= 0 ? '+' : '') + ret.toFixed(1) + '%';
+    const tipR = [
+      'RETORNO TOTAL — variáveis','',
+      'Preço Teto: ' + _fmtBR(precoTeto),
+      'Cotação: ' + _fmtBR(cotacao),
+      'DY proj.: ' + _fmtPC(dyProj),
+      '──────────────',
+      'Valorização = (Teto − Cotação) ÷ Cotação = ' + _fmtNM(valoriz) + '%',
+      'Dividendos (DY proj.) = ' + _fmtPC(dyProj),
+      '──────────────',
+      'Retorno = Valorização + DY = ' + (ret >= 0 ? '+' : '') + _fmtNM(ret) + '%'
+    ].join('\n');
+    cells[21].appendChild(v);
+    cells[21].appendChild(document.createTextNode(' '));
+    cells[21].appendChild(_varTipBtn(tipR));
+  }
+
+  // Retorno Real (IPCA+)
+  if (cells[22]) {
+    const iplus = ret - (IPCA * 100);
+    cells[22].textContent = iplus < 0 ? 'negativo' : `IPCA+${iplus.toFixed(1)}%`;
+    cells[22].className = iplus < 0 ? 'ipca-cell num-red' : 'ipca-cell';
+  }
+}
+
+// ── Tooltip flutuante (position:fixed no body) — evita clipping do overflow da tabela ──
+(function initCellTooltip(){
+  let pop = null;
+  function ensure(){
+    if(!pop){ pop = document.createElement('div'); pop.id = 'cellTipPop'; document.body.appendChild(pop); }
+    return pop;
+  }
+  function show(btn){
+    const p = ensure();
+    p.textContent = btn.dataset.tip || '';
+    p.classList.add('show');
+    const r = btn.getBoundingClientRect();
+    let left = r.left + r.width/2 - p.offsetWidth/2;
+    left = Math.max(8, Math.min(left, window.innerWidth - p.offsetWidth - 8));
+    let top = r.bottom + 6;
+    if(top + p.offsetHeight > window.innerHeight - 8) top = r.top - p.offsetHeight - 6;
+    p.style.left = left + 'px';
+    p.style.top  = top + 'px';
+  }
+  function hide(){ if(pop) pop.classList.remove('show'); }
+  document.addEventListener('mouseover', e => { const b = e.target.closest && e.target.closest('.teto-tip'); if(b) show(b); });
+  document.addEventListener('mouseout',  e => { const b = e.target.closest && e.target.closest('.teto-tip'); if(b) hide(); });
+  window.addEventListener('scroll', hide, true);
+})();
 
 function calcularLucroEstimado() {
   const currentYear = new Date().getFullYear();
@@ -2166,6 +2418,8 @@ function renderMobileCards(){
   container.innerHTML = html;
 }
 
+</script>
+<script>
 // ── RANKING ──
 function calcularRanking(){
   const rows = Array.from(document.querySelectorAll('#tableBody tr[data-ticker]'));
@@ -2363,13 +2617,14 @@ function solicitarRelatorio(ticker){
   showToast(`✓ Copiado: "${cmd}" — cole no chat do Claude`);
 }
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3500);}
+</script>
+<script>
 // ══════════════════════════════════════════════════════
 // BASE DE DADOS — Indicadores Fundamentalistas
 // ══════════════════════════════════════════════════════
 
 const BANCOS_TICKERS = ['BBAS3','ITUB3','BRBI11','ITSA4'];
 const FUND_CACHE_KEY = 'fund_cache_v3';
-const BRAPI_TOKEN = '9BpaYC3MrtWYicZWEoWQeP';
 
 // Semáforo: retorna {dot, cls} conforme thresholds [{min,max,color}]
 function semaforo(val, rules) {
@@ -2728,6 +2983,8 @@ function buildDadosRows() {
 // Mapeamento ticker → IDs do Investidor10 (ticker_id para cotação/indicadores, company_id para DRE)
 // Padrão para adicionar nova empresa: INV10_IDS + HIST_SEED + <tr data-ticker> no HTML
 // IDs: abra investidor10.com.br/acoes/TICKER/ e capture /api/cotacao/ticker/{t} e /api/balancos/.../chart/{c}/
+</script>
+<script>
 const INV10_IDS = {
   ALOS3: { t: 656, c: 171 },
   TIMS3: { t: 202, c: 150 },
@@ -2986,6 +3243,8 @@ async function fetchFundamentais(tickerSA) {
 }
 
 // Renderiza uma linha com os dados fundamentais
+</script>
+<script>
 function renderFundRow(ticker, d) {
   const row = document.querySelector(`#fundBody tr[data-ticker="${ticker}"]`);
   if(!row || !d) return;
@@ -3166,94 +3425,8 @@ function sortFund(col){
 // STATIC_FUND_SEED removido — dados LTM agora em HIST_SEED[ticker][anoAtual]
 
 // Dados históricos anuais por ticker (Fonte: Investidor10) — pré-populados estaticamente
-const HIST_SEED = {
-  TIMS3: {
-    // Fonte: investidor10.com.br/acoes/tims3/ (t:202, c:150) — INV10_IDS para atualização automática
-    // 2026 = LTM (ÚLT. 12M) · 2021-2025 = dados fiscais anuais do Investidor10 (balancoresultados + historico-indicadores)
-    2026: { preco:21.89, receita:27037230000, custos:-12424600000, lucrobruto:14612630000, ebitda:13636825000, ebit:6566412000, imposto:-519545000,  lucrolin:4331454000, divbruta: 2831998000, divliq:-3039320000, mgBruta:54.05, mgEbitda:50.44, mgLiq:16.02, roe:17.74, roic:22.19, pl:12.07, pvp:2.14, dy: 6.52, evEbitda:3.61, lpa:1.81, divEbitda:-0.22 },
-    2025: { preco:21.31, receita:26625080000, custos:-12266584000, lucrobruto:14358137000, ebitda:13448665000, ebit:6370894000, imposto:-248028000,   lucrolin:4311983000, divbruta: 2778723000, divliq:-3105917000, mgBruta:53.93, mgEbitda:50.51, mgLiq:16.20, roe:17.98, roic:22.88, pl:11.84, pvp:2.13, dy:11.78, evEbitda:3.56, lpa:1.80, divEbitda:-0.23 },
-    2024: { preco:14.49, receita:25447930000, custos:-11893115000, lucrobruto:13554815000, ebitda:12532723000, ebit:5506688000, imposto:-301902000,   lucrolin:3153881000, divbruta: 3035501000, divliq:-2657683000, mgBruta:53.26, mgEbitda:49.25, mgLiq:12.39, roe:11.94, roic:17.68, pl:10.98, pvp:1.31, dy: 7.88, evEbitda:2.55, lpa:1.32, divEbitda:-0.21 },
-    2023: { preco:18.00, receita:23833633000, custos:-11530897000, lucrobruto:12302736000, ebitda:11833926000, ebit:4717472000, imposto:-347061000,   lucrolin:2836950000, divbruta: 3770946000, divliq:-1265475000, mgBruta:51.62, mgEbitda:49.65, mgLiq:11.90, roe:10.90, roic:14.67, pl:15.12, pvp:1.65, dy: 5.07, evEbitda:3.52, lpa:1.19, divEbitda:-0.11 },
-    2022: { preco:12.43, receita:21530430000, custos:-10655990000, lucrobruto:10874830000, ebitda: 9987090000, ebit:3159930000, imposto: -50490000,   lucrolin:1670760000, divbruta: 4969830000, divliq:  230482000, mgBruta:50.51, mgEbitda:46.39, mgLiq: 7.76, roe: 6.58, roic:10.24, pl:17.75, pvp:1.17, dy: 4.66, evEbitda:2.99, lpa:0.70, divEbitda: 0.02 },
-    2021: { preco:13.19, receita:14091720000, custos: -8443030000, lucrobruto: 9615010000, ebitda:  9447720000, ebit:3756030000, imposto:-146050000,   lucrolin:2957180000, divbruta:12218750000, divliq:        null, mgBruta:68.23, mgEbitda:67.04, mgLiq:20.99, roe:11.78, roic: 9.67, pl:10.64, pvp:1.25, dy: 3.29, evEbitda:4.62, lpa:1.24, divEbitda: 1.29 },
-  },
-  ALOS3: {
-    // Nota: 2021-2022 = dados da Aliansce Sonae (pré-fusão); 2023 inclui ganhos de reavaliação da fusão
-    2026: { preco:26.58, receita:2872377000, custos:-763435000, lucrobruto:2108942000, ebitda:2097666000, ebit:1508128000, imposto:-28458000, lucrolin:934139000, divbruta:null, divliq:-2155694000, mgBruta:73.42, mgEbitda:73.03, mgLiq:28.82, roe:6.39, roic:11.41, pl:16.19, pvp:1.03, dy:9.45, evEbitda:5.36, divPl:null, lpa:1.64, divEbitda:-1.03 },
-    2025: { preco:28.40, receita:2858517000, custos:-746351000, lucrobruto:2112166000, ebitda:2129593000, ebit:1539359000, imposto:-72307000, lucrolin:945292000, divbruta:null, divliq:-2430014000, mgBruta:73.89, mgEbitda:74.50, mgLiq:29.18, roe:6.35, roic:11.16, pl:17.15, pvp:1.09, dy:5.59, evEbitda:5.58, divPl:0.00, lpa:1.65 },
-    2024: { preco:18.10, receita:2739848000, custos:-718981000, lucrobruto:2020867000, ebitda:2071940000, ebit:1453109000, imposto:-56202000, lucrolin:811984000, divbruta:6645024000, divliq:3275919000, mgBruta:73.76, mgEbitda:75.62, mgLiq:25.49, roe:5.23, roic:6.98, pl:13.07, pvp:0.68, dy:8.43, evEbitda:5.99, divPl:0.50, lpa:1.39 },
-    2023: { preco:26.60, receita:2712274000, custos:-826888000, lucrobruto:1885386000, ebitda:6097183000, ebit:5412716000, imposto:-1414926000, lucrolin:3493910000, divbruta:null, divliq:-2133230000, mgBruta:69.51, mgEbitda:224.80, mgLiq:124.88, roe:24.20, roic:28.56, pl:3.95, pvp:0.96, dy:1.95, evEbitda:1.85, divPl:0.00, lpa:6.72 },
-    2022: { preco:17.05, receita:1111270000, custos:310320000,  lucrobruto:1421600000, ebitda:1236370000, ebit:1089560000, imposto:-32320000,  lucrolin:842150000,  divbruta:null, divliq:-2562121000, mgBruta:127.93, mgEbitda:111.26, mgLiq:14.03, roe:1.98,  roic:13.42, pl:55.02, pvp:1.09, dy:2.26, evEbitda:4.86,  divPl:0.00, lpa:0.31 },
-    2021: { preco:21.75, receita:937680000,  custos:-300800000, lucrobruto:636890000,  ebitda:636350000,  ebit:490070000,  imposto:-21490000,  lucrolin:318420000,  divbruta:null, divliq:-14860000,   mgBruta:67.92,  mgEbitda:67.86,  mgLiq:29.31, roe:4.07,  roic:6.94,  pl:39.73, pvp:1.62, dy:1.05, evEbitda:17.14, divPl:0.00, lpa:0.55 },
-  },
-  CXSE3: {
-    // Fonte: investidor10.com.br/acoes/cxse3/ (t:590, c:283) — Seguradora (receita/ebitda N/A)
-    // 2026 = LTM (ÚLT. 12M 1T2026-2T2025) · 2021-2025 = dados fiscais anuais
-    2026: { preco:20.75, receita:null, custos:null, lucrobruto:null, ebitda:null, ebit:4746658000, imposto: -537406000, lucrolin:4391419000, divbruta: 10022000, divliq:-1099450000, mgBruta:null, mgEbitda:null, mgLiq:null, roe:31.89, roic:30.54, pl:14.41, pvp:4.60, dy: 6.27, evEbitda:null, lpa:1.46, divEbitda:null },
-    2025: { preco:16.62, receita:null, custos:null, lucrobruto:null, ebitda:null, ebit:4647593000, imposto: -538229000, lucrolin:4291560000, divbruta: 10129000, divliq:-1686266000, mgBruta:null, mgEbitda:null, mgLiq:null, roe:31.67, roic:30.30, pl:11.62, pvp:3.68, dy: 7.58, evEbitda:null, lpa:1.43, divEbitda:null },
-    2024: { preco:14.30, receita:null, custos:null, lucrobruto:null, ebitda:null, ebit:4223023000, imposto: -571331000, lucrolin:3765184000, divbruta:    null, divliq:-1209921000, mgBruta:null, mgEbitda:null, mgLiq:null, roe:29.21, roic:28.33, pl:11.35, pvp:3.32, dy: 7.47, evEbitda:null, lpa:1.26, divEbitda:null },
-    2023: { preco:12.85, receita:null, custos:null, lucrobruto:null, ebitda:null, ebit:3951228000, imposto: -482852000, lucrolin:3582244000, divbruta:    null, divliq: -851249000, mgBruta:null, mgEbitda:null, mgLiq:null, roe:28.46, roic:27.56, pl:10.80, pvp:3.07, dy: 7.75, evEbitda:null, lpa:1.19, divEbitda:null },
-    2022: { preco: 8.31, receita:null, custos:null, lucrobruto:null, ebitda:null, ebit:3321430000, imposto: -513160000, lucrolin:2952840000, divbruta:    null, divliq: -918060000, mgBruta:null, mgEbitda:null, mgLiq:null, roe:27.12, roic:25.79, pl: 8.48, pvp:2.30, dy: 7.77, evEbitda:null, lpa:0.98, divEbitda:null },
-    2021: { preco: 8.33, receita:null, custos:null, lucrobruto:null, ebitda:null, ebit:2185660000, imposto: -300090000, lucrolin:1896160000, divbruta:    null, divliq: -773424000, mgBruta:null, mgEbitda:null, mgLiq:null, roe:17.96, roic:17.86, pl:13.23, pvp:2.38, dy: 2.93, evEbitda:null, lpa:0.63, divEbitda:null },
-  },
-  BBSE3: {
-    // Fonte: investidor10.com.br/acoes/bbse3/ (t:308, c:218) — Seguradora (receita/ebitda N/A)
-    // 2026 = LTM (ÚLT. 12M 1T2026-2T2025) · 2021-2025 = dados fiscais anuais
-    2026: { preco:38.60, receita:null, custos:null, lucrobruto:null, ebitda:null, ebit:10005416000, imposto:-1945776000, lucrolin:9192497000, divbruta:null, divliq: -6378334000, mgBruta:null, mgEbitda:null, mgLiq:null, roe:72.72, roic:63.76, pl: 8.17, pvp:5.94, dy:11.65, evEbitda:null, lpa:4.73, divEbitda:null },
-    2025: { preco:36.10, receita:null, custos:null, lucrobruto:null, ebitda:null, ebit: 9865768000, imposto:-1924039000, lucrolin:9017329000, divbruta:null, divliq:-10044855000, mgBruta:null, mgEbitda:null, mgLiq:null, roe:86.84, roic:76.48, pl: 7.78, pvp:6.76, dy:11.66, evEbitda:null, lpa:4.64, divEbitda:null },
-    2024: { preco:36.15, receita:null, custos:null, lucrobruto:null, ebitda:null, ebit: 9757270000, imposto:-1707639000, lucrolin:8703353000, divbruta:null, divliq: -8508976000, mgBruta:null, mgEbitda:null, mgLiq:null, roe:89.77, roic:83.03, pl: 8.07, pvp:7.24, dy: 7.28, evEbitda:null, lpa:4.48, divEbitda:null },
-    2023: { preco:33.62, receita:null, custos:null, lucrobruto:null, ebitda:null, ebit: 8905765000, imposto:-1546109000, lucrolin:7947203000, divbruta:null, divliq: -4752742000, mgBruta:null, mgEbitda:null, mgLiq:null, roe:80.96, roic:74.97, pl: 8.22, pvp:6.65, dy:10.25, evEbitda:null, lpa:4.09, divEbitda:null },
-    2022: { preco:33.68, receita:null, custos:null, lucrobruto:null, ebitda:null, ebit: 7045678000, imposto:-1503661000, lucrolin:6044569000, divbruta:null, divliq: -6076620000, mgBruta:null, mgEbitda:null, mgLiq:null, roe:79.57, roic:72.96, pl:10.83, pvp:8.62, dy: 5.79, evEbitda:null, lpa:3.11, divEbitda:null },
-    2021: { preco:20.79, receita:null, custos:null, lucrobruto:null, ebitda:null, ebit: 4932200000, imposto:-1146200000, lucrolin:3933210000, divbruta:null, divliq: -4090560000, mgBruta:null, mgEbitda:null, mgLiq:null, roe:54.02, roic:52.00, pl:10.24, pvp:5.53, dy: 4.80, evEbitda:null, lpa:2.03, divEbitda:null },
-  },
-  BBAS3: {
-    // Fonte: investidor10.com.br/acoes/bbas3/ (t:42, c:35) — Banco (ebitda/divbruta N/A)
-    2026: { preco:19.53, receita:326194593000, custos:-225694308000, lucrobruto:100500285000, ebitda:null, ebit: 6354624000, imposto: 3407361000, lucrolin:15710361000, divbruta:null, divliq:-61693113000, mgBruta:null, mgEbitda:null, mgLiq: 4.82, roe: 6.60, roic: 1.54, pl: 8.84, pvp:0.58, dy: 2.79, evEbitda:null, lpa: 2.21, divEbitda:null },
-    2025: { preco:21.94, receita:319462104000, custos:-218451386000, lucrobruto:101010718000, ebitda:null, ebit: 5613636000, imposto: 5219926000, lucrolin:16781938000, divbruta:null, divliq:       null, mgBruta:null, mgEbitda:null, mgLiq: 5.25, roe: 7.24, roic: 0.21, pl: 9.17, pvp:0.66, dy: 5.34, evEbitda:null, lpa: 2.39, divEbitda:null },
-    2024: { preco:24.19, receita:273505274000, custos:-168990827000, lucrobruto:104514447000, ebitda:null, ebit:27710589000, imposto: 1460975000, lucrolin:29171564000, divbruta:null, divliq:       null, mgBruta:null, mgEbitda:null, mgLiq:10.66, roe:14.67, roic:14.61, pl: 5.25, pvp:0.77, dy:10.75, evEbitda:null, lpa: 4.60, divEbitda:null },
-    2023: { preco:55.42, receita:265438609000, custos:-176689872000, lucrobruto: 88748727000, ebitda:null, ebit:41147192000, imposto:-7981603000, lucrolin:33165589000, divbruta:null, divliq:       null, mgBruta:null, mgEbitda:null, mgLiq:12.49, roe:18.91, roic:19.60, pl: 4.96, pvp:0.94, dy: 8.20, evEbitda:null, lpa:11.17, divEbitda:null },
-    2022: { preco:34.72, receita:236549060000, custos:-162202490000, lucrobruto: 74346570000, ebitda:null, ebit:38301720000, imposto:-8452380000, lucrolin:29849330000, divbruta:null, divliq:       null, mgBruta:null, mgEbitda:null, mgLiq:12.62, roe:18.78, roic:18.78, pl: 3.33, pvp:0.63, dy:11.92, evEbitda:null, lpa:10.42, divEbitda:null },
-    2021: { preco:28.83, receita:125947220000, custos: -66273139000, lucrobruto: 59674081000, ebitda:null, ebit:20068130000, imposto:-1186770000, lucrolin:19722869000, divbruta:null, divliq:       null, mgBruta:null, mgEbitda:null, mgLiq:15.66, roe:12.85, roic:13.23, pl: 4.51, pvp:0.58, dy: 7.84, evEbitda:null, lpa: 6.40, divEbitda:null },
-  },
-  ITUB3: {
-    // Fonte: investidor10.com.br/acoes/itub3/ (t:43, c:36) — Banco (ebitda/divbruta N/A)
-    2026: { preco:44.32, receita:388673000000, custos:-250487000000, lucrobruto:138186000000, ebitda:null, ebit:50073000000, imposto: -3056000000, lucrolin:47017000000, divbruta:null, divliq:-39723000000, mgBruta:null, mgEbitda:null, mgLiq:12.10, roe:21.93, roic:22.42, pl:10.63, pvp:2.33, dy: 7.96, evEbitda:null, lpa:4.17, divEbitda:null },
-    2025: { preco:36.37, receita:387118000000, custos:-248171000000, lucrobruto:138947000000, ebitda:null, ebit:50250000000, imposto: -4401000000, lucrolin:45849000000, divbruta:null, divliq:      null, mgBruta:null, mgEbitda:null, mgLiq:11.84, roe:21.93, roic:22.42, pl: 8.94, pvp:1.96, dy:13.02, evEbitda:null, lpa:4.07, divEbitda:null },
-    2024: { preco:26.90, receita:335328000000, custos:-199589000000, lucrobruto:135739000000, ebitda:null, ebit:47556000000, imposto: -5428000000, lucrolin:42128000000, divbruta:null, divliq:      null, mgBruta:null, mgEbitda:null, mgLiq:12.56, roe:18.57, roic:19.04, pl: 6.37, pvp:1.18, dy: 8.97, evEbitda:null, lpa:4.22, divEbitda:null },
-    2023: { preco:28.83, receita:313221000000, custos:-188695000000, lucrobruto:124526000000, ebitda:null, ebit:39700000000, imposto: -5823000000, lucrolin:33877000000, divbruta:null, divliq:      null, mgBruta:null, mgEbitda:null, mgLiq:10.81, roe:17.41, roic:17.81, pl: 8.48, pvp:1.48, dy: 4.36, evEbitda:null, lpa:3.40, divEbitda:null },
-    2022: { preco:21.89, receita:283372000000, custos:-167802000000, lucrobruto:115570000000, ebitda:null, ebit:37533000000, imposto: -6796000000, lucrolin:30737000000, divbruta:null, divliq:      null, mgBruta:null, mgEbitda:null, mgLiq:10.85, roe:17.68, roic:18.30, pl: 7.17, pvp:1.27, dy: 4.32, evEbitda:null, lpa:3.05, divEbitda:null },
-    2021: { preco:19.10, receita:195679000000, custos: -69305000000, lucrobruto:126374000000, ebitda:null, ebit:42231000000, imposto:-13847000000, lucrolin:28384000000, divbruta:null, divliq:      null, mgBruta:null, mgEbitda:null, mgLiq:14.50, roe:  null, roic:  null, pl: 6.94, pvp:1.19, dy: 4.76, evEbitda:null, lpa:2.75, divEbitda:null },
-  },
-  RANI3: {
-    // Fonte: investidor10.com.br/acoes/rani3/ (t:260, c:193) — Papel e Celulose
-    2026: { preco: 7.88, receita:1673078000, custos:-1020005000, lucrobruto:653073000, ebitda: 613959000, ebit: 404476000, imposto:  -56314000, lucrolin: 202771000, divbruta: 950480000, divliq:  190260000, mgBruta:39.03, mgEbitda:36.70, mgLiq:12.12, roe:13.78, roic:14.38, pl: 8.96, pvp:1.23, dy:6.06, evEbitda: 3.27, lpa:0.88, divEbitda: 0.31 },
-    2025: { preco: 8.68, receita:1686311000, custos:-1011784000, lucrobruto:700242000, ebitda: 651916000, ebit: 460188000, imposto:  -62984000, lucrolin: 242050000, divbruta:1909711000, divliq: 1069877000, mgBruta:41.53, mgEbitda:38.66, mgLiq:14.36, roe:16.67, roic:11.82, pl: 8.27, pvp:1.38, dy:8.45, evEbitda: 4.65, lpa:1.05, divEbitda: 1.64 },
-    2024: { preco: 6.82, receita:1627470000, custos:-1002024000, lucrobruto:625446000, ebitda: 513168000, ebit: 317934000, imposto:   96992000, lucrolin: 304519000, divbruta:1686114000, divliq: 1081882000, mgBruta:38.43, mgEbitda:31.53, mgLiq:18.71, roe:22.28, roic: 7.24, pl: 5.16, pvp:1.15, dy:7.72, evEbitda: 5.17, lpa:1.32, divEbitda: 2.11 },
-    2023: { preco:10.90, receita:1594245000, custos: -907647000, lucrobruto:686598000, ebitda: 664019000, ebit: 551418000, imposto: -176493000, lucrolin: 383434000, divbruta:1626153000, divliq: 1025172000, mgBruta:43.07, mgEbitda:41.65, mgLiq:24.05, roe:29.96, roic:12.90, pl: 6.56, pvp:1.97, dy:7.81, evEbitda: 5.34, lpa:1.66, divEbitda: 1.54 },
-    2022: { preco: 8.04, receita:1686670000, custos: -878600000, lucrobruto:808073000, ebitda: 682888000, ebit: 579859000, imposto: -140160000, lucrolin: 378209000, divbruta:1792175000, divliq:  742967000, mgBruta:47.93, mgEbitda:40.49, mgLiq:22.42, roe:33.62, roic:15.07, pl: 4.91, pvp:1.65, dy:7.94, evEbitda: 3.80, lpa:1.64, divEbitda: 1.09 },
-    2021: { preco: 6.91, receita:1605840000, custos: -973810000, lucrobruto:632030000, ebitda: 528270000, ebit: 435820000, imposto: -104900000, lucrolin: 285320000, divbruta: 892320000, divliq:  386050000, mgBruta:39.36, mgEbitda:32.90, mgLiq:17.77, roe:29.80, roic:17.89, pl: 5.57, pvp:1.66, dy:5.13, evEbitda: 3.74, lpa:1.24, divEbitda: 0.73 },
-  },
-  IRBR3: {
-    // Fonte: investidor10.com.br/acoes/irbr3/ (t:96, c:59) — Resseguradora
-    2026: { preco:54.83, receita:4951585000, custos:-7947980000, lucrobruto: 418502000, ebitda:  79177000, ebit:  396856000, imposto: -198347000, lucrolin:  350413000, divbruta:263868000, divliq:-4777133000, mgBruta: 8.45, mgEbitda:1.60, mgLiq: 7.08, roe: 6.59, roic: 3.56, pl:12.81, pvp:0.84, dy:2.84, evEbitda:null, lpa:4.28, divEbitda:null },
-    2025: { preco:53.73, receita:5211349000, custos:-8047559000, lucrobruto: 578687000, ebitda:       null, ebit:  559916000, imposto: -211616000, lucrolin:  390945000, divbruta:     null, divliq:-5113978000, mgBruta:11.11, mgEbitda:null, mgLiq: 7.50, roe: 7.40, roic: 6.59, pl:11.24, pvp:0.83, dy:0.00, evEbitda:null, lpa:4.78, divEbitda:null },
-    2024: { preco:42.46, receita:6057974000, custos:-5281243000, lucrobruto: 776731000, ebitda:       null, ebit:  790363000, imposto: -390806000, lucrolin:  805740000, divbruta:     null, divliq:-3720537000, mgBruta:12.82, mgEbitda:null, mgLiq:13.30, roe:16.36, roic: 8.11, pl: 4.31, pvp:0.71, dy:0.00, evEbitda:null, lpa:9.84, divEbitda:null },
-    2023: { preco:44.26, receita:5794710000, custos:-6120398000, lucrobruto:-325688000, ebitda:       null, ebit: -378815000, imposto:  133825000, lucrolin: -123851000, divbruta:     null, divliq:-2568226000, mgBruta:-5.62, mgEbitda:null, mgLiq:-2.14, roe:-2.91, roic:-12.04, pl:-29.27, pvp:0.85, dy:0.00, evEbitda:null, lpa:-1.51, divEbitda:null },
-    2022: { preco: 0.87, receita:7047040000, custos:-8486200000, lucrobruto:-1439150000, ebitda:      null, ebit:-1795220000, imposto:  550426000, lucrolin: -630334000, divbruta:     null, divliq:-4154393000, mgBruta:-20.42, mgEbitda:null, mgLiq:-8.95, roe:-15.47, roic:-57.58, pl:-3.35, pvp:0.52, dy:0.00, evEbitda:null, lpa:-0.26, divEbitda:null },
-    2021: { preco: 4.03, receita:7987420000, custos:-9564130000, lucrobruto:-1576710000, ebitda:      null, ebit:-2005550000, imposto:  712770000, lucrolin: -682710000, divbruta:     null, divliq:-4005110000, mgBruta:-19.74, mgEbitda:null, mgLiq:-8.55, roe:-18.78, roic:-74.80, pl:-14.46, pvp:2.72, dy:0.00, evEbitda:null, lpa:-0.28, divEbitda:null },
-  },
-  GMAT3: {
-    // Fonte: investidor10.com.br/acoes/gmat3/ (t:525, c:267) — Varejo
-    2026: { preco: 3.74, receita:39495368000, custos:-30654311000, lucrobruto:8841057000, ebitda:2693683000, ebit:2100932000, imposto:  585217000, lucrolin:1729646000, divbruta:2720121000, divliq:  735883000, mgBruta:22.38, mgEbitda:6.82, mgLiq:4.38, roe:15.80, roic:11.10, pl: 4.99, pvp:0.79, dy:3.27, evEbitda: 3.47, lpa:0.75, divEbitda:0.27 },
-    2025: { preco: 4.51, receita:38424403000, custos:-29817202000, lucrobruto:8607201000, ebitda:2800585000, ebit:2260989000, imposto:  511924000, lucrolin:1857293000, divbruta:2861105000, divliq: 1059393000, mgBruta:22.40, mgEbitda:7.29, mgLiq:4.83, roe:17.61, roic:13.21, pl: 5.68, pvp:1.00, dy:5.53, evEbitda: 4.16, lpa:0.79, divEbitda:0.38 },
-    2024: { preco: 6.38, receita:32085428000, custos:-24825355000, lucrobruto:7260073000, ebitda:2467560000, ebit:2090814000, imposto: -183972000, lucrolin:1334894000, divbruta:2273858000, divliq:  609691000, mgBruta:22.63, mgEbitda:7.69, mgLiq:4.16, roe:13.38, roic:15.73, pl:11.17, pvp:1.49, dy:3.03, evEbitda: 6.30, lpa:0.57, divEbitda:0.25 },
-    2023: { preco: 7.18, receita:26773586000, custos:-20960658000, lucrobruto:5812928000, ebitda:2036004000, ebit:1682612000, imposto:  -42650000, lucrolin:1234639000, divbruta:3742552000, divliq: 2453414000, mgBruta:21.71, mgEbitda:7.60, mgLiq:4.61, roe:14.08, roic:13.21, pl:13.55, pvp:1.91, dy:0.00, evEbitda: 9.42, lpa:0.53, divEbitda:1.20 },
-    2022: { preco: 6.32, receita:21768477000, custos:-16969439000, lucrobruto:4799038000, ebitda:1694460000, ebit:1365287000, imposto:  -23516000, lucrolin:1064791000, divbruta:3168388000, divliq: 1372741000, mgBruta:22.04, mgEbitda:7.78, mgLiq:4.89, roe:14.12, roic:12.63, pl:13.83, pvp:1.95, dy:0.00, evEbitda: 9.44, lpa:0.46, divEbitda:0.81 },
-    2021: { preco: 6.03, receita:15876860000, custos:-12174410000, lucrobruto:3702450000, ebitda: 661560000, ebit: 916170000, imposto:  -18760000, lucrolin: 768790000, divbruta:1994040000, divliq:       null, mgBruta:23.32, mgEbitda:4.17, mgLiq:4.84, roe:12.81, roic:11.36, pl:18.37, pvp:2.35, dy:0.00, evEbitda:  null, lpa:0.33, divEbitda:null },
-  },
-};
-
-// Inicializa a página de dados ao acessar pela primeira vez
+</script>
+<script>
 let _dadosIniciados = false;
 const _showPageOrig = showPage;
 // Patch showPage para inicializar dados ao entrar na aba
