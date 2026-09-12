@@ -74,6 +74,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
 .nav-brand-sub{font-size:9px;color:rgba(99,102,241,0.8);letter-spacing:0.12em;text-transform:uppercase;line-height:1;}
 .nav-tabs{display:flex;align-items:stretch;gap:0;min-width:0;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
 .nav-tabs::-webkit-scrollbar{display:none;}
+.scroll-hint-mobile{display:none;}
 .nav-tab{
   display:flex;align-items:center;gap:8px;
   padding:0 1.25rem;
@@ -736,6 +737,21 @@ tbody tr:nth-child(n){animation-delay:calc(var(--i,0)*0.02s);}
   .frozen-2{position:static!important;box-shadow:none!important;}
   thead .frozen-2{position:static!important;background:var(--gray-bg)!important;}
   .col-mob-hide{display:table-cell!important;}
+
+  /* DICA DE SCROLL HORIZONTAL — mobile só. A página inteira rola de lado (pedido do usuário,
+     ver comentário em #mainTable thead acima), mas no iOS a barra de rolagem some em repouso
+     e nada mais na tela avisa que dá pra arrastar. Mostra um selo flutuante só enquanto a
+     largura do documento for maior que a da viewport; some sozinho depois de rolar ou alguns
+     segundos (ver JS no fim do arquivo). */
+  .scroll-hint-mobile{
+    display:flex;align-items:center;gap:6px;
+    position:fixed;left:50%;bottom:16px;transform:translateX(-50%);
+    z-index:300;background:rgba(15,15,31,0.94);color:#fff;
+    font-size:11px;font-weight:600;letter-spacing:0.02em;
+    padding:7px 14px;border-radius:20px;box-shadow:0 6px 20px rgba(0,0,0,0.28);
+    pointer-events:none;opacity:0;transition:opacity 0.3s;white-space:nowrap;
+  }
+  .scroll-hint-mobile.show{opacity:1;}
 
   /* REPORT PAGE mobile */
   .report-topbar{padding:0.6rem 1rem;top:48px;gap:0.5rem;flex-wrap:wrap;}
@@ -12469,6 +12485,50 @@ let _consIniciado = false;
     orig(tbodyId);
     if (_consIniciado) renderConsolidado();
   };
+})();
+</script>
+
+<div class="scroll-hint-mobile" id="scrollHintMobile">⟷ arraste a tela para o lado para ver mais colunas</div>
+<script>
+// ── DICA DE SCROLL HORIZONTAL (MOBILE) ───────────────────────────────────────────────────
+// A página inteira rola de lado quando a tabela ativa é mais larga que a viewport (ver
+// comentário em #mainTable thead / .table-wrap). No iOS a barra de rolagem some em repouso,
+// então sem isso nada avisa que dá pra arrastar. Mostra o selo quando há overflow horizontal
+// e a página ainda está no início do scroll; some ao rolar, ou sozinho depois de alguns
+// segundos, e reaparece se o usuário voltar pro início com overflow ainda presente (troca de
+// aba/página pode reduzir ou aumentar a largura do conteúdo).
+(function () {
+  const hint = document.getElementById('scrollHintMobile');
+  if (!hint) return;
+  let autoHideTimer = null;
+
+  function hasOverflow() {
+    return document.documentElement.scrollWidth > window.innerWidth + 4;
+  }
+  function show() {
+    hint.classList.add('show');
+    clearTimeout(autoHideTimer);
+    autoHideTimer = setTimeout(() => hint.classList.remove('show'), 3500);
+  }
+  function hide() {
+    hint.classList.remove('show');
+    clearTimeout(autoHideTimer);
+  }
+  function evaluate() {
+    if (hasOverflow() && window.scrollX < 20) show();
+    else hide();
+  }
+
+  window.addEventListener('scroll', () => {
+    if (window.scrollX > 20) hide();
+  }, { passive: true });
+  window.addEventListener('resize', evaluate);
+  // Trocar de aba (Radar/Base de Dados/Carteiras) muda a tabela ativa e sua largura — reavalia
+  // depois do reflow do showPage().
+  document.querySelectorAll('.nav-tab').forEach(tab => {
+    tab.addEventListener('click', () => setTimeout(evaluate, 150));
+  });
+  setTimeout(evaluate, 600);
 })();
 </script>
 </body>
