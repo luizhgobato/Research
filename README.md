@@ -5,18 +5,27 @@ em `luizhgobato.github.io/Research`.
 
 ## Sobre este repositório
 
-Este repo guarda **apenas o export estático** do dashboard — o arquivo
-`Analista Investimento.html` é gerado por `scripts/build.py` a partir do
-projeto de origem (`js/`, `css/`, `scripts/motor_teto.py`, `scripts/gerar_tir.py`),
-que **não vive aqui**. Edições devem ser feitas no projeto de origem e
-reexportadas; editar o HTML diretamente funciona para correções pontuais,
-mas se perde na próxima geração.
+`Analista Investimento.html` é a página publicada (exportada por
+`scripts/build.py` — build.py em si ainda não está neste repo, só o motor de
+cálculo). Editar o HTML diretamente funciona para correções pontuais de
+front-end (layout, CSS, JS de exibição), mas qualquer mudança na
+metodologia de cálculo (preço-teto, TIR) deve ser feita no motor abaixo e
+reexportada, senão se perde/diverge na próxima geração.
 
 - `Analista Investimento.html` — dashboard completo (arquivo servido pelo Pages)
 - `index.html` — redireciona para o arquivo acima
 - `robots.txt` + `<meta name="robots">` — bloqueiam indexação por buscadores
   (o link continua acessível a quem o tiver)
 - `docs/changelog/` — resumos de sessões de desenvolvimento
+- `scripts/motor_teto.py`, `scripts/gerar_tir.py`, `scripts/gerar_colunas.py`,
+  `scripts/backtest_multiplos.py` — motor de cálculo (Python): preço-teto,
+  TIR real, colunas derivadas e backtest de múltiplos. Ver `scripts/README.md`
+  para como rodar
+- `data/` — `HIST_SEED`, `TIR_SEED`, fluxo de caixa e dados setoriais que
+  alimentam o motor (snapshots coletados via MCP Partnr — não são
+  atualizados automaticamente)
+- `analise/tetos.json` — saída do `motor_teto.py`
+- `METODOLOGIA_ANALISE.md` — racional de cada decisão do motor (28 seções)
 
 ## Dados e privacidade
 
