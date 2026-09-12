@@ -1294,6 +1294,33 @@ tbody tr:nth-child(n){animation-delay:calc(var(--i,0)*0.02s);}
     </div>
 
     <div class="rp-section">
+      <div class="rp-section-title">📊 Carteira Ideal — Desvio da Alocação-Alvo</div>
+      <div id="chartFlaviaIdeal" style="margin-bottom:0.5rem;"></div>
+      <details class="rp-details">
+        <summary>📋 Ver tabela</summary>
+        <div class="rp-details-body">
+          <div class="rp-table-wrap">
+            <table class="rp-table" id="tblFlaviaIdeal">
+              <thead><tr><th>Classe</th><th>% Ideal</th><th>Valor-alvo (hoje)</th><th>Valor Atual</th><th>Carteira Atual</th><th>Desvio</th></tr></thead>
+              <tbody>
+                <tr><td class="rp-bold">Ações — Dividendos</td><td>65%</td><td>R$ 467.242,76</td><td>R$ 153.582,85</td><td>21,37%</td><td><span class="rp-tag rp-tag-red">−43,63pp</span></td></tr>
+                <tr><td class="rp-bold">Ações — Crescimento</td><td>20%</td><td>R$ 143.767,00</td><td>R$ 60.200,00</td><td>8,37%</td><td><span class="rp-tag rp-tag-red">−11,63pp</span></td></tr>
+                <tr><td class="rp-bold">Renda Fixa / Reserva Estratégica</td><td>15%</td><td>R$ 107.825,25</td><td>R$ 505.052,16</td><td>70,26%</td><td><span class="rp-tag rp-tag-red">+55,26pp</span></td></tr>
+                <tr style="background:#f7f7f5;font-weight:700;"><td>Total</td><td>100%</td><td>R$ 718.835,01</td><td>R$ 718.835,01</td><td>100%</td><td></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </details>
+      <details class="rp-details" style="margin-top:0.75rem;">
+        <summary>🧩 Quais ativos compõem cada grupo</summary>
+        <div class="rp-details-body">
+<div style="margin-bottom:14px;"><div style="font-size:12px;font-weight:700;color:#2a78d6;margin-bottom:6px;">Ações — Dividendos <span style="color:#888;font-weight:400;">· R$ 153.583 · 21,37% da carteira</span></div><div><span style="display:inline-block;background:#fff;border:1px solid #e0e0e0;border-radius:6px;padding:3px 9px;margin:0 6px 6px 0;font-size:12px;white-space:nowrap;"><b>BBSE3</b> <span style="color:#777;">R$ 41.095</span></span><span style="display:inline-block;background:#fff;border:1px solid #e0e0e0;border-radius:6px;padding:3px 9px;margin:0 6px 6px 0;font-size:12px;white-space:nowrap;"><b>ITUB3</b> <span style="color:#777;">R$ 33.112</span></span><span style="display:inline-block;background:#fff;border:1px solid #e0e0e0;border-radius:6px;padding:3px 9px;margin:0 6px 6px 0;font-size:12px;white-space:nowrap;"><b>CXSE3</b> <span style="color:#777;">R$ 27.923</span></span><span style="display:inline-block;background:#fff;border:1px solid #e0e0e0;border-radius:6px;padding:3px 9px;margin:0 6px 6px 0;font-size:12px;white-space:nowrap;"><b>ALOS3</b> <span style="color:#777;">R$ 26.020</span></span><span style="display:inline-block;background:#fff;border:1px solid #e0e0e0;border-radius:6px;padding:3px 9px;margin:0 6px 6px 0;font-size:12px;white-space:nowrap;"><b>BBAS3</b> <span style="color:#777;">R$ 25.433</span></span></div></div><div style="margin-bottom:14px;"><div style="font-size:12px;font-weight:700;color:#eb6834;margin-bottom:6px;">Ações — Crescimento <span style="color:#888;font-weight:400;">· R$ 60.200 · 8,37% da carteira</span></div><div><span style="display:inline-block;background:#fff;border:1px solid #e0e0e0;border-radius:6px;padding:3px 9px;margin:0 6px 6px 0;font-size:12px;white-space:nowrap;"><b>IRBR3</b> <span style="color:#777;">R$ 32.900</span></span><span style="display:inline-block;background:#fff;border:1px solid #e0e0e0;border-radius:6px;padding:3px 9px;margin:0 6px 6px 0;font-size:12px;white-space:nowrap;"><b>FIQE3</b> <span style="color:#777;">R$ 27.300</span></span></div></div><div style="margin-bottom:14px;"><div style="font-size:12px;font-weight:700;color:#1baf7a;margin-bottom:6px;">Renda Fixa / Reserva Estratégica <span style="color:#888;font-weight:400;">· R$ 505.052 · 70,26% da carteira</span></div><div><span style="display:inline-block;background:#fff;border:1px solid #e0e0e0;border-radius:6px;padding:3px 9px;margin:0 6px 6px 0;font-size:12px;white-space:nowrap;"><b>LFTB11</b> <span style="color:#777;">R$ 505.052</span></span></div></div>          <p style="font-size:11px;color:#888;line-height:1.6;margin:4px 0 0;">Classificação por papel na carteira, não por setor: “Dividendos” = pagadoras recorrentes que sustentam a renda; “Crescimento” = posição comprada por valorização, cujo dividendo hoje é secundário. FIQE3 está em Crescimento: telecom em expansão, comprada por valorização — o provento hoje é secundário.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="rp-section">
       <div class="rp-section-title">Posição Atual</div>
       <div id="chartFlaviaPos" style="margin-bottom:0.75rem;"></div>
       <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.75rem;flex-wrap:wrap;">
@@ -1549,6 +1576,34 @@ tbody tr:nth-child(n){animation-delay:calc(var(--i,0)*0.02s);}
     </div>
 
     <div class="rp-section">
+      <div class="rp-section-title">📊 Carteira Ideal — Desvio da Alocação-Alvo</div>
+      <div id="chartLuizIdeal" style="margin-bottom:0.5rem;"></div>
+      <details class="rp-details">
+        <summary>📋 Ver tabela</summary>
+        <div class="rp-details-body">
+          <div class="rp-table-wrap">
+            <table class="rp-table" id="tblLuizIdeal">
+              <thead><tr><th>Classe</th><th>% Ideal</th><th>Valor-alvo (hoje)</th><th>Valor Atual</th><th>Carteira Atual</th><th>Desvio</th></tr></thead>
+              <tbody>
+                <tr><td class="rp-bold">Ações — Dividendos</td><td>65%</td><td>R$ 511.156,59</td><td>R$ 348.189,43</td><td>44,28%</td><td><span class="rp-tag rp-tag-red">−20,72pp</span></td></tr>
+                <tr><td class="rp-bold">Ações — Crescimento</td><td>20%</td><td>R$ 157.278,95</td><td>R$ 216.799,87</td><td>27,57%</td><td><span class="rp-tag rp-tag-yellow">+7,57pp</span></td></tr>
+                <tr><td class="rp-bold">Renda Fixa / Reserva Estratégica</td><td>15%</td><td>R$ 117.959,21</td><td>R$ 74.642,04</td><td>9,49%</td><td><span class="rp-tag rp-tag-red">−5,51pp</span></td></tr>
+                <tr><td class="rp-bold">Fora da régua — Previdência/ETFs</td><td>—</td><td>—</td><td>R$ 146.768,22</td><td>18,66%</td><td>—</td></tr>
+                <tr style="background:#f7f7f5;font-weight:700;"><td>Total</td><td>100%</td><td>R$ 786.394,75</td><td>R$ 786.394,75</td><td>100%</td><td></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </details>
+      <details class="rp-details" style="margin-top:0.75rem;">
+        <summary>🧩 Quais ativos compõem cada grupo</summary>
+        <div class="rp-details-body">
+<div style="margin-bottom:14px;"><div style="font-size:12px;font-weight:700;color:#2a78d6;margin-bottom:6px;">Ações — Dividendos <span style="color:#888;font-weight:400;">· R$ 348.189 · 44,28% da carteira</span></div><div><span style="display:inline-block;background:#fff;border:1px solid #e0e0e0;border-radius:6px;padding:3px 9px;margin:0 6px 6px 0;font-size:12px;white-space:nowrap;"><b>BBSE3</b> <span style="color:#777;">R$ 132.980</span></span><span style="display:inline-block;background:#fff;border:1px solid #e0e0e0;border-radius:6px;padding:3px 9px;margin:0 6px 6px 0;font-size:12px;white-space:nowrap;"><b>CXSE3</b> <span style="color:#777;">R$ 78.325</span></span><span style="display:inline-block;background:#fff;border:1px solid #e0e0e0;border-radius:6px;padding:3px 9px;margin:0 6px 6px 0;font-size:12px;white-space:nowrap;"><b>ITUB3</b> <span style="color:#777;">R$ 74.943</span></span><span style="display:inline-block;background:#fff;border:1px solid #e0e0e0;border-radius:6px;padding:3px 9px;margin:0 6px 6px 0;font-size:12px;white-space:nowrap;"><b>RANI3</b> <span style="color:#777;">R$ 34.916</span></span><span style="display:inline-block;background:#fff;border:1px solid #e0e0e0;border-radius:6px;padding:3px 9px;margin:0 6px 6px 0;font-size:12px;white-space:nowrap;"><b>ALOS3</b> <span style="color:#777;">R$ 20.210</span></span><span style="display:inline-block;background:#fff;border:1px solid #e0e0e0;border-radius:6px;padding:3px 9px;margin:0 6px 6px 0;font-size:12px;white-space:nowrap;"><b>BBAS3</b> <span style="color:#777;">R$ 6.763</span></span></div></div><div style="margin-bottom:14px;"><div style="font-size:12px;font-weight:700;color:#eb6834;margin-bottom:6px;">Ações — Crescimento <span style="color:#888;font-weight:400;">· R$ 216.800 · 27,57% da carteira</span></div><div><span style="display:inline-block;background:#fff;border:1px solid #e0e0e0;border-radius:6px;padding:3px 9px;margin:0 6px 6px 0;font-size:12px;white-space:nowrap;"><b>IRBR3</b> <span style="color:#777;">R$ 183.147</span></span><span style="display:inline-block;background:#fff;border:1px solid #e0e0e0;border-radius:6px;padding:3px 9px;margin:0 6px 6px 0;font-size:12px;white-space:nowrap;"><b>GMAT3</b> <span style="color:#777;">R$ 33.658</span></span></div></div><div style="margin-bottom:14px;"><div style="font-size:12px;font-weight:700;color:#1baf7a;margin-bottom:6px;">Renda Fixa / Reserva Estratégica <span style="color:#888;font-weight:400;">· R$ 74.642 · 9,49% da carteira</span></div><div><span style="display:inline-block;background:#fff;border:1px solid #e0e0e0;border-radius:6px;padding:3px 9px;margin:0 6px 6px 0;font-size:12px;white-space:nowrap;"><b>LFTB11</b> <span style="color:#777;">R$ 74.642</span></span></div></div><div style="margin-bottom:14px;"><div style="font-size:12px;font-weight:700;color:#888;margin-bottom:6px;">Fora da régua <span style="color:#888;font-weight:400;">· R$ 146.768 · 18,66% da carteira</span></div><div><span style="display:inline-block;background:#fff;border:1px solid #e0e0e0;border-radius:6px;padding:3px 9px;margin:0 6px 6px 0;font-size:12px;white-space:nowrap;"><b>Previdência Privada</b> <span style="color:#777;">R$ 131.616</span></span><span style="display:inline-block;background:#fff;border:1px solid #e0e0e0;border-radius:6px;padding:3px 9px;margin:0 6px 6px 0;font-size:12px;white-space:nowrap;"><b>ETFs BR</b> <span style="color:#777;">R$ 8.522</span></span><span style="display:inline-block;background:#fff;border:1px solid #e0e0e0;border-radius:6px;padding:3px 9px;margin:0 6px 6px 0;font-size:12px;white-space:nowrap;"><b>ETFs Int.</b> <span style="color:#777;">R$ 6.630</span></span></div></div>          <p style="font-size:11px;color:#888;line-height:1.6;margin:4px 0 0;">Classificação por papel na carteira, não por setor. IRBR3 e GMAT3 estão em Crescimento — a primeira por ser aposta de recuperação/resseguro, a segunda por não pagar proventos. “Fora da régua” reúne o que não entra na meta 65/20/15 (Previdência Privada e ETFs).</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="rp-section">
       <div class="rp-section-title">Posição Atual</div>
       <div class="rp-resumo-grid" style="margin-bottom:1rem;">
         <div class="rp-resumo-item"><div class="rp-r-label">Ações BR</div><div class="rp-r-value" style="font-size:16px;font-weight:700;">R$ 564.984,49</div><div class="rp-r-value">71,85%</div></div>
@@ -1743,6 +1798,23 @@ tbody tr:nth-child(n){animation-delay:calc(var(--i,0)*0.02s);}
     <div class="rp-section">
       <div class="rp-section-title">🏷️ Segmento consolidado</div>
       <div id="chartConsSegmento" style="margin-bottom:0.5rem;"></div>
+    </div>
+
+    <div class="rp-section">
+      <div class="rp-section-title">📊 Carteira Ideal do casal — Desvio da Alocação-Alvo</div>
+      <div id="chartConsIdeal" style="margin-bottom:0.5rem;"></div>
+      <details class="rp-details">
+        <summary>📋 Ver tabela</summary>
+        <div class="rp-details-body">
+          <div class="rp-table-wrap">
+            <table class="rp-table" id="tblConsIdeal">
+              <thead><tr><th>Classe</th><th>% Ideal</th><th>Valor-alvo (hoje)</th><th>Valor Atual</th><th>Carteira Atual</th><th>Desvio</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <p style="font-size:11px;color:#888;line-height:1.6;margin:8px 0 0;">Régua 65/20/15 — a mesma dos dois planos individuais, aplicada sobre o patrimônio somado. Os grupos vêm da classificação de cada linha nas carteiras de origem: reclassificar um ativo lá reflete aqui automaticamente.</p>
+        </div>
+      </details>
     </div>
 
     <div class="rp-section">
