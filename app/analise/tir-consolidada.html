@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Três Réguas, Uma Fila</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --ntnb:40.29%;
+  --ink:#131a24; --ink-2:#3a4655; --muted:#6a7480;
+  --paper:#f4f6f8; --surface:#ffffff; --rule:#dce1e8; --rule-soft:#eaeef2;
+  --accent:#1c4f8f; --good:#0a6b45; --warn:#8a6100; --bad:#a11d1d;
+  --band:#eef2f6;
+  --serif:"Spectral",Georgia,serif; --sans:"IBM Plex Sans",system-ui,sans-serif; --mono:"IBM Plex Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --ink:#e6ebf1; --ink-2:#b3bdc9; --muted:#8794a3;
+  --paper:#0e1319; --surface:#151b23; --rule:#2a333e; --rule-soft:#212932;
+  --accent:#6fa5e0; --good:#4bbd8b; --warn:#d8a441; --bad:#e0716d; --band:#1b232c;
+}}
+:root[data-theme="dark"]{
+  --ink:#e6ebf1; --ink-2:#b3bdc9; --muted:#8794a3;
+  --paper:#0e1319; --surface:#151b23; --rule:#2a333e; --rule-soft:#212932;
+  --accent:#6fa5e0; --good:#4bbd8b; --warn:#d8a441; --bad:#e0716d; --band:#1b232c;
+}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.55;margin:0;padding:40px 22px 72px}
+.wrap{max-width:1080px;margin:0 auto;display:flex;flex-direction:column;gap:34px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+h1{font-family:var(--serif);font-weight:600;font-size:clamp(30px,5vw,44px);line-height:1.12;margin:0;text-wrap:balance;letter-spacing:-.01em}
+.lede{font-family:var(--serif);font-size:18px;line-height:1.6;color:var(--ink-2);max-width:64ch;margin:14px 0 0}
+h2{font-family:var(--serif);font-size:22px;font-weight:600;margin:0 0 4px}
+p{margin:0 0 12px;max-width:70ch}
+.bar{display:flex;flex-wrap:wrap;gap:0;border:1px solid var(--rule);border-radius:3px;overflow:hidden;background:var(--surface)}
+.bar div{flex:1 1 150px;padding:13px 16px;border-right:1px solid var(--rule-soft)}
+.bar div:last-child{border-right:0}
+.bar dt{font-family:var(--mono);font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin:0 0 5px}
+.bar dd{margin:0;font-family:var(--mono);font-size:19px;font-weight:600;font-variant-numeric:tabular-nums}
+.tw{overflow-x:auto;border:1px solid var(--rule);border-radius:3px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:780px;font-variant-numeric:tabular-nums}
+thead th{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);
+  font-weight:500;text-align:right;padding:12px 12px 10px;border-bottom:1px solid var(--rule);white-space:nowrap;vertical-align:bottom}
+thead th:first-child{text-align:left}
+thead th.grp{color:var(--accent)}
+tbody th{text-align:left;font-weight:400;padding:9px 12px;border-bottom:1px solid var(--rule-soft);white-space:nowrap}
+tbody td{padding:9px 12px;border-bottom:1px solid var(--rule-soft)}
+tbody tr:hover{background:var(--band)}
+.rank{font-family:var(--mono);font-size:11px;color:var(--muted);display:inline-block;width:22px}
+.tk{font-family:var(--mono);font-weight:600;font-size:13.5px;letter-spacing:.01em}
+.seg{display:block;font-size:10.5px;color:var(--muted);margin-left:22px;margin-top:1px}
+.num{text-align:right;font-family:var(--mono);font-size:13px}
+.med{font-weight:600;border-left:1px solid var(--rule);border-right:1px solid var(--rule)}
+.good{color:var(--good)} .warn{color:var(--warn)} .bad{color:var(--bad)} .none{color:var(--muted)}
+.range{width:31%;min-width:180px;padding:9px 12px}
+.trilho{position:relative;height:16px}
+.trilho::before{content:"";position:absolute;top:-2px;bottom:-2px;width:1px;background:var(--accent);opacity:.55;left:var(--ntnb)}
+.span{position:absolute;top:50%;height:2px;background:var(--rule);transform:translateY(-50%)}
+.dot{position:absolute;top:50%;width:7px;height:7px;border-radius:50%;transform:translate(-50%,-50%);border:1px solid var(--surface)}
+.d-caixa{background:var(--accent)} .d-dividendos{background:var(--good)} .d-lucro{background:var(--warn)}
+.conv{font-size:12px} .c-alta{color:var(--good);font-weight:600} .c-média{color:var(--ink-2)} .c-baixa{color:var(--bad)}
+.legend{display:flex;flex-wrap:wrap;gap:18px;font-size:12px;color:var(--muted);padding:2px 2px 0}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.key{width:8px;height:8px;border-radius:50%;display:inline-block}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(268px,1fr));gap:20px}
+.card{border-top:2px solid var(--accent);padding:14px 0 0}
+.card h3{font-family:var(--sans);font-size:13px;font-weight:600;margin:0 0 6px;letter-spacing:.01em}
+.card p{font-size:13.5px;color:var(--ink-2);margin:0 0 8px}
+.card code{font-family:var(--mono);font-size:11.5px;color:var(--ink);background:var(--band);padding:1px 5px;border-radius:2px}
+.warnbox{border-left:3px solid var(--warn);background:var(--band);padding:14px 18px;border-radius:0 3px 3px 0}
+.warnbox h3{font-family:var(--sans);font-size:13px;margin:0 0 8px;font-weight:600}
+.warnbox ul{margin:0;padding-left:18px;font-size:13.5px;color:var(--ink-2)}
+.warnbox li{margin-bottom:7px}
+footer{font-size:12px;color:var(--muted);border-top:1px solid var(--rule);padding-top:16px}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <p class="eyebrow">Carteira Luiz &amp; Flavia · dados Partnr/CVM · TTM 30 jun 2026</p>
+  <h1>Três réguas, uma fila</h1>
+  <p class="lede">Cada empresa medida por três caminhos independentes — caixa, dividendos e lucro normalizado. Onde os três concordam, a leitura é robusta. Onde discordam, a distância <em>é</em> a informação.</p>
+</header>
+
+<dl class="bar">
+  <div><dt>Barra a bater</dt><dd>IPCA + 7,70%</dd></div>
+  <div><dt>Selic (Copom 05/08)</dt><dd>14,00%</dd></div>
+  <div><dt>IPCA corrente</dt><dd>4,44%</dd></div>
+  <div><dt>Passam da barra</dt><dd>16 de 25</dd></div>
+</dl>
+
+<section>
+  <h2>TIR real por ativo</h2>
+  <p style="color:var(--muted);font-size:13.5px">Retorno anual acima da inflação. Ordenado pela mediana das medidas disponíveis.</p>
+  <div class="tw">
+  <table>
+    <thead><tr>
+      <th>Ativo</th>
+      <th class="grp">Caixa<br><span style="font-weight:400;text-transform:none;letter-spacing:0">FCFE</span></th>
+      <th class="grp">Dividendos<br><span style="font-weight:400;text-transform:none;letter-spacing:0">DDM 2 est.</span></th>
+      <th class="grp">Lucro<br><span style="font-weight:400;text-transform:none;letter-spacing:0">normalizado</span></th>
+      <th>Mediana</th>
+      <th>Dispersão das três · linha = NTN-B</th>
+      <th>Ampl.<br>p.p.</th>
+    </tr></thead>
+    <tbody><tr>
+<th scope="row"><span class="rank">1</span><span class="tk">PETR4</span><span class="seg">Indústria/serviço</span></th>
+<td class="num good">17.6%</td><td class="num good">19.6%</td><td class="num good">26.5%</td>
+<td class="num med good">19.6%</td>
+<td class="range"><div class="trilho"><span class="span" style="left:69.52%;width:25.98%"></span><span class="dot d-caixa" style="left:69.52%" title="caixa: 17.6%"></span><span class="dot d-dividendos" style="left:75.27%" title="dividendos: 19.6%"></span><span class="dot d-lucro" style="left:95.50%" title="lucro: 26.5%"></span></div></td>
+<td class="num conv c-média">8.8</td>
+</tr>
+<tr>
+<th scope="row"><span class="rank">2</span><span class="tk">BBSE3</span><span class="seg">Financeira</span></th>
+<td class="num none">—</td><td class="num good">15.2%</td><td class="num good">21.6%</td>
+<td class="num med good">18.4%</td>
+<td class="range"><div class="trilho"><span class="span" style="left:62.42%;width:18.80%"></span><span class="dot d-dividendos" style="left:62.42%" title="dividendos: 15.2%"></span><span class="dot d-lucro" style="left:81.22%" title="lucro: 21.6%"></span></div></td>
+<td class="num conv c-média">6.4</td>
+</tr>
+<tr>
+<th scope="row"><span class="rank">3</span><span class="tk">BRSR6</span><span class="seg">Financeira</span></th>
+<td class="num none">—</td><td class="num good">10.7%</td><td class="num good">24.6%</td>
+<td class="num med good">17.6%</td>
+<td class="range"><div class="trilho"><span class="span" style="left:48.98%;width:40.99%"></span><span class="dot d-dividendos" style="left:48.98%" title="dividendos: 10.7%"></span><span class="dot d-lucro" style="left:89.96%" title="lucro: 24.6%"></span></div></td>
+<td class="num conv c-baixa">13.9</td>
+</tr>
+<tr>
+<th scope="row"><span class="rank">4</span><span class="tk">BRAP4</span><span class="seg">Financeira</span></th>
+<td class="num none">—</td><td class="num good">14.4%</td><td class="num good">20.4%</td>
+<td class="num med good">17.4%</td>
+<td class="range"><div class="trilho"><span class="span" style="left:59.98%;width:17.67%"></span><span class="dot d-dividendos" style="left:59.98%" title="dividendos: 14.4%"></span><span class="dot d-lucro" style="left:77.65%" title="lucro: 20.4%"></span></div></td>
+<td class="num conv c-média">6.0</td>
+</tr>
+<tr>
+<th scope="row"><span class="rank">5</span><span class="tk">LEVE3</span><span class="seg">Indústria/serviço</span></th>
+<td class="num good">17.0%</td><td class="num good">13.8%</td><td class="num good">21.3%</td>
+<td class="num med good">17.0%</td>
+<td class="range"><div class="trilho"><span class="span" style="left:58.31%;width:21.90%"></span><span class="dot d-caixa" style="left:67.55%" title="caixa: 17.0%"></span><span class="dot d-dividendos" style="left:58.31%" title="dividendos: 13.8%"></span><span class="dot d-lucro" style="left:80.21%" title="lucro: 21.3%"></span></div></td>
+<td class="num conv c-média">7.4</td>
+</tr>
+<tr>
+<th scope="row"><span class="rank">6</span><span class="tk">BMEB4</span><span class="seg">Financeira</span></th>
+<td class="num none">—</td><td class="num good">8.6%</td><td class="num good">21.8%</td>
+<td class="num med good">15.2%</td>
+<td class="range"><div class="trilho"><span class="span" style="left:42.81%;width:38.94%"></span><span class="dot d-dividendos" style="left:42.81%" title="dividendos: 8.6%"></span><span class="dot d-lucro" style="left:81.76%" title="lucro: 21.8%"></span></div></td>
+<td class="num conv c-baixa">13.2</td>
+</tr>
+<tr>
+<th scope="row"><span class="rank">7</span><span class="tk">PSSA3</span><span class="seg">Financeira</span></th>
+<td class="num none">—</td><td class="num good">8.8%</td><td class="num good">16.8%</td>
+<td class="num med good">12.8%</td>
+<td class="range"><div class="trilho"><span class="span" style="left:43.59%;width:23.50%"></span><span class="dot d-dividendos" style="left:43.59%" title="dividendos: 8.8%"></span><span class="dot d-lucro" style="left:67.09%" title="lucro: 16.8%"></span></div></td>
+<td class="num conv c-média">8.0</td>
+</tr>
+<tr>
+<th scope="row"><span class="rank">8</span><span class="tk">FIQE3</span><span class="seg">Indústria/serviço</span></th>
+<td class="num none">—</td><td class="num warn">7.6%</td><td class="num good">17.4%</td>
+<td class="num med good">12.5%</td>
+<td class="range"><div class="trilho"><span class="span" style="left:39.88%;width:28.90%"></span><span class="dot d-dividendos" style="left:39.88%" title="dividendos: 7.6%"></span><span class="dot d-lucro" style="left:68.78%" title="lucro: 17.4%"></span></div></td>
+<td class="num conv c-baixa">9.8</td>
+</tr>
+<tr>
+<th scope="row"><span class="rank">9</span><span class="tk">RANI3</span><span class="seg">Indústria/serviço</span></th>
+<td class="num good">14.5%</td><td class="num warn">7.6%</td><td class="num good">12.3%</td>
+<td class="num med good">12.3%</td>
+<td class="range"><div class="trilho"><span class="span" style="left:40.01%;width:20.18%"></span><span class="dot d-caixa" style="left:60.18%" title="caixa: 14.5%"></span><span class="dot d-dividendos" style="left:40.01%" title="dividendos: 7.6%"></span><span class="dot d-lucro" style="left:53.88%" title="lucro: 12.3%"></span></div></td>
+<td class="num conv c-média">6.9</td>
+</tr>
+<tr>
+<th scope="row"><span class="rank">10</span><span class="tk">ITSA4</span><span class="seg">Financeira</span></th>
+<td class="num none">—</td><td class="num good">10.7%</td><td class="num good">13.9%</td>
+<td class="num med good">12.3%</td>
+<td class="range"><div class="trilho"><span class="span" style="left:49.07%;width:9.51%"></span><span class="dot d-dividendos" style="left:49.07%" title="dividendos: 10.7%"></span><span class="dot d-lucro" style="left:58.58%" title="lucro: 13.9%"></span></div></td>
+<td class="num conv c-alta">3.2</td>
+</tr>
+<tr>
+<th scope="row"><span class="rank">11</span><span class="tk">SAUD3</span><span class="seg">Indústria/serviço</span></th>
+<td class="num none">—</td><td class="num good">8.7%</td><td class="num good">15.4%</td>
+<td class="num med good">12.0%</td>
+<td class="range"><div class="trilho"><span class="span" style="left:43.10%;width:19.80%"></span><span class="dot d-dividendos" style="left:43.10%" title="dividendos: 8.7%"></span><span class="dot d-lucro" style="left:62.89%" title="lucro: 15.4%"></span></div></td>
+<td class="num conv c-média">6.7</td>
+</tr>
+<tr>
+<th scope="row"><span class="rank">12</span><span class="tk">ITUB3</span><span class="seg">Financeira</span></th>
+<td class="num none">—</td><td class="num warn">7.0%</td><td class="num good">14.7%</td>
+<td class="num med good">10.8%</td>
+<td class="range"><div class="trilho"><span class="span" style="left:38.12%;width:22.64%"></span><span class="dot d-dividendos" style="left:38.12%" title="dividendos: 7.0%"></span><span class="dot d-lucro" style="left:60.75%" title="lucro: 14.7%"></span></div></td>
+<td class="num conv c-média">7.7</td>
+</tr>
+<tr>
+<th scope="row"><span class="rank">13</span><span class="tk">BPAC11</span><span class="seg">Financeira</span></th>
+<td class="num none">—</td><td class="num warn">4.6%</td><td class="num good">15.6%</td>
+<td class="num med good">10.1%</td>
+<td class="range"><div class="trilho"><span class="span" style="left:31.19%;width:32.46%"></span><span class="dot d-dividendos" style="left:31.19%" title="dividendos: 4.6%"></span><span class="dot d-lucro" style="left:63.65%" title="lucro: 15.6%"></span></div></td>
+<td class="num conv c-baixa">11.0</td>
+</tr>
+<tr>
+<th scope="row"><span class="rank">14</span><span class="tk">MULT3</span><span class="seg">Shopping</span></th>
+<td class="num good">9.8%</td><td class="num good">7.7%</td><td class="num good">16.5%</td>
+<td class="num med good">9.8%</td>
+<td class="range"><div class="trilho"><span class="span" style="left:40.30%;width:25.96%"></span><span class="dot d-caixa" style="left:46.52%" title="caixa: 9.8%"></span><span class="dot d-dividendos" style="left:40.30%" title="dividendos: 7.7%"></span><span class="dot d-lucro" style="left:66.26%" title="lucro: 16.5%"></span></div></td>
+<td class="num conv c-média">8.8</td>
+</tr>
+<tr>
+<th scope="row"><span class="rank">15</span><span class="tk">CPFE3</span><span class="seg">Indústria/serviço</span></th>
+<td class="num good">8.5%</td><td class="num good">9.4%</td><td class="num good">12.3%</td>
+<td class="num med good">9.4%</td>
+<td class="range"><div class="trilho"><span class="span" style="left:42.53%;width:11.19%"></span><span class="dot d-caixa" style="left:42.53%" title="caixa: 8.5%"></span><span class="dot d-dividendos" style="left:45.32%" title="dividendos: 9.4%"></span><span class="dot d-lucro" style="left:53.72%" title="lucro: 12.3%"></span></div></td>
+<td class="num conv c-alta">3.8</td>
+</tr>
+<tr>
+<th scope="row"><span class="rank">16</span><span class="tk">SBSP3</span><span class="seg">Indústria/serviço</span></th>
+<td class="num none">—</td><td class="num warn">4.1%</td><td class="num good">14.2%</td>
+<td class="num med good">9.2%</td>
+<td class="range"><div class="trilho"><span class="span" style="left:29.79%;width:29.61%"></span><span class="dot d-dividendos" style="left:29.79%" title="dividendos: 4.1%"></span><span class="dot d-lucro" style="left:59.40%" title="lucro: 14.2%"></span></div></td>
+<td class="num conv c-baixa">10.1</td>
+</tr>
+<tr>
+<th scope="row"><span class="rank">17</span><span class="tk">CXSE3</span><span class="seg">Financeira</span></th>
+<td class="num none">—</td><td class="num warn">7.3%</td><td class="num warn">6.6%</td>
+<td class="num med warn">6.9%</td>
+<td class="range"><div class="trilho"><span class="span" style="left:36.94%;width:2.16%"></span><span class="dot d-dividendos" style="left:39.10%" title="dividendos: 7.3%"></span><span class="dot d-lucro" style="left:36.94%" title="lucro: 6.6%"></span></div></td>
+<td class="num conv c-alta">0.7</td>
+</tr>
+<tr>
+<th scope="row"><span class="rank">18</span><span class="tk">ALOS3</span><span class="seg">Shopping</span></th>
+<td class="num good">8.3%</td><td class="num warn">6.6%</td><td class="num warn">5.8%</td>
+<td class="num med warn">6.6%</td>
+<td class="range"><div class="trilho"><span class="span" style="left:34.59%;width:7.62%"></span><span class="dot d-caixa" style="left:42.20%" title="caixa: 8.3%"></span><span class="dot d-dividendos" style="left:37.07%" title="dividendos: 6.6%"></span><span class="dot d-lucro" style="left:34.59%" title="lucro: 5.8%"></span></div></td>
+<td class="num conv c-alta">2.6</td>
+</tr>
+<tr>
+<th scope="row"><span class="rank">19</span><span class="tk">SANB11</span><span class="seg">Financeira</span></th>
+<td class="num none">—</td><td class="num warn">5.5%</td><td class="num warn">7.2%</td>
+<td class="num med warn">6.3%</td>
+<td class="range"><div class="trilho"><span class="span" style="left:33.68%;width:5.11%"></span><span class="dot d-dividendos" style="left:33.68%" title="dividendos: 5.5%"></span><span class="dot d-lucro" style="left:38.79%" title="lucro: 7.2%"></span></div></td>
+<td class="num conv c-alta">1.7</td>
+</tr>
+<tr>
+<th scope="row"><span class="rank">20</span><span class="tk">FLRY3</span><span class="seg">Indústria/serviço</span></th>
+<td class="num good">11.2%</td><td class="num warn">5.5%</td><td class="num warn">5.4%</td>
+<td class="num med warn">5.5%</td>
+<td class="range"><div class="trilho"><span class="span" style="left:33.43%;width:17.04%"></span><span class="dot d-caixa" style="left:50.48%" title="caixa: 11.2%"></span><span class="dot d-dividendos" style="left:33.70%" title="dividendos: 5.5%"></span><span class="dot d-lucro" style="left:33.43%" title="lucro: 5.4%"></span></div></td>
+<td class="num conv c-média">5.8</td>
+</tr>
+<tr>
+<th scope="row"><span class="rank">21</span><span class="tk">TIMS3</span><span class="seg">Indústria/serviço</span></th>
+<td class="num none">—</td><td class="num warn">6.9%</td><td class="num warn">3.5%</td>
+<td class="num med warn">5.2%</td>
+<td class="range"><div class="trilho"><span class="span" style="left:28.07%;width:9.83%"></span><span class="dot d-dividendos" style="left:37.90%" title="dividendos: 6.9%"></span><span class="dot d-lucro" style="left:28.07%" title="lucro: 3.5%"></span></div></td>
+<td class="num conv c-alta">3.3</td>
+</tr>
+<tr>
+<th scope="row"><span class="rank">22</span><span class="tk">CLSC4</span><span class="seg">Indústria/serviço</span></th>
+<td class="num none">—</td><td class="num warn">3.7%</td><td class="num warn">5.8%</td>
+<td class="num med warn">4.7%</td>
+<td class="range"><div class="trilho"><span class="span" style="left:28.44%;width:6.19%"></span><span class="dot d-dividendos" style="left:28.44%" title="dividendos: 3.7%"></span><span class="dot d-lucro" style="left:34.63%" title="lucro: 5.8%"></span></div></td>
+<td class="num conv c-alta">2.1</td>
+</tr>
+<tr>
+<th scope="row"><span class="rank">23</span><span class="tk">VALE3</span><span class="seg">Indústria/serviço</span></th>
+<td class="num good">8.7%</td><td class="num warn">4.0%</td><td class="num bad">-1.5%</td>
+<td class="num med warn">4.0%</td>
+<td class="range"><div class="trilho"><span class="span" style="left:13.11%;width:30.06%"></span><span class="dot d-caixa" style="left:43.17%" title="caixa: 8.7%"></span><span class="dot d-dividendos" style="left:29.45%" title="dividendos: 4.0%"></span><span class="dot d-lucro" style="left:13.11%" title="lucro: -1.5%"></span></div></td>
+<td class="num conv c-baixa">10.2</td>
+</tr>
+<tr>
+<th scope="row"><span class="rank">24</span><span class="tk">AXIA3</span><span class="seg">Indústria/serviço</span></th>
+<td class="num none">—</td><td class="num warn">3.5%</td><td class="num warn">3.5%</td>
+<td class="num med warn">3.5%</td>
+<td class="range"><div class="trilho"><span class="span" style="left:27.89%;width:0.60%"></span><span class="dot d-dividendos" style="left:27.89%" title="dividendos: 3.5%"></span><span class="dot d-lucro" style="left:27.90%" title="lucro: 3.5%"></span></div></td>
+<td class="num conv c-alta">0.0</td>
+</tr>
+<tr>
+<th scope="row"><span class="rank">25</span><span class="tk">KLBN11</span><span class="seg">Indústria/serviço</span></th>
+<td class="num warn">3.7%</td><td class="num warn">3.2%</td><td class="num bad">-5.3%</td>
+<td class="num med warn">3.2%</td>
+<td class="range"><div class="trilho"><span class="span" style="left:2.08%;width:26.37%"></span><span class="dot d-caixa" style="left:28.45%" title="caixa: 3.7%"></span><span class="dot d-dividendos" style="left:27.07%" title="dividendos: 3.2%"></span><span class="dot d-lucro" style="left:2.08%" title="lucro: -5.3%"></span></div></td>
+<td class="num conv c-média">9.0</td>
+</tr></tbody>
+  </table>
+  </div>
+  <div class="legend" style="margin-top:12px">
+    <span><i class="key" style="background:var(--accent)"></i>caixa</span>
+    <span><i class="key" style="background:var(--good)"></i>dividendos</span>
+    <span><i class="key" style="background:var(--warn)"></i>lucro</span>
+    <span>verde = acima da NTN-B · âmbar = positivo mas abaixo · vermelho = negativo</span>
+  </div>
+</section>
+
+<section>
+  <h2>As três réguas</h2>
+  <div class="cols" style="margin-top:16px">
+    <div class="card"><h3>Caixa — FCFE</h3>
+      <p>O dinheiro que sobra depois de operar e investir, sobre o valor de mercado.</p>
+      <p><code>(FCO − capex) ÷ valor de mercado</code></p>
+      <p>Imune a lucro contábil. Só existe onde a DFC é legível — 11 das 25.</p></div>
+    <div class="card"><h3>Dividendos — DDM</h3>
+      <p>Dez anos de dividendo crescendo, depois perpetuidade a 6,44%.</p>
+      <p><code>DY futuro = lucro norm. × payout mediano 5a</code></p>
+      <p>Cobre financeiras, que o FCFE não alcança.</p></div>
+    <div class="card"><h3>Lucro normalizado</h3>
+      <p>Lucro de um ano típico, pelo motor do setor, mais crescimento.</p>
+      <p><code>lucro norm. ÷ valor merc. + g − IPCA</code></p>
+      <p>Indústria: receita × margem mediana. Financeira: ROE × patrimônio. Shopping: FFO.</p></div>
+  </div>
+</section>
+
+<section class="warnbox">
+  <h3>O que ainda não confio</h3>
+  <ul>
+    <li><strong>g é o elo fraco.</strong> Uso o menor entre CAGR 5a do lucro recorrente e ROE × retenção, limitado a 15%. As duas fontes discordam muito — na LEVE3, 8,9% contra 23,2%.</li>
+    <li><strong>Financeiras não têm CAGR de lucro recorrente</strong> na base. Para BBSE3, ITUB3, BRSR6, CXSE3, PSSA3, SANB11, BPAC11 e ITSA4 o g vem só de ROE × retenção, com o teto arbitrário.</li>
+    <li><strong>O campo RECURRING_NET_INCOME é fórmula, não julgamento.</strong> Remove impairment, IR diferido e "outras receitas operacionais" — o que funciona na VALE3 e destrói o SANB11, cujas outras receitas são operação normal de banco.</li>
+    <li><strong>Amplitude alta é aviso, não defeito.</strong> BRSR6 (13,9 p.p.) e BMEB4 (13,2 p.p.) dependem de qual régua você acredita.</li>
+    <li><strong>Nada aqui foi validado contra retorno futuro.</strong> É um organizador de fila para leitura, não previsão.</li>
+  </ul>
+</section>
+
+<footer>Fonte: MCP Partnr (B3/CVM), demonstrações consolidadas TTM 30/06/2026 · NTN-B 2035 via Status Invest · Elaboração própria. Não é recomendação de investimento.</footer>
+</div>
+</body>
+</html>
