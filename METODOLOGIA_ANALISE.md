@@ -1,0 +1,1838 @@
+# Metodologia de Análise — motor de valuation por setor
+
+> **Regra número 1: TODO ativo tem preço-teto.**
+> Não existe "análise pendente" como resultado final. Se o motor genérico não serve, o certo é
+> usar o motor do setor — não deixar em branco. Um teto com premissa explícita e sensibilizada
+> é sempre melhor que nenhum teto: você pode discordar da premissa, mas não pode decidir sem número.
+>
+> A única coisa que pode ficar vazia é uma **premissa que ainda não foi pesquisada** — e nesse
+> caso o teto sai marcado como preliminar (★☆☆), nunca ausente.
+
+## 0. Como escolher o motor
+
+Escolha pelo **modelo de negócio**, não pelo rótulo do setor na B3.
+
+| Se a empresa… | Motor primário | Motor de validação |
+|---|---|---|
+| é banco ou seguradora (lucro nasce de capital alocado) | **P/VP × ROE** | Gordon (DDM) |
+| é **holding pura** (lucro é equivalência patrimonial) | **NAV com desconto de holding** | DY sobre proventos recebidos |
+| tem receita de aluguel/imóvel (shopping, logística) | **Cap rate / NAV** | P/FFO de pares + Bazin |
+| é **cíclica de commodity** (minério, papel, petróleo, aço) | **EV/EBITDA meio-de-ciclo** | P/VP no fundo do ciclo |
+| é utility regulada (energia, saneamento, gás) | **EV/EBITDA** | Bazin sobre dividendo sustentável |
+| é industrial/serviço com lucro estável | **E/P histórico** (LPA × P/L médio) | EV/EBITDA setorial |
+| está em prejuízo ou reestruturação | **P/VP × ROE normalizado** | EV/EBITDA sobre EBITDA recorrente |
+
+**Preço-teto = preço justo × 0,85** (margem de segurança de 15%) em todos os motores.
+Quando há dois métodos, o preço justo é a **média simples**, e a dispersão entre eles vira a
+convicção (abaixo de 15% = ★★★, 15-35% = ★★☆, acima de 35% = ★☆☆ e revisar as premissas).
+
+---
+
+## 1. P/VP × ROE — bancos e seguradoras
+
+Usado hoje em: ITUB3, BMEB4, ROXO34, CXSE3, BBSE3, IRBR3.
+
+```
+P/VP justo = (ROE − g) / (Ke − g)
+Preço justo = P/VP justo × VPA
+```
+
+- `Ke` = 16% (custo de capital próprio padrão do projeto para financeiras)
+- `g` = 8% (crescimento financeiro de longo prazo)
+- `VPA` = cotação ÷ P/VP de mercado (quando o VPA não vier direto da fonte)
+
+**Por que não P/L:** o lucro de um banco depende da alavancagem escolhida. P/VP × ROE captura
+retorno sobre o capital que sustenta o balanço, que é o que limita o crescimento.
+
+**Validação (Gordon):** `Preço = DPS sustentável ÷ (Ke − g)`, com DPS = payout × LPA.
+
+---
+
+## 2. NAV com desconto de holding — holdings puras
+
+**Motor que faltava.** Aplicar a: ITSA4, BRAP4.
+
+Uma holding não tem operação própria (ver o `Core EBIT` negativo da CXSE3 no bloco setorial).
+Avaliar pelo P/L dela é avaliar o lucro das investidas duas vezes.
+
+```
+NAV por ação = Σ (participação % × valor de mercado da investida) ÷ nº de ações da holding
+Preço justo  = NAV por ação × (1 − desconto de holding)
+```
+
+- **Desconto de holding**: 15% a 25%. Reflete custo da estrutura, tributação em cascata e
+  falta de controle direto do minoritário. Use **20%** como padrão e sensibilize 15%/25%.
+- Se a holding tem dívida líquida própria, subtraia antes de dividir pelas ações.
+
+**Validação:** DY sobre os proventos que a holding **efetivamente recebe e repassa** —
+não sobre o lucro de equivalência, que é contábil e não vira caixa integralmente.
+
+**Ressalva obrigatória:** informe o desconto de holding **corrente de mercado** (NAV vs. cotação
+hoje) ao lado do assumido. Se a ação já negocia com desconto maior que o assumido, o teto pelo
+NAV vai parecer generoso — diga isso explicitamente.
+
+---
+
+## 3. EV/EBITDA meio-de-ciclo — cíclicas de commodity
+
+Usado hoje em: RANI3. Aplicar também a: VALE3, PETR4, KLBN11.
+
+**Este é o motor que resolve o caso "lucro LTM deprimido".** A Vale teve lucro de R$96 bi em
+2022 e R$8,7 bi no LTM 2026 — usar o LPA atual × P/L histórico dá um teto sem sentido
+(o cálculo produziu R$18,46 contra cotação de R$80,40). O ciclo é o dado, não o ruído.
+
+```
+EBITDA meio-de-ciclo = média do EBITDA dos últimos 5-7 anos (cobrindo pico E fundo)
+EV justo             = EBITDA meio-de-ciclo × múltiplo-alvo do setor
+Preço justo          = (EV justo − dívida líquida atual) ÷ nº de ações
+```
+
+- Use a **média**, não o LTM, e não o pico. A série 2021-2026 da Base de Dados já dá isso.
+- **Múltiplo-alvo**: mediana do próprio EV/EBITDA histórico da empresa. Se a série tiver
+  menos de 4 anos úteis, use referência setorial e marque como ⚠️ estimativa própria.
+- Dívida líquida é a **atual**, não a média — ela não é cíclica da mesma forma.
+
+**Validação:** P/VP no fundo do ciclo. Cíclica raramente cai abaixo do P/VP mínimo histórico.
+
+**Ressalva obrigatória:** diga em que ponto do ciclo a empresa está hoje (EBITDA atual vs. média)
+e o que o preço embute.
+
+---
+
+## 4. EV/EBITDA + Bazin — utilities reguladas
+
+Usado hoje em: CPFE3, PASS3. Aplicar também a: SBSP3, CLSC4, AXIA3, AURE3.
+
+```
+EV justo    = EBITDA recorrente × múltiplo-alvo
+Preço justo = (EV justo − dívida líquida) ÷ ações
+Bazin       = dividendo sustentável ÷ yield exigido (8% a 9%)
+```
+
+- Utility tem receita previsível: use **EBITDA recorrente**, expurgando provisões e itens
+  não recorrentes (a AXIA3, por exemplo, teve EBITDA de R$8,5 bi em 2025 contra R$26,2 bi
+  em 2024 por provisões — normalize).
+- **Empresa em prejuízo** (AURE3): não invalida o motor. EV/EBITDA funciona porque o EBITDA
+  segue positivo; o prejuízo vem de despesa financeira e depreciação. Só marque a alavancagem
+  como risco central e reduza o múltiplo-alvo.
+
+---
+
+## 5. E/P histórico + EV/EBITDA — industriais e serviços de lucro estável
+
+Usado hoje em: LEVE3. Aplicar também a: SHUL4, FLRY3, SAUD3.
+
+```
+Preço justo = LPA (normalizado) × P/L médio histórico da própria empresa
+```
+
+- **P/L médio**: mediana de 5 anos, excluindo anos de prejuízo e outliers acima de 2 desvios.
+- **LPA normalizado**: se houve incorporação ou desdobramento no período (SAUD3, SBSP3),
+  use o LPA pró-forma e **declare a quebra de série** — não misture bases.
+- Se os múltiplos da fonte estiverem quebrados (SHUL4: P/VP de 22x com VPA de R$5,08),
+  **não use o múltiplo da fonte** — recalcule do balanço: `VPA = PL ÷ ações`.
+
+---
+
+## 6. Cap rate / NAV — shoppings e imobiliário
+
+Usado hoje em: ALOS3, MULT3. Sem novas empresas neste motor.
+
+```
+NAV = NOI ÷ cap rate de mercado − dívida líquida
+Preço justo = NAV ÷ ações, validado por P/FFO de pares e Bazin sobre FFO
+```
+
+Nunca usar P/L: o lucro contábil de shopping é distorcido por reavaliação de ativos.
+
+---
+
+## 7. Convicção e ressalvas
+
+Todo relatório declara:
+
+1. **Convicção** (★): dispersão entre os métodos, conforme a seção 0.
+2. **Premissas próprias** marcadas com ⚠️ — múltiplo-alvo sem peer comp confirmado, yield
+   exigido arbitrado, EBITDA normalizado por estimativa.
+3. **Quebras de série** — desdobramento, grupamento, incorporação, mudança de norma contábil.
+4. **O que faria a tese mudar** — gatilhos objetivos, não impressões.
+
+## 8. Constantes do projeto
+
+| Constante | Valor | Onde |
+|---|---|---|
+| Margem de segurança | 15% (teto = justo × 0,85) | todos os motores |
+| Ke financeiras | 16% | seção 1 |
+| g financeiro | 8% | seções 1 e 2 |
+| Yield exigido Bazin | 8% a 9% | seções 4 e 6 |
+| Desconto de holding | 20% (faixa 15-25%) | seção 2 |
+| IPCA + prêmio (motor automático) | ver `js/config.js` | `calcularPrecoTeto` |
+| Selic (taxa livre de risco) | 14,00% — Copom 05/08/2026 | seção 9, `js/decisao.js` |
+| ROE mínimo do score | 15% | seção 9 |
+| Alavancagem máxima do score | 3x dív. líq./EBITDA | seção 9 |
+
+> O motor automático de `js/calculos.js` (LPA × P/L histórico + DY, descontado por IPCA+prêmio)
+> é um **atalho válido apenas para a seção 5** — industriais e serviços de lucro estável.
+> Para os demais setores, deixe `data-pl-hist` AUSENTE na linha do Radar e preencha
+> `data-preco-teto` com o resultado do motor do setor. Isto está codificado nos comentários
+> de `data/radar-rows.data.js`.
+
+---
+
+## 9. Motor de decisão — os quatro critérios do Radar
+
+As seções 1 a 6 respondem "quanto vale". Esta responde **"compro?"**. Implementada em
+`js/decisao.js`, colunas 20 (Prêmio Selic) e 21 (Critérios) do Radar.
+
+### O teste central
+
+> Se esta empresa **nunca mais crescer** e eu comprar por este preço, quanto rende por ano?
+
+É o **earnings yield**: `L/P = LPA LTM ÷ cotação`. Se ele não ganha da **Selic**, a ação está
+pedindo que você corra risco de renda variável por menos do que o Tesouro paga sem risco.
+A coluna **Prêmio Selic** é exatamente `L/P − Selic`, em pontos percentuais.
+
+**Qual LPA entra na conta** — nesta ordem, e a ordem não é cosmética:
+
+1. **LPA implícito da base Partnr** = `preço do fechamento ÷ P/L do mesmo exercício`.
+   Fonte única com o resto do projeto (não envelhece em paralelo) e **seguro para units**:
+   o campo `lpa` cru do Partnr é por ação, mas KLBN11/SANB11/BPAC11 negociam pacotes de
+   várias ações — o `pl` do `valuationRatios` já vem na base certa e o LPA implícito herda
+   essa correção.
+2. `data-lpa-ltm` da linha, só quando a base não tem P/L para o ticker.
+
+> **Erro real corrigido por essa ordem:** a LEVE3 carregava `data-lpa-ltm="2.82"` enquanto o
+> LPA TTM da base já era R$5,14 — um P/L quase 2x errado, que a jogava de 5/5 critérios para
+> 4/5 e transformava um prêmio de +2 p.p. num −5,3 p.p. LPA curado à mão defasa; base não.
+
+### Os quatro critérios
+
+| # | Critério | Corte | Por quê |
+|---|---|---|---|
+| 1 | Earnings yield ≥ Selic | `SELIC` (`js/config.js`) | Custo de oportunidade zero-risco |
+| 2 | ROE ≥ 15% | `ROE_MINIMO` | Abaixo do custo de capital, crescer destrói valor |
+| 3 | Dív. líq./EBITDA < 3x | `ALAVANCAGEM_MAX` | Alavancagem transforma ciclo ruim em ruína |
+| 4 | Lucro projetado 2026 ≥ 2025 | — | Barato + encolhendo é armadilha de valor |
+
+**Critério que não se aplica sai do denominador — nunca conta como reprovação.** Alavancagem
+não se mede em banco ou seguradora (o passivo é a matéria-prima), então essas empresas são
+avaliadas em 3 critérios, não 4. Empresa sem dado não é empresa ruim; é empresa não medida.
+Marcada ⚪ na tooltip, com o motivo escrito.
+
+### 🔵 A margem de segurança saiu da pontuação (06/09/2026)
+
+Era o critério nº 3 e **reprovava empresa**. Agora aparece na tooltip como 🔵 referência, fora
+do denominador. Três razões, todas com evidência deste projeto:
+
+**(a) O teto é instável por causa minha.** Medindo o efeito de uma troca de motor: **mediana de
+23% de variação no teto em um dia**, SANB11 +98%, 14 de 24 acima de 20% — com o preço de
+mercado parado. Um número que se move 23% por mudança de premissa minha não pode ser o que
+decide se a empresa entra na carteira.
+
+**(b) Ainda apareciam defeitos de primeira ordem.** Em dois dias: mediana contra tendência
+(reprovava 9 de 9 financeiras) e mediana contra quebra de série (SAUD3 dava teto de R$ 3,71
+contra cotação de R$ 14,60). Metodologia com bug de primeira ordem não tem autoridade de veto.
+
+**(c) Nenhum dos seis motores foi testado contra retorno futuro.** Foram escolhidos por
+argumento econômico. O único critério com backtest é o nº 1 (L/P vs Selic), e com margem
+modesta: **+21,9% contra +19,0% do baseline**, em 130 observações.
+
+⚠️ **O preço-teto NÃO foi removido do app.** Continua na sua coluna, com convicção ★ e tooltip
+de auditoria, e serve para duas coisas reais: **disciplina** (obriga um número declarado antes
+da compra) e **detecção de absurdo** — foi o teto absurdo que expôs a incorporação da
+Bradsaúde e a quebra de série do IRB. Só não pontua mais.
+
+### Nota 0-100 — o desempate entre duas aprovadas
+
+O score `n/5` é um **portão**: responde *"é investível?"*. Ele não responde *"entre estas duas
+5/5, qual eu compro?"* — porque **joga fora a magnitude**. Um prêmio de +0,5 p.p. e um de
++15 p.p. contam a mesma coisa: 🟢.
+
+A nota recupera a magnitude. Cada eixo vira 0-100 por uma régua explícita, e os eixos são
+combinados por peso:
+
+| Eixo | Peso | Régua (0 → 50 → 100) |
+|---|---|---|
+| Prêmio sobre a Selic | **35%** | −10 p.p. → 0 p.p. → +10 p.p. |
+| Margem de segurança | **25%** | −30% → 0% → +30% |
+| ROE | **15%** | 0% → 15% → 30% |
+| Crescimento do lucro | **15%** | −25% → 0% → +25% |
+| Alavancagem (dív. líq./EBITDA) | **10%** | 6x → 3x → 0x |
+
+**Os pesos são um julgamento, não um resultado de otimização.** O julgamento é: retorno
+esperado pesa mais que qualidade, porque qualidade sem preço já está cara.
+
+**Eixo sem dado sai e os pesos são renormalizados** — mesma regra do denominador dos
+critérios. A nota então carrega um aviso de **cobertura** (ex.: "calculada sobre 75% dos
+eixos"): uma nota de cobertura parcial não é comparável de igual para igual com uma completa.
+
+**Crescimento com base negativa não entra.** Sair de prejuízo para lucro produz um percentual
+sem significado; o eixo é omitido em vez de gerar um número inventado.
+
+A tooltip da coluna mostra a conta inteira — valor cru → pontos → peso. Nota que não se
+audita é palpite com aparência de precisão, e aí não serve para decidir.
+
+### Ranking "Por onde começar"
+
+Ordena em cinco níveis: **(1)** tem prêmio calculável, **(2)** prêmio ≥ 0, **(3)** proporção
+de critérios aprovados, **(4)** **nota**, **(5)** prêmio.
+
+**A ordem entre (3) e (4) é deliberada: o portão vem antes da magnitude.** Uma 5/5 com nota 78
+fica à frente de uma 3/4 com nota 80 — a segunda tem mais retorno esperado, mas falha num
+teste de qualidade, e nota alta não compra aprovação em critério reprovado. A nota desempata
+*dentro* de cada faixa de aprovação, nunca por cima dela.
+
+Os dois primeiros níveis existem por correções de resultados enganosos: sem o nível 1 a SHUL4
+liderava com "4/4" — 4/4 porque o critério ausente era justamente o earnings yield; sem o
+nível 2 o BRSR6 (+15 p.p., 3/4) ficava atrás do FIQE3 (−1,5 p.p., 4/5), ou seja, mais
+critérios rendendo menos que a renda fixa.
+
+**O ranking não é ordem de compra — é a fila para ler o relatório.**
+
+### Atualização
+
+Tudo é recalculado a cada atualização de cotação (o prêmio e a margem de segurança dependem
+do preço). A única manutenção manual é a **Selic em `js/config.js` após cada Copom** —
+a constante carrega a data da última reunião e a da próxima.
+
+---
+
+## 10. TIR real — três medidas independentes (substitui a Nota 0-100)
+
+### Por que a nota saiu
+
+A Nota 0-100 era média ponderada de 5 critérios, com pesos escolhidos por mim. Testada contra
+os próprios dados do projeto — **130 observações, 27 empresas, 2021-2026**, retorno total 12
+meses à frente:
+
+| Filtro | n | Retorno médio |
+|---|---|---|
+| Todas (baseline) | 130 | **+19,0%** |
+| L/P ≥ 14% | 41 | +21,9% |
+| **Reprovadas** | 89 | **+17,7%** |
+| L/P ≥ 14% **E** ROE ≥ 15% **E** dív/EBITDA < 3x | 35 | **+20,0%** |
+
+Aprovar rendia +2,9 p.p. sobre a média — dentro da margem de erro — e **acrescentar os eixos
+de qualidade PIOROU o resultado** (21,9% → 20,0%). O retorno também não era monotônico no L/P.
+Bate com o estudo de 5 fatores Fama-French na B3, onde **HML é significante (t=2,02) e RMW
+não é (t entre 0,60 e 1,17)**.
+
+> **A lição:** um número de 0 a 100 comunica precisão que o método não tinha. Antes de publicar
+> qualquer score novo, teste-o contra retorno futuro — e publique o resultado do teste na tela.
+
+**Ressalvas do próprio backtest:** viés de sobrevivência (as 27 empresas existem hoje), amostra
+pequena, janelas sobrepostas, um único regime de juro, horizonte de 12 meses. Ele **não prova
+que o método não funciona** — prova que não há evidência de que funcione.
+
+### As três medidas
+
+Todas em **retorno real anual**, comparáveis com a **NTN-B 2035 (IPCA + 7,70%)**.
+
+| Medida | Fórmula | Força | Limite |
+|---|---|---|---|
+| **Caixa (FCFE)** | `(FCO − capex) ÷ valor de mercado` | Imune a lucro contábil | Só onde a DFC é legível — 11 de 25 |
+| **Dividendos (DDM)** | 10 anos a `g`, depois perpetuidade a IPCA+2% | Cobre financeiras | Depende do `g` |
+| **Lucro normalizado** | `lucro norm. ÷ valor merc. + g − IPCA` | Existe para quase todas | Depende do motor de normalização |
+
+**DY futuro = lucro normalizado × payout MEDIANO de 5 anos.** Payout de um ano é ruído — a
+PETR4 varia de 26% a 266% em cinco anos.
+
+### O normalizador é por setor
+
+| Setor | Motor | Por quê |
+|---|---|---|
+| Indústria / serviço | `receita × margem líquida mediana` | Margem reverte à média |
+| **Banco / seguradora** | `ROE mediano × patrimônio líquido` | Receita não existe (holdings lançam por equivalência) |
+| **Shopping** | `FFO = FCO − capex` | Lucro contábil distorcido por reavaliação de imóvel (IFRS) |
+| Qualquer uma | `RECURRING_NET_INCOME` do Partnr | Quando passa no teste de sanidade |
+
+⚠️ **`RECURRING_NET_INCOME` é fórmula, não julgamento de analista.** O `name_pt` do campo é
+"Resultado Líquido de Operações Descontinuadas" e a definição vem vazia. Reverso-engenhado, ele
+remove: operações descontinuadas, outras receitas/despesas operacionais, IR diferido e
+impairment. **Funciona na VALE3** (lucro de R$ 8,7 bi → R$ 62 bi, com impairment de −R$ 23,5 bi
+e IR diferido de −R$ 15,4 bi explicando). **Destrói o SANB11** (R$ 14,5 bi → R$ 1,9 bi), porque
+"outras receitas operacionais" num banco é operação normal, não evento. Regra: usar só quando
+o campo `IMPAIRMENTS` explica a diferença, e sempre conferir contra ROE × patrimônio.
+
+### O `g`
+
+```
+g = MENOR entre (CAGR 5a do lucro recorrente) e (ROE × retenção), limitado a 15%
+```
+
+`ROE × retenção` **infla sistematicamente**: assume reinvestimento do lucro retido ao mesmo ROE
+para sempre. Na LEVE3 dava 23,2% ao ano; o lucro recorrente dela cresceu **8,9%** de fato.
+
+⚠️ **Financeiras não têm `CAGR_*_RECURRING_NET_INCOME` na base** (testado em ITUB e BBSE). Para
+BBSE3, ITUB3, BRSR6, CXSE3, PSSA3, SANB11, BPAC11 e ITSA4 o `g` vem só de `ROE × retenção`, e o
+teto de 15% continua sendo premissa arbitrária.
+
+### A coluna mostra a FAIXA, não a mediana
+
+Correção de um erro de desenho. Exibir a mediana obrigava a cruzar com uma segunda coluna de
+convergência para não ler errado — **um número que precisa de outro para não enganar está mal
+apresentado**. A faixa `mín → máx` carrega as duas informações de uma vez.
+
+| Você vê | Leitura |
+|---|---|
+| Faixa **inteira acima** de 7,70% | Ganha da renda fixa por qualquer medida → sinal mais forte da tabela |
+| Faixa **inteira abaixo** | Perde por qualquer medida → descarta |
+| Faixa **cruza** a barra | Depende de qual régua acertar → **precisa de análise, a tabela não decide** |
+| Faixa estreita | As três concordam — número confiável, bom ou ruim |
+| Faixa larga | A divergência é o assunto, não o ponto médio |
+
+`BRSR6 16,9%` parecia resposta. `BRSR6 10,2 → 23,5%` mostra que não é.
+
+### ⚠️ Fisher: retorno real é divisão, não subtração
+
+```
+errado:   nominal − IPCA
+correto:  (1 + nominal) ÷ (1 + IPCA) − 1
+```
+
+A primeira versão subtraía, superestimando ~0,8 p.p. na PETR4 e mais nos retornos altos. Não
+mudava a ordem do ranking, mas era erro de método. Corrigido em 05/09/2026.
+
+Consequência para a medida de caixa: o FCFE yield **não é** o retorno real. Com `g = IPCA`,
+o retorno nominal é `yield + IPCA` e o real vira `yield ÷ (1+IPCA)` — na PETR4, 17,6% → 16,9%.
+
+### Armadilha recorrente: UNITS
+
+KLBN11 (1 ON + 4 PN), SANB11 (1 ON + 1 PN), BPAC11 (1 ON + 2 PN). O `lpa` e o valor patrimonial
+por ação do Partnr são **por ação**; o preço é **por unit**. O `pl` e o `pvp` reportados dividem
+um pelo outro e saem errados por um fator inteiro. **Esse erro apareceu QUATRO vezes nesta
+metodologia** — no payout (BPAC11 72% → 26%), no P/L (SANB11 15,5x → 7,7x), no patrimônio
+(BTG R$ 32,3 bi → R$ 83,1 bi) e no **preço-teto do BPAC11** (R$ 13,50 → R$ 34,88, porque o
+P/VP justo multiplicava o valor patrimonial por AÇÃO e era comparado com preço por UNIT —
+a margem de segurança dizia −328% quando o correto é −66%).
+
+Contraexemplo importante: o teto do **SANB11 não era erro de unit**. O VPA usado (R$ 37,03)
+já estava em base de unit, só estava desatualizado contra o balanço (R$ 33,95). Diagnostiquei
+errado da primeira vez — **conferir contra o balanço antes de atribuir a units**. Sempre multiplicar o LPA/VPA pelo fator da unit,
+ou ler `UNIT_*` do balanço.
+
+### Como atualizar
+
+`data/tir.data.js` é um snapshot. Recalcular exige `companies_reports` (CASH_FLOW_STATEMENT +
+INCOME_STATEMENT) e `companies_ratios` (CAGR do lucro recorrente) do Partnr — não há como fazer
+em runtime, porque a API exige chave e um HTML estático não pode guardá-la em segurança.
+Atualizar também `TIR_NTNB` junto, e a Selic em `js/config.js` após cada Copom.
+
+### Lacunas conhecidas
+
+- **CPFE3 tem `DIVIDEND_YIELD = 0`** na base em 2025 e 2026 — é dado ausente, não dividendo
+  zero. A coluna do Radar mostra "—" em vez de "0,0%": publicar zero afirmaria algo falso.
+  O payout mediano dela saiu de 4 anos, não 5.
+- **VALE3 (+398%) e KLBN11 (+365%) na coluna Crescimento** comparam um lucro estimado já
+  normalizado contra um 2025 deprimido de fundo de ciclo. O número está certo; o rótulo
+  "crescimento" é que engana. Não é erro de dado — é limitação da coluna.
+
+---
+
+## 11. Motor de preço-teto — refeito em 06/09/2026
+
+Antes: 16 tetos calculados à mão em momentos diferentes com parâmetros fixos, e 13 herdados de
+análises antigas **sem motor declarado**. Agora `scripts/motor_teto.py` recalcula 24 dos 30 com
+a mesma régua e gera a tooltip de auditoria. NAV (ITSA4, BRAP4) e shopping (ALOS3, MULT3)
+seguem manuais — exigem valor de mercado das investidas e cap rate, que não estão na base.
+
+### As seis mudanças de critério
+
+**1 · Taxa livre de risco normalizada, não spot.** A NTN-B longa paga hoje IPCA+7,70%, nível
+historicamente alto. Usá-la num modelo de **perpetuidade** congela o estresse de hoje para
+sempre — o mesmo erro de avaliar cíclica pelo lucro de pico. Usamos **IPCA+5,5%** → 10,18%
+nominal. ⚠️ **É o juízo mais influente do motor:** com a spot, praticamente toda a bolsa fica
+acima do teto e o Radar não aponta nenhuma compra.
+
+**2 · Ke variável por risco, mecânico.** `Ke = 15,18% base ± ajustes`, todos de dado observável:
+
+| Ajuste | Regra | Faixa |
+|---|---|---|
+| Volatilidade do ROE | coef. de variação < 0,25 / 0,25-0,50 / > 0,50 | −1,0 / 0 / +1,5 |
+| Tamanho | > R$ 50 bi / R$ 10-50 bi / < R$ 10 bi | −1,0 / 0 / +1,5 |
+| Alavancagem | dív.líq/EBITDA < 1 / 1-3 / > 3 | −0,5 / 0 / +1,5 |
+
+Limitado a 13-22%. Resultado: ITUB3 e BBSE3 a 13,2%; IRBR3 e KLBN11 a 18,2%. **Nenhum ajuste
+é opinião** — todos saem da própria série.
+
+**3 · `g` de 8% para IPCA+2% = 6,44%**, a mesma perpetuidade que a TIR real já usava. As duas
+metodologias do projeto paravam de discordar sobre a mesma empresa.
+
+**4 · Financeiras trocam P/VP×ROE de um estágio por DDM de dois estágios.** O motor de um
+estágio **não comporta franquia que cresce acima do PIB**: testando o Ke implícito no preço de
+mercado, ITUB3 e CXSE3 davam ~11,8%, **abaixo do juro longo** — sinal de que o `g` fixo é que
+estava errado, não o preço. Agora a empresa cresce ao ritmo que ROE × retenção sustenta por
+10 anos e só então converge. É o **mesmo DDM da TIR real, resolvido para preço em vez de taxa**.
+
+**5 · Bazin vira Gordon.** Yield exigido = `Ke − g` da própria empresa, em vez da constante
+arbitrária de 8-9%. Um só parâmetro governa dividendo e capital.
+
+**6 · Margem de segurança escala com a convicção:** ★★★ 10% · ★★☆ 15% · ★☆☆ 25%. Antes eram
+15% para todos e a estrela era decorativa.
+
+### Duas travas que existem por erro cometido
+
+**`g1` não pode alcançar o Ke.** A BBSE3 (ROE 78,8%) saiu com crescimento de 15% contra Ke de
+13,2%: o valor presente explodiu e o teto deu R$ 79,30 contra cotação de R$ 40,48 — "+49% de
+margem" numa ação a 7x o patrimônio. Agora `g1 ≤ Ke − 2 p.p.`, e quem bate na trava cai
+para ★☆☆.
+
+**Guarda de sanidade.** Teto que produz margem acima de |100%| quase sempre é o modelo sob
+estresse, não a ação. Rebaixa a convicção automaticamente (o que aumenta a margem exigida) e
+marca na tooltip. Atinge hoje: IRBR3, BPAC11, BMEB4, CLSC4, SAUD3, SBSP3, AXIA3.
+
+### Financeiras: MEDIANA de três motores, não um só
+
+**Diagnóstico do que estava errado.** Os tetos se moveram 23% na mediana num único dia — o
+SANB11 dobrou — sem nenhuma notícia das empresas. A causa não era o teto ser instável em uso:
+era **eu trocar o motor três vezes** (P/VP×ROE → DDM 2 estágios → lucro residual). Testando as
+alternativas, a BBSE3 valia R$ 23 ou R$ 61 conforme a premissa de vantagem competitiva.
+
+**Nenhum motor único resolve**, e a razão é honesta:
+
+| Motor | Sensibilidade ao Ke | Viés |
+|---|---|---|
+| Gordon / P/VP×ROE | **1,46x** entre Ke 13% e 16% | Generoso: vantagem eterna. ROE baixo → valor negativo |
+| Lucro residual com fade | **1,11x** | Duro: ITUB3 valeria 1,18x patrimônio com ROE de 18% sustentado |
+| Múltiplo próprio (P/VP mediano × VPA) | **0** | Assume que o passado da empresa era justo |
+
+**A regra já estava na seção 0 e eu não aplicava aqui: havendo mais de um método, o justo é o
+consenso e a dispersão vira a convicção.** Financeiras passam a usar a **mediana dos três**.
+
+Por que isso estabiliza: nenhum motor decide sozinho. Trocar um deles move pouco a mediana,
+porque os outros dois seguram. E a dispersão entre eles — que é a incerteza real — deixa de ser
+escondida e passa a governar a margem de segurança exigida.
+
+**Não é abrir mão do teto por empresa.** Continua havendo um número por empresa, com critério
+declarado. O que muda é que o número é consenso de três leituras em vez de aposta numa.
+
+### O defeito que reprovava TODAS as financeiras: mediana contra tendência
+
+Sintoma: as 9 financeiras davam margem negativa. Nove de nove não é resultado, é sintoma.
+
+**Não era o Ke.** Invertendo o Gordon para achar o Ke que o preço de mercado pratica:
+
+| Ativo | Ke implícito no mercado | Ke do motor |
+|---|---|---|
+| ITUB3 | 13,0% | 13,2% |
+| CXSE3 | 12,8% | 13,0% |
+| BPAC11 | 13,7% | 13,2% |
+| BMEB4 | 15,4% | 15,7% |
+
+**Era o ROE mediano.** Os bancos melhoraram de forma persistente na janela:
+
+| Ativo | 1ª metade | 2ª metade | Δ |
+|---|---|---|---|
+| BBSE3 | 69,1% | 79,0% | **+9,9 p.p.** |
+| BMEB4 | 18,6% | 27,2% | **+8,6 p.p.** |
+| CXSE3 | 24,6% | 31,2% | **+6,6 p.p.** |
+| PSSA3 | 16,1% | 22,3% | **+6,2 p.p.** |
+| ITUB3 | 17,2% | 20,5% | +3,3 p.p. |
+| **SANB11** | 17,6% | 10,6% | **−7,0 p.p.** |
+
+> **A mediana é o instrumento certo para série que OSCILA e o errado para série que SOBE.**
+
+Prova: ITUB3 com ROE **atual** de 21,0% e o Ke do motor dá P/VP justo de **2,16x** contra
+**2,21x** negociado — praticamente o preço. Com a mediana de 18,2%, dá 1,74x, e daí vinha o −93%.
+
+**Regra nova (`mediana_com_tendencia`):** compara a média das duas metades da série. Se
+diferirem mais que o limiar (2 p.p. para ROE, 12% relativos para múltiplos), a série tem
+tendência e vale a mediana **só da metade recente**. Vale nos dois sentidos — o SANB11
+deteriorou e passa a usar o ROE menor, ficando **mais** conservador.
+
+Resultado: BRSR6 passa a **+16%** de margem, e as demais ficam entre −14% e −52%, faixa
+defensável, em vez de −35% a −93%.
+
+⚠️ **Aplicado só a financeiras, de propósito.** Em cíclica de commodity a mediana da série
+inteira é o ponto — ela precisa cobrir pico E fundo. Detectar "tendência" no EBITDA da Vale
+seria confundir ciclo com trajetória e destruir o motor meio-de-ciclo.
+
+### Correções de dado que entraram junto
+
+**P/VP corrigido para units na série inteira.** O Partnr divide preço da UNIT por valor
+patrimonial por AÇÃO: `pvp_real = pvp_reportado ÷ fator`. Conferido no SANB11 (1,74x ÷ 2 =
+0,87x contra 0,88x do balanço). Sem isso o múltiplo próprio do BPAC11 dava teto de R$ 150.
+
+**Um erro meu, para registro:** eu afirmei que o lucro residual na forma
+`V = VPA × [1 + (ROE−Ke)/(Ke−g)]` seria mais estável que o Gordon. É **algebricamente idêntico**
+a ele — `= VPA × (ROE−g)/(Ke−g)`. A saída denunciou: a faixa deu exatamente 1,46x para todos os
+bancos, independente do ROE. Só a versão com **horizonte finito de retorno excedente** estabiliza.
+
+### Terceira trava: reestruturação e ROE baixo (achada pelo usuário)
+
+O IRBR3 saiu com teto de **R$ 8,18** contra cotação de R$ 56,78 — margem de −525%, absurda para
+uma resseguradora que negocia a **0,86x o patrimônio** e voltou a pagar dividendo.
+
+**Causa: eu perdi a trava do Gordon ao trocar o motor de financeiras.** Ela existia na versão
+P/VP×ROE (bloqueava a fórmula quando `ROE < g + 3 p.p.`) e não foi transportada para o DDM.
+
+Duas coisas se somam nesses casos:
+
+**(a) A mediana atravessa a quebra de série.** O IRB teve ROE de −16,8%, −16,7% e −3,0% na crise
+e 17,2%, 7,5%, 4,5% depois. A mediana da série inteira dá **0,8%**, que não descreve nem a
+empresa velha nem a nova.
+
+**(b) DDM sobre empresa que quase não distribui e rende pouco converge para zero**, mesmo com
+patrimônio real de R$ 66/ação. Matematicamente correto, praticamente inútil.
+
+**Regra restaurada:** se o ROE mediano não supera `g` em 3 p.p., abandona-se o fluxo e ancora-se
+no **balanço** — `P/VP mínimo da própria série × VPA`, o menor múltiplo que o mercado já pagou
+por aquele patrimônio. Convicção ★☆☆ obrigatória, e a tooltip marca a quebra de série quando há
+anos de prejuízo na janela. IRBR3: **R$ 8,18 → R$ 25,75**.
+
+**Quarta trava, do mesmo caso:** payout de **um ano só** não é política de dividendos, é um
+ponto. O IRB retomou o pagamento em 2026 (payout 48%, DY 2,5%) e o motor tratava esse n=1 como
+se fosse mediana de cinco anos. Agora `n < 3` força ★☆☆.
+
+⚠️ **O que a correção NÃO diz:** que o IRB está barato. O lucro caiu de R$ 806 mi (2024) para
+R$ 391 mi (2025) e R$ 241 mi (2026) — queda de 70% em dois anos. A retomada do dividendo é real;
+a trajetória do lucro é o contrário. O teto corrigido continua abaixo da cotação.
+
+### Telecom entra na tabela de motores
+
+TIMS3 e FIQE3 não tinham motor em lugar nenhum. Passam a usar **EV/EBITDA + Gordon**, igual
+utility: infraestrutura, receita recorrente, capex pesado — mesmo perfil econômico.
+
+### `data-pl-hist` foi removido de todas as linhas cobertas
+
+Enquanto existia, `calcularPrecoTeto()` em `js/calculos.js` **recalculava o teto no navegador
+e sobrescrevia o valor do motor de setor**. A LEVE3 exibia R$ 45,54 (motor genérico
+IPCA+prêmio) em vez dos R$ 30,83 corretos. Duas fontes de verdade para o mesmo número, e
+ganhava a errada. **Regra: linha com teto do motor de setor não leva `data-pl-hist`.**
+
+### Quinta trava: quebra de série societária (achada pelo usuário)
+
+O SAUD3 saiu com teto de **R$ 3,71** contra cotação de R$ 14,60. O usuário recusou o número
+antes de qualquer conta minha — e estava certo.
+
+**Causa raiz: era outra empresa.** `companies_list` confirma `SAUD3 = BRADSAUDE S.A.`, ticker
+anterior **ODPV3 (Odontoprev)**. Na incorporação dos ativos de saúde do Bradesco:
+
+| | 2025 (Odontoprev) | 2026 (Bradsaúde) |
+|---|---|---|
+| Ações | 544 mi | **2.927 mi** |
+| Lucro | R$ 583 mi | R$ 1.054 mi |
+| LPA | 1,07 | **0,36** |
+| Market cap | R$ 6,1 bi | **R$ 42,7 bi** |
+
+O motor E/P multiplicava o **P/L mediano da Odontoprev** (13,7x) pelo **LPA da Bradsaúde**
+(R$ 0,36). Duas empresas diferentes na mesma conta.
+
+**Dois erros somados, e o segundo era de classificação.** O balanço mostra R$ 13,2 bi de
+"caixa líquido" sobre R$ 9,9 bi de receita — isso não é caixa industrial, são **reservas
+técnicas de seguradora**. A Bradsaúde estava no grupo `IND`. Reclassificada para `FIN`
+(P/VP×ROE + Gordon + lucro residual, a mesma régua da PSSA3 e da CXSE3).
+
+**Regra nova (`ano_quebra` / `anos_validos`):** salto de mais de **25% na quantidade de ações
+em um ano** marca quebra societária; múltiplos e ROE passam a usar **só os anos posteriores**.
+A varredura achou 7 casos: ALOS3 (2022), AXIA3 (2022 e 2025), FLRY3 (2023), IRBR3 (2022),
+SAUD3 (2026), SBSP3 (2026), SHUL4 (2022).
+
+Efeito nos tetos: **SAUD3 R$ 3,71 → R$ 8,37**, FLRY3 R$ 17,20 → R$ 16,25, SHUL4 R$ 5,02 →
+R$ 3,65.
+
+⚠️ **O que isto NÃO resolve.** Com um único ano válido, a série do SAUD3 não tem mediana — o
+"múltiplo próprio" vira o preço de hoje, ou seja, circular. A dispersão entre os três motores
+é de 43% e a convicção é ★☆☆ por isso. O teto de R$ 8,37 continua abaixo dos R$ 14,60, e a
+leitura honesta é **"não sei precificar esta empresa ainda"**, não "está cara".
+
+⚠️ **Rejeitado: fallback setorial.** Tentei substituir o múltiplo quebrado pela mediana de
+pares. No grupo IND o único par sem quebra é a LEVE3 (autopeças, P/L 6,7x) — o teto do SAUD3
+caiu para R$ 1,80. Um par não é setor. O fallback continua no código, mas só é acionado com
+★☆☆ e depois de esgotada a série própria.
+
+### O que ainda é premissa, não dado
+
+- **IPCA+5,5%** como juro real normalizado e **5,0 p.p.** de prêmio de risco base
+- Os **cortes dos ajustes de Ke** (0,25 / 0,50 de CV; R$ 10 bi e R$ 50 bi de tamanho)
+- **10 anos** de estágio de crescimento
+- As **margens de 10/15/25%** por convicção
+
+Nenhuma dessas foi testada contra retorno futuro — valem as mesmas ressalvas da seção 10.
+
+
+---
+
+## 12. Corrida de múltiplos — o teste barato (06/09/2026)
+
+`scripts/backtest_multiplos.py` · 30 tickers do Radar · 2021-2026 · 125 observações válidas ·
+fonte `data/historico.data.js` (Partnr, B3/CVM), zero chamadas de rede.
+
+**Pergunta:** qual medida de "barato" separou vencedor de perdedor — e o meu motor de
+preço-teto ganha de um múltiplo simples?
+
+### Resultado
+
+Retorno total médio 12 meses à frente, terço barato vs terço caro, ranking refeito a cada ano:
+
+| Métrica | n | BARATO | CARO | spread | ρ | t | anos + |
+|---|---|---|---|---|---|---|---|
+| **L/P (earnings yield)** | 120 | **24,9%** | 16,1% | **+8,8 p.p.** | +0,09 | **+2,63** | **4 de 5** |
+| Dividend yield | 125 | 20,0% | 14,7% | +5,3 p.p. | +0,11 | +1,01 | 3 de 5 |
+| MOTOR (margem s/ teto) | 42 | 27,4% | 22,3% | +5,1 p.p. | +0,26 | — | 1 de 2 |
+| VP/P (book yield) | 122 | 19,0% | 16,3% | +2,6 p.p. | +0,06 | +0,81 | 3 de 5 |
+| EBIT/EV | 89 | 18,2% | 15,7% | +2,5 p.p. | +0,05 | +0,87 | 3 de 5 |
+| EBITDA/EV | 89 | 14,8% | 17,6% | **−2,8 p.p.** | +0,01 | −0,77 | 3 de 5 |
+| *baseline (comprar as 30)* | 125 | *19,0%* | | | | | |
+
+### Leitura
+
+**O L/P venceu, e venceu com folga.** Maior spread, único com t acima de 2, e positivo em 4
+dos 5 anos. É exatamente o critério nº 1 do Radar — o único que já tinha backtest.
+
+**O EV/EBITDA foi o pior, e isso contradiz a literatura** (Gray & Vogel encontram EV/EBIT
+vencendo nos EUA). O EBIT/EV também ficou fraco aqui. Hipótese honesta: com só 89 observações
+e 13 financeiras fora (não têm EV), a amostra de EV/EBITDA é pequena e enviesada para cíclicas
+e utilities, onde o múltiplo se move com o ciclo e não com o preço.
+
+**O DY tem o maior spread MEDIANO (+13,5 p.p.)** contra +4,1 do L/P, apesar de um spread médio
+menor. Isso significa que ele acerta com mais frequência e erra grande de vez em quando —
+perfil compatível com carteira de dividendos.
+
+**O MEU MOTOR NÃO GANHOU.** 42 observações, apenas 2 anos com dados suficientes, spread médio
+de +5,1 p.p. mas spread mediano de +0,8 p.p., e positivo em 1 de 2 anos. O terço do meio rendeu
+MAIS que o terço barato (33,9% contra 27,4%) — o ranking não é monotônico, que é o sintoma de
+ruído. **Seis motores, um Ke ajustado por risco, fade de vantagem competitiva em 10 anos e
+juro real normalizado não bateram `1 ÷ P/L`.**
+
+### ⚠️ O que este teste NÃO prova
+
+- **Viés de sobrevivência puro.** As 30 empresas foram escolhidas hoje. Nenhuma quebrou porque
+  se tivesse quebrado não estaria no Radar.
+- **n efetivo é 5, não 125.** As observações do mesmo ano pegam o mesmo mercado. Por isso o t
+  é calculado sobre os SPREADS ANUAIS. Com 4 graus de liberdade, 5% exigiria |t| > 2,78 —
+  **nem o L/P chega lá** (2,63).
+- **Só 5 anos, todos de juro alto.** Não há um ciclo de queda de Selic completo na janela.
+
+### Dois erros de dado achados pelo próprio teste
+
+**(1) IRBR3 com +5.051% de retorno em 2022→2023.** Não foi retorno: foi **grupamento de ações**
+(R$ 0,86 → R$ 44,30). O detector `ano_quebra` do motor só enxergava AUMENTO de ações
+(incorporação, follow-on) e estava cego para grupamento, que é o caso que *explode* o retorno
+em vez de amassar o múltiplo.
+
+**(2) A quebra e o artefato de preço não caem no mesmo ano.** A CVM reapresenta o LPA na base
+nova (IRB 2022: −7,66 contra −0,54 de 2021), então a quebra aparece em 2022 — mas a série de
+preços do Partnr **não é ajustada retroativamente**, e o salto cai em 2022→2023.
+
+Correções: a quantidade de ações passa a ser derivada de `lucro ÷ LPA` e testada em **ambas as
+direções** (±25%), e a transição é descartada se houver quebra em **qualquer um dos dois anos**.
+A mesma cegueira existe no `ano_quebra` de `scripts/motor_teto.py` — **ainda não corrigida lá**.
+
+### Consequência prática
+
+O L/P vs Selic (critério nº 1) é o único elo da metodologia com evidência a favor, e sai
+reforçado. O preço-teto continua fora da pontuação — agora não só por instabilidade, mas
+porque **foi medido e não venceu um múltiplo de uma linha**.
+
+
+---
+
+## 13. Duas correções que saíram do backtest (06/09/2026)
+
+### 13.1 Cosmético vs real — eu tinha diagnosticado ao contrário
+
+⚠️ **Registro de erro meu.** Eu disse ao usuário que `ano_quebra` era "cego para grupamento".
+**Falso.** Ele usa `abs(b/a − 1)`, que é simétrico, e detecta o grupamento do IRBR3
+(1.264 mi → 82 mi ações) sem dificuldade. O problema era outro.
+
+**O bug real:** o detector tratava como iguais dois eventos que não são iguais.
+
+| | Desdobramento / grupamento | Incorporação / emissão |
+|---|---|---|
+| Ações | mudam | mudam |
+| Negócio | **igual no dia seguinte** | **outro** |
+| Múltiplos históricos | **atravessam intactos** | **não descrevem nada** |
+| Exemplo | SBSP3 5:1 — preço R$133,39→R$26,19, P/VP 2,59→1,96 | SAUD3 — ações +437%, lucro +81% |
+
+Descartar o histórico no caso cosmético é **jogar dado bom fora**. O motor fazia isso.
+
+**Teste novo, duas condições, ambas necessárias:**
+
+1. **Negócio parado** — receita dentro de ±25% (lucro como segunda opção, para banco e
+   seguradora sem linha de receita)
+2. **Valor de mercado contínuo** — `(preço_novo/preço_velho) × (ações_novas/ações_velhas) ≈ 1`.
+   O SBSP3 dá `0,196 × 4,99 = 0,98` ✓
+
+A primeira versão usava só a condição (1) e classificou a **fusão Aliansce+brMalls** (ALOS3
+2022, ações ×2,15) como cosmética — a receita subiu só 19% porque a fusão fechou no meio do
+ano. Um teste que aprova uma fusão de R$ 10 bi como "só mudou a unidade" não serve. A condição
+(2) reprova. O IRBR3 também é reprovado, e corretamente: foi grupamento **e** follow-on no
+mesmo ano, e o produto dá 3,6 — entrou capital novo.
+
+**Na dúvida o teste reprova.** Descartar história boa custa convicção (★☆☆); misturar duas
+empresas na mesma conta custa um teto errado.
+
+### 13.2 P/L derivado quando a base não traz o campo
+
+O **SHUL4** não tem o campo `pl` na base Partnr em nenhum dos 6 anos. `teto_ep` caía direto no
+fallback setorial — cujo único par sem quebra no grupo IND é a **LEVE3, autopeças**. O teto do
+Schulz vinha de uma empresa que não é ele.
+
+Mas `preco` e `lpa` estão lá, nos 6 anos: 8,41/1,08 = 7,8x · 4,71/0,76 = 6,2x · … A série
+existia inteira, só não estava pré-calculada. **Derivar `preço ÷ (LPA × fator_unit)` é
+aritmética sobre dado da mesma fonte, não estimativa.**
+
+| | antes | depois |
+|---|---|---|
+| Âncora | P/L da LEVE3 (6,7x) | P/L do próprio SHUL4 (mediana de 6 anos) |
+| Convicção | ★☆☆ | **★★★** |
+| Teto | R$ 3,65 | **R$ 4,61** |
+| Margem vs R$ 4,45 | −22% | **+3%** |
+
+---
+
+## 14. L/P + DY combinados — testado e REJEITADO
+
+Hipótese: o L/P captura o lucro que a empresa **gera**, o DY o caixa que ela **entrega**.
+Armadilha de valor (barata no lucro, mesquinha no dividendo) e payout insustentável (generosa
+no dividendo, cara no lucro) são erros diferentes — em tese um filtro corrigiria o outro.
+
+Combinação por **rank médio** (percentil dentro do ano em cada métrica, média dos dois). Sem
+peso escolhido por mim, no espírito do Greenblatt — é por isso que é difícil de superajustar.
+
+| Estratégia | BARATO | CARO | spread | spr. mediano | t | anos + |
+|---|---|---|---|---|---|---|
+| **L/P sozinho** | **24,9%** | 16,1% | **+8,8 p.p.** | +4,1 p.p. | **+2,63** | **4 de 5** |
+| L/P + DY (rank médio) | 19,1% | 15,1% | +4,0 p.p. | +6,1 p.p. | +0,81 | 3 de 5 |
+
+Ano a ano da combinação: `+13,9%` · `−5,6%` · `+0,5%` · `−7,1%` · `+20,3%`
+
+**Rejeitado.** Acrescentar o DY **cortou o spread pela metade** e derrubou o t de 2,63 para
+0,81. O terço barato da combinação rendeu MENOS (19,1%) que o terço barato do L/P sozinho
+(24,9%), e o terço do meio rendeu mais que o barato — ranking não-monotônico, sintoma de ruído.
+
+Isto repete o padrão do backtest anterior, em que somar ROE e alavancagem **piorou** o
+resultado (21,9% → 20,0%), e a conclusão do estudo Fama-French da B3, em que o eixo valor é
+significativo e o de rentabilidade não.
+
+> **Três tentativas de acrescentar um segundo eixo ao L/P, três pioras.** O padrão já não é
+> coincidência: nesta amostra, o que funciona é `1 ÷ P/L` sozinho.
+
+⚠️ Continua valendo tudo da seção 12: viés de sobrevivência, n efetivo de 5 anos, e nem o
+vencedor é estatisticamente significativo (t 2,63 contra 2,78 exigidos).
+
+
+---
+
+## 15. Dividendo por ação — a inversão (06/09/2026)
+
+**Achado pelo usuário**, na ALOS3: *"o LPA é 2,04, o payout 84%, e o dividendo por ação 2,30 —
+esse cálculo está certo?"* `2,04 × 0,84 = 1,71`. A conta dele estava certa; a tabela não fechava.
+
+### A causa raiz era pior que a linha
+
+O DPS não era calculado a partir do lucro. Era `data-dy-proj × cotação`. Três consequências:
+
+1. **O dividendo por ação flutuava com o preço da ação.** Papel sobe 10%, a tabela passa a
+   dizer que a empresa vai pagar 10% mais dividendo. É o mundo ao contrário — o dividendo é
+   decisão da empresa sobre o lucro dela, não sobre a cotação.
+2. **O DY ficava congelado**, quando é justamente ele que deve se mover com o preço.
+3. **O payout era texto estático**, escrito na análise, sem relação viva com nenhum dos dois.
+
+As três células falavam de bases diferentes e nada no app percebia.
+
+### A regra nova
+
+```
+DPS = LPA exibido × payout      ← fundamento, NÃO depende do preço
+DY  = DPS ÷ cotação             ← deriva, e varia com o preço, como deve
+```
+
+Implementada em `atualizarDivDY()` (`js/calculos.js`), chamada dos três pontos que antes
+duplicavam a fórmula antiga (`calculos.js`, `cotacoes.js`, `main.js`).
+
+A linha precisa declarar **`data-payout`**. Sem ele, a rota antiga continua valendo e a coluna
+de payout mostra "—" em vez de mentir sobre uma relação que não existe.
+
+### `data-lpa-manual` deixou de ser opcional
+
+O payout de cada análise foi aplicado a **uma base específica** — FFO por ação no shopping,
+LPA FY2025 na indústria, LPA 2026E na seguradora. Sem `data-lpa-manual="true"`, o sync do
+HIST_SEED troca essa base por baixo e quebra a conta de novo. **Foi exatamente o que aconteceu
+com a ALOS3:** o R$ 1,64 curado virou R$ 2,04 do Partnr, e o R$ 2,30 ficou órfão.
+
+### As 12 linhas corrigidas
+
+| Ativo | LPA (base declarada) | payout | DPS | DY |
+|---|---|---|---|---|
+| **ALOS3** | **2,73** ← FFO/ação, não lucro contábil | 84% | 2,29 | 8,81% |
+| MULT3 | 2,70 | 50% | 1,35 | 5,03% |
+| CPFE3 | 4,98 | 75% | 3,74 | 8,83% |
+| LEVE3 | 2,82 | 85% | 2,40 | 7,44% |
+| RANI3 | 0,65 | 35% | 0,23 | 2,92% |
+| CXSE3 | 1,43 | 90% | 1,29 | 6,92% |
+| BBSE3 | 4,46 | 90% | 4,01 | 10,79% |
+| FIQE3 | 0,55 | 45% | 0,25 | 5,44% |
+| ITUB3 | 4,25 | 74% | 3,15 | 7,55% |
+| TIMS3 | 1,81 | 92% | 1,67 | 9,02% |
+| BMEB4 | 6,50 | 28% | 1,82 | 3,01% |
+| **IRBR3** | 2,94 | 25% | **0,73** | **1,44%** |
+
+Todas fecham exatamente. A **ALOS3** passa a mostrar **FFO por ação (R$ 2,73)** na coluna 7 —
+shopping não paga dividendo de lucro contábil, e o lucro contábil dela vai de R$ 0,39 a R$ 6,09
+por ação em três anos. O lucro contábil continua visível no P/L, que a própria linha já marcava
+como não-decisório.
+
+⚠️ **O IRBR3 caiu de DY 3,5% para 1,44%** e é a mudança mais dura. O DY de 3,5% era premissa
+publicada; `25% (payout mínimo estatutário) × LPA TTM R$ 2,94` dá R$ 0,73. Os dois números
+nunca conviveram — agora um deles teve que ceder, e cedeu o que não tinha conta por trás.
+Dividendos retomados em fev/2026 após 5,5 anos: **n=1**, sem histórico para testar nada.
+
+### ⚠️ Dois defeitos que esta correção NÃO cobre
+
+**(1) UNITS na coluna de LPA.** As 17 linhas sem `data-payout` continuam com o DPS derivado do
+preço, e três delas são units, onde o LPA exibido é **por ação** e o DPS é **por unit**:
+
+| Ativo | LPA na tela | DPS | payout aparente | payout real |
+|---|---|---|---|---|
+| KLBN11 | 0,42 | 0,98 | **233%** | ~47% (÷4 ações/unit) |
+| SANB11 | 2,02 | 1,91 | **95%** | ~47% (÷2) |
+| BPAC11 | 1,82 | 1,27 | **23%** | ~70% (÷3) |
+
+É a **sexta** aparição do mesmo erro de units neste projeto. A correção definitiva é aplicar
+`FATOR_UNIT` na coluna 7, não caso a caso.
+
+**(2) SAUD3 com DPS R$ 0,76 sobre LPA R$ 0,38** — payout aparente de 200%, e o SAUD3 não é
+unit. Ou o DY publicado está errado, ou o LPA pós-incorporação ainda não estabilizou. Não
+resolvido.
+
+
+---
+
+## 16. Units na coluna de LPA, e o DY suprimido do SAUD3 (06/09/2026)
+
+### 16.1 A sexta aparição do erro de units — corrigida no lugar certo
+
+`FATOR_UNIT` agora existe em `js/config.js`, espelhando a tabela de `scripts/motor_teto.py`:
+
+| Unit | Composição | Ações/unit |
+|---|---|---|
+| KLBN11 | 1 ON + 4 PN | **5** |
+| SANB11 | 1 ON + 1 PN | **2** |
+| BPAC11 | 1 ON + 2 PN | **3** |
+
+O Partnr reporta LPA **por ação**; preço e dividendo negociados são **por unit**. A coluna 7
+misturava as duas bases.
+
+| Ativo | LPA antes | LPA agora | DPS | payout aparente antes | agora |
+|---|---|---|---|---|---|
+| SANB11 | 2,02 | **4,04** | 1,91 | **95%** | **47%** |
+| KLBN11 | 0,42 | **2,10** | 0,98 | **233%** | **47%** |
+| BPAC11 | 1,82 | **5,46** | 1,27 | 23% | **23%** |
+
+O BPAC11 confirma por fora: o motor de preço-teto calcula payout mediano de **24%** direto da
+DFP, e a coluna agora mostra 23%. Antes mostrava a mesma coisa por acidente — o erro de units
+e o payout baixo se cancelavam.
+
+A correção entrou em **dois lugares**, porque há dois caminhos até a célula:
+- `js/fundamentos.js` — aplica o fator ao sincronizar com o HIST_SEED
+- `data/radar-rows.data.js` — o valor estático das 3 linhas (elas têm `data-lpa-manual`, então
+  o sync não passa por cima)
+
+⚠️ E uma anotação **errada** foi corrigida: as três linhas diziam *"derivado do P/L da fonte —
+resolve a base de units"*. Não resolvia. `29,85 ÷ 1,92 = 15,5x` é o P/L **não corrigido** do
+SANB11; o corrigido é 7,7x. A nota afirmava uma correção que o número não tinha.
+
+### 16.2 SAUD3 — DY e dividendo suprimidos
+
+O DY de 5,21% da base implicava **R$ 0,76/ação de dividendo sobre LPA de R$ 0,38** — payout de
+**200%**, e a Bradsaúde não é unit, então não havia fator inteiro para explicar.
+
+**Causa: a mesma quebra de série.** Os dividendos do período foram pagos pela **ODONTOPREV**,
+com 545 mi de ações; o DY os divide pelo preço da **BRADSAUDE**, com 2.927 mi. Numerador de uma
+empresa, denominador de outra — exatamente o defeito que já tinha produzido o teto de R$ 3,71.
+
+As duas células passam a mostrar **"—"** com a explicação na tooltip. **Célula vazia é melhor
+que número errado.** O valor volta quando houver um exercício completo na base nova.
+
+### 16.3 Estado final da auditoria — 30 de 30
+
+Todas as linhas do Radar têm agora payout implícito (`DPS ÷ LPA`) dentro de faixa plausível.
+As 12 com `data-payout` fecham exatamente; as demais declaram "—" no payout em vez de afirmar
+uma relação que não existe.
+
+⚠️ **Fica um caso não resolvido:** o **SHUL4** tem DPS de R$ 0,04 e DY de 0,94%, um payout
+implícito de 5% — baixo demais para a Schulz. Provável DY desatualizado na linha, não erro
+estrutural. Não investigado.
+
+
+---
+
+## 17. O motor passa a poder dizer "não sei" (06/09/2026)
+
+Três correções, todas com causa nomeada antes de escrever uma linha de código.
+
+### 17.1 A trava de quebra de série existia em 2 dos 6 motores
+
+`teto_fin` e `teto_ep` chamavam `anos_validos()`. **`teto_ev`, `teto_bazin` e os motores de
+holding e shopping usavam a série inteira** — privatização e incorporação incluídas.
+
+⚠️ **Registro de erro meu:** eu disse ao usuário que o SBSP3 caía no fallback setorial por
+quebra de série. Não caía. **O motor de utility nunca consultou a função** — sempre usou os 6
+anos. A correção passa a restrição para dentro de `serie()`, que é por onde todos os motores
+leem histórico.
+
+### 17.2 `mediana_com_tendencia` chega ao motor de utility
+
+Eu havia escrito nesta metodologia que **não** aplicaria a regra fora de financeiras,
+argumentando que *"em cíclica a mediana precisa cobrir pico E fundo"*.
+
+**O argumento vale para cíclica de commodity, e eu o estendi para utility sem verificar.**
+Utility não oscila com preço de commodity — ela faz **re-rating estrutural** (privatização,
+revisão tarifária). A CLSC4 é a prova: EV/EBITDA subiu **3,15x → 5,70x de forma monotônica**
+em 6 anos. A mediana (≈4,2x) descreve uma empresa que deixou de existir.
+
+Junto entrou uma segunda trava: **dispersão do EBITDA**. Se o EBITDA da própria empresa varia
+mais de 2x dentro da janela, cada ano foi medido contra um denominador diferente e a mediana do
+múltiplo não descreve nada. O AXIA3 é o caso — EBITDA de R$ 8,5 bi a R$ 26,2 bi, EV/EBITDA de
+6,01x a 27,50x. O motor recusa em vez de devolver número.
+
+### 17.3 `LIM_MARGEM` — recusar em vez de rebaixar
+
+Existia uma guarda: margem além de ±100% rebaixava a convicção para ★☆☆. **Rebaixar não
+resolve.** O leitor via `R$ 51,72 ★☆☆` e lia um preço. A guarda agora **recusa**:
+
+> Margem além de ±100% não vira teto. Vira célula vazia, com o motivo escrito na tooltip.
+
+É a regra que o resto do projeto já seguia — *célula vazia é melhor que número errado* — e que
+só o preço-teto não obedecia.
+
+⚠️ **O limite é arbitrário e eu o declaro como tal.** 100% de margem significa que o motor acha
+que o papel vale metade (ou o dobro) do que o mercado paga. Divergências dessa ordem existem de
+verdade; mas com 6 anos de série e um Ke estimado eu não distingo convicção contrária ao mercado
+de motor quebrado — e **nas 5 vezes em que isso aconteceu neste projeto, era motor quebrado nas 5**.
+
+⚠️ **Segundo erro meu, na própria trava:** a primeira versão dividia pela cotação em vez de pelo
+teto. Dividir pelo preço limita a margem negativa a −100% por construção, e o SBSP3 (−512% na
+régua certa) aparecia como −84% e passava direto. A trava existia e não travava nada.
+
+### 17.4 Resultado
+
+| | antes | depois |
+|---|---|---|
+| Tetos publicados | 25 | **20** |
+| Recusas explícitas | 0 | **5** |
+| Margens além de ±100% | **5** | **0** |
+
+**Recusados:** SBSP3 (−512%), FIQE3 (−195%), IRBR3 (−121%), CLSC4 (−104%) e AURE3 (LPA negativo
+em 3 dos 6 anos, dívida 3,2 → 20,0 bi numa aquisição).
+
+**Corrigido sem recusa:** o **AXIA3** foi de −121% para **−23%** — a trava de quebra de série
+cortou os anos pré-reestruturação, e o EV/EBITDA saiu de cena pela dispersão do EBITDA.
+
+Distribuição final: **7 ★★★ · 6 ★★☆ · 7 ★☆☆ · 5 recusas.**
+
+⚠️ **O que continua valendo da seção 12:** nenhum destes motores venceu `1 ÷ P/L` no backtest.
+Esta seção deixa o motor **coerente**, não **validado**. O preço-teto segue fora dos critérios
+de decisão — é disciplina e detector de absurdo, não veredicto.
+
+
+---
+
+## 18. Holdings ganham motor, e o EV/EBITDA fica mais exigente (06/09/2026)
+
+Pergunta do usuário: *"o preço-teto de todas as ações está preenchido com metodologia
+correta?"* A resposta era **não — 20 de 30**. Cinco eram manuais, herdadas de análises antigas
+sem régua comum, e duas das 20 eu não defendia. Esta seção corrige as duas frentes.
+
+### 18.1 Motor de holding — paridade com a investida principal
+
+ITSA4 e BRAP4 estavam manuais, com a justificativa de que *"NAV exige o valor de mercado das
+investidas, que a base não traz"*. **Traz, para estes dois casos: a investida principal está no
+mesmo Radar.**
+
+| Holding | Investida | Razão preço/preço, 2021→2026 |
+|---|---|---|
+| ITSA4 | ITUB3 | 0,468 · 0,389 · 0,360 · 0,328 · 0,321 · 0,318 ← **desconto abrindo** |
+| BRAP4 | VALE3 | 0,321 · 0,334 · 0,332 · 0,304 · 0,277 · 0,285 ← estável |
+
+Essa razão **é o desconto de holding medido pelo próprio mercado**, ano a ano, sem eu estimar
+NAV nenhum. Ela passa por `mediana_com_tendencia` (a da Itaúsa tem tendência clara) e multiplica
+o **preço justo da investida calculado pelo próprio motor** — não o preço de mercado dela. A
+holding herda a avaliação fundamentalista da controlada, descontada pelo desconto que o mercado
+historicamente pratica.
+
+| Ativo | antes (manual) | agora | conv | cotação |
+|---|---|---|---|---|
+| ITSA4 | R$ 12,31 | **R$ 10,00** | ★☆☆ | R$ 13,68 |
+| BRAP4 | R$ 19,30 | **R$ 16,59** | ★★☆ | R$ 22,95 |
+
+⚠️ **Isto NÃO é um NAV, e a convicção é limitada a ★★☆ por isso.** Não enxerga os demais ativos
+da Itaúsa (Alpargatas, Dexco, NTS, Copa), não enxerga a dívida da holding, e **não sabe dizer se
+o par inteiro está caro**: se o motor errar no ITUB3, erra na ITSA4 junto, na mesma direção.
+
+### 18.2 EV/EBITDA: mínimo de 3 anos e dispersão de 1,7x
+
+O **AXIA3** tinha passado com teto de R$ 45,19 e **EV/EBITDA-alvo de 20,39x**, num setor cujos
+pares rodam entre 5x e 9x. Como: a trava de quebra de série cortou a janela para **2 anos**, e
+com dois pontos não existe mediana — existe extrapolação. Ele escapou da trava de dispersão por
+**0,1** (EBITDA variou 1,9x; o limite era 2,0x).
+
+Dois cortes novos, ambos só para não-cíclicas:
+- **mínimo de 3 anos válidos** de múltiplo e de EBITDA
+- **dispersão do EBITDA de 2,0x → 1,7x**
+
+⚠️ **1,7x também é arbitrário e eu declaro:** é o valor que reprova o caso que eu já sabia estar
+errado. Não foi testado contra retorno.
+
+O AXIA3 passa a **recusa**. O **PASS3** perdeu o motor de EV/EBITDA pelo mesmo corte (IPO em
+mai/2026, série curta) e ficou só com o Gordon: teto R$ 15,61 → **R$ 12,29**, ★☆☆.
+
+### 18.3 Estado final do Radar
+
+| Origem | Antes de hoje | Agora |
+|---|---|---|
+| ✅ Motor de setor, régua única | 20 | **21** |
+| ⛔ Recusa explícita, motivo escrito | 5 | **6** |
+| ⚠️ Manual, sem motor declarado | 5 | **3** |
+
+**Os 3 manuais restantes:** ALOS3 e MULT3 (shopping — exige cap rate de transação, que não
+existe em nenhuma base a que eu tenho acesso) e ROXO34 (BDR de banco digital sem histórico
+comparável).
+
+Convicção das 21: **7 ★★★ · 7 ★★☆ · 7 ★☆☆.**
+
+⚠️ Continua valendo o de sempre: **coerente não é validado**. Nenhum destes motores venceu
+`1 ÷ P/L` no backtest da seção 12, e o preço-teto segue fora dos critérios de decisão.
+
+
+---
+
+## 19. Consenso de N métodos — 30 de 30 (06/09/2026)
+
+**O usuário desmontou a arquitetura anterior**, e estava certo:
+
+> *"Não é porque o motor trouxe o número errado que vamos recusar. Toda ação tem que ter um
+> jeito de calcular o preço justo. Precisamos identificar o melhor jeito pra cada empresa —
+> por mais que o motor tenha mais de uma metodologia por empresa, pra uma validar a outra."*
+
+Meu erro tinha dois níveis. **Recusar não ajuda quem decide** — "não sei" é honesto sobre a
+minha incerteza e inútil para a pergunta que a tabela existe para responder. E o problema nunca
+foi "esta empresa não tem valor calculável": foi **"o método que EU escolhi para ela não serve"**.
+A resposta é trocar de método, não apagar a linha.
+
+### A nova arquitetura
+
+Todo ativo passa por **todos os métodos que o dado dele permite**, e o resultado é a **MEDIANA**:
+
+| Método | Depende de | Serve quando |
+|---|---|---|
+| E/P histórico | lucro | lucro estável |
+| EV/EBITDA | EBITDA | operação previsível |
+| Gordon/Bazin | lucro + payout | distribui de forma constante |
+| P/VP × ROE + lucro residual | patrimônio + ROE | financeiras |
+| **P/VP** (novo, universal) | **só patrimônio** | **prejuízo, lucro contábil distorcido** |
+| **EV/Receita** (novo, universal) | **só receita** | **margem colapsando, EBITDA volátil** |
+| Paridade com a investida | preço da controlada | holdings |
+| **Pares do setor** (novo, último recurso) | nada da empresa | série curta ou quebrada |
+
+**Mediana, não média.** A mediana ignora o método que enlouqueceu; a média não ignorava — foi
+assim que a CLSC4 saiu em R$ 102 (média de um EV/EBITDA de R$ 136 com um Gordon defeituoso de
+R$ 68), um número que **nenhum dos dois métodos defendia**.
+
+A convicção passa a medir **dispersão entre métodos**, que é a incerteza real: ★★★ = 3+ métodos
+dentro de 20%; ★★☆ = 2+ ou até 40%; ★☆☆ = método único ou grande divergência.
+
+### Quebra operacional — o buraco que a SBSP3 mostrou
+
+`ano_quebra` só enxergava a base **acionária**. A privatização da Sabesp em 2024 não emitiu ação
+nenhuma, e mesmo assim o EBITDA foi de **R$ 9,1 bi para R$ 18,2 bi (+99%)** e a receita de
+R$ 25,6 bi para R$ 36,1 bi (+41%). Multiplicador mediano de 6 anos misturava estatal com privada.
+
+Regra nova: salto de **+50% no EBITDA E +25% na receita** no mesmo ano marca mudança de regime.
+Exigir os dois evita confundir com um ano bom de margem. SBSP3: teto **R$ 4,28 → R$ 21,05**.
+
+### Três correções de conta que apareceram no caminho
+
+**1 · Contagem de papéis explodindo.** `lucro ÷ LPA` é instável quando o lucro se aproxima de
+zero. A KLBN11 tem LPA de R$ 0,09 em 2026 e o teto saiu em **R$ 3,46 contra cotação de R$ 19,40
+(−460%)** — erro de contagem, não de valuation. Agora é a **mediana** da contagem ao longo dos
+anos válidos.
+
+**2 · Units, sétima aparição.** `vpa()` devolvia patrimônio por **ação**, e o P/VP-alvo já vinha
+por **unit**. Multiplicar os dois errava por um fator inteiro (KLBN11: R$ 3,96 em vez de
+R$ 19,80). **A conversão agora mora dentro de `vpa()`, e só ali.**
+
+**3 · Método votando duas vezes.** `teto_fin` já usa P/VP como um dos seus três motores internos;
+somar `teto_pvp` de novo era a mesma leitura contando dobrado — no ITUB3 os dois davam
+exatamente R$ 41,51, o que denunciou a duplicata.
+
+### Métodos excluídos de propósito, por tipo de empresa
+
+**Cíclica de commodity — fora E/P e Gordon.** A KLBN11 tem LPA de R$ 0,09 no fundo do ciclo da
+celulose; E/P e Gordon davam R$ 4,62 e R$ 2,21 contra cotação de R$ 19,40. Não é a Klabin valendo
+um quarto — é o lucro de **um ano ruim** tratado como capacidade normal. Ficam EV/EBITDA sobre a
+**média de 6 anos**, EV/Receita e P/VP.
+
+**Holding — fora E/P e Gordon.** O "lucro" de holding é equivalência patrimonial e herda o ciclo
+da controlada amplificado. A BRAP4 dava E/P R$ 7,23 e Gordon R$ 8,36 contra paridade R$ 19,05 e
+P/VP R$ 22,95 — o lucro dela caiu de R$ 8,1 bi para R$ 0,6 bi acompanhando o minério.
+
+**Peer comp só quando não sobrou nada.** A primeira versão acionava com menos de 2 métodos, e o
+múltiplo de pares acabou votando nas financeiras — o BBSE3 caiu de R$ 29,04 para R$ 17,76 por um
+P/VP mediano que nada tem a ver com uma seguradora de ROE 79%. **Último recurso quer dizer último.**
+
+### Resultado
+
+| | antes | agora |
+|---|---|---|
+| Com preço-teto calculado | 21 | **30 de 30** |
+| Recusas | 6 | **0** |
+| Manuais sem motor | 3 | **0** |
+
+Convicção: **7 ★★★ · 8 ★★☆ · 15 ★☆☆.**
+
+Casos resolvidos que estavam sem número: **SBSP3 R$ 21,05** · **CLSC4 R$ 90,32** ·
+**AURE3 R$ 14,48** (P/VP dos pares — no múltiplo de EV a dívida de R$ 20 bi contra EBITDA de
+R$ 3,2 bi consome o equity inteiro, o que é informação real sobre a empresa) · **FIQE3 R$ 3,66** ·
+**AXIA3 R$ 22,61** · **IRBR3 R$ 25,75** · **ALOS3 R$ 19,61** · **MULT3 R$ 24,20** ·
+**ROXO34 R$ 3,12**.
+
+⚠️ **Três seguem com margem além de ±100%** — AXIA3 (−146%), IRBR3 (−121%) e ROXO34 (−297%).
+Não são mais recusas: são números publicados com ★☆☆ e aviso de MARGEM EXTREMA na tooltip. O
+ROXO34 é o mais frágil de todos: 1 ano de base, avaliado pelo P/VP mediano de bancos brasileiros
+tradicionais, o que ignora o crescimento e o ROE que justificam o prêmio do Nubank.
+
+⚠️ **E o de sempre:** nenhum destes métodos venceu `1 ÷ P/L` no backtest da seção 12. Agora o
+motor é **completo e coerente**. Continua **não validado**.
+
+
+---
+
+## 20. Payout calculado para todas as empresas com série (06/09/2026)
+
+Pergunta do usuário: *"por que tem empresa que não tem payout?"* — e depois: *"então calcule o
+payout das que não têm e coloque isso no motor."*
+
+### Como é calculado: por identidade, não por estimativa
+
+```
+DY × P/L = (DPS ÷ Preço) × (Preço ÷ LPA) = DPS ÷ LPA = payout
+```
+
+O preço **se cancela**. Uso DY e P/L porque os dois vêm prontos do Partnr — uma fonte, uma
+conta, zero estimativa minha. ⚠️ Em units, o P/L do Partnr divide preço-da-unit por LPA-por-ação
+e sai inflado pelo fator: sem corrigir, o BPAC11 dava **72%** em vez de 23%.
+
+### Duas tentativas erradas antes da que ficou
+
+**(1) Mediana simples** — tinha o mesmo defeito que eu já havia corrigido no ROE e no P/VP e
+não tinha trazido para cá. O ITUB3 denuncia: `22% · 22% · 30% · 50% · 112% · 68%`. A mediana dá
+**40%**; a análise da linha dizia 74%. O banco mudou de política no meio da série.
+
+**(2) Mediana com correção de tendência** — piorou. Nas cíclicas a metade **recente** é
+justamente onde estão os anos de lucro deprimido: KLBN11, VALE3, SBSP3, ALOS3 e BRAP4 todas
+bateram no teto de 100%. A KLBN11 tem P/L de **43,67x** em 2026 (fundo do ciclo da celulose) e
+isso devolve payout de **220%** sem a empresa ter distribuído nada de anormal — **o denominador
+é que sumiu**.
+
+**(3) Razão de ACUMULADOS — a que ficou.** `Σ dividendos ÷ Σ lucros` da janela válida. Um ano de
+lucro perto de zero contribui pouco para os **dois** lados e não domina. É também como a política
+é escrita na prática ("distribuímos X% do lucro"), medida ao longo do ciclo. Anos de prejuízo
+saem dos dois lados. Teto de 100%.
+
+### 13 linhas ganharam payout
+
+| Ativo | Payout | Anos | DY antes | DY agora |
+|---|---|---|---|---|
+| **PETR4** | **74%** | 6 | 6,24% | **13,59%** |
+| VALE3 | 66% | 6 | 6,26% | 8,06% |
+| SBSP3 | 64% | 3 | 10,67% | 7,02% |
+| BRAP4 | 60% | 6 | 9,53% | 11,07% |
+| KLBN11 | 54% | 6 | 5,04% | 5,83% |
+| ITSA4 | 54% | 6 | 9,94% | 6,78% |
+| SANB11 | 53% | 6 | 6,39% | 7,21% |
+| PSSA3 | 44% | 6 | 5,07% | 5,61% |
+| FLRY3 | 75% | 4 | 4,59% | 4,96% |
+| BRSR6 | 34% | 6 | 9,64% | 10,05% |
+| CLSC4 | 29% | 6 | 5,19% | 4,15% |
+| BPAC11 | 23% | 6 | 2,19% | 2,21% |
+| SHUL4 | 6% | 6 | 0,94% | 0,95% |
+
+⚠️ **O PETR4 é o caso a ler com cuidado.** Os 74% são o que a Petrobras **de fato** distribuiu
+entre 2021 e 2026 — mas a janela inclui a distribuição extraordinária de 2022 (DY de **64,98%**
+naquele ano). A política atual é ~45% de (FCO − capex). O DY de 13,59% descreve o passado
+recente, não um compromisso da empresa.
+
+⚠️ **O SHUL4 com 6% valida um alerta anterior.** Eu tinha flagrado o DPS de R$ 0,04 como
+"provável DY desatualizado". Não era: a Schulz distribui mesmo ~6% do lucro.
+
+### Cinco continuam sem payout, de propósito
+
+AURE3 (0 anos utilizáveis — prejuízo em 3 dos 6), ROXO34 e SAUD3 e PASS3 (1 ano cada) e AXIA3
+(2 anos). **Um ano não é política de dividendos, é um ponto.** Exijo 3 anos.
+
+### O que mudou no motor
+
+`payout_mediano()` é usada pelo **Gordon/Bazin** e pelo **P/VP×ROE** (via taxa de retenção), ou
+seja, os preços-teto de utilities, telecom e financeiras herdam a correção automaticamente.
+
+
+---
+
+## 21. Política declarada como RESTRIÇÃO, e o bug do `dy = 0` (06/09/2026)
+
+Proposta do usuário: *"a primeira regra do motor de payout deveria ser o que a empresa declara
+em sua política, e depois a mediana entre o que se enquadra."* A intenção está certa — guidance
+é compromisso e olha para frente; realizado é passado. **Mas a pesquisa nos RIs desmontou a
+aplicação literal.**
+
+### O que a pesquisa achou (06/09/2026, 30 empresas)
+
+**Das 30, só 7 têm compromisso formal acima do mínimo legal. E 4 desses 7 nem usam lucro
+líquido como base:**
+
+| Empresa | Política declarada | Base |
+|---|---|---|
+| PETR4 | 45% | **FCO − capex**, não lucro |
+| VALE3 | 30% | **EBITDA ajustado − investimento corrente** |
+| KLBN11 | 10-20% | **EBITDA ajustado** |
+| TIMS3 | R$ 5,3-5,5 bi (2026) | **valor absoluto em R$** |
+| CPFE3 | mínimo 50% | lucro líquido ajustado |
+| BRSR6 | 40% | lucro líquido |
+| SBSP3 | até 50% (2026-27) | lucro líquido ajustado |
+
+⚠️ **E quatro empresas têm documento chamado "política de dividendos" cujo conteúdo é o mínimo
+estatutário de 25% da Lei 6.404** — que toda S.A. brasileira tem: **ITUB3, BBSE3, IRBR3, AURE3**.
+Projetar o dividendo do Itaú por 25% seria usar a lei como se fosse a política da empresa.
+
+### O desenho que ficou: restrição, não substituição
+
+> A política entra como **piso ou teto** sobre o realizado, não no lugar dele. O realizado é a
+> estimativa; a política é o limite que a empresa se comprometeu a respeitar.
+
+| Tipo | Ação | Casos |
+|---|---|---|
+| **piso** | `max(realizado, política)` | CPFE3 (69% já acima do piso 50%), **BRSR6 34% → 40%** |
+| **teto** | `min(realizado, política)` | **SBSP3 64% → 50%** |
+| **estatutário** | usa realizado, marca que os 25% não são meta | ITUB3, BBSE3, IRBR3, AURE3 |
+| **outra base** | usa realizado como proxy, declara a conversão impossível | PETR4, VALE3, KLBN11, TIMS3 |
+| **não paga** | payout = 0 | ROXO34 |
+| **sem política** | realizado puro | as outras 18 |
+
+Cada linha ganhou `data-payout-fonte` e a tooltip diz **qual dos seis casos é**, com a fonte e a
+data do documento.
+
+### ⚠️ O bug que a pergunta expôs: `dy = 0` é dado faltando
+
+Fui conferir a CPFE3 para responder e não fechava: **nenhum ano dela tem payout abaixo de 55%**
+(110% · 72% · 60% · 55%) e o meu agregado dava **44%**.
+
+Causa: o Partnr traz **DY = 0 em 2025 e 2026** para a CPFL, que **pagou nos dois anos**. O zero
+entrava no numerador e o lucro inteiro no denominador.
+
+⚠️ **Eu já tinha tropeçado nesse mesmo zero antes e corrigido só na EXIBIÇÃO** — `js/fundamentos.js`
+mostra "—" em vez de "0,0%" justamente por causa da CPFE3. O cálculo continuou comendo o zero.
+Agora ano sem DY sai dos dois lados. **CPFE3: 44% → 69%.**
+
+⚠️ **Viés declarado:** empresa que genuinamente não pagou naquele ano também sai da conta, e o
+payout fica mais alto que a realidade. É o lado errado menos ruim — tratar dado ausente como
+zero produz números que nenhum ano da série sustenta.
+
+### Três defeitos encontrados ao ligar isto no motor
+
+**1 · `teto_bazin` tinha uma CÓPIA da lógica de payout**, com todos os defeitos já corrigidos na
+função oficial: sem correção de units, mediana das razões anuais em vez de razão de acumulados,
+e `dy=0` tratado como dividendo zero. **Duas fontes de verdade, e a errada alimentava o Gordon
+de utilities e telecom.** Agora só existe uma.
+
+**2 · Gordon precisa de piso de payout.** Com payout baixo o modelo desconta um dividendo
+minúsculo e **ignora o que a empresa faz com o lucro retido**. O SHUL4 (payout 6%) despencou
+para R$ 2,10 contra cotação de R$ 4,45 quando o método entrou na votação. **Abaixo de 20% o
+Gordon se retira** em vez de poluir a mediana.
+
+**3 · Sem série de dividendos, o motor inteiro morria.** O IRBR3 retomou dividendos há 1 ano;
+`payout = None` matava `teto_fin` e a empresa caía no peer comp bruto (**R$ 84,67** contra
+cotação de R$ 56,78). Agora falta de payout cai no **payout mediano dos pares** — premissa
+fraca, mas muito menos destrutiva que perder os três motores de valuation por um campo. IRBR3
+voltou a R$ 25,75.
+
+### Tetos que se moveram
+
+AXIA3 R$ 22,61 → **R$ 36,91** (★★☆) · ROXO34 R$ 3,12 → R$ 5,58 · LEVE3 R$ 28,04 → R$ 29,12 ·
+CPFE3 R$ 40,36 → R$ 38,12 · TIMS3 R$ 18,02 → R$ 17,72 · PASS3 R$ 14,40 → R$ 12,80.
+
+
+---
+
+## 22. Payout completo — 30 de 30, com a base declarada (06/09/2026)
+
+Pergunta do usuário: *"agora o payout está certo pra todas as empresas?"* A resposta era **não**,
+e a auditoria achou três defeitos.
+
+### ⚠️ Defeito 1 — a tela contradizia a metodologia (IRBR3)
+
+A linha do IRB mostrava **25%**, herdado da análise antiga. Na seção 21 **eu mesmo** classifiquei
+esses 25% como **mínimo estatutário da Lei 6.404, não política** — e o motor já tinha parado de
+usá-los. A tela dizia uma coisa e o cálculo fazia outra.
+
+É a pior categoria de erro deste projeto: **não parece errado.** Corrigido para **47%** (payout
+mediano dos pares), com a premissa escrita na tooltip.
+
+### ⚠️ Defeito 2 — 4 linhas escondiam uma premissa que o motor já usava
+
+AURE3, AXIA3, PASS3 e SAUD3 apareciam com "—". Mas o motor **já usava um payout nelas** (dos
+pares, ou de 2 anos de série). **Ou eu mostro, ou o motor não deveria usar.** As quatro passam
+a exibir, com o rótulo do que são.
+
+### ⚠️ Defeito 3 — payout de 2 anos parecia igual a payout de 6
+
+Um número de 6 anos e um de 2 anos tinham a mesma aparência. É o mesmo problema que o preço-teto
+tinha antes das estrelas de convicção. Agora **base com menos de 4 anos, ou vinda de pares,
+leva ⚠️ na própria célula**.
+
+### ⚠️ Defeito 4, achado ao implementar — precedência invertida no ROXO34
+
+O Nu Holdings saiu com **47%**: a mediana do payout dos **bancos brasileiros**. O fallback de
+pares era consultado **antes** da política declarada, e a Nu Holdings **não paga dividendo
+nenhum** — reinveste 100% e, sediada nas Cayman, não está sujeita ao mínimo obrigatório da Lei
+6.404. **Um fato declarado tem precedência sobre qualquer inferência por semelhança.** Corrigido
+para 0%: o retorno do ROXO34 é integralmente ganho de capital.
+
+### Estado final — hierarquia de confiança do payout
+
+| Base | Quantas | Marca |
+|---|---|---|
+| Série própria, 4-6 anos | 17 | — |
+| Política declarada como piso/teto | 3 | BRSR6, CPFE3, SBSP3 |
+| Realizado, política em outra base | 4 | PETR4, VALE3, KLBN11, TIMS3 |
+| Realizado, política só estatutária | 2 | ITUB3, BBSE3 |
+| Fato declarado (não paga) | 1 | ROXO34 |
+| **Base curta (2-3 anos)** | **2** | **⚠️ AXIA3, SBSP3** |
+| **Payout dos pares — não é da empresa** | **4** | **⚠️ AURE3, IRBR3, PASS3, SAUD3** |
+
+**6 das 30 carregam ⚠️.** As outras 24 têm base própria de 4 anos ou mais, ou um fato declarado.
+
+⚠️ **O que continua sendo verdade e não some com correção:** o payout realizado descreve o que a
+empresa **pagou**, não o que vai pagar. O caso mais gritante é o **PETR4 com 74%** — real para
+2021-2026, mas a janela inclui a distribuição extraordinária de 2022 (DY de **64,98%**), e a
+política atual é 45% de (FCO − capex). O DY de 13,59% descreve o passado recente, não um
+compromisso.
+
+
+---
+
+## 23. Auditoria de todos os campos do Radar (06/09/2026)
+
+Pedido do usuário: *"valide todos os campos da tabela e garanta que todos estejam de um motor
+com racional declarado e que não tem nada na mão. E que esteja tudo preenchido."*
+
+A auditoria varreu 30 linhas × 23 colunas. Achou quatro coisas, e três eram piores que "faltou
+tooltip".
+
+### ⚠️ 1 · O rótulo da coluna 4 mentia em 20 das 30 linhas
+
+Ela se chamava **"Lucro 2025 REAL"** e a maioria das linhas trazia o **LTM de 2026**. PETR4
+(R$ 133,76 bi), VALE3 (R$ 8,69 bi), KLBN11 (R$ 0,54 bi), SAUD3, AXIA3 e AURE3 batiam exatamente
+com o TTM 2T26, não com o exercício fechado de 2025. **Quem lesse a coluna como "o que a empresa
+ganhou em 2025" lia errado em dois terços da tabela.**
+
+Renomeada para **Lucro LTM**, e gerada da base para todas.
+
+### ⚠️ 2 · A coluna 5 empilhava duas grandezas diferentes
+
+Em algumas linhas era projeção de 2026 (CPFE3 R$ 6,10 bi); em outras já era lucro **normalizado
+de meio de ciclo** (VALE3 R$ 43,26 bi contra LTM de R$ 8,69 bi — **cinco vezes**; KLBN11
+R$ 2,51 bi contra R$ 0,54 bi). Duas definições na mesma coluna, ordenáveis juntas.
+
+Passa a ser **Lucro normalizado**, com um motor por setor — o mesmo que já alimentava a TIR real:
+
+| Tipo | Motor |
+|---|---|
+| indústria / serviço | receita atual × **margem líquida mediana** da série |
+| financeira | **ROE mediano × patrimônio líquido** |
+| shopping | **FFO** (FCO − capex) |
+| onde o Partnr publica lucro recorrente | usado direto |
+
+E a coluna 6 muda com ela: era "crescimento projetado", vira **distância do normalizado**
+(`LTM ÷ normalizado − 1`). **Não é previsão, é diagnóstico de ciclo.** A KLBN11 com −84% não vai
+cair 84%: está 84% abaixo do próprio padrão. A BPAC11 com +69% está ganhando acima dele.
+
+### ⚠️ 3 · Um TERCEIRO motor disputava as mesmas células
+
+`calcularLucroEstimado()` projetava lucro por **CAGR de 2 anos capado por setor** e escrevia nas
+colunas 4 e 5 sempre que a linha não tivesse `data-lucro-manual`. A CPFE3 exibia R$ 5,7 bi /
+R$ 6,1 bi (CAGR) em vez dos R$ 6,29 bi / R$ 6,05 bi do motor de setor.
+
+> **Terceira vez que este padrão aparece neste projeto.** Antes foi o `data-pl-hist`
+> recalculando o preço-teto por cima do motor, e o payout duplicado dentro do `teto_bazin`.
+> **Quando duas rotinas podem escrever a mesma célula, a que sobrevive é a última a rodar, não
+> a mais correta.** A função foi aposentada (mantida como código morto documentado).
+
+### ⚠️ 4 · O JS destruía as tooltips que o gerador escrevia
+
+Várias colunas apareciam sem ⓘ **mesmo tendo tooltip no HTML**: `cell.textContent = ...` apaga o
+`<span class="col-tip">` junto com o valor. **De nada adianta gerar o racional se o primeiro
+recálculo o remove.** Entrou `_celTip()`, que guarda a tooltip original no dataset e a reanexa
+em toda reescrita.
+
+### O que passou a ser gerado por motor
+
+`scripts/gerar_colunas.py` regenera as colunas **4, 5, 6, 7, 9 e 10** de duas fontes e só duas
+— HIST_SEED (Partnr/B3/CVM) e o lucro normalizado com motor declarado. **Nenhum número digitado.**
+
+Também passou a gerar o `data-lpa-ltm` de cada linha (lucro LTM ÷ papéis), que antes era curado
+à mão e envelhecia sozinho — foi essa defasagem que já tinha dado um P/L quase 2x errado na LEVE3.
+
+E as colunas 11 (DY realizado), 13 (ROE) e 14 (dívida/EBITDA) passaram a declarar fonte na
+própria célula, incluindo a explicação de por que dívida/EBITDA é vazio nas 8 financeiras.
+
+### Resultado
+
+| | antes | depois |
+|---|---|---|
+| Células sem racional declarado | **~180** | **0** |
+| Linhas com `data-lucro-manual` | 29 | **0** |
+| Motores escrevendo as colunas 4-5 | **3** | **1** |
+| Células vazias | 30 | **29, todas com o motivo escrito** |
+
+As 29 vazias são todas declaradas: 8 são dívida/EBITDA em financeira (não se aplica), 5 são TIR
+real sem base, e o resto se concentra em **ROXO34** (BDR com 1 ano de base, sem lucro consolidado
+na fonte) e **AURE3** (margem líquida mediana negativa — prejuízo em mais da metade dos anos
+válidos, então não existe "ano representativo" positivo para normalizar).
+
+⚠️ **A coluna 16 (Cotação) é a única exceção deliberada:** a fonte é idêntica em todas as linhas
+(cotação ao vivo) e a declaração está no cabeçalho. Anexar um `<span>` por célula quebraria as
+seis rotinas que leem o preço por `textContent`. Foi troca consciente, não esquecimento.
+
+
+---
+
+## 24. A TIR real deixa de ser snapshot (06/09/2026)
+
+Achado ao responder *"tem coisa pendente ainda?"*. A coluna 22 vinha de `data/tir.data.js`,
+um arquivo **estático escrito à mão em 05/09** — antes de todas as correções de payout daquele
+dia. **Doze empresas divergiam mais de 5 p.p.** do que o motor calculava:
+
+| Ativo | TIR usava | Motor | Δ |
+|---|---|---|---|
+| **AXIA3** | 43% | 93% | **+50 p.p.** |
+| **SBSP3** | 19% | 50% | **+31 p.p.** |
+| **LEVE3** | 57% | 86% | **+29 p.p.** |
+| SAUD3 · TIMS3 · ITSA4 | | | −16 a −17 |
+| ALOS3 · ITUB3 · PETR4 | | | ±9 a 11 |
+
+> **Quarta aparição do mesmo padrão: duas fontes de verdade para o mesmo conceito.** Antes foi
+> `data-pl-hist` recalculando o teto por cima do motor, o payout duplicado dentro do
+> `teto_bazin`, e `calcularLucroEstimado()` disputando as colunas de lucro. A diferença é que
+> aqui a segunda fonte é um ARQUIVO ESTÁTICO — ela não briga com a primeira, **ela envelhece em
+> silêncio**. É o modo mais perigoso da falha, porque nada quebra e nada avisa.
+
+`scripts/gerar_tir.py` regenera o arquivo a partir do motor. O payout vem de `payout_final()`,
+a mesma função que alimenta o preço-teto e a coluna de payout.
+
+### Dois defeitos que a regeneração expôs
+
+**1 · `g` negativo de −70% na KLBN11.** O CAGR do lucro herdado mede a queda até o fundo do
+ciclo da celulose, e o modelo o projetava como crescimento por 10 anos: a faixa saía **−58,1%
+a 3,5%**. **Cíclica não usa CAGR de lucro** — é o mesmo erro que já tirou o E/P e o Gordon do
+motor de preço-teto delas. Nelas o `g` vem só de ROE × retenção, que é estrutural.
+**KLBN11: 1,9% → 9,2%. VALE3: 3,7% → 10,4%.**
+
+**2 · Crescimento nominal negativo seguido de perpetuidade positiva.** O modelo dizia que a
+empresa encolhe por 10 anos e depois volta a crescer com a economia, sem nada explicando a
+virada. Entrou **piso de zero** — "estagnada em termos nominais", a hipótese conservadora
+defensável. ⚠️ É premissa, declarada como tal. CLSC4 e RANI3 subiram por causa dela.
+
+### O que NÃO foi regenerado, e por quê
+
+`cx` (medida de caixa: FCO − capex ÷ valor de mercado) e `gCagr` dependem de FCO, capex e lucro
+recorrente — campos que **não estão no HIST_SEED**, vieram de chamadas ao Partnr na época.
+São **herdados** do snapshot, e nenhum dos dois depende de payout. Cada linha ganhou um campo
+`fonte` dizendo de onde veio o payout, para o próximo leitor saber o que é fresco.
+
+### Resultado
+
+**28 das 30 com TIR real** (eram 25). Só ROXO34 e AURE3 continuam sem, ambas declaradas.
+
+| Maiores movimentos | antes | agora |
+|---|---|---|
+| VALE3 | 3,8% | **10,4%** |
+| KLBN11 | 3,1% | **9,2%** |
+| RANI3 | 11,8% | 13,8% |
+| BRAP4 | 16,7% | 12,9% |
+| SAUD3 | 11,5% | 7,9% |
+| BRSR6 | 16,9% | **18,7%** (topo da lista) |
+| SHUL4, PASS3, IRBR3 | *sem TIR* | **14,6% · 10,8% · 4,3%** |
+
+
+---
+
+## 25. Fim dos campos manuais (06/09/2026)
+
+Três limpezas depois de listar o que ainda não tinha motor.
+
+### 25.1 `cx` e `gCagr` deixam de ser herdados
+
+`data/fluxo.json` passa a trazer **FCO, capex e lucro recorrente** de 30 empresas, coletados do
+Partnr (`CASH_FLOW_STATEMENT` e `INCOME_STATEMENT`, TTM). A medida de caixa e o CAGR da TIR real
+deixam de vir do snapshot antigo.
+
+⚠️ **FCO − capex é calculado aqui, não lido do campo `FREE_CASH_FLOW`.** Esse campo é
+inconsistente com ele mesmo: no LEVE3 devolve **R$ 641,1 mi**, enquanto
+`OPERATING_CASH_FLOW (862,3) − CAPEX (114,1) = R$ 748,2 mi`, e o `FCF_PER_SHARE` do mesmo
+registro implica um terceiro valor (**R$ 577 mi**). Três números para a mesma grandeza no mesmo
+registro — usar as duas pontas e subtrair é a única forma auditável.
+
+### ⚠️ Duas regras que existiam de fato e não estavam escritas
+
+Ao trocar o herdado pelo calculado, as **financeiras ganharam `cx` e `gCagr` pela primeira vez**
+— e o resultado denunciou por que o snapshot antigo não as tinha:
+
+**`cx` não vale para banco.** BRSR6 saiu com faixa até **220,7%**, ITUB3 até 30,1%. O "fluxo de
+caixa operacional" de um banco inclui variação de depósitos e da carteira de crédito: captar
+R$ 10 bi entra como caixa gerado, e isso é **passivo novo, não lucro do acionista**.
+
+**`gCagr` não vale para banco.** O campo `RECURRING_NET_INCOME` devolve **R$ 112,5 bi para o
+ITUB3 em 2021** (o recorrente real foi ~R$ 26 bi) e vem **nulo em 2022 e 2024**. É a fórmula
+mecânica do Partnr, que não descreve banco. Com esse 2021 inflado o CAGR saía em −23% ao ano, o
+`g` do Itaú ia a zero e a TIR dele caía de 11,5% para **4,6%**.
+
+> **As duas regras já eram praticadas — o snapshot antigo simplesmente não tinha esses campos
+> nas financeiras. Mas não estavam escritas em lugar nenhum**, então sobreviveram por acidente
+> até alguém regenerar o arquivo. Agora estão no código, com o motivo.
+
+### 25.2 O veredicto deixa de ser opinião escrita à mão
+
+`data-veredicto` era o **último campo de opinião** da tabela: digitado linha a linha, de análises
+escritas em datas diferentes, e podia contradizer as colunas sem nada avisar — um "compra" de
+agosto ao lado de uma margem de −40% calculada hoje.
+
+Agora deriva do que a tabela já calcula:
+
+| | Regra |
+|---|---|
+| 🟢 **COMPRA** | margem ≥ 0 **E** TIR real mediana ≥ NTN-B **E** passa em todos os critérios |
+| 🟡 **AGUARDAR** | TIR real mediana ≥ NTN-B |
+| 🔴 **ACIMA** | TIR real mediana < NTN-B |
+
+⚠️ **A primeira versão usava o TOPO da faixa da TIR e classificou 23 de 30 como "aguardar"** —
+uma classificação que não classifica nada, porque `hi` é sempre a mais otimista das três
+medidas. Com a **mediana** (o consenso), a separação é 18 / 12.
+
+⚠️ **Nenhuma empresa acende verde hoje**, e eu não afrouxei a regra para produzir uma. A que
+chega mais perto é a **BRSR6**: margem +16% e TIR mediana de 18,7%, mas passa em 2 de 3
+critérios. O verde exige as três condições de propósito — um número que autoriza compra tem que
+ser difícil de acender.
+
+### 25.3 `data-lucro-manual` removido das 30 linhas
+
+Ele protegia as colunas de lucro contra a `calcularLucroEstimado()`, que foi aposentada.
+**Atributo que não protege mais nada é pior que inútil:** sugere a quem for auditar que existe
+um valor curado ali, e não existe.
+
+### O que ainda NÃO tem motor — a lista honesta
+
+| | O que é |
+|---|---|
+| `VPA_BALANCO` (BPAC11, SANB11) | lido à mão do balanço, porque o P/VP do Partnr erra em units |
+| `FATOR_UNIT` | fato societário (1 ON + n PN), não muda |
+| `MOTOR` | classificação minha de qual motor cada empresa usa — **já errei uma vez** (SAUD3) |
+| `POLITICA` | pesquisa nos RIs, com fonte e data por linha |
+| **Premissas** | juro real normalizado 5,5% · prêmio 5,0 p.p. · g = IPCA+2% · margens 10/15/25% · Ke 13-22% · cap de g 15% · LIM_MARGEM 100% · dispersão 1,7x · piso de payout do Gordon 20% |
+
+A mais influente é o **juro real normalizado de 5,5%**: move todos os tetos em bloco, e com a
+NTN-B spot de 7,70% eles cairiam ~25%. **Nenhuma dessas premissas foi testada contra retorno
+futuro.** Motor sem premissa não existe; o que dá para exigir é que ela esteja declarada e
+num lugar só — e está.
+
+
+---
+
+## 26. O `g` sai da tooltip e vira coluna, e o CAGR vira regressão (07/09/2026)
+
+Pergunta do usuário: *"as que estão com g 0 não crescem?"* — e depois: *"não é mais fácil
+calcular o g com base na média de crescimento dos últimos 5 anos?"*
+
+### ⚠️ A CLSC4 provou que o meu CAGR estava errado
+
+| Ano | Receita | Lucro contábil | Lucro recorrente |
+|---|---|---|---|
+| 2021 | 11,34 | 0,56 | 0,67 |
+| 2022 | 10,08 | 0,54 | **0,47** ← ano ruim isolado |
+| 2023 | 10,40 | 0,56 | 0,67 |
+| 2024 | 10,66 | 0,72 | 0,65 |
+| 2025 | 11,90 | 0,73 | 0,65 |
+| 2026 LTM | **12,52** | **0,88** | — |
+
+**Receita +10% e lucro contábil +57% em cinco anos.** A Celesc cresce. Mas o CAGR ponta-a-ponta
+via só `0,67 → 0,65 = −0,72%`, que o piso zerava. **O motor dizia "não cresce" sobre uma empresa
+que cresce.**
+
+### A armadilha da palavra "média"
+
+| Método | CLSC4 | SHUL4 | PASS3 | ALOS3 |
+|---|---|---|---|---|
+| CAGR de pontas | −0,7% | −3,1% | −14,2% | 29,8% |
+| **Média geométrica** | **−0,7%** | **−3,1%** | **−14,2%** | **29,8%** |
+| Média aritmética | +2,4% | +0,6% | −10,4% | **+59,7%** |
+| Mediana das variações | −1,0% | −2,2% | −2,4% | 14,7% |
+| **Regressão log** | **+2,8%** | −3,2% | −16,4% | 17,9% |
+
+⚠️ **Média geométrica é IDÊNTICA ao CAGR de pontas — em todas as 11 empresas.** Não é
+coincidência, é álgebra: o produto `(1+g₁)(1+g₂)…(1+gₙ)` **telescopa** para último÷primeiro.
+Os anos do meio se cancelam. Trocar por ela não mudaria um número.
+
+⚠️ **Média aritmética seria pior.** Viés de Jensen: subir 50% e cair 50% dá média zero e perda
+de 25%. Foi **maior que o real nas 11 de 11**, e na ALOS3 deu **59,7% contra 29,8%** — o ano da
+fusão puxa a média. Compondo 10 anos num DDM, é fantasia.
+
+⚠️ **Mediana esconderia queda monotônica.** A PASS3 sairia de −14,2% para −2,4%, quando ela
+perdeu **51% do lucro recorrente em quatro anos**. Robustez que apaga o fato não serve.
+
+**Ficou a regressão log**: usa todos os pontos, não telescopa, não tem viés de composição.
+Conserta a CLSC4 sem salvar quem realmente encolhe.
+
+| Ativo | g antes | g agora | TIR antes | TIR agora |
+|---|---|---|---|---|
+| **CLSC4** | 0,0% | **+2,8%** | 5,2% | **6,8%** |
+| LEVE3 | 1,5% | 0,3% | 12,8% | 12,0% |
+| CPFE3 | 4,3% | 3,1% | 8,9% | 8,4% |
+
+As outras 25 não se moveram — na maioria o `gRoe` já era o menor dos dois.
+
+### Coluna 23 · Crescimento, com o valor bruto ao lado
+
+O `g` movia a TIR inteira e só aparecia dentro de uma tooltip. Agora é coluna — e mostra
+**entre parênteses o valor bruto** quando o piso ou o teto está cortando, porque **é exatamente
+aí que está a informação escondida**:
+
+| Ativo | Exibido | Bruto | O que isso diz |
+|---|---|---|---|
+| BBSE3 | +15,0% | **+23,1%** | o teto está cortando |
+| BMEB4 | +15,0% | +19,6% | idem |
+| BPAC11 | +15,0% | +17,1% | idem |
+| **PASS3** | +0,0% | **−16,4%** | **está encolhendo** |
+| **SHUL4** | +0,0% | **−3,2%** | estagnada |
+
+⚠️ **Sem o bruto, PASS3 e SHUL4 pareciam idênticas na tela.** Uma anda de lado; a outra perdeu
+metade do lucro recorrente em quatro anos. O piso de zero continua no cálculo (por coerência do
+modelo), mas deixou de apagar o fato.
+
+E a **SHUL4 vira uma pergunta de investimento**: retém **94% do lucro** (payout de 6%) com
+**ROE de 17%**, e o lucro recorrente **cai 3,2% ao ano**. Para onde vai esse dinheiro?
+
+⚠️ **São 5 pontos de série.** Regressão sobre 5 observações é melhor que sobre 2 e continua
+frágil. É estimativa, não medida.
+
+## 27. Dois itens do punch-list de 06/09/2026: TIR ao vivo e ROXO34 (07/09/2026)
+
+Depois do `g` virar coluna, o usuário pediu a lista do que faltava em preço-teto e TIR. Saiu
+um punch-list de 11 itens; os três primeiros — TIR com cotação ao vivo, ROXO34, sensibilidade
+do juro real — foram aprovados para começar de imediato. Esta seção cobre os dois primeiros.
+
+### Item #8 · TIR real recalculando com a cotação ao vivo
+
+`data/tir.data.js` era gerado por `scripts/gerar_tir.py` com o preço do **data-base do
+HIST_SEED** (`preco`), não a cotação de hoje — e a tooltip da coluna dizia isso explicitamente:
+"Snapshot ... não recalcula com a cotação ao vivo". Um dia depois de gerado (07/09/2026), a
+defasagem já era:
+
+| Ativo | Defasagem |
+|---|---|
+| IRBR3 | −9,9% |
+| BBSE3 | −8,1% |
+| PASS3 | −6,3% |
+| CPFE3 | −5,5% |
+
+É o mesmo padrão que motivou o próprio `gerar_tir.py` um dia antes: um número que segue o
+motor, mas trava no preço do dia em que rodou, e piora sozinho sem que nada quebre.
+
+**A correção não recalcula tudo em Python a cada carregamento** — seria reintroduzir o mesmo
+problema do preço-teto de rodar o motor inteiro no navegador. Em vez disso, `cx`, `div` e `luc`
+só dependem do preço através do valor de mercado (cotação × papéis); `g`, `payout` e o lucro
+normalizado não dependem de preço nenhum. Então `gerar_tir.py` passou a exportar também `pap`
+(papéis), `d0` (dividendo por papel) e `fcfe` (FCO−capex nominal, não dividido por valor de
+mercado) — os insumos que sobrevivem à mudança de cotação — e `js/decisao.js` ganhou
+`_tirAoVivo()`, que recompõe as três medidas a cada render da linha usando a cotação do DOM,
+espelhando exatamente as fórmulas de `gerar_tir.py` (mesmo Fisher, mesmo DDM de dois estágios
+por busca binária). Testado numericamente: rodando os dois lados (Python e a réplica em Node)
+com o mesmo preço de geração, os três números batem ao centavo.
+
+O padrão é o mesmo de `calcularPrecoTeto()`/`atualizarPLAtualLinha()`: nada trava no preço do
+dia em que o motor rodou — tudo que depende de cotação recalcula quando ela muda.
+
+### Item #3 · ROXO34 — recusa declarada em vez de número extremo
+
+O ticker seguia com margem de **−122%** (teto R$ 5,58 contra cotação R$ 12,40) mesmo depois da
+arquitetura de consenso de N métodos. A causa não era discordância entre métodos — a nota do
+motor dizia "convicção pela dispersão", ou seja, Gordon, lucro residual e múltiplo próprio
+(P/VP-alvo) **concordavam** entre si. O problema é que os três corriam sobre **exatamente um
+ano de dado**: a Nu Holdings é BDR de empresa estrangeira (Nu Holdings Ltd, NYSE, sede nas
+Cayman), fora da cobertura B3/CVM que o MCP Partnr oferece, e a única linha em
+`data/historico.data.js` (2025, ROE 33%, P/VP 5,06x) foi lida à mão de um release — não há
+série para saber se é o padrão da empresa ou um ano atípico.
+
+Rodar um "consenso de 3 métodos" sobre `n=1` fabrica validação cruzada **aparente**, não real:
+os três concordam porque vêm da **mesma fonte única**, não porque fontes independentes bateram
+— exatamente o requisito de 2+ anos válidos (ou peer fallback) que o motor cobra de toda outra
+empresa da base, e que aqui não existe como cumprir.
+
+**Não é "achar um motor melhor"**: não há segunda fonte para checar a primeira. A correção foi
+adicionar um dicionário `SEM_TETO` em `scripts/motor_teto.py`, com o motivo escrito por
+extenso, e fazer `calcular()` devolver recusa declarada para quem está nele, antes de chamar
+o consenso de métodos:
+
+```python
+SEM_TETO = {
+    'ROXO34': ('BDR de empresa estrangeira ... A base tem exatamente 1 ano de dado ... '
+               'Sem segunda fonte independente, não há preço-teto defensável ...'),
+}
+```
+
+A célula de Preço Teto do ROXO34 agora mostra "—" com o motivo completo na tooltip, em vez de
+R$ 5,58. Payout, TIR real, ROE, P/L e as demais colunas continuam calculados normalmente — só
+o teto, que dependeria de extrapolar Gordon/lucro residual por 10 anos a partir de um único
+ponto, foi suprimido. Diferente da recusa por `LIM_MARGEM` (que hoje não dispara mais — ver
+seção 17), esta é uma recusa **por ticker, declarada por nome**, para um caso que nenhuma
+correção de motor resolve: falta de dado, não bug de motor.
+
+### Sensibilidade do juro real (5,5% vs NTN-B spot 7,70%) — informativo, sem mudança de premissa
+
+O terceiro item aprovado foi medir, não mudar: rodei o motor inteiro duas vezes, uma com
+`RF_REAL_NORM` na premissa atual (5,5%, perto da média histórica da NTN-B longa) e outra com
+a NTN-B spot (7,70%), e comparei os 29 tetos.
+
+Delta mediano no teto: **0,0%**. Mais da metade dos ativos usa só métodos que não passam por
+Ke (EV/EBITDA, EV/Receita, P/VP puro) e não se move. O efeito concentra em financeiras e nos
+poucos não-financeiros com peso forte de Gordon/lucro residual: BPAC11 −34%, ITUB3 −33%,
+SAUD3 −24%, AXIA3 −23%, PASS3 −23%, CXSE3 −20%, BMEB4 −20%.
+
+Dois ativos **mudam de lado** (teto passa de acima para abaixo da cotação) entre as duas
+premissas: **BRSR6** e **PSSA3**. Nestes dois, a classificação "compra" vs "acima" depende de
+qual premissa de juro real se usa — é fragilidade real do modelo, não ruído, e fica registrada
+aqui para quem for revisar `RF_REAL_NORM` no futuro. A premissa em produção continua 5,5%;
+nada em `motor_teto.py` mudou nesta seção.
+
+## 28. FCFE de verdade (07/09/2026)
+
+A medida CAIXA da TIR real (`cx`) usava (FCO − capex) ÷ valor de mercado do equity como proxy
+de "quanto sobra para o acionista". Isso é **FCFF** — fluxo de caixa livre para a FIRMA inteira
+(dívida + equity) — não **FCFE** (fluxo livre para o EQUITY), e dividir um numerador de firma
+por um denominador de equity distorce nos dois sentidos: quem está pagando dívida tem uma
+fatia do FCO indo para o credor, que nunca chega ao acionista, e a medida superestima; quem
+está alavancando recebe caixa que não veio do negócio mas ainda chega ao acionista (via
+investimento, recompra, dividendo futuro), e a medida subestima.
+
+O caso que expôs isto: a PETR4 pagou **R$ 17,5 bi de dívida bruta líquida** no período TTM —
+caixa que entrou pela operação (FCO) mas saiu para o credor. O FCO−capex bruto (R$ 109,4 bi)
+superestimava o FCFE real (R$ 91,9 bi) em 16%.
+
+**Correção**: `FCFE = FCO − capex + Δdívida bruta`, com Δ calculado entre os dois anos mais
+recentes e CONSECUTIVOS da base (`delta_divida_bruta()`, `scripts/motor_teto.py`), restrito a
+depois da última quebra (`anos_validos`) — dívida de antes de uma incorporação ou privatização
+é consolidação contábil, não financiamento orgânico. Usei dívida BRUTA, não líquida: a líquida
+já embute caixa, que está do lado errado da equação e dobraria a contagem.
+
+Sem 2 anos consecutivos de dívida bruta na base, a função cai para o FCO−capex bruto (mais
+informação que nenhuma) e marca isso no campo `fcfeAjustada: false` — a tooltip da TIR real
+mostra o aviso "⚠️ sem dívida de 2 anos consecutivos — FCFF, não FCFE" nesses casos.
+
+Efeito nos 28 ativos regenerados: mediana do `cx` pouco se move (a maioria das empresas tem
+dívida estável ano a ano), mas alguns saltam — SBSP3 (TIR mediana 6,2%→11,6%, dívida bruta
++R$ 11,5 bi financiando o programa de investimento pós-privatização), FIQE3 (8,5%→19,2%,
++R$ 0,5 bi), KLBN11 (9,2%→11,9%, −R$ 1,9 bi de dívida), AXIA3 (2,8%→0,8%, −R$ 3,3 bi) e CLSC4
+(6,8%→5,2%, +R$ 0,7 bi). Nenhum é bug: é exatamente a distinção que FCFF vs FCFE deveria fazer
+— empresa alavancando aparece com caixa a mais para o acionista, empresa desalavancando com
+caixa a menos, e antes da correção nenhuma das duas aparecia.
