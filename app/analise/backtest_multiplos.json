@@ -1,0 +1,1214 @@
+[
+ {
+  "ano": 2021,
+  "ticker": "BBSE3",
+  "ret": 0.7191287710843374,
+  "L/P (earnings yield)": 0.08733624454148473,
+  "VP/P (book yield)": 0.18761726078799248,
+  "Dividend yield": 0.048
+ },
+ {
+  "ano": 2021,
+  "ticker": "BMEB4",
+  "ret": -0.030969032258064536,
+  "L/P (earnings yield)": 0.16051364365971107,
+  "VP/P (book yield)": 0.9803921568627451,
+  "Dividend yield": 0.050300000000000004
+ },
+ {
+  "ano": 2021,
+  "ticker": "BPAC11",
+  "ret": 0.16667600000000007,
+  "L/P (earnings yield)": 0.02498126405196103,
+  "VP/P (book yield)": 0.14836795252225518,
+  "Dividend yield": 0.0149
+ },
+ {
+  "ano": 2021,
+  "ticker": "BRAP4",
+  "ret": 0.26562721088435376,
+  "L/P (earnings yield)": 0.7751937984496123,
+  "VP/P (book yield)": 0.7194244604316548,
+  "EBITDA/EV": 0.819672131147541,
+  "EBIT/EV": 0.819672131147541,
+  "Dividend yield": 0.4788
+ },
+ {
+  "ano": 2021,
+  "ticker": "BRSR6",
+  "ret": 0.07494093264248694,
+  "L/P (earnings yield)": 0.22026431718061673,
+  "VP/P (book yield)": 2.127659574468085,
+  "Dividend yield": 0.0863
+ },
+ {
+  "ano": 2021,
+  "ticker": "CLSC4",
+  "ret": -0.12585968524783048,
+  "L/P (earnings yield)": 0.25380710659898476,
+  "VP/P (book yield)": 1.1764705882352942,
+  "EBITDA/EV": 0.31746031746031744,
+  "EBIT/EV": 0.24267989677955404,
+  "Dividend yield": 0.0501
+ },
+ {
+  "ano": 2021,
+  "ticker": "CPFE3",
+  "ret": 0.36376146105106244,
+  "L/P (earnings yield)": 0.12626262626262627,
+  "VP/P (book yield)": 0.4366812227074236,
+  "EBITDA/EV": 0.151285930408472,
+  "EBIT/EV": 0.1263598637618739,
+  "Dividend yield": 0.1394
+ },
+ {
+  "ano": 2021,
+  "ticker": "CXSE3",
+  "ret": 0.07641088516746412,
+  "L/P (earnings yield)": 0.07194244604316546,
+  "VP/P (book yield)": 0.4310344827586207,
+  "EBITDA/EV": 0.08264462809917356,
+  "EBIT/EV": 0.08264345593899419,
+  "Dividend yield": 0.029300000000000003
+ },
+ {
+  "ano": 2021,
+  "ticker": "FIQE3",
+  "ret": -0.3967409090909091,
+  "L/P (earnings yield)": 0.0488997555012225,
+  "VP/P (book yield)": 0.5813953488372093,
+  "EBITDA/EV": 0.16025641025641024,
+  "EBIT/EV": 0.09212274772854637,
+  "Dividend yield": 0.017
+ },
+ {
+  "ano": 2021,
+  "ticker": "FLRY3",
+  "ret": -0.12633212896053359,
+  "L/P (earnings yield)": 0.07513148009015777,
+  "VP/P (book yield)": 0.3968253968253968,
+  "EBITDA/EV": 0.13908205841446453,
+  "EBIT/EV": 0.0878376072293399,
+  "Dividend yield": 0.061500000000000006
+ },
+ {
+  "ano": 2021,
+  "ticker": "ITSA4",
+  "ret": -0.014726875699888009,
+  "L/P (earnings yield)": 0.16474464579901152,
+  "VP/P (book yield)": 0.8620689655172414,
+  "EBITDA/EV": 0.1594896331738437,
+  "EBIT/EV": 0.151156793232349,
+  "Dividend yield": 0.045899999999999996
+ },
+ {
+  "ano": 2021,
+  "ticker": "ITUB3",
+  "ret": 0.1826792037716082,
+  "L/P (earnings yield)": 0.13297872340425532,
+  "VP/P (book yield)": 0.7692307692307692,
+  "Dividend yield": 0.029300000000000003
+ },
+ {
+  "ano": 2021,
+  "ticker": "KLBN11",
+  "ret": -0.16290989867498057,
+  "L/P (earnings yield)": 0.15037593984962405,
+  "VP/P (book yield)": 0.31347962382445144,
+  "EBITDA/EV": 0.18832391713747648,
+  "EBIT/EV": 0.1264231259161833,
+  "Dividend yield": 0.0345
+ },
+ {
+  "ano": 2021,
+  "ticker": "LEVE3",
+  "ret": 0.1559729545454545,
+  "L/P (earnings yield)": 0.1811594202898551,
+  "VP/P (book yield)": 0.5464480874316939,
+  "EBITDA/EV": 0.2710027100271003,
+  "EBIT/EV": 0.23794175314327035,
+  "Dividend yield": 0.0347
+ },
+ {
+  "ano": 2021,
+  "ticker": "MULT3",
+  "ret": 0.18999358974358976,
+  "L/P (earnings yield)": 0.03210272873194222,
+  "VP/P (book yield)": 0.4504504504504504,
+  "EBITDA/EV": 0.05165289256198347,
+  "EBIT/EV": 0.0388709140574769,
+  "Dividend yield": 0.0165
+ },
+ {
+  "ano": 2021,
+  "ticker": "PETR4",
+  "ret": 0.4207416520210897,
+  "L/P (earnings yield)": 0.2570694087403599,
+  "VP/P (book yield)": 0.9345794392523364,
+  "EBITDA/EV": 0.39840637450199207,
+  "EBIT/EV": 0.2993457389259782,
+  "Dividend yield": 0.1469
+ },
+ {
+  "ano": 2021,
+  "ticker": "PSSA3",
+  "ret": 0.1518563575525811,
+  "L/P (earnings yield)": 0.11862396204033215,
+  "VP/P (book yield)": 0.7194244604316548,
+  "EBITDA/EV": 0.12210012210012211,
+  "EBIT/EV": 0.10742672272135582,
+  "Dividend yield": 0.0868
+ },
+ {
+  "ano": 2021,
+  "ticker": "RANI3",
+  "ret": 0.2558,
+  "L/P (earnings yield)": 0.16025641025641024,
+  "VP/P (book yield)": 0.5376344086021505,
+  "EBITDA/EV": 0.20161290322580647,
+  "EBIT/EV": 0.16633175194311198,
+  "Dividend yield": 0.054400000000000004
+ },
+ {
+  "ano": 2021,
+  "ticker": "SANB11",
+  "ret": -0.0028187124749832967,
+  "L/P (earnings yield)": 0.07757951900698215,
+  "VP/P (book yield)": 0.42016806722689076,
+  "Dividend yield": 0.0944
+ },
+ {
+  "ano": 2021,
+  "ticker": "SAUD3",
+  "ret": -0.262765,
+  "L/P (earnings yield)": 0.06596306068601583,
+  "VP/P (book yield)": 0.19379844961240308,
+  "EBITDA/EV": 0.1004016064257028,
+  "EBIT/EV": 0.09015045957509932,
+  "Dividend yield": 0.039
+ },
+ {
+  "ano": 2021,
+  "ticker": "SBSP3",
+  "ret": 0.44607117969138865,
+  "L/P (earnings yield)": 0.07651109410864575,
+  "VP/P (book yield)": 0.8264462809917356,
+  "EBITDA/EV": 0.1347708894878706,
+  "EBIT/EV": 0.08695370414006129,
+  "Dividend yield": 0.0077
+ },
+ {
+  "ano": 2021,
+  "ticker": "TIMS3",
+  "ret": 0.0015239543726235719,
+  "L/P (earnings yield)": 0.08984725965858041,
+  "VP/P (book yield)": 0.7633587786259541,
+  "EBITDA/EV": 0.29940119760479045,
+  "EBIT/EV": 0.11902970731909575,
+  "Dividend yield": 0.0321
+ },
+ {
+  "ano": 2021,
+  "ticker": "VALE3",
+  "ret": 0.22797136993329914,
+  "L/P (earnings yield)": 0.3115264797507788,
+  "VP/P (book yield)": 0.5050505050505051,
+  "EBITDA/EV": 0.3921568627450981,
+  "EBIT/EV": 0.351430375211322,
+  "Dividend yield": 0.1808
+ },
+ {
+  "ano": 2022,
+  "ticker": "AURE3",
+  "ret": 0.16600298710115408,
+  "L/P (earnings yield)": 0.17006802721088435,
+  "VP/P (book yield)": 0.970873786407767,
+  "EBITDA/EV": 0.10660980810234541,
+  "EBIT/EV": 0.0752355965089991,
+  "Dividend yield": 0.0063
+ },
+ {
+  "ano": 2022,
+  "ticker": "BBSE3",
+  "ret": 0.10133625037080979,
+  "L/P (earnings yield)": 0.08103727714748785,
+  "VP/P (book yield)": 0.1402524544179523,
+  "Dividend yield": 0.0582
+ },
+ {
+  "ano": 2022,
+  "ticker": "BMEB4",
+  "ret": 0.7432772455089822,
+  "L/P (earnings yield)": 0.19083969465648853,
+  "VP/P (book yield)": 1.2987012987012987,
+  "Dividend yield": 0.0493
+ },
+ {
+  "ano": 2022,
+  "ticker": "BPAC11",
+  "ret": 0.6021168755221387,
+  "L/P (earnings yield)": 0.02855511136493432,
+  "VP/P (book yield)": 0.15432098765432098,
+  "Dividend yield": 0.023399999999999997
+ },
+ {
+  "ano": 2022,
+  "ticker": "BRAP4",
+  "ret": -0.008394683714670226,
+  "L/P (earnings yield)": 0.4291845493562232,
+  "VP/P (book yield)": 0.8620689655172414,
+  "EBITDA/EV": 0.4504504504504504,
+  "EBIT/EV": 0.4504504504504504,
+  "Dividend yield": 0.0642
+ },
+ {
+  "ano": 2022,
+  "ticker": "BRSR6",
+  "ret": 0.4496448453608248,
+  "L/P (earnings yield)": 0.18248175182481752,
+  "VP/P (book yield)": 2.0833333333333335,
+  "Dividend yield": 0.0694
+ },
+ {
+  "ano": 2022,
+  "ticker": "CLSC4",
+  "ret": 0.2393160714285713,
+  "L/P (earnings yield)": 0.2801120448179272,
+  "VP/P (book yield)": 1.4925373134328357,
+  "EBITDA/EV": 0.30959752321981426,
+  "EBIT/EV": 0.2300230425838849,
+  "Dividend yield": 0.0613
+ },
+ {
+  "ano": 2022,
+  "ticker": "CPFE3",
+  "ret": 0.26236243975903595,
+  "L/P (earnings yield)": 0.14265335235378032,
+  "VP/P (book yield)": 0.47846889952153115,
+  "EBITDA/EV": 0.2053388090349076,
+  "EBIT/EV": 0.17578257581852832,
+  "Dividend yield": 0.10210000000000001
+ },
+ {
+  "ano": 2022,
+  "ticker": "CXSE3",
+  "ret": 0.6655676646706588,
+  "L/P (earnings yield)": 0.10183299389002036,
+  "VP/P (book yield)": 0.4694835680751174,
+  "EBITDA/EV": 0.11547344110854503,
+  "EBIT/EV": 0.11547302391473342,
+  "Dividend yield": 0.07769999999999999
+ },
+ {
+  "ano": 2022,
+  "ticker": "FIQE3",
+  "ret": 0.054076153846153927,
+  "L/P (earnings yield)": 0.10548523206751054,
+  "VP/P (book yield)": 0.8064516129032259,
+  "EBITDA/EV": 0.2785515320334262,
+  "EBIT/EV": 0.1468212365033335,
+  "Dividend yield": 0.0209
+ },
+ {
+  "ano": 2022,
+  "ticker": "ITSA4",
+  "ret": 0.3294559341950646,
+  "L/P (earnings yield)": 0.1620745542949757,
+  "VP/P (book yield)": 0.8771929824561404,
+  "EBITDA/EV": 0.17271157167530224,
+  "EBIT/EV": 0.16372055890238557,
+  "Dividend yield": 0.0339
+ },
+ {
+  "ano": 2022,
+  "ticker": "ITUB3",
+  "ret": 0.36663919597989947,
+  "L/P (earnings yield)": 0.14556040756914118,
+  "VP/P (book yield)": 0.8403361344537815,
+  "Dividend yield": 0.031400000000000004
+ },
+ {
+  "ano": 2022,
+  "ticker": "KLBN11",
+  "ret": 0.167078517776665,
+  "L/P (earnings yield)": 0.2183406113537118,
+  "VP/P (book yield)": 0.5376344086021505,
+  "EBITDA/EV": 0.2222222222222222,
+  "EBIT/EV": 0.1507947785148148,
+  "Dividend yield": 0.0756
+ },
+ {
+  "ano": 2022,
+  "ticker": "LEVE3",
+  "ret": 0.4968677933051675,
+  "L/P (earnings yield)": 0.14245014245014245,
+  "VP/P (book yield)": 0.4,
+  "EBITDA/EV": 0.2053388090349076,
+  "EBIT/EV": 0.18123657592907416,
+  "Dividend yield": 0.15710000000000002
+ },
+ {
+  "ano": 2022,
+  "ticker": "MULT3",
+  "ret": 0.33677817351598194,
+  "L/P (earnings yield)": 0.05192107995846313,
+  "VP/P (book yield)": 0.4444444444444444,
+  "EBITDA/EV": 0.07558578987150416,
+  "EBIT/EV": 0.06333141729810046,
+  "Dividend yield": 0.0172
+ },
+ {
+  "ano": 2022,
+  "ticker": "PETR4",
+  "ret": 0.7788560000000002,
+  "L/P (earnings yield)": 0.5681818181818182,
+  "VP/P (book yield)": 1.0989010989010988,
+  "EBITDA/EV": 0.625,
+  "EBIT/EV": 0.49789205308412027,
+  "Dividend yield": 0.6498
+ },
+ {
+  "ano": 2022,
+  "ticker": "PSSA3",
+  "ret": 0.28678228941684664,
+  "L/P (earnings yield)": 0.07468259895444361,
+  "VP/P (book yield)": 0.6896551724137931,
+  "EBITDA/EV": 0.07627765064836003,
+  "EBIT/EV": 0.05441524359087468,
+  "Dividend yield": 0.0409
+ },
+ {
+  "ano": 2022,
+  "ticker": "RANI3",
+  "ret": 0.4739965217391303,
+  "L/P (earnings yield)": 0.17699115044247787,
+  "VP/P (book yield)": 0.5263157894736842,
+  "EBITDA/EV": 0.21052631578947367,
+  "EBIT/EV": 0.17876413813131464,
+  "Dividend yield": 0.0764
+ },
+ {
+  "ano": 2022,
+  "ticker": "SANB11",
+  "ret": 0.20182582476055325,
+  "L/P (earnings yield)": 0.09066183136899365,
+  "VP/P (book yield)": 0.5524861878453039,
+  "Dividend yield": 0.0605
+ },
+ {
+  "ano": 2022,
+  "ticker": "SAUD3",
+  "ret": 0.32311007751937987,
+  "L/P (earnings yield)": 0.0794912559618442,
+  "VP/P (book yield)": 0.20876826722338204,
+  "EBITDA/EV": 0.10695187165775401,
+  "EBIT/EV": 0.10123440313149608,
+  "Dividend yield": 0.0287
+ },
+ {
+  "ano": 2022,
+  "ticker": "SBSP3",
+  "ret": 0.336643964310707,
+  "L/P (earnings yield)": 0.09425070688030161,
+  "VP/P (book yield)": 0.8264462809917356,
+  "EBITDA/EV": 0.14124293785310735,
+  "EBIT/EV": 0.0924598940517008,
+  "Dividend yield": 0.0165
+ },
+ {
+  "ano": 2022,
+  "ticker": "TIMS3",
+  "ret": 0.509301129032258,
+  "L/P (earnings yield)": 0.04926108374384236,
+  "VP/P (book yield)": 0.7462686567164178,
+  "EBITDA/EV": 0.2577319587628866,
+  "EBIT/EV": 0.08154640227131059,
+  "Dividend yield": 0.0621
+ },
+ {
+  "ano": 2022,
+  "ticker": "VALE3",
+  "ret": -0.04142754275427536,
+  "L/P (earnings yield)": 0.3021148036253776,
+  "VP/P (book yield)": 0.6097560975609756,
+  "EBITDA/EV": 0.2958579881656805,
+  "EBIT/EV": 0.2504279616074411,
+  "Dividend yield": 0.0771
+ },
+ {
+  "ano": 2023,
+  "ticker": "ALOS3",
+  "ret": -0.25888832391713756,
+  "L/P (earnings yield)": 0.2958579881656805,
+  "VP/P (book yield)": 1.282051282051282,
+  "EBITDA/EV": 0.5181347150259068,
+  "EBIT/EV": 0.4599692317437218,
+  "Dividend yield": 0.0252
+ },
+ {
+  "ano": 2023,
+  "ticker": "AURE3",
+  "ret": -0.3368140495867769,
+  "VP/P (book yield)": 1.0526315789473684,
+  "EBITDA/EV": 0.1152073732718894,
+  "EBIT/EV": 0.07211118056930392,
+  "Dividend yield": 0.2904
+ },
+ {
+  "ano": 2023,
+  "ticker": "AXIA3",
+  "ret": -0.1629583313693141,
+  "L/P (earnings yield)": 0.04812319538017324,
+  "VP/P (book yield)": 1.2345679012345678,
+  "EBITDA/EV": 0.11160714285714285,
+  "EBIT/EV": 0.08831464857823229,
+  "Dividend yield": 0.005600000000000001
+ },
+ {
+  "ano": 2023,
+  "ticker": "BBSE3",
+  "ret": 0.15388933135215457,
+  "L/P (earnings yield)": 0.11376564277588169,
+  "VP/P (book yield)": 0.1584786053882726,
+  "Dividend yield": 0.1033
+ },
+ {
+  "ano": 2023,
+  "ticker": "BMEB4",
+  "ret": 1.3288738898756658,
+  "L/P (earnings yield)": 0.1893939393939394,
+  "VP/P (book yield)": 0.7751937984496123,
+  "Dividend yield": 0.0342
+ },
+ {
+  "ano": 2023,
+  "ticker": "BPAC11",
+  "ret": -0.2638425950545068,
+  "L/P (earnings yield)": 0.02573340195573855,
+  "VP/P (book yield)": 0.12804097311139565,
+  "Dividend yield": 0.019799999999999998
+ },
+ {
+  "ano": 2023,
+  "ticker": "BRAP4",
+  "ret": -0.27884107560405313,
+  "L/P (earnings yield)": 0.23980815347721823,
+  "VP/P (book yield)": 0.9900990099009901,
+  "EBITDA/EV": 0.24213075060532688,
+  "EBIT/EV": 0.24213075060532688,
+  "Dividend yield": 0.1485
+ },
+ {
+  "ano": 2023,
+  "ticker": "BRSR6",
+  "ret": -0.17559550561797754,
+  "L/P (earnings yield)": 0.22831050228310504,
+  "VP/P (book yield)": 2.2222222222222223,
+  "Dividend yield": 0.0533
+ },
+ {
+  "ano": 2023,
+  "ticker": "CLSC4",
+  "ret": 0.3040137719969397,
+  "L/P (earnings yield)": 0.2173913043478261,
+  "VP/P (book yield)": 1.1494252873563218,
+  "EBITDA/EV": 0.2320185614849188,
+  "EBIT/EV": 0.16782372749824756,
+  "Dividend yield": 0.062
+ },
+ {
+  "ano": 2023,
+  "ticker": "CPFE3",
+  "ret": -0.12292838223837962,
+  "L/P (earnings yield)": 0.14705882352941177,
+  "VP/P (book yield)": 0.5319148936170213,
+  "EBITDA/EV": 0.20920502092050208,
+  "EBIT/EV": 0.1773815810157968,
+  "Dividend yield": 0.0883
+ },
+ {
+  "ano": 2023,
+  "ticker": "CXSE3",
+  "ret": 0.1881627906976744,
+  "L/P (earnings yield)": 0.09115770282588878,
+  "VP/P (book yield)": 0.33003300330033003,
+  "EBITDA/EV": 0.10131712259371835,
+  "EBIT/EV": 0.10131704566797854,
+  "Dividend yield": 0.0781
+ },
+ {
+  "ano": 2023,
+  "ticker": "FIQE3",
+  "ret": -0.07201754385964917,
+  "L/P (earnings yield)": 0.11198208286674133,
+  "VP/P (book yield)": 0.8474576271186441,
+  "EBITDA/EV": 0.32679738562091504,
+  "EBIT/EV": 0.16460748194705507,
+  "Dividend yield": 0.030299999999999997
+ },
+ {
+  "ano": 2023,
+  "ticker": "IRBR3",
+  "ret": -0.04176072234762967,
+  "L/P (earnings yield)": 0.010325245224574084,
+  "VP/P (book yield)": 1.1494252873563218,
+  "Dividend yield": 0.0
+ },
+ {
+  "ano": 2023,
+  "ticker": "ITSA4",
+  "ret": -0.07621340405014457,
+  "L/P (earnings yield)": 0.1336898395721925,
+  "VP/P (book yield)": 0.8333333333333334,
+  "EBITDA/EV": 0.1400560224089636,
+  "EBIT/EV": 0.12928107262792596,
+  "Dividend yield": 0.091
+ },
+ {
+  "ano": 2023,
+  "ticker": "ITUB3",
+  "ret": 0.0006352288488210428,
+  "L/P (earnings yield)": 0.12360939431396786,
+  "VP/P (book yield)": 0.7246376811594204,
+  "Dividend yield": 0.0373
+ },
+ {
+  "ano": 2023,
+  "ticker": "KLBN11",
+  "ret": 0.10894329432943298,
+  "L/P (earnings yield)": 0.10787486515641856,
+  "VP/P (book yield)": 0.5208333333333334,
+  "EBITDA/EV": 0.15698587127158556,
+  "EBIT/EV": 0.08805230318703762,
+  "Dividend yield": 0.0489
+ },
+ {
+  "ano": 2023,
+  "ticker": "LEVE3",
+  "ret": -0.16431154499151107,
+  "L/P (earnings yield)": 0.17391304347826086,
+  "VP/P (book yield)": 0.21231422505307856,
+  "EBITDA/EV": 0.1838235294117647,
+  "EBIT/EV": 0.16347514706138758,
+  "Dividend yield": 0.30329999999999996
+ },
+ {
+  "ano": 2023,
+  "ticker": "MULT3",
+  "ret": -0.23193736805066867,
+  "L/P (earnings yield)": 0.07127583749109052,
+  "VP/P (book yield)": 0.4854368932038835,
+  "EBITDA/EV": 0.08695652173913043,
+  "EBIT/EV": 0.0784055275488264,
+  "Dividend yield": 0.0301
+ },
+ {
+  "ano": 2023,
+  "ticker": "PETR4",
+  "ret": 0.20649530075187955,
+  "L/P (earnings yield)": 0.2304147465437788,
+  "VP/P (book yield)": 0.7042253521126761,
+  "EBITDA/EV": 0.33003300330033003,
+  "EBIT/EV": 0.23548627501635913,
+  "Dividend yield": 0.1703
+ },
+ {
+  "ano": 2023,
+  "ticker": "PSSA3",
+  "ret": 0.3182926235212247,
+  "L/P (earnings yield)": 0.1251564455569462,
+  "VP/P (book yield)": 0.6896551724137931,
+  "EBITDA/EV": 0.19157088122605365,
+  "EBIT/EV": 0.16862539020137743,
+  "Dividend yield": 0.0365
+ },
+ {
+  "ano": 2023,
+  "ticker": "RANI3",
+  "ret": -0.3173754578754578,
+  "L/P (earnings yield)": 0.17857142857142858,
+  "VP/P (book yield)": 0.5952380952380952,
+  "EBITDA/EV": 0.1953125,
+  "EBIT/EV": 0.16219091857687806,
+  "Dividend yield": 0.0866
+ },
+ {
+  "ano": 2023,
+  "ticker": "SANB11",
+  "ret": -0.22677182662538692,
+  "L/P (earnings yield)": 0.049164208456243856,
+  "VP/P (book yield)": 0.4048582995951417,
+  "Dividend yield": 0.0489
+ },
+ {
+  "ano": 2023,
+  "ticker": "SAUD3",
+  "ret": 0.05478450946643719,
+  "L/P (earnings yield)": 0.07587253414264036,
+  "VP/P (book yield)": 0.20576131687242796,
+  "EBITDA/EV": 0.10341261633919338,
+  "EBIT/EV": 0.09609094533337392,
+  "Dividend yield": 0.0282
+ },
+ {
+  "ano": 2023,
+  "ticker": "SBSP3",
+  "ret": 0.18688868249966822,
+  "L/P (earnings yield)": 0.06506180871828238,
+  "VP/P (book yield)": 0.5524861878453039,
+  "EBITDA/EV": 0.12531328320802004,
+  "EBIT/EV": 0.08703878338671565,
+  "Dividend yield": 0.0137
+ },
+ {
+  "ano": 2023,
+  "ticker": "SHUL4",
+  "ret": -0.16497446808510632,
+  "Dividend yield": 0.0121
+ },
+ {
+  "ano": 2023,
+  "ticker": "TIMS3",
+  "ret": -0.14242543223647514,
+  "L/P (earnings yield)": 0.06317119393556538,
+  "VP/P (book yield)": 0.5780346820809249,
+  "EBITDA/EV": 0.2597402597402597,
+  "EBIT/EV": 0.10353543617581361,
+  "Dividend yield": 0.0438
+ },
+ {
+  "ano": 2023,
+  "ticker": "VALE3",
+  "ret": -0.23764255181347155,
+  "L/P (earnings yield)": 0.14064697609001406,
+  "VP/P (book yield)": 0.6896551724137931,
+  "EBITDA/EV": 0.23809523809523808,
+  "EBIT/EV": 0.19288279279343173,
+  "Dividend yield": 0.1036
+ },
+ {
+  "ano": 2024,
+  "ticker": "ALOS3",
+  "ret": 0.6846547763666484,
+  "L/P (earnings yield)": 0.06877579092159561,
+  "VP/P (book yield)": 1.1904761904761905,
+  "EBITDA/EV": 0.1126126126126126,
+  "EBIT/EV": 0.07897826806238509,
+  "Dividend yield": 0.08650000000000001
+ },
+ {
+  "ano": 2024,
+  "ticker": "AURE3",
+  "ret": 0.3534777651083238,
+  "L/P (earnings yield)": 0.029411764705882353,
+  "VP/P (book yield)": 1.5625,
+  "EBITDA/EV": 0.06591957811470006,
+  "EBIT/EV": 0.044139334351561546,
+  "Dividend yield": 0.006500000000000001
+ },
+ {
+  "ano": 2024,
+  "ticker": "BBSE3",
+  "ret": 0.11667330016583745,
+  "L/P (earnings yield)": 0.11764705882352941,
+  "VP/P (book yield)": 0.1692047377326565,
+  "Dividend yield": 0.0732,
+  "MOTOR (margem s/ teto)": 0.06768189509306244
+ },
+ {
+  "ano": 2024,
+  "ticker": "BMEB4",
+  "ret": 0.9584725925925927,
+  "L/P (earnings yield)": 0.1251564455569462,
+  "VP/P (book yield)": 0.46511627906976744,
+  "Dividend yield": 0.0406,
+  "MOTOR (margem s/ teto)": -0.5255813953488372
+ },
+ {
+  "ano": 2024,
+  "ticker": "BPAC11",
+  "ret": 0.967497205882353,
+  "L/P (earnings yield)": 0.024096385542168676,
+  "VP/P (book yield)": 0.1402524544179523,
+  "Dividend yield": 0.0179,
+  "MOTOR (margem s/ teto)": -0.05469845722300137
+ },
+ {
+  "ano": 2024,
+  "ticker": "BRAP4",
+  "ret": 0.3662346200241255,
+  "L/P (earnings yield)": 0.18083182640144665,
+  "VP/P (book yield)": 1.282051282051282,
+  "EBITDA/EV": 0.18450184501845018,
+  "EBIT/EV": 0.18450184501845018,
+  "Dividend yield": 0.1161,
+  "MOTOR (margem s/ teto)": 0.487179487179487
+ },
+ {
+  "ano": 2024,
+  "ticker": "BRSR6",
+  "ret": 0.6338176470588237,
+  "L/P (earnings yield)": 0.14705882352941177,
+  "VP/P (book yield)": 2.127659574468085,
+  "Dividend yield": 0.079,
+  "MOTOR (margem s/ teto)": 0.0
+ },
+ {
+  "ano": 2024,
+  "ticker": "CLSC4",
+  "ret": 0.6396068322981365,
+  "L/P (earnings yield)": 0.22624434389140272,
+  "VP/P (book yield)": 1.1627906976744187,
+  "EBITDA/EV": 0.24449877750611249,
+  "EBIT/EV": 0.19021916999899127,
+  "Dividend yield": 0.058600000000000006,
+  "MOTOR (margem s/ teto)": -0.10859728506787325
+ },
+ {
+  "ano": 2024,
+  "ticker": "CPFE3",
+  "ret": 0.686926242481798,
+  "L/P (earnings yield)": 0.12562814070351758,
+  "VP/P (book yield)": 0.47619047619047616,
+  "EBITDA/EV": 0.1763668430335097,
+  "EBIT/EV": 0.14913796382519773,
+  "Dividend yield": 0.0692,
+  "MOTOR (margem s/ teto)": -0.1193467336683417
+ },
+ {
+  "ano": 2024,
+  "ticker": "CXSE3",
+  "ret": 0.2548391578947369,
+  "L/P (earnings yield)": 0.08424599831508003,
+  "VP/P (book yield)": 0.3058103975535168,
+  "EBITDA/EV": 0.09425070688030161,
+  "EBIT/EV": 0.09425032747067798,
+  "Dividend yield": 0.0756,
+  "MOTOR (margem s/ teto)": -0.290519877675841
+ },
+ {
+  "ano": 2024,
+  "ticker": "FIQE3",
+  "ret": 0.476096,
+  "L/P (earnings yield)": 0.11848341232227488,
+  "VP/P (book yield)": 0.8130081300813008,
+  "EBITDA/EV": 0.31746031746031744,
+  "EBIT/EV": 0.16499673780378518,
+  "Dividend yield": 0.0579,
+  "MOTOR (margem s/ teto)": 0.12322274881516604
+ },
+ {
+  "ano": 2024,
+  "ticker": "FLRY3",
+  "ret": 0.3426677713338856,
+  "L/P (earnings yield)": 0.08598452278589853,
+  "VP/P (book yield)": 0.7633587786259541,
+  "EBITDA/EV": 0.1597444089456869,
+  "EBIT/EV": 0.09674307693441742,
+  "Dividend yield": 0.0365
+ },
+ {
+  "ano": 2024,
+  "ticker": "IRBR3",
+  "ret": 0.26501766784452296,
+  "L/P (earnings yield)": 0.12121212121212122,
+  "VP/P (book yield)": 1.36986301369863,
+  "Dividend yield": 0.0
+ },
+ {
+  "ano": 2024,
+  "ticker": "ITSA4",
+  "ret": 0.43043624009060016,
+  "L/P (earnings yield)": 0.12531328320802004,
+  "VP/P (book yield)": 0.8,
+  "EBITDA/EV": 0.14084507042253522,
+  "EBIT/EV": 0.1310045413522054,
+  "Dividend yield": 0.0849,
+  "MOTOR (margem s/ teto)": -0.07200000000000006
+ },
+ {
+  "ano": 2024,
+  "ticker": "ITUB3",
+  "ret": 0.5031873605947956,
+  "L/P (earnings yield)": 0.1447178002894356,
+  "VP/P (book yield)": 0.7575757575757576,
+  "Dividend yield": 0.0728,
+  "MOTOR (margem s/ teto)": -0.015151515151515138
+ },
+ {
+  "ano": 2024,
+  "ticker": "KLBN11",
+  "ret": -0.1460156896551723,
+  "L/P (earnings yield)": 0.08880994671403197,
+  "VP/P (book yield)": 0.37453183520599254,
+  "EBITDA/EV": 0.15060240963855423,
+  "EBIT/EV": 0.08005267828520951,
+  "Dividend yield": 0.0621,
+  "MOTOR (margem s/ teto)": -0.4094138543516873
+ },
+ {
+  "ano": 2024,
+  "ticker": "LEVE3",
+  "ret": 0.33545742898761827,
+  "L/P (earnings yield)": 0.1349527665317139,
+  "VP/P (book yield)": 0.1923076923076923,
+  "EBITDA/EV": 0.20366598778004072,
+  "EBIT/EV": 0.18178961087779733,
+  "Dividend yield": 0.0755,
+  "MOTOR (margem s/ teto)": -0.22402159244264508
+ },
+ {
+  "ano": 2024,
+  "ticker": "MULT3",
+  "ret": 0.3300533681214422,
+  "L/P (earnings yield)": 0.10672358591248667,
+  "VP/P (book yield)": 0.4484304932735426,
+  "EBITDA/EV": 0.10298661174047373,
+  "EBIT/EV": 0.09526779016203595,
+  "Dividend yield": 0.0355,
+  "MOTOR (margem s/ teto)": 1.0554962646744932
+ },
+ {
+  "ano": 2024,
+  "ticker": "PETR4",
+  "ret": -0.09319878419452882,
+  "L/P (earnings yield)": 0.09074410163339383,
+  "VP/P (book yield)": 0.9009009009009008,
+  "EBITDA/EV": 0.2617801047120419,
+  "EBIT/EV": 0.17585951480457152,
+  "Dividend yield": 0.2415,
+  "MOTOR (margem s/ teto)": -0.647005444646098
+ },
+ {
+  "ano": 2024,
+  "ticker": "PSSA3",
+  "ret": 0.38676103967168274,
+  "L/P (earnings yield)": 0.09425070688030161,
+  "VP/P (book yield)": 0.49504950495049505,
+  "EBITDA/EV": 0.13333333333333333,
+  "EBIT/EV": 0.11765375079251518,
+  "Dividend yield": 0.0366,
+  "MOTOR (margem s/ teto)": -0.2821782178217822
+ },
+ {
+  "ano": 2024,
+  "ticker": "RANI3",
+  "ret": 0.364490909090909,
+  "L/P (earnings yield)": 0.16611295681063123,
+  "VP/P (book yield)": 0.7462686567164178,
+  "EBITDA/EV": 0.17006802721088435,
+  "EBIT/EV": 0.10536589998453783,
+  "Dividend yield": 0.09300000000000001,
+  "MOTOR (margem s/ teto)": -0.06146179401993346
+ },
+ {
+  "ano": 2024,
+  "ticker": "SANB11",
+  "ret": 0.5189730478589422,
+  "L/P (earnings yield)": 0.06297229219143577,
+  "VP/P (book yield)": 0.5617977528089888,
+  "Dividend yield": 0.048499999999999995,
+  "MOTOR (margem s/ teto)": 0.3370786516853932
+ },
+ {
+  "ano": 2024,
+  "ticker": "SAUD3",
+  "ret": 0.08070718232044197,
+  "L/P (earnings yield)": 0.09140767824497258,
+  "VP/P (book yield)": 0.20833333333333334,
+  "EBITDA/EV": 0.12531328320802004,
+  "EBIT/EV": 0.11684719882188314,
+  "Dividend yield": 0.1286,
+  "MOTOR (margem s/ teto)": 0.012500000000000178
+ },
+ {
+  "ano": 2024,
+  "ticker": "SBSP3",
+  "ret": 0.6698619322033896,
+  "L/P (earnings yield)": 0.1234567901234568,
+  "VP/P (book yield)": 0.47619047619047616,
+  "EBITDA/EV": 0.1798561151079137,
+  "EBIT/EV": 0.15338623377911945,
+  "Dividend yield": 0.0108,
+  "MOTOR (margem s/ teto)": 0.6135802469135803
+ },
+ {
+  "ano": 2024,
+  "ticker": "SHUL4",
+  "ret": -0.12596821305841932,
+  "Dividend yield": 0.0115
+ },
+ {
+  "ano": 2024,
+  "ticker": "TIMS3",
+  "ret": 0.5847308011049723,
+  "L/P (earnings yield)": 0.0700280112044818,
+  "VP/P (book yield)": 0.5847953216374269,
+  "EBITDA/EV": 0.27932960893854747,
+  "EBIT/EV": 0.12273317211193092,
+  "Dividend yield": 0.061900000000000004,
+  "MOTOR (margem s/ teto)": 0.10854341736694684
+ },
+ {
+  "ano": 2024,
+  "ticker": "VALE3",
+  "ret": 0.3960635747021081,
+  "L/P (earnings yield)": 0.12121212121212122,
+  "VP/P (book yield)": 0.8547008547008548,
+  "EBITDA/EV": 0.22727272727272727,
+  "EBIT/EV": 0.17509888561094383,
+  "Dividend yield": 0.0789,
+  "MOTOR (margem s/ teto)": -0.5987878787878788
+ },
+ {
+  "ano": 2025,
+  "ticker": "ALOS3",
+  "ret": 0.045093831512160634,
+  "L/P (earnings yield)": 0.061766522544780725,
+  "VP/P (book yield)": 0.9090909090909091,
+  "EBITDA/EV": 0.10298661174047373,
+  "EBIT/EV": 0.07291627467249368,
+  "Dividend yield": 0.0754
+ },
+ {
+  "ano": 2025,
+  "ticker": "AURE3",
+  "ret": -0.021903959561920792,
+  "VP/P (book yield)": 0.9523809523809523,
+  "EBITDA/EV": 0.10940919037199125,
+  "EBIT/EV": 0.06554100512087017,
+  "Dividend yield": 0.0
+ },
+ {
+  "ano": 2025,
+  "ticker": "BBSE3",
+  "ret": 0.19234035961272472,
+  "L/P (earnings yield)": 0.12453300124533002,
+  "VP/P (book yield)": 0.17793594306049823,
+  "Dividend yield": 0.1176,
+  "MOTOR (margem s/ teto)": 0.0871886120996439
+ },
+ {
+  "ano": 2025,
+  "ticker": "BMEB4",
+  "ret": -0.13650580270793036,
+  "L/P (earnings yield)": 0.06472491909385114,
+  "VP/P (book yield)": 0.23529411764705882,
+  "Dividend yield": 0.022799999999999997,
+  "MOTOR (margem s/ teto)": -0.7282352941176471
+ },
+ {
+  "ano": 2025,
+  "ticker": "BPAC11",
+  "ret": 0.12335146443514643,
+  "L/P (earnings yield)": 0.024348672997321647,
+  "VP/P (book yield)": 0.11737089201877934,
+  "Dividend yield": 0.0178,
+  "MOTOR (margem s/ teto)": -0.18603286384976514
+ },
+ {
+  "ano": 2025,
+  "ticker": "BRAP4",
+  "ret": 0.2631726130653267,
+  "L/P (earnings yield)": 0.059844404548174746,
+  "VP/P (book yield)": 0.8333333333333334,
+  "EBITDA/EV": 0.05455537370430988,
+  "EBIT/EV": 0.05455537370430987,
+  "Dividend yield": 0.1383,
+  "MOTOR (margem s/ teto)": -0.09583333333333333
+ },
+ {
+  "ano": 2025,
+  "ticker": "BRSR6",
+  "ret": 0.07841443569553805,
+  "L/P (earnings yield)": 0.2881844380403458,
+  "VP/P (book yield)": 1.923076923076923,
+  "Dividend yield": 0.0935,
+  "MOTOR (margem s/ teto)": -0.09615384615384626
+ },
+ {
+  "ano": 2025,
+  "ticker": "CLSC4",
+  "ret": 0.3075410358565737,
+  "L/P (earnings yield)": 0.14598540145985403,
+  "VP/P (book yield)": 0.7936507936507936,
+  "EBITDA/EV": 0.1798561151079137,
+  "EBIT/EV": 0.1414948133718818,
+  "Dividend yield": 0.051699999999999996,
+  "MOTOR (margem s/ teto)": -0.3897810218978103
+ },
+ {
+  "ano": 2025,
+  "ticker": "CPFE3",
+  "ret": -0.15950459748545692,
+  "L/P (earnings yield)": 0.11025358324145534,
+  "VP/P (book yield)": 0.4504504504504504,
+  "EBITDA/EV": 0.1663893510815308,
+  "EBIT/EV": 0.14013292646612668,
+  "Dividend yield": 0.0,
+  "MOTOR (margem s/ teto)": -0.17695700110253587
+ },
+ {
+  "ano": 2025,
+  "ticker": "CXSE3",
+  "ret": 0.24897713598074594,
+  "L/P (earnings yield)": 0.08795074758135445,
+  "VP/P (book yield)": 0.2710027100271003,
+  "EBITDA/EV": 0.09596928982725528,
+  "EBIT/EV": 0.09594577609897126,
+  "Dividend yield": 0.0759,
+  "MOTOR (margem s/ teto)": -0.2750677506775068
+ },
+ {
+  "ano": 2025,
+  "ticker": "FIQE3",
+  "ret": -0.0009927419354839526,
+  "L/P (earnings yield)": 0.07849293563579278,
+  "VP/P (book yield)": 0.41841004184100417,
+  "EBITDA/EV": 0.2004008016032064,
+  "EBIT/EV": 0.11018920807508048,
+  "Dividend yield": 0.0416,
+  "MOTOR (margem s/ teto)": -0.2774725274725275
+ },
+ {
+  "ano": 2025,
+  "ticker": "FLRY3",
+  "ret": 0.3701289999999999,
+  "L/P (earnings yield)": 0.06574621959237344,
+  "VP/P (book yield)": 0.5617977528089888,
+  "EBITDA/EV": 0.14814814814814814,
+  "EBIT/EV": 0.08527660200589067,
+  "Dividend yield": 0.08039999999999999
+ },
+ {
+  "ano": 2025,
+  "ticker": "IRBR3",
+  "ret": 0.0837895716945996,
+  "L/P (earnings yield)": 0.12180267965895249,
+  "VP/P (book yield)": 1.2048192771084338,
+  "Dividend yield": 0.0
+ },
+ {
+  "ano": 2025,
+  "ticker": "ITSA4",
+  "ret": 0.28765342465753424,
+  "L/P (earnings yield)": 0.11135857461024498,
+  "VP/P (book yield)": 0.6289308176100629,
+  "EBITDA/EV": 0.12468827930174564,
+  "EBIT/EV": 0.11657517712426879,
+  "Dividend yield": 0.0814,
+  "MOTOR (margem s/ teto)": -0.25786163522012584
+ },
+ {
+  "ano": 2025,
+  "ticker": "ITUB3",
+  "ret": 0.2614118844566712,
+  "L/P (earnings yield)": 0.1,
+  "VP/P (book yield)": 0.4694835680751174,
+  "Dividend yield": 0.1124,
+  "MOTOR (margem s/ teto)": -0.38497652582159614
+ },
+ {
+  "ano": 2025,
+  "ticker": "KLBN11",
+  "ret": 0.086234541577825,
+  "L/P (earnings yield)": 0.0779423226812159,
+  "VP/P (book yield)": 0.6666666666666666,
+  "EBITDA/EV": 0.19685039370078738,
+  "EBIT/EV": 0.09312410443725887,
+  "Dividend yield": 0.056100000000000004,
+  "MOTOR (margem s/ teto)": -0.37957911145752143
+ },
+ {
+  "ano": 2025,
+  "ticker": "LEVE3",
+  "ret": 0.03347053649956036,
+  "L/P (earnings yield)": 0.1303780964797914,
+  "VP/P (book yield)": 0.18518518518518517,
+  "EBITDA/EV": 0.18348623853211007,
+  "EBIT/EV": 0.16107207154095807,
+  "Dividend yield": 0.0751,
+  "MOTOR (margem s/ teto)": -0.16753585397653192
+ },
+ {
+  "ano": 2025,
+  "ticker": "MULT3",
+  "ret": 0.06076660550458713,
+  "L/P (earnings yield)": 0.06896551724137931,
+  "VP/P (book yield)": 0.3802281368821293,
+  "EBITDA/EV": 0.09191176470588235,
+  "EBIT/EV": 0.08559161279519055,
+  "Dividend yield": 0.028900000000000002,
+  "MOTOR (margem s/ teto)": 0.14793103448275868
+ },
+ {
+  "ano": 2025,
+  "ticker": "PETR4",
+  "ret": 0.6590951330304997,
+  "L/P (earnings yield)": 0.18484288354898337,
+  "VP/P (book yield)": 0.6993006993006994,
+  "EBITDA/EV": 0.2347417840375587,
+  "EBIT/EV": 0.14861999393877642,
+  "Dividend yield": 0.06480000000000001,
+  "MOTOR (margem s/ teto)": -0.2393715341959335
+ },
+ {
+  "ano": 2025,
+  "ticker": "PSSA3",
+  "ret": 0.10240938792390411,
+  "L/P (earnings yield)": 0.10288065843621398,
+  "VP/P (book yield)": 0.47619047619047616,
+  "EBITDA/EV": 0.11135857461024498,
+  "EBIT/EV": 0.09789501742362404,
+  "Dividend yield": 0.0481,
+  "MOTOR (margem s/ teto)": -0.30952380952380953
+ },
+ {
+  "ano": 2025,
+  "ticker": "RANI3",
+  "ret": -0.08123064516129028,
+  "L/P (earnings yield)": 0.13020833333333334,
+  "VP/P (book yield)": 0.78125,
+  "EBITDA/EV": 0.21008403361344538,
+  "EBIT/EV": 0.14416610721222528,
+  "Dividend yield": 0.0721,
+  "MOTOR (margem s/ teto)": -0.240234375
+ },
+ {
+  "ano": 2025,
+  "ticker": "SANB11",
+  "ret": -0.06760378743394013,
+  "L/P (earnings yield)": 0.05875440658049354,
+  "VP/P (book yield)": 0.5747126436781609,
+  "Dividend yield": 0.0623,
+  "MOTOR (margem s/ teto)": 0.20402298850574696
+ },
+ {
+  "ano": 2025,
+  "ticker": "SHUL4",
+  "ret": -0.11052871287128707,
+  "Dividend yield": 0.0073
+ },
+ {
+  "ano": 2025,
+  "ticker": "TIMS3",
+  "ret": -0.032498359887535105,
+  "L/P (earnings yield)": 0.06793478260869565,
+  "VP/P (book yield)": 0.37735849056603776,
+  "EBITDA/EV": 0.21413276231263384,
+  "EBIT/EV": 0.10121394259258021,
+  "Dividend yield": 0.0753,
+  "MOTOR (margem s/ teto)": 0.022758152173913082
+ },
+ {
+  "ano": 2025,
+  "ticker": "VALE3",
+  "ret": 0.187229571984436,
+  "L/P (earnings yield)": 0.031525851197982346,
+  "VP/P (book yield)": 0.5050505050505051,
+  "EBITDA/EV": 0.1126126126126126,
+  "EBIT/EV": 0.07306164612100684,
+  "Dividend yield": 0.0583,
+  "MOTOR (margem s/ teto)": -0.835750315258512
+ }
+]

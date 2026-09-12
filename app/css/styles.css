@@ -1,0 +1,765 @@
+/* Fontes do sistema — sem dependência externa */
+:root { --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; }
+:root {
+  --bg:#f4f5f7;--bg2:#ffffff;--bg3:#f0f1f3;
+  --border:#e5e7eb;--border2:#d1d5db;
+  --text:#111827;--text2:#4b5563;--text3:#9ca3af;
+  --accent:#4f46e5;--accent2:#3730a3;--accent-light:#eef2ff;
+  --green:#16a34a;--green-bg:#f0fdf4;--green-border:#bbf7d0;
+  --yellow:#d97706;--yellow-bg:#fffbeb;--yellow-border:#fde68a;
+  --red:#dc2626;--red-bg:#fef2f2;--red-border:#fecaca;
+  --blue:#2563eb;--blue-bg:#eff6ff;--blue-border:#bfdbfe;
+  --teal:#0891b2;--teal-bg:#ecfeff;--teal-border:#a5f3fc;
+  --purple:#7c3aed;--purple-bg:#f5f3ff;--purple-border:#ddd6fe;
+  --gray-bg:#f9fafb;
+  --shadow:0 1px 3px rgba(0,0,0,0.08),0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md:0 4px 6px rgba(0,0,0,0.07),0 2px 4px rgba(0,0,0,0.05);
+  --shadow-lg:0 10px 15px rgba(0,0,0,0.08),0 4px 6px rgba(0,0,0,0.04);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+/* overflow-x:hidden aqui até 07/09/2026 CORTAVA (não rolava) o que passasse da largura da
+   página — só não aparecia porque .table-wrap por baixo tinha sua própria barra horizontal.
+   Removida a barra de dentro (ver .table-wrap), então agora é a página que precisa rolar: o
+   html rola, o body só evita que a barra apareça duas vezes (uma no html, outra no body). */
+html{overflow-x:auto;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:visible;}
+
+/* ── NAV ── */
+.nav{
+  background: linear-gradient(135deg, #0a0a14 0%, #0f0f1f 40%, #0d1020 100%);
+  border-bottom: 1px solid rgba(79,70,229,0.2);
+  position: sticky; top: 0; z-index: 100;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  display: flex; align-items: stretch; padding: 0 2rem; gap: 0;
+  box-shadow: 0 1px 40px rgba(79,70,229,0.12), 0 0 0 1px rgba(255,255,255,0.03);
+}
+.nav::before {
+  content:'';
+  position:absolute;top:0;left:0;right:0;
+  height:1px;
+  background: linear-gradient(90deg, transparent, rgba(99,102,241,0.6) 30%, rgba(139,92,246,0.4) 60%, transparent);
+  pointer-events:none;
+}
+.nav-brand{
+  display:flex;align-items:center;gap:12px;
+  padding:0 2rem 0 0;margin-right:1rem;
+  border-right:1px solid rgba(255,255,255,0.06);
+  text-decoration:none;
+}
+.nav-brand-logo{
+  width:28px;height:28px;
+  background:linear-gradient(135deg,#6366f1,#8b5cf6);
+  border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:800;color:#fff;
+  box-shadow:0 0 16px rgba(99,102,241,0.5);
+  letter-spacing:-0.5px;
+  flex-shrink:0;
+}
+.nav-brand-text{display:flex;flex-direction:column;gap:1px;}
+.nav-brand-label{
+  font-size:13px;font-weight:700;color:#fff;
+  letter-spacing:0.04em;text-transform:uppercase;
+  line-height:1;
+}
+.nav-brand-sub{font-size:9px;color:rgba(99,102,241,0.8);letter-spacing:0.12em;text-transform:uppercase;line-height:1;}
+.nav-tabs{display:flex;align-items:stretch;gap:0;min-width:0;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+.nav-tabs::-webkit-scrollbar{display:none;}
+.scroll-hint-mobile{display:none;}
+.nav-tab{
+  display:flex;align-items:center;gap:8px;
+  padding:0 1.25rem;
+  font-size:12px;font-weight:500;color:rgba(156,163,175,0.8);
+  cursor:pointer;position:relative;
+  border:none;background:transparent;
+  transition:color 0.2s;user-select:none;white-space:nowrap;
+  letter-spacing:0.02em;
+  min-height:52px;
+}
+.nav-tab::after{
+  content:'';position:absolute;bottom:0;left:50%;right:50%;height:2px;
+  background:linear-gradient(90deg,#6366f1,#8b5cf6);
+  border-radius:2px 2px 0 0;
+  transition:left 0.25s, right 0.25s;
+}
+.nav-tab:hover{color:#e5e7eb;}
+.nav-tab.active{color:#fff;font-weight:600;}
+.nav-tab.active::after{left:1rem;right:1rem;}
+.nav-tab-icon{font-size:14px;opacity:0.7;}
+.nav-tab.active .nav-tab-icon{opacity:1;}
+.nav-right{
+  margin-left:auto;display:flex;align-items:center;gap:1rem;
+  padding-left:1.5rem;
+  border-left:1px solid rgba(255,255,255,0.06);
+}
+.nav-status{
+  display:flex;align-items:center;gap:6px;
+}
+.nav-status-dot{
+  width:5px;height:5px;border-radius:50%;
+  background:#374151;flex-shrink:0;
+}
+.nav-status-dot.ok{background:#10b981;box-shadow:0 0 6px rgba(16,185,129,0.6);}
+.nav-status-dot.err{background:#ef4444;}
+.nav-status-text{font-size:10px;color:rgba(156,163,175,0.7);letter-spacing:0.04em;white-space:nowrap;}
+
+/* ── PAGES ── */
+.page{display:none;}.page.active{display:block;}
+
+/* ── CARTEIRA PAGE ── */
+.carteira-header{padding:1.5rem 2rem;background:var(--bg2);border-bottom:1px solid var(--border);}
+.carteira-header h1{font-family:system-ui,sans-serif;font-size:22px;font-weight:800;color:var(--text);}
+.carteira-header p{font-size:12px;color:var(--text3);margin-top:3px;}
+
+/* KPI CARDS */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;padding:1.5rem 2rem;}
+.kpi-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1rem 1.25rem;box-shadow:var(--shadow);}
+.kpi-card.accent{background:linear-gradient(135deg,#4f46e5,#3730a3);border-color:#4f46e5;}
+.kpi-label{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;}
+.kpi-card.accent .kpi-label{color:rgba(255,255,255,0.6);}
+.kpi-val{font-size:20px;font-weight:700;color:var(--text);}
+.kpi-card.accent .kpi-val{color:#fff;}
+.kpi-sub{font-size:11px;color:var(--text3);margin-top:3px;}
+.kpi-card.accent .kpi-sub{color:rgba(255,255,255,0.5);}
+.kpi-badge{display:inline-block;font-size:10px;font-weight:600;padding:2px 7px;border-radius:20px;margin-top:4px;}
+.kpi-badge.up{background:var(--green-bg);color:var(--green);border:1px solid var(--green-border);}
+.kpi-badge.down{background:var(--red-bg);color:var(--red);border:1px solid var(--red-border);}
+
+/* CHARTS GRID */
+.charts-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;padding:0 2rem 1rem;}
+.charts-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;padding:0 2rem 1rem;}
+.chart-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1.25rem;box-shadow:var(--shadow);}
+.chart-title{font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:1rem;}
+.chart-wrap{position:relative;min-height:220px;}
+
+/* POSIÇÕES TABLE */
+.section-title{font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:0.75rem;display:flex;align-items:center;gap:8px;}
+.section-title::after{content:'';flex:1;height:1px;background:var(--border);}
+.positions-section{padding:0 2rem 2rem;}
+/* ── SEÇÕES PADRONIZADAS ── */
+.carteira-section{padding:0 2rem 1.5rem;}
+.pos-section-header{display:flex;align-items:center;justify-content:space-between;padding:0.75rem 1rem 0.6rem;background:var(--gray-bg);border:1px solid var(--border);border-radius:10px 10px 0 0;margin-top:0;}
+.pos-section-label{font-size:13px;font-weight:700;color:var(--text);}
+.pos-section-total{font-size:12px;font-weight:600;color:var(--text2);}
+.posicoes-card{background:var(--bg2);border:1px solid var(--border);border-top:none;border-radius:0 0 10px 10px;overflow:hidden;box-shadow:var(--shadow);}
+.posicoes-card .pos-table{width:100%;}
+.pos-table-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden;box-shadow:var(--shadow);}
+.pos-table{width:100%;border-collapse:collapse;font-size:12px;}
+.pos-table thead th{padding:9px 14px;background:var(--gray-bg);color:var(--text2);font-size:11px;font-weight:600;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap;}
+.pos-table thead th:not(:first-child){text-align:right;}
+.pos-table tbody td{padding:9px 14px;border-bottom:1px solid var(--border);vertical-align:middle;white-space:nowrap;}
+.pos-table tbody td:not(:first-child){text-align:right;}
+.pos-table tbody tr:last-child td{border-bottom:none;}
+.pos-table tbody tr:hover td{background:#f9fafb;}
+.pos-ticker{font-weight:700;color:var(--accent);}
+.pos-name{font-size:11px;color:var(--text3);}
+.progress-bar-wrap{width:80px;height:6px;background:var(--border);border-radius:3px;display:inline-block;vertical-align:middle;margin-left:6px;}
+.progress-bar{height:100%;border-radius:3px;background:var(--accent);}
+.rent-pos{color:var(--green);font-weight:600;}
+.rent-neg{color:var(--red);font-weight:600;}
+
+/* DIVIDENDOS PROJECTION */
+.div-proj-section{padding:0 2rem 1rem;}
+.div-proj-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1.25rem;box-shadow:var(--shadow);}
+.div-proj-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:0.75rem;}
+.div-kpis-row{display:flex;gap:1.5rem;flex-wrap:wrap;}
+.div-kpi-sm{display:flex;flex-direction:column;}
+.div-kpi-sm-val{font-size:16px;font-weight:700;color:var(--teal);}
+.div-kpi-sm-label{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;}
+
+/* TAGS PROJ / REAL */
+.col-tag{display:block;font-size:8px;font-weight:700;padding:1px 4px;border-radius:3px;letter-spacing:0.05em;text-transform:uppercase;margin-top:3px;text-align:center;width:fit-content;margin-left:auto;margin-right:auto;}
+.col-tag.proj{background:#ede9fe;color:#6d28d9;}
+.col-tag.real{background:#dcfce7;color:#166534;}
+/* SORTABLE */
+.sortable{cursor:pointer;user-select:none;vertical-align:top;}
+.col-header th{white-space:nowrap;}
+.group-header th{padding:6px 10px;font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;text-align:center;border-bottom:1px solid var(--border);}
+.gh-id{background:#e8eaf8;color:#2d3561;}
+.gh-cart{background:#ecfeff;color:#0e7490;}
+.gh-div{background:#fef3c7;color:#7c5700;}
+.gh-val{background:#d1fae5;color:#065f46;}
+.gh-opp{background:#fee2e2;color:#7f1d1d;}
+.gh-ret{background:#dbeafe;color:#1e40af;}
+.gh-sig{background:#dcfce7;color:#14532d;}
+.gh-rep{background:#f5f3ff;color:#5b21b6;}
+.gh-rank{background:linear-gradient(135deg,#1e1b4b,#312e81)!important;color:#fff!important;}
+thead tr.col-header th{padding:6px 8px;font-size:10px;font-weight:700;text-align:center;white-space:normal;line-height:1.3;cursor:pointer;user-select:none;border-bottom:2px solid var(--border2);transition:background 0.15s;vertical-align:top;}
+.th-inner{display:flex;flex-direction:column;align-items:center;gap:2px;}
+thead tr.col-header th:hover{background:rgba(79,70,229,0.06);}
+thead tr.col-header th.sort-asc .sort-arrow::after{content:' ▲';color:var(--accent);font-size:8px;}
+thead tr.col-header th.sort-desc .sort-arrow::after{content:' ▼';color:var(--accent);font-size:8px;}
+thead tr.col-header th.sort-asc,thead tr.col-header th.sort-desc{color:var(--accent);}
+/* ── COL HEADER TOOLTIP ── */
+thead tr.col-header,#fundTable thead tr{overflow:visible;}
+.col-tip{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:13px;height:13px;border-radius:50%;
+  background:rgba(99,102,241,0.18);color:#6366f1;
+  font-size:9px;font-weight:800;cursor:help;
+  margin-left:3px;position:relative;vertical-align:middle;flex-shrink:0;line-height:1;
+  font-style:normal;
+}
+.col-tip::after{
+  content:attr(data-tip);
+  display:none;
+  position:absolute;top:calc(100% + 5px);left:50%;transform:translateX(-50%);
+  background:#1a1a2e;color:#e2e8f0;
+  padding:9px 11px;border-radius:7px;
+  font-size:11px;font-weight:400;
+  white-space:pre-line;width:230px;line-height:1.6;
+  box-shadow:0 6px 20px rgba(0,0,0,0.45);
+  opacity:0;pointer-events:none;transition:opacity 0.15s;
+  z-index:9999;text-align:left;
+  border:1px solid rgba(99,102,241,0.3);
+  font-family:var(--font);
+}
+/* display:none por padrão evita que o balão de tooltip (mesmo invisível, opacity:0)
+   seja contado no scrollWidth do container da tabela — antes isso inflava a área
+   rolável do Radar e fazia a última coluna nunca "encostar" na borda direita ao
+   rolar até o fim. Vira display:block só no hover, quando realmente precisa aparecer. */
+.col-tip:hover::after{display:block;opacity:1;}
+
+/* ── TOOLTIP DE VARIÁVEIS NAS CÉLULAS (Preço Teto, Margem, Retorno) ── */
+.teto-tip{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:13px;height:13px;border-radius:50%;
+  background:rgba(99,102,241,0.18);color:#6366f1;
+  font-size:9px;font-weight:800;cursor:help;
+  margin-left:3px;vertical-align:middle;flex-shrink:0;line-height:1;font-style:normal;
+  transition:background 0.12s;
+}
+.teto-tip:hover{background:rgba(99,102,241,0.4);color:#4338ca;}
+#cellTipPop{
+  position:fixed;z-index:99999;pointer-events:none;
+  background:#1a1a2e;color:#e2e8f0;
+  padding:9px 11px;border-radius:7px;
+  font-size:11px;font-weight:400;line-height:1.6;
+  white-space:pre-line;max-width:270px;
+  box-shadow:0 6px 20px rgba(0,0,0,0.45);
+  border:1px solid rgba(99,102,241,0.3);
+  font-family:var(--font);text-align:left;
+  opacity:0;transition:opacity 0.12s;
+}
+#cellTipPop.show{opacity:1;}
+
+/* OUTROS INVESTIMENTOS */
+.outros-section{padding:0 2rem 2rem;}
+.outros-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:1rem;}
+.outros-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden;box-shadow:var(--shadow);}
+.outros-card-header{padding:0.85rem 1.25rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);}
+.outros-card-title{font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.07em;display:flex;align-items:center;gap:6px;}
+.outros-card-total{font-size:13px;font-weight:700;color:var(--text);}
+.outros-card-var{font-size:11px;font-weight:600;margin-left:6px;}
+.outros-table{width:100%;border-collapse:collapse;font-size:12px;}
+.outros-table thead th{padding:7px 14px;background:var(--gray-bg);color:var(--text2);font-size:10px;font-weight:600;text-align:left;border-bottom:1px solid var(--border);}
+.outros-table thead th:not(:first-child){text-align:right;}
+.outros-table tbody td{padding:8px 14px;border-bottom:1px solid var(--border);vertical-align:middle;white-space:nowrap;}
+.outros-table tbody td:not(:first-child){text-align:right;}
+.outros-table tbody tr:last-child td{border-bottom:none;}
+.outros-table tbody tr:hover td{background:#f9fafb;}
+.outros-ticker{font-weight:700;color:var(--accent);}
+.outros-name{font-size:10px;color:var(--text3);display:block;}
+.badge-etf-int{background:#eff6ff;color:#2563eb;border:1px solid #bfdbfe;padding:2px 7px;border-radius:20px;font-size:9px;font-weight:700;}
+.badge-fundo{background:#f5f3ff;color:#7c3aed;border:1px solid #ddd6fe;padding:2px 7px;border-radius:20px;font-size:9px;font-weight:700;}
+.badge-etf-br{background:#ecfeff;color:#0891b2;border:1px solid #a5f3fc;padding:2px 7px;border-radius:20px;font-size:9px;font-weight:700;}
+.outros-total-row td{background:var(--gray-bg);font-weight:700;color:var(--text);border-top:2px solid var(--border2)!important;}
+.patrimonio-bar{padding:0 2rem 1rem;}
+.patrimonio-bar-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1.25rem;box-shadow:var(--shadow);}
+.patrimonio-bar-title{font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:1rem;}
+.patr-bar-wrap{display:flex;height:28px;border-radius:6px;overflow:hidden;gap:2px;}
+.patr-seg{height:100%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;transition:flex 0.4s;min-width:30px;border-radius:3px;cursor:default;}
+.patr-legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:12px;}
+.patr-leg-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text2);}
+.patr-leg-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0;}
+
+/* ── REPORT PAGE (SPA) ── */
+.page-report{display:none;}.page-report.active{display:block;}
+.report-topbar{background:#111827;padding:0.75rem 2rem;display:flex;align-items:center;gap:1rem;border-bottom:1px solid #1f2937;position:sticky;top:56px;z-index:90;}
+.btn-voltar{display:inline-flex;align-items:center;gap:6px;background:transparent;border:1px solid #374151;border-radius:7px;color:#9ca3af;padding:6px 14px;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s;}
+.btn-voltar:hover{background:#1f2937;color:#fff;border-color:#6b7280;}
+.report-topbar-info{display:flex;align-items:center;gap:10px;flex:1;}
+.report-topbar-ticker{font-family:system-ui,sans-serif;font-size:16px;font-weight:800;color:#fff;}
+.report-topbar-name{font-size:12px;color:#9ca3af;}
+.report-topbar-date{font-size:10px;color:#6b7280;margin-left:auto;}
+.report-topbar-verd{font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;}
+.report-body{padding:2rem;max-width:1000px;margin:0 auto;}
+
+/* Estilos internos do report (IBM Plex, dark header, etc) */
+.rp-header{background:#1e1a2e;color:#fff;border-radius:12px;padding:1.5rem 2rem;margin-bottom:1.25rem;display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1rem;}
+.rp-header-left h1{font-size:20px;font-weight:700;letter-spacing:-0.5px;}
+.rp-header-left p{font-size:11px;color:#aaa;margin-top:4px;}
+.rp-cotacao{font-size:28px;font-weight:700;font-family:monospace;}
+.rp-var-pos{color:#4ecdc4;font-size:12px;margin-top:2px;}
+.rp-badges{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;}
+.rp-badge{font-size:10px;font-weight:600;padding:3px 10px;border-radius:20px;letter-spacing:0.04em;text-transform:uppercase;}
+.rp-badge-yellow{background:#ffd93d22;color:#ffd93d;border:1px solid #ffd93d44;}
+.rp-badge-blue{background:#4ecdc422;color:#4ecdc4;border:1px solid #4ecdc444;}
+.rp-badge-green{background:#6bcf7f22;color:#4a9e5c;border:1px solid #6bcf7f44;}
+.rp-veredicto{background:#fff;border:1px solid #e5e5e5;border-left:4px solid #ffd93d;border-radius:12px;padding:1.25rem 1.5rem;margin-bottom:1.25rem;}
+.rp-veredicto-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:0.75rem;}
+.rp-v-label{font-size:10px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:0.06em;}
+.rp-v-value{font-size:13px;color:#1a1a1a;margin-top:2px;line-height:1.4;}
+.rp-section{background:#fff;border:1px solid #e5e5e5;border-radius:12px;padding:1.25rem 1.5rem;margin-bottom:1.25rem;}
+.rp-section-title{font-size:11px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:1rem;display:flex;align-items:center;gap:8px;}
+.rp-section-title::after{content:'';flex:1;height:1px;background:#f0f0f0;}
+.rp-resumo-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:0.75rem;}
+.rp-resumo-item{background:#f7f7f5;border-radius:8px;padding:0.75rem 1rem;}
+.rp-r-label{font-size:10px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px;}
+.rp-r-value{font-size:12px;color:#333;line-height:1.5;}
+.rp-table-wrap{overflow-x:auto;border:1px solid #efefef;border-radius:8px;}
+.rp-table{border-collapse:collapse;width:100%;font-size:12px;}
+.rp-table thead tr{background:#f7f7f5;}
+.rp-table thead th{padding:9px 12px;text-align:left;font-weight:600;color:#555;white-space:nowrap;border-bottom:1px solid #efefef;font-size:11px;}
+.rp-table tbody tr{border-bottom:1px solid #f5f5f5;}
+.rp-table tbody tr:last-child{border-bottom:none;}
+.rp-table tbody td{padding:9px 12px;white-space:nowrap;vertical-align:middle;}
+.rp-table tbody tr:hover{background:#fafaf8;}
+.rp-tag{display:inline-block;font-size:10px;font-weight:600;padding:2px 8px;border-radius:4px;white-space:nowrap;}
+.rp-tag-red{background:#fde8e8;color:#9c1c1c;}
+.rp-tag-yellow{background:#fef3cd;color:#856404;}
+.rp-tag-green{background:#d1f2e0;color:#0a5c35;}
+.rp-tag-blue{background:#dbeafe;color:#1e40af;}
+.rp-row-cons td{background:#fff5f5;}
+.rp-row-base td{background:#fffdf0;}
+.rp-row-otim td{background:#f0fdf6;}
+.rp-info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:0.5rem;}
+.rp-info-item{background:#f7f7f5;border-radius:6px;padding:0.5rem 0.75rem;}
+.rp-info-label{font-size:10px;color:#888;text-transform:uppercase;letter-spacing:0.04em;}
+.rp-info-value{font-size:13px;font-weight:600;color:#1a1a1a;margin-top:2px;}
+/* Painel "quanto posso ganhar" — números grandes e diretos (dividendos, valorização,
+   retorno total), pensado pra ler rápido sem precisar entender as tabelas técnicas. */
+.rp-ganho-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:0.75rem;}
+.rp-ganho-item{background:#f0fdf6;border:1px solid #bbf7d0;border-radius:10px;padding:0.9rem 1.1rem;}
+.rp-ganho-item.rp-ganho-neutro{background:#f7f7f5;border-color:#e5e5e5;}
+.rp-ganho-label{font-size:10px;font-weight:600;color:#666;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:5px;}
+.rp-ganho-value{font-size:21px;font-weight:800;color:#0a5c35;line-height:1.15;}
+.rp-ganho-item.rp-ganho-neutro .rp-ganho-value{color:#1a1a1a;}
+.rp-ganho-sub{font-size:11px;color:#888;margin-top:3px;}
+/* Projeção de dividendos — próximos 5 anos: banner de alerta + cards de cenário + tabela. */
+.rp-div-alert{background:#fff8ec;border:1px solid #fde68a;border-radius:10px;padding:1rem 1.25rem;margin-bottom:1rem;}
+.rp-div-alert-title{font-size:13px;font-weight:700;color:#92400e;margin-bottom:6px;}
+.rp-div-alert-body{font-size:12px;color:#78350f;line-height:1.65;}
+.rp-div-cenarios{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:1rem;margin-bottom:1.1rem;}
+.rp-div-card{border-radius:10px;padding:1rem 1.1rem;text-align:center;border:1px solid;}
+.rp-div-card.cons{background:#fffbeb;border-color:#fde68a;}
+.rp-div-card.base{background:#eff6ff;border-color:#bfdbfe;}
+.rp-div-card.otim{background:#f0fdf6;border-color:#bbf7d0;}
+.rp-div-card-label{font-size:10px;font-weight:700;letter-spacing:0.06em;color:#666;text-transform:uppercase;margin-bottom:6px;}
+.rp-div-card-value{font-size:24px;font-weight:800;color:#1a1a1a;margin-bottom:6px;line-height:1.15;}
+.rp-div-card-sub{font-size:11px;color:#666;line-height:1.55;}
+.rp-div-card-dy{font-size:11px;color:#0a5c35;font-weight:700;margin-top:2px;}
+.rp-div-table-wrap{overflow-x:auto;border-radius:8px;border:1px solid #eee;}
+.rp-div-table{border-collapse:collapse;width:100%;font-size:12px;}
+.rp-div-table thead th{background:#1e1a2e;color:#fff;padding:9px 14px;text-align:left;font-weight:600;font-size:11px;white-space:nowrap;}
+.rp-div-table thead th:not(:first-child),.rp-div-table tbody td:not(:first-child){text-align:right;}
+.rp-div-table tbody td{padding:9px 14px;border-bottom:1px solid #f0f0f0;}
+.rp-div-table tbody td:first-child{font-weight:700;text-align:left;}
+.rp-div-table tbody tr:nth-child(even) td{background:#fafafa;}
+.rp-bull-bear{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.rp-bull{background:#f0fdf6;border:1px solid #a7f3d0;border-radius:8px;padding:1rem 1.25rem;}
+.rp-bear{background:#fff5f5;border:1px solid #fca5a5;border-radius:8px;padding:1rem 1.25rem;}
+.rp-bull h3{font-size:12px;font-weight:600;color:#065f46;margin-bottom:8px;}
+.rp-bear h3{font-size:12px;font-weight:600;color:#991b1b;margin-bottom:8px;}
+.rp-bull ul,.rp-bear ul{padding-left:16px;}
+.rp-bull li,.rp-bear li{font-size:12px;line-height:1.7;color:#333;margin-bottom:2px;}
+.rp-veredito-final{background:#1e1a2e;color:#fff;border-radius:12px;padding:1.5rem 2rem;margin-bottom:1.25rem;}
+.rp-veredito-final h2{font-size:13px;font-weight:600;color:#ffd93d;margin-bottom:1rem;text-transform:uppercase;letter-spacing:0.08em;}
+.rp-vf-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:0.75rem;}
+.rp-vf-item{border:1px solid #ffffff22;border-radius:8px;padding:0.75rem 1rem;}
+.rp-vf-label{font-size:10px;color:#aaa;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px;}
+.rp-vf-value{font-size:13px;font-weight:600;color:#fff;}
+.rp-vf-value.green{color:#4ecdc4;}.rp-vf-value.red{color:#ff6b6b;}.rp-vf-value.yellow{color:#ffd93d;}
+.rp-note{font-size:11px;color:#aaa;margin-top:6px;font-style:italic;}
+.rp-fonte{font-size:10px;color:#ccc;margin-top:6px;}
+.rp-muted{color:#bbb;}.rp-mono{font-family:monospace;}.rp-estim{color:#856404;font-size:10px;}
+.rp-bold{font-weight:600;}
+/* Resumo executivo — stat tiles no topo das carteiras */
+.rp-exec{background:#1e1a2e;color:#fff;border-radius:12px;padding:1.25rem 1.5rem;margin-bottom:1.25rem;}
+.rp-exec-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:0.75rem;margin-bottom:0.5rem;}
+.rp-exec-item{background:#ffffff0d;border-radius:8px;padding:0.65rem 0.9rem;}
+.rp-exec-label{font-size:10px;color:#aaa;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px;}
+.rp-exec-value{font-size:15px;font-weight:700;color:#fff;}
+.rp-exec-value.yellow{color:#ffd93d;}.rp-exec-value.green{color:#4ecdc4;}.rp-exec-value.red{color:#ff6b6b;}
+.rp-exec-alert{font-size:11px;color:#ffd93d;margin-top:0.5rem;line-height:1.5;}
+/* Anexo colapsável — conteúdo de referência (perfil, tributação, premissas, ressalvas) */
+.rp-details{background:#fff;border:1px solid #e5e5e5;border-radius:12px;padding:1.1rem 1.5rem;margin-bottom:1.25rem;}
+.rp-details summary{cursor:pointer;font-size:11px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:0.08em;list-style:none;}
+.rp-details summary::-webkit-details-marker{display:none;}
+.rp-details summary::before{content:'▸ ';color:#aaa;}
+.rp-details[open] summary::before{content:'▾ ';}
+.rp-details[open] summary{margin-bottom:1rem;}
+.rp-details .rp-sub-title{font-size:10px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:0.06em;margin:1rem 0 0.5rem;}
+.rp-details .rp-sub-title:first-child{margin-top:0;}
+.rp-empty{text-align:center;padding:4rem 2rem;}
+.rp-empty-icon{font-size:48px;margin-bottom:1rem;}
+.rp-empty-title{font-size:18px;font-weight:700;color:var(--text);margin-bottom:0.5rem;}
+.rp-empty-sub{font-size:13px;color:var(--text3);}
+.rp-empty-btn{display:inline-flex;align-items:center;gap:6px;background:var(--purple-bg);color:var(--purple);border:1px solid var(--purple-border);border-radius:7px;padding:8px 18px;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;margin-top:1.25rem;transition:all 0.2s;}
+.rp-empty-btn:hover{background:var(--purple);color:#fff;}
+
+/* Fonte maior nas páginas de carteira (Flavia/Luiz) — pedido do usuário (3ª rodada: unificar
+   tudo no MESMO tamanho, em vez da hierarquia de 11-16px de antes — só o título da página e
+   os números grandes de destaque no topo continuam maiores, de propósito). Escopado só a
+   estas duas páginas: os relatórios de cada ação (#page-report, gerados por js/navegacao.js)
+   e o Radar reusam as mesmas classes .rp-*, e não devem mudar de tamanho junto.
+   !important em quase tudo porque cada classe .rp-* tinha seu próprio font-size fixo — sem
+   isso a regra de baixo (mais específica) continuaria vencendo a de cima. */
+#page-flavia, #page-resumoluiz,
+#page-flavia .rp-section-title, #page-resumoluiz .rp-section-title,
+#page-flavia .rp-table, #page-resumoluiz .rp-table,
+#page-flavia .rp-table thead th, #page-resumoluiz .rp-table thead th,
+#page-flavia .rp-r-label, #page-resumoluiz .rp-r-label,
+#page-flavia .rp-r-value, #page-resumoluiz .rp-r-value,
+#page-flavia .rp-v-value, #page-resumoluiz .rp-v-value,
+#page-flavia .rp-info-label, #page-resumoluiz .rp-info-label,
+#page-flavia .rp-info-value, #page-resumoluiz .rp-info-value,
+#page-flavia .rp-exec-label, #page-resumoluiz .rp-exec-label,
+#page-flavia .rp-tag, #page-resumoluiz .rp-tag,
+#page-flavia .rp-badge, #page-resumoluiz .rp-badge,
+#page-flavia .rp-estim, #page-resumoluiz .rp-estim,
+#page-flavia .rp-exec-alert, #page-resumoluiz .rp-exec-alert,
+#page-flavia .rp-details summary, #page-resumoluiz .rp-details summary,
+#page-flavia .rp-sub-title, #page-resumoluiz .rp-sub-title,
+#page-flavia .rp-header-left p, #page-resumoluiz .rp-header-left p{
+  font-size:16px !important;line-height:1.5;
+}
+#page-flavia .rp-table tbody td,#page-resumoluiz .rp-table tbody td{padding:12px 14px;}
+#page-flavia input.cw-qtd,#page-resumoluiz input.cw-qtd,
+#page-flavia input.cw-pm,#page-resumoluiz input.cw-pm{font-size:16px !important;}
+/* Bullets de Objetivo/Diagnóstico/Ressalvas usam font-size:12px direto no style="" do HTML —
+   precisa !important pra vencer a especificidade do inline sem reescrever cada <li>/<p>. */
+#page-flavia li[style*="font-size:12px"],#page-resumoluiz li[style*="font-size:12px"],
+#page-flavia p[style*="font-size:12px"],#page-resumoluiz p[style*="font-size:12px"]{font-size:16px !important;line-height:1.7 !important;}
+/* Exceções de propósito: título da página e os 3-4 números grandes de destaque do topo
+   (Patrimônio total, % da meta, Renda 2026) seguem maiores — são cabeçalho/chamada, não
+   corpo de texto, e achatar tudo pro mesmo tamanho aí tiraria a hierarquia visual da página. */
+#page-flavia .rp-header-left h1,#page-resumoluiz .rp-header-left h1{font-size:26px !important;}
+#page-flavia .rp-exec-value,#page-resumoluiz .rp-exec-value{font-size:22px !important;}
+/* Texto dentro dos gráficos SVG (donut, barras) e da barra de progresso — ficaram pequenos
+   demais (9-11px) perto do resto do texto já aumentado; aqui não dá pra usar classe porque
+   é gerado como atributo font-size no próprio <text>/<svg>, então o alvo é o elemento SVG. */
+#page-flavia svg text,#page-resumoluiz svg text{font-size:13px !important;}
+/* A legenda do donut e a barra de progresso são HTML normal (não SVG), mas cada linha/rótulo
+   tem seu PRÓPRIO font-size inline (JS) — inherit não vence estilo inline do próprio elemento,
+   por isso o "*" aqui precisa alcançar cada nó, não só o container. */
+#page-flavia #chartFlaviaClasse *,#page-resumoluiz #chartLuizClasse *,
+#page-flavia #chartFlaviaSegmento *,#page-resumoluiz #chartLuizSegmento *{font-size:14px !important;}
+#page-flavia #progFlaviaTempo *,#page-resumoluiz #progLuizTempo *{font-size:14px !important;}
+.rp-code{background:#1a1a2e;color:#e2e8f0;border-radius:8px;padding:1rem 1.1rem;font-family:'SF Mono',Consolas,monospace;font-size:11px;line-height:1.6;white-space:pre-wrap;word-break:break-word;overflow-x:auto;}
+@media(max-width:700px){.rp-bull-bear{grid-template-columns:1fr;}.report-body{padding:1rem;}}
+.radar-controls{padding:0.75rem 2rem;display:flex;gap:0.75rem;align-items:center;flex-wrap:wrap;border-bottom:1px solid var(--border);background:var(--bg2);position:sticky;top:56px;z-index:50;}
+.search-wrap{position:relative;flex:1;min-width:180px;max-width:260px;}
+.search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:13px;}
+.search-input{width:100%;background:#fff;border:1px solid var(--border2);border-radius:7px;padding:7px 10px 7px 30px;color:var(--text);font-family:inherit;font-size:12px;outline:none;transition:border-color 0.2s;}
+.search-input:focus{border-color:var(--accent);}
+.search-input::placeholder{color:var(--text3);}
+.filter-group{display:flex;gap:5px;flex-wrap:wrap;}
+.filter-btn{background:#fff;border:1px solid var(--border2);border-radius:20px;padding:5px 12px;color:var(--text2);font-family:inherit;font-size:11px;cursor:pointer;transition:all 0.2s;white-space:nowrap;}
+.filter-btn:hover{border-color:var(--accent);color:var(--accent);}
+.filter-btn.active{background:var(--accent);border-color:var(--accent);color:white;font-weight:600;}
+.filter-btn.cart-active{background:var(--teal);border-color:var(--teal);color:white;font-weight:600;}
+.btn-update{display:flex;align-items:center;gap:6px;background:var(--accent);color:#fff;border:none;border-radius:7px;padding:7px 14px;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s;white-space:nowrap;}
+.btn-update:hover{background:var(--accent2);}
+.btn-update:disabled{background:#a0a8d0;cursor:not-allowed;}
+.btn-update .spinner{width:12px;height:12px;border:2px solid rgba(255,255,255,0.4);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite;display:none;}
+.btn-update.loading .spinner{display:block;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.update-status{font-size:10px;color:var(--text3);display:flex;align-items:center;gap:5px;}
+.update-status .dot{width:5px;height:5px;border-radius:50%;background:var(--text3);}
+.update-status.ok .dot{background:var(--green);}
+.update-status.err .dot{background:var(--red);}
+.stats-row{display:flex;gap:1rem;margin-left:auto;}
+.stat{display:flex;flex-direction:column;align-items:center;gap:1px;}
+.stat-val{font-size:14px;font-weight:700;color:var(--text);}
+.stat-val.green{color:var(--green);}.stat-val.yellow{color:var(--yellow);}.stat-val.teal{color:var(--teal);}
+.stat-label{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:0.07em;}
+
+/* TABLE */
+.table-container{padding:1rem 2rem 2rem;max-width:100%;}
+/* ⚠️ ATÉ 07/09/2026 este wrap tinha overflow-x/y:auto + max-height próprios — criava UMA
+   barra de rolagem para a tabela E outra para a página, uma dentro da outra. Pedido do
+   usuário: só a da página. Removido overflow e max-height daqui — quando a tabela é mais
+   larga que a viewport, é a PÁGINA que ganha a barra horizontal (ver html/body abaixo), e a
+   vertical já era da página desde sempre (a tabela não tem altura própria limitada). */
+.table-wrap{width:100%;}
+#mainTable{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed;}
+/* `top` soma a altura da .nav (56px, fixo) com a da .radar-controls (variável — ela quebra
+   linha em telas estreitas). Sem isso o cabeçalho da tabela ficaria colado sob os controles
+   e um cortaria o outro. js/decisao.js mede .radar-controls e escreve --radar-controls-h no
+   :root a cada load/resize — ver _syncTheadSticky() no fim daquele arquivo. */
+#mainTable thead{position:sticky;top:calc(56px + var(--radar-controls-h, 56px));z-index:50;}
+/* Colgroup define larguras — não usar min-width nas frozen */
+.frozen-1,.frozen-2{position:sticky;z-index:5;}
+.frozen-1{left:0;background:inherit;}
+.frozen-2{left:160px;background:inherit;box-shadow:4px 0 6px rgba(0,0,0,0.06);}
+thead .frozen-1,thead .frozen-2{z-index:15;background:#f4f5fb;}
+tbody tr:nth-child(odd) td{background:#fff;}
+tbody tr:nth-child(even) td{background:#fafafa;}
+tbody tr:hover td{background:#f0f2ff !important;}
+tbody tr.hidden{display:none;}
+tbody tr.in-carteira td:nth-child(2){border-left:3px solid var(--teal)!important;}
+tbody td{padding:8px 10px;vertical-align:middle;border-bottom:1px solid var(--border);white-space:nowrap;text-align:center;overflow:hidden;text-overflow:ellipsis;}
+/* Um <td> com overflow:hidden (necessário para o "..." de texto longo) corta o balão do
+   .col-tip (position:absolute), que precisa ultrapassar os limites da célula para aparecer.
+   :has() liga overflow:visible SÓ enquanto o ⓘ daquela célula está em hover — mantém o
+   truncamento normal no resto do tempo e não depende de alargar cada coluna manualmente. */
+tbody td:has(> .col-tip:hover){overflow:visible;}
+/* O balão do tooltip estoura para dentro da linha de baixo (top:calc(100% + 5px)), mas o
+   fundo opaco de cada <td> da linha seguinte pinta por cima dele — mesmo com z-index:9999,
+   o algoritmo de pintura de fundo de células de tabela não respeita a ordem normal de
+   empilhamento entre linhas. Promover a linha inteira (não só a célula) a um contexto de
+   empilhamento acima das linhas vizinhas, só enquanto o ⓘ estiver em hover, resolve. */
+tbody tr{position:relative;z-index:0;}
+tbody tr:has(> td > .col-tip:hover){z-index:50;}
+/* Na última linha não há linha de baixo para "receber" o balão, e ele acaba cortado pelo
+   fundo da .table-wrap (overflow-y:auto com altura máxima). Vira o balão pra cima nessa
+   linha específica em vez de para baixo. */
+tbody tr:last-child .col-tip::after{top:auto;bottom:calc(100% + 5px);}
+tbody td.left{text-align:left;}
+.sep{border-left:1px solid var(--border2) !important;}
+.empresa-name{font-weight:600;color:var(--text);font-size:12px;}
+.ticker-badge{display:inline-block;background:#eef0ff;border:1px solid #c7cdf5;border-radius:3px;padding:1px 6px;font-size:10.5px;font-weight:700;color:var(--accent);}
+.segmento-tag{display:inline-block;border:1px solid var(--border2);border-radius:20px;padding:1px 8px;font-size:10px;color:var(--text2);background:var(--gray-bg);}
+.tag{display:inline-block;padding:2px 8px;border-radius:20px;font-size:10.5px;font-weight:600;}
+.tag-green{background:var(--green-bg);color:var(--green);border:1px solid var(--green-border);}
+.tag-yellow{background:var(--yellow-bg);color:var(--yellow);border:1px solid var(--yellow-border);}
+.tag-red{background:var(--red-bg);color:var(--red);border:1px solid var(--red-border);}
+.tag-blue{background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-border);}
+.tag-gray{background:var(--gray-bg);color:var(--text3);border:1px solid var(--border2);}
+.verd-compra{background:var(--green-bg);color:var(--green);border:1px solid var(--green-border);padding:3px 10px;border-radius:20px;font-size:10.5px;font-weight:700;}
+.verd-aguardar{background:var(--yellow-bg);color:var(--yellow);border:1px solid var(--yellow-border);padding:3px 10px;border-radius:20px;font-size:10.5px;font-weight:700;}
+.verd-pendente{background:var(--gray-bg);color:var(--text3);border:1px solid var(--border2);padding:3px 10px;border-radius:20px;font-size:10.5px;font-weight:500;}
+.muted{color:var(--text3);}.highlight{color:var(--text);font-weight:600;}
+.num-blue{color:var(--blue);font-weight:600;}.num-red{color:var(--red);}
+.num-yellow{color:var(--yellow);}.num-green{color:var(--green);font-weight:600;}
+
+/* TOGGLE compacto */
+.toggle-cart{display:flex;align-items:center;justify-content:center;}
+.toggle-cart input{display:none;}
+.toggle-cart label{width:28px;height:16px;background:#d1d5db;border-radius:8px;cursor:pointer;position:relative;transition:background 0.2s;display:block;}
+.toggle-cart label::after{content:'';position:absolute;width:12px;height:12px;background:#fff;border-radius:50%;top:2px;left:2px;transition:left 0.2s;box-shadow:0 1px 2px rgba(0,0,0,0.2);}
+.toggle-cart input:checked+label{background:var(--teal);}
+.toggle-cart input:checked+label::after{left:14px;}
+
+/* BOTÃO OLHO — privacidade */
+.btn-olho{display:inline-flex;align-items:center;gap:6px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:6px 14px;font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;font-family:inherit;transition:all 0.2s;}
+.btn-olho:hover{border-color:var(--accent);color:var(--accent);}
+.btn-olho.oculto{background:var(--accent-light);border-color:var(--accent);color:var(--accent);}
+/* Modo privacidade — oculta valores R$ e mostra % */
+body.privado .kpi-val{filter:blur(6px);user-select:none;}
+body.privado .kpi-val:hover{filter:none;}
+body.privado .valor-rs{display:none!important;}
+body.privado .valor-pct{display:inline!important;}
+body.privado .pos-saldo,.privado .pos-prov{filter:blur(5px);user-select:none;}
+body.privado .mob-card-saldo{filter:blur(5px);user-select:none;}
+body.privado .mob-card-value.num-green,.privado .mob-card-value:not(.rent-pos):not(.rent-neg){filter:blur(4px);user-select:none;}
+.valor-pct{display:none;}
+.valor-rs{display:inline;}
+/* RANKING */
+.gh-rank{background:linear-gradient(135deg,#1e1b4b,#312e81)!important;color:#fff!important;}
+.rank-badge{display:inline-flex;align-items:center;gap:4px;font-weight:800;font-size:12px;white-space:nowrap;}
+.rank-cell{white-space:nowrap;min-width:104px;}
+.rank-1{color:#f59e0b;}.rank-2{color:#9ca3af;}.rank-3{color:#cd7c2f;}
+.rank-top{color:#4f46e5;font-weight:700;}.rank-mid{color:#6b7280;}.rank-low{color:#d1d5db;}
+
+.btn-ver{
+  display:inline-flex;align-items:center;gap:4px;
+  background:linear-gradient(135deg,#16a34a,#15803d);
+  color:#fff;border:none;border-radius:6px;
+  padding:4px 10px;font-size:10px;font-weight:700;
+  cursor:pointer;font-family:inherit;
+  transition:all 0.2s;white-space:nowrap;
+  box-shadow:0 1px 3px rgba(22,163,74,0.3);
+  letter-spacing:0.02em;
+}
+.btn-ver:hover{background:linear-gradient(135deg,#15803d,#166534);box-shadow:0 2px 6px rgba(22,163,74,0.4);transform:translateY(-1px);}
+.btn-ver-off{
+  display:inline-flex;align-items:center;gap:4px;
+  background:#f3f4f6;color:#9ca3af;
+  border:1px dashed #d1d5db;border-radius:6px;
+  padding:4px 10px;font-size:10px;font-weight:500;
+  cursor:default;font-family:inherit;white-space:nowrap;
+  letter-spacing:0.02em;
+}
+.report-date{font-size:9px;color:var(--text3);display:block;text-align:center;margin-top:2px;}
+td.cotacao-cell{font-weight:700;}
+td.cotacao-cell.loading{color:var(--text3);animation:pulse 1s infinite;}
+td.cotacao-cell.updated{color:var(--blue);}
+td.cotacao-cell.error{color:var(--red);}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+.toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(20px);background:#111827;color:#fff;padding:10px 20px;border-radius:8px;font-size:12px;font-weight:500;opacity:0;transition:all 0.3s;pointer-events:none;z-index:1000;white-space:nowrap;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
+tbody tr{animation:fadeIn 0.2s ease forwards;opacity:0;}
+tbody tr:nth-child(n){animation-delay:calc(var(--i,0)*0.02s);}
+
+/* ── BASE DE DADOS ── */
+.dados-header{padding:1.25rem 2rem;background:var(--bg2);border-bottom:1px solid var(--border);}
+.dados-controls{padding:0.6rem 2rem;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;position:sticky;top:52px;z-index:50;}
+.fund-search{flex:1;min-width:180px;max-width:280px;background:#fff;border:1px solid var(--border2);border-radius:7px;padding:7px 10px 7px 32px;color:var(--text);font-family:inherit;font-size:12px;outline:none;transition:border-color .2s;}
+.fund-search:focus{border-color:var(--accent);}
+.sem-legend{display:flex;align-items:center;gap:1rem;margin-left:auto;flex-wrap:wrap;}
+.sem-legend-item{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text2);}
+.sem-dot{width:8px;height:8px;border-radius:50%;display:inline-block;}
+.sem-green{background:#16a34a;}.sem-yellow{background:#d97706;}.sem-red{background:#dc2626;}.sem-gray{background:#9ca3af;}
+.fund-table-wrap{padding:1rem 2rem 2rem;overflow-x:auto;}
+#fundTable{width:100%;border-collapse:collapse;font-size:12px;min-width:2200px;}
+#fundTable thead tr.fund-group-header th{background:#eef0f8;color:var(--text3);font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:4px 8px;border-bottom:1px solid var(--border2);}
+#fundTable thead tr.fund-group-header th.sep{border-left:2px solid var(--border2)!important;}
+#fundTable thead th{padding:8px 10px;background:var(--gray-bg);color:var(--text2);font-size:10px;font-weight:700;text-align:center;border-bottom:2px solid var(--border2);white-space:nowrap;cursor:pointer;user-select:none;}
+#fundTable thead th:hover{background:#eef0f8;}
+#fundTable thead th.left{text-align:left;}
+#fundTable tbody td{padding:8px 10px;border-bottom:1px solid var(--border);text-align:center;white-space:nowrap;vertical-align:middle;}
+#fundTable tbody td.left{text-align:left;}
+#fundTable tbody tr:hover td{background:#f0f2ff !important;}
+#fundTable tbody tr:nth-child(odd) td{background:#fff;}
+#fundTable tbody tr:nth-child(even) td{background:#fafafa;}
+#fundTable tr.fund-hidden{display:none;}
+.fund-empresa{font-weight:700;font-size:12px;color:var(--text);}
+.fund-nome{font-size:10px;color:var(--text3);}
+.fund-seg{display:inline-block;border:1px solid var(--border2);border-radius:20px;padding:1px 7px;font-size:10px;color:var(--text2);background:var(--gray-bg);}
+.fund-cell{display:flex;align-items:center;justify-content:center;gap:5px;}
+.sem{width:7px;height:7px;border-radius:50%;flex-shrink:0;display:inline-block;}
+.sem-g{background:#16a34a;}.sem-y{background:#d97706;}.sem-r{background:#dc2626;}.sem-n{background:#e5e7eb;}
+.fund-val{font-weight:600;}
+.fund-val.green{color:var(--green);}.fund-val.yellow{color:var(--yellow);}.fund-val.red{color:var(--red);}.fund-val.gray{color:var(--text3);}
+.fund-loading{color:var(--text3);animation:pulse 1s infinite;}
+.fund-note{font-size:10px;color:var(--text3);padding:0 2rem 0.5rem;font-style:italic;}
+/* ── HISTÓRICO EXPANSÍVEL (Base de Dados) ── */
+/* Botão expandir linha */
+.expand-btn{background:none;border:none;width:20px;height:20px;font-size:11px;cursor:pointer;color:var(--text3);padding:0;flex-shrink:0;display:flex;align-items:center;justify-content:center;border-radius:4px;transition:color .15s,transform .2s,background .15s;}
+.expand-btn:hover{background:var(--accent-light);color:var(--accent);}
+.expand-btn.open{color:var(--accent);transform:rotate(90deg);}
+/* Linhas de histórico — alinhadas ao tbody principal */
+#fundTable tr.hist-year-row>td{background:#f4f6fb!important;border-bottom:1px solid var(--border);padding:4px 10px;font-size:11px;color:var(--text2);text-align:center;white-space:nowrap;}
+#fundTable tr.hist-year-row>td:first-child{border-left:3px solid var(--accent)!important;text-align:left;padding-left:10px;}
+#fundTable tr.hist-year-row.hist-ltm-row>td{background:#fffbf0!important;}
+#fundTable tr.hist-year-row.hist-ltm-row>td:first-child{border-left:3px solid #f59e0b!important;}
+#fundTable tr.hist-year-row:last-of-type>td{border-bottom:2px solid var(--border2);}
+/* Célula de ano */
+.hist-year-cell{display:flex;align-items:center;gap:6px;}
+.hist-year-num{font-weight:700;color:var(--accent);font-size:11px;min-width:32px;}
+.hist-ltm-badge{display:inline-block;font-size:7px;font-weight:700;color:#fff;background:#d97706;padding:1px 5px;border-radius:3px;letter-spacing:.4px;text-transform:uppercase;vertical-align:middle;}
+/* Semáforo no histórico */
+.hist-green{color:#059669;font-weight:600;}.hist-yellow{color:#d97706;font-weight:600;}.hist-red{color:#dc2626;font-weight:600;}.hist-gray,.hist-n{color:var(--text3);}
+/* Linha de nota de fonte */
+#fundTable tr.hist-note-row>td{background:#f0f2ff!important;border-bottom:2px solid var(--border2);border-left:3px solid var(--accent)!important;font-size:9px;color:var(--text3);font-style:italic;padding:4px 10px;text-align:left;}
+/* ── COLUNAS FUND NO RADAR ── */
+.gh-fund{background:#ede9fe!important;color:#5b21b6!important;}
+.radar-fund-score{font-weight:700;}
+.score-hi{color:#059669;}.score-mid{color:#d97706;}.score-lo{color:#dc2626;}
+@media(max-width:768px){
+  .dados-controls{padding:.6rem 1rem;top:48px;}
+  .fund-table-wrap{padding:.5rem 0 1rem;}
+  .sem-legend{display:none;}
+
+}
+
+/* ── MOBILE RESPONSIVO ── */
+@media(max-width:768px){
+  /* NAV mobile */
+  .nav{padding:0 1rem;}
+  .nav-brand{padding:0 1rem 0 0;margin-right:0.5rem;}
+  .nav-brand-sub{display:none;}
+  .nav-tab{padding:0 0.85rem;font-size:11px;min-height:48px;}
+  .nav-tab-icon{font-size:12px;}
+  .nav-status-text{display:none;}
+  .nav-right{padding-left:0.75rem;}
+
+  /* CARTEIRA header */
+  .carteira-header{padding:1rem 1rem 0.75rem;}
+  .carteira-header h1{font-size:18px;}
+
+  /* KPI GRID — 2 colunas no mobile */
+  .kpi-grid{grid-template-columns:1fr 1fr;gap:0.6rem;padding:1rem;}
+  .kpi-val{font-size:16px;}
+  .kpi-card.accent .kpi-val{font-size:18px;}
+
+  /* CHARTS — empilhados */
+  .charts-grid{grid-template-columns:1fr;padding:0 1rem 0.75rem;}
+  .charts-grid-2{grid-template-columns:1fr;padding:0 1rem 0.75rem;}
+
+  /* POSIÇÕES TABLE → esconde no mobile, mostra cards */
+  .positions-section{padding:0 1rem 1rem;}
+  .carteira-section{padding:0 1rem 1.25rem;}
+  .pos-table-wrap{display:none;}
+.mobile-pos-cards{display:none!important;} /* mobile only — sobrescrito via @media abaixo */
+
+  /* CARD DE POSIÇÃO mobile */
+  .mobile-pos-cards{display:flex!important;flex-direction:column;gap:0.6rem;}
+  .pos-table-wrap{display:none!important;}
+  .mob-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:0.9rem 1rem;box-shadow:var(--shadow);}
+  .mob-card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.6rem;}
+  .mob-card-ticker{font-weight:800;font-size:15px;color:var(--accent);}
+  .mob-card-nome{font-size:11px;color:var(--text3);}
+  .mob-card-saldo{font-size:15px;font-weight:700;color:var(--text);}
+  .mob-card-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.4rem;}
+  .mob-card-item{display:flex;flex-direction:column;}
+  .mob-card-label{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em;}
+  .mob-card-value{font-size:12px;font-weight:600;color:var(--text);margin-top:1px;}
+  .mob-pct-bar{height:3px;background:var(--border);border-radius:2px;margin-top:6px;}
+  .mob-pct-bar-fill{height:100%;border-radius:2px;background:var(--accent);}
+
+  /* PROJEÇÃO DE DIVIDENDOS — scroll horizontal no mobile */
+  .div-proj-section{padding:0 1rem 1rem;}
+  .div-proj-card{padding:1rem;}
+  .div-proj-header{flex-direction:column;gap:0.5rem;}
+  .div-kpis-row{flex-wrap:wrap;gap:0.75rem;}
+
+  /* OUTROS INVESTIMENTOS */
+  .outros-section{padding:0 1rem 1rem;}
+  .outros-grid{grid-template-columns:1fr;}
+  .outros-card[style*="grid-column"]{grid-column:auto!important;}
+
+  /* PATRIMÔNIO BAR */
+  .patrimonio-bar{padding:0 1rem 0.75rem;}
+  .patr-seg{font-size:9px;min-width:20px;}
+  .patr-legend{gap:8px;}
+  .patr-leg-item{font-size:10px;}
+
+  /* RADAR — controles */
+  .radar-controls{padding:0.6rem 1rem;top:48px;flex-wrap:wrap;gap:0.5rem;}
+  .search-wrap{min-width:140px;max-width:100%;flex:1;}
+  .stats-row{margin-left:0;width:100%;justify-content:space-between;display:flex;}
+  .filter-group{display:none;} /* esconde filtros de segmento no mobile */
+
+  /* RADAR TABLE — scroll horizontal, só Empresa congelada */
+  .frozen-2{position:static!important;box-shadow:none!important;}
+  thead .frozen-2{position:static!important;background:var(--gray-bg)!important;}
+  .col-mob-hide{display:table-cell!important;}
+
+  /* DICA DE SCROLL HORIZONTAL — mobile só. A página inteira rola de lado (pedido do usuário,
+     ver comentário em #mainTable thead acima), mas no iOS a barra de rolagem some em repouso
+     e nada mais na tela avisa que dá pra arrastar. Mostra um selo flutuante só enquanto a
+     largura do documento for maior que a da viewport; some sozinho depois de rolar ou alguns
+     segundos (ver js/scroll-hint.js). */
+  .scroll-hint-mobile{
+    display:flex;align-items:center;gap:6px;
+    position:fixed;left:50%;bottom:16px;transform:translateX(-50%);
+    z-index:300;background:rgba(15,15,31,0.94);color:#fff;
+    font-size:11px;font-weight:600;letter-spacing:0.02em;
+    padding:7px 14px;border-radius:20px;box-shadow:0 6px 20px rgba(0,0,0,0.28);
+    pointer-events:none;opacity:0;transition:opacity 0.3s;white-space:nowrap;
+  }
+  .scroll-hint-mobile.show{opacity:1;}
+
+  /* REPORT PAGE mobile */
+  .report-topbar{padding:0.6rem 1rem;top:48px;gap:0.5rem;flex-wrap:wrap;}
+  .report-topbar-ticker{font-size:14px;}
+  .report-topbar-name{font-size:10px;display:none;}
+  .report-topbar-date{font-size:9px;width:100%;margin-top:2px;}
+  .report-body{padding:1rem;}
+  .rp-header{flex-direction:column;}
+  .rp-bull-bear{grid-template-columns:1fr;}
+  .rp-vf-grid{grid-template-columns:1fr 1fr;}
+  .rp-resumo-grid{grid-template-columns:1fr;}
+  .rp-info-grid{grid-template-columns:1fr 1fr;}
+
+  /* SEÇÃO TITLE */
+  .section-title{margin-bottom:0.6rem;}
+
+  /* OUTROS cards mobile */
+  .outros-table tbody td,.outros-table thead th{padding:6px 10px;font-size:11px;}
+}
