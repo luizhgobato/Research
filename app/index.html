@@ -313,8 +313,8 @@
       <div class="stat"><span class="stat-val" id="cnt-total">19</span><span class="stat-label">Total</span></div>
     </div>
   </div>
-  <!-- Ranking de decisão: preenchido por renderRankingDecisao() em js/decisao.js -->
-  <div id="rankingDecisao" style="margin:0 0 12px;padding:10px 12px;background:#f7f8fa;border:1px solid #e6e6e6;border-radius:10px;"></div>
+  <!-- O bloco "Por onde começar" (cards de score + texto) saiu em 13/09/2026
+       a pedido do usuário: a tabela começa direto abaixo dos controles. -->
   <div class="table-container">
   <div class="table-wrap">
   <table id="mainTable">
@@ -1845,12 +1845,12 @@
       "criterio": "P/L",
       "metodos": [
         {
-          "metodo": "LPA projetado 2026 R$ 0,72 × P/L 9,28x",
-          "precoJusto": "R$ 6,66"
+          "metodo": "LPA projetado 2026 R$ 0,72 × P/L 8,49x",
+          "precoJusto": "R$ 6,09"
         }
       ],
-      "origemMult": "a média entre o P/L mediano da própria empresa ao longo de 5 anos (8,93x) e o dos 4 pares do grupo UTIL (9,62x)",
-      "precoJusto": "R$ 6,66",
+      "origemMult": "a média entre o P/L mediano da própria empresa ao longo de 5 anos (8,93x) e o dos 6 pares do grupo UTIL (8,04x)",
+      "precoJusto": "R$ 6,09",
       "verificacao": [
         {
           "metodo": "VPA R$ 3,06 × P/VP 1,73x",
@@ -1959,7 +1959,7 @@
       "conviccao": "★★☆☆☆",
       "cotacao": "R$ 4,55",
       "precoJusto": "R$ 6,66",
-      "margem": "+31,7%",
+      "margem": "+25,3%",
       "premioSelic": "+10,2 p.p.",
       "gatilhos": [
         "3T26 (novembro/2026) — confirmar se margem EBITDA para de cair",
@@ -2232,12 +2232,12 @@
       "criterio": "P/L",
       "metodos": [
         {
-          "metodo": "LPA projetado 2026 R$ 2,06 × P/L 11,43x",
-          "precoJusto": "R$ 23,50"
+          "metodo": "LPA projetado 2026 R$ 2,06 × P/L 11,16x",
+          "precoJusto": "R$ 22,95"
         }
       ],
-      "origemMult": "a média entre o P/L mediano da própria empresa ao longo de 6 anos (14,28x) e o dos 4 pares do grupo UTIL (8,57x)",
-      "precoJusto": "R$ 23,50",
+      "origemMult": "a média entre o P/L mediano da própria empresa ao longo de 6 anos (14,28x) e o dos 6 pares do grupo UTIL (8,04x)",
+      "precoJusto": "R$ 22,95",
       "verificacao": [
         {
           "metodo": "receita R$ 27,3 bi × EV/Receita 1,81x − dívida líquida R$ -1,9 bi, ÷ 2,4 bi papéis",
@@ -2593,12 +2593,17 @@
       "nota": "Todos os cenários assumem câmbio USD/BRL constante — risco relevante não capturado (ver Riscos)."
     },
     "valuation": {
-      "criterio": "—",
-      "metodos": [],
-      "origemMult": "",
-      "precoJusto": null,
+      "criterio": "P/L",
+      "metodos": [
+        {
+          "metodo": "LPA projetado 2026 R$ 0,75 × P/L 8,55x",
+          "precoJusto": "R$ 6,41"
+        }
+      ],
+      "origemMult": "a média entre o P/L mediano da própria empresa ao longo de 1 anos (8,64x) e o dos 11 pares do grupo FIN (8,46x)",
+      "precoJusto": "R$ 6,41",
       "verificacao": [],
-      "nota": "SEM PREÇO JUSTO. RECUSA DECLARADA: BDR de empresa estrangeira (Nu Holdings, NYSE/Cayman), fora da cobertura B3/CVM do MCP Partnr. A base tem exatamente 1 ano de dado (2025, lido à mão de release), sem série para separar padrão de ano atípico. Gordon, lucro residual e múltiplo próprio rodariam todos sobre esse único ponto — \"consenso de métodos\" seria validação cruzada aparente, não real: os três concordariam porque vêm da mesma fonte única. Sem segunda fonte independente, não há preço justo defensável. Payout, TIR real e as demais colunas continuam calculados normalmente."
+      "nota": "Método ÚNICO: P/L. O preço justo é o fundamento projetado multiplicado pelo múltiplo que a empresa deve negociar — não é média nem mediana de métodos diferentes. Mesmo número da coluna Preço Justo do Radar, gerado pela mesma fonte (analise/tetos.json). Ver METODOLOGIA_ANALISE.md seção 31."
     },
     "retornoTotal": {
       "doze": {
@@ -2709,7 +2714,7 @@
       "lucroNota": "TTM até 2T26."
     },
     "encaixeCarteira": "Diversifica de verdade tanto a carteira do Luiz quanto a da Flavia — é o único ativo internacional/multi-país das duas, e o único genuinamente do setor de bancos digitais (diferente de BBAS3/ITUB3/BBSE3/CXSE3, bancos tradicionais/seguradoras brasileiras). Mas atenção: por ser um BDR de uma holding de Cayman com operação em 3 países latino-americanos, a diversificação geográfica é parcial — o Brasil ainda responde pela maior parte da base de clientes (~118 de 139 milhões).",
-    "blocoCopiavel": "### ROXO34 — Nu Holdings (Nubank BDR)\n**Setor:** Bancos digitais | **Motor de valuation:** P/VP × ROE\n\n| Veredicto | Convicção | Cotação | Preço Teto | Margem | Prêmio s/ Selic 12m |\n|---|---|---|---|---|---|\n| 🔴 Acima do teto | ★☆☆☆☆ | R$ 12,40 | R$ 6,25 | -49,6% | -54,7 p.p. |\n\n| Retorno Real 12m | Retorno Real 5a | Selic Real 5a | Diversifica? |\n|---|---|---|---|\n| -43,25% | 3,42% (cenário otimista) | 9,1% | Sim |\n\n| P/L | ROE | DY sustentável | Origem do excedente |\n|---|---|---|---|\n| ~20x | 32% | 0% (não paga) | — |\n\n- **Tese em uma frase:** crescimento real e sustentado, mas o motor de valuation de banco maduro aponta preço muito acima do justo — o mercado está pagando por um crescimento que o modelo desta metodologia não foi desenhado para capturar.\n- **Maior risco:** modelo frágil pra hipercrescimento + risco cambial triplo (USD/BRL/MXN/COP) + ausência de dividendo.\n- **Gatilho de monitoramento:** ROE se estabilizar (matura o banco) ou VPA oficial confirmado via 20-F.",
+    "blocoCopiavel": "### ROXO34 — Nu Holdings (Nubank BDR)\n**Setor:** Bancos digitais | **Motor de valuation:** P/VP × ROE\n\n| Veredicto | Convicção | Cotação | Preço justo | Margem | Prêmio s/ Selic 12m |\n|---|---|---|---|---|---|\n| 🔴 Acima do teto | ★☆☆☆☆ | R$ 12,40 | R$ 6,25 | -49,6% | -54,7 p.p. |\n\n| Retorno Real 12m | Retorno Real 5a | Selic Real 5a | Diversifica? |\n|---|---|---|---|\n| -43,25% | 3,42% (cenário otimista) | 9,1% | Sim |\n\n| P/L | ROE | DY sustentável | Origem do excedente |\n|---|---|---|---|\n| ~20x | 32% | 0% (não paga) | — |\n\n- **Tese em uma frase:** crescimento real e sustentado, mas o motor de valuation de banco maduro aponta preço muito acima do justo — o mercado está pagando por um crescimento que o modelo desta metodologia não foi desenhado para capturar.\n- **Maior risco:** modelo frágil pra hipercrescimento + risco cambial triplo (USD/BRL/MXN/COP) + ausência de dividendo.\n- **Gatilho de monitoramento:** ROE se estabilizar (matura o banco) ou VPA oficial confirmado via 20-F.",
     "ressalvas": "⚠️ Cotação e VPA são derivados/cruzados, não de fonte única confiável — StatusInvest, Investidor10 e stockanalysis.com divergem significativamente entre si em VPA e P/VP. ⚠️ Motor P/VP×ROE é conhecidamente frágil para empresas em hipercrescimento (g próximo de Ke distorce a fórmula de Gordon) — resultado desta análise deve ser lido como sinal de alerta sobre o preço, não como certeza matemática. ⚠️ Câmbio USD/BRL tratado como constante nas projeções — risco relevante não modelado. ⚠️ Índice de Basileia desatualizado. Convicção deliberadamente rebaixada a ★☆☆☆☆ por todos esses motivos combinados.",
     "projecaoDividendos": {
       "alerta": {
@@ -2883,12 +2888,12 @@
       "criterio": "P/L",
       "metodos": [
         {
-          "metodo": "LPA projetado 2026 R$ 5,14 × P/L 9,10x",
-          "precoJusto": "R$ 46,76"
+          "metodo": "LPA projetado 2026 R$ 5,14 × P/L 8,31x",
+          "precoJusto": "R$ 42,69"
         }
       ],
-      "origemMult": "a média entre o P/L mediano da própria empresa ao longo de 6 anos (8,21x) e o dos 4 pares do grupo UTIL (9,98x)",
-      "precoJusto": "R$ 46,76",
+      "origemMult": "a média entre o P/L mediano da própria empresa ao longo de 6 anos (8,21x) e o dos 6 pares do grupo UTIL (8,40x)",
+      "precoJusto": "R$ 42,69",
       "verificacao": [
         {
           "metodo": "FFO por papel projetado R$ 7,54 × P/FFO 4,91x",
@@ -3966,11 +3971,11 @@
       "metodos": [
         {
           "metodo": "LPA projetado 2026 R$ 1,52 × P/L 10,04x",
-          "precoJusto": "R$ 15,23"
+          "precoJusto": "R$ 15,22"
         }
       ],
-      "origemMult": "a média entre o P/L mediano da própria empresa ao longo de 6 anos (11,62x) e o dos 9 pares do grupo FIN (8,46x)",
-      "precoJusto": "R$ 15,23",
+      "origemMult": "a média entre o P/L mediano da própria empresa ao longo de 6 anos (11,62x) e o dos 11 pares do grupo FIN (8,45x)",
+      "precoJusto": "R$ 15,22",
       "verificacao": [
         {
           "metodo": "VPA R$ 4,62 × P/VP 3,72x",
@@ -4299,12 +4304,12 @@
       "criterio": "P/L",
       "metodos": [
         {
-          "metodo": "LPA projetado 2026 R$ 4,28 × P/L 8,78x",
-          "precoJusto": "R$ 37,61"
+          "metodo": "LPA projetado 2026 R$ 4,28 × P/L 8,46x",
+          "precoJusto": "R$ 36,21"
         }
       ],
-      "origemMult": "a média entre o P/L mediano da própria empresa ao longo de 6 anos (8,45x) e o dos 9 pares do grupo FIN (9,11x)",
-      "precoJusto": "R$ 37,61",
+      "origemMult": "a média entre o P/L mediano da própria empresa ao longo de 6 anos (8,45x) e o dos 11 pares do grupo FIN (8,46x)",
+      "precoJusto": "R$ 36,21",
       "verificacao": [
         {
           "metodo": "VPA R$ 5,68 × P/VP 6,11x",
@@ -4628,12 +4633,12 @@
       "criterio": "P/L",
       "metodos": [
         {
-          "metodo": "LPA projetado 2026 R$ 3,58 × P/L 8,68x",
-          "precoJusto": "R$ 31,10"
+          "metodo": "LPA projetado 2026 R$ 3,58 × P/L 8,36x",
+          "precoJusto": "R$ 29,94"
         }
       ],
-      "origemMult": "a média entre o P/L mediano da própria empresa ao longo de 3 anos (8,25x) e o dos 9 pares do grupo FIN (9,11x)",
-      "precoJusto": "R$ 31,10",
+      "origemMult": "a média entre o P/L mediano da própria empresa ao longo de 3 anos (8,25x) e o dos 11 pares do grupo FIN (8,46x)",
+      "precoJusto": "R$ 29,94",
       "verificacao": [
         {
           "metodo": "VPA R$ 66,02 × P/VP 0,81x",
@@ -4935,12 +4940,12 @@
       "criterio": "P/L",
       "metodos": [
         {
-          "metodo": "LPA projetado 2026 R$ 5,16 × P/L 9,23x",
-          "precoJusto": "R$ 47,63"
+          "metodo": "LPA projetado 2026 R$ 5,16 × P/L 9,22x",
+          "precoJusto": "R$ 47,61"
         }
       ],
-      "origemMult": "a média entre o P/L mediano da própria empresa ao longo de 6 anos (10,00x) e o dos 9 pares do grupo FIN (8,46x)",
-      "precoJusto": "R$ 47,63",
+      "origemMult": "a média entre o P/L mediano da própria empresa ao longo de 6 anos (10,00x) e o dos 11 pares do grupo FIN (8,45x)",
+      "precoJusto": "R$ 47,61",
       "verificacao": [
         {
           "metodo": "VPA R$ 19,49 × P/VP 1,89x",
@@ -5224,12 +5229,17 @@
       "nota": "⚠️ Guidance numérico oficial da companhia para 2026/2027 não encontrado no release do 2T26. Cenários construídos a partir do EBITDA recorrente projetado pela XP (R$4,4bi) e do EBITDA trimestral anualizado (R$1,27bi × 4 ≈ R$5,08bi) — pequena divergência entre as duas bases, tratada como faixa."
     },
     "valuation": {
-      "criterio": "—",
-      "metodos": [],
-      "origemMult": "",
-      "precoJusto": null,
+      "criterio": "P/L",
+      "metodos": [
+        {
+          "metodo": "LPA projetado 2026 R$ 1,71 × P/L 8,89x",
+          "precoJusto": "R$ 15,19"
+        }
+      ],
+      "origemMult": "a média entre o P/L mediano da própria empresa ao longo de 1 anos (9,21x) e o dos 6 pares do grupo UTIL (8,57x)",
+      "precoJusto": "R$ 15,19",
       "verificacao": [],
-      "nota": "SEM PREÇO JUSTO. RECUSADO: o método que decide esta linha (P/L) rodou sobre menos de 3 exercícios comparáveis, então não há amplitude observada — só um ponto. Um ponto não descreve quanto a empresa deveria valer; descreve um ano. O que existe de real sobre a empresa continua nas outras colunas (L/P, ROE, dívida, crescimento)."
+      "nota": "Método ÚNICO: P/L. O preço justo é o fundamento projetado multiplicado pelo múltiplo que a empresa deve negociar — não é média nem mediana de métodos diferentes. Mesmo número da coluna Preço Justo do Radar, gerado pela mesma fonte (analise/tetos.json). Ver METODOLOGIA_ANALISE.md seção 31."
     },
     "retornoTotal": {
       "doze": {
@@ -5309,7 +5319,7 @@
       "Dispersão de valuation alta (52%) reflete genuína incerteza sobre a velocidade de reprecificação do múltiplo."
     ],
     "encaixeCarteira": "PASS3 não é uma posição existente na carteira do Luiz. Diferente de ITUB3, BBSE3, CXSE3 e IRBR3 (todos financeiros), PASS3 é uma utility de distribuição de gás regulada — a metodologia da carteira cita explicitamente utilities reguladas como setor 'genuinamente diversificante' (receita indexada à inflação, descorrelacionada do ciclo de crédito). Com veredicto 🟡 Aguardar (cotação entre teto e preço-justo) e prêmio positivo sobre a Selic no horizonte de 12 meses, PASS3 é candidata a diversificação real da carteira — mas o histórico curtíssimo como empresa listada recomenda posição inicial pequena e acompanhamento de pelo menos mais 2-3 trimestres antes de aumentar exposição.",
-    "blocoCopiavel": "🟡 PASS3 — AGUARDAR (★☆☆☆☆)\nSetor: Utilities (distribuição de gás) | Motor de valuation: EV/EBITDA\nCotação: R$ 21,55 | Preço Justo: R$ 24,60 | Preço-teto: R$ 20,91 | Margem: -3,1%\nPrêmio s/ Selic 12m: +2,79pp\nRetorno Real 12m: +11,77% | Retorno Real 5a: 4,91% | Selic Real 5a: 9,09% | Diversifica? SIM (utility regulada)\nP/L: — | ROE: — | DY sustentável: 2,64% (baixo, pós-IPO recente) | Origem do excedente: —\n\nTese em uma frase: ativo de infraestrutura essencial com cobertura de mercado favorável, mas histórico de apenas 3,5 meses como listada e IPO 100% secundário no piso da faixa pedem cautela na velocidade de entrada.\nMaior risco: overhang de novas vendas de participação pela Cosan (controladora) pressionando a cotação.\nGatilho de monitoramento: 3T26/4T26 — reversão da queda de lucro e primeiro guidance formal da administração.\n\nFontes: StatusInvest, XP Investimentos, DGABC/ABEGÁS — 25/08/2026",
+    "blocoCopiavel": "🟡 PASS3 — AGUARDAR (★☆☆☆☆)\nSetor: Utilities (distribuição de gás) | Motor de valuation: EV/EBITDA\nCotação: R$ 21,55 | Preço Justo: R$ 24,60 | Preço justo: R$ 15,19 | Margem: -3,1%\nPrêmio s/ Selic 12m: +2,79pp\nRetorno Real 12m: +11,77% | Retorno Real 5a: 4,91% | Selic Real 5a: 9,09% | Diversifica? SIM (utility regulada)\nP/L: — | ROE: — | DY sustentável: 2,64% (baixo, pós-IPO recente) | Origem do excedente: —\n\nTese em uma frase: ativo de infraestrutura essencial com cobertura de mercado favorável, mas histórico de apenas 3,5 meses como listada e IPO 100% secundário no piso da faixa pedem cautela na velocidade de entrada.\nMaior risco: overhang de novas vendas de participação pela Cosan (controladora) pressionando a cotação.\nGatilho de monitoramento: 3T26/4T26 — reversão da queda de lucro e primeiro guidance formal da administração.\n\nFontes: StatusInvest, XP Investimentos, DGABC/ABEGÁS — 25/08/2026",
     "ressalvas": "⚠️ Guidance numérico oficial da empresa não encontrado. ⚠️ Série histórica de 5 anos de lucro (pré-IPO, estrutura societária diferente) não é diretamente comparável e foi descartada das projeções. ⚠️ Preços-alvo de BTG/Citi/Itaú BBA/Bradesco BBI/JPMorgan foram encontrados apenas como faixa agregada (R$34-38), sem valores individuais discriminados. ⚠️ Consenso de mercado formal (Bloomberg/Refinitiv) não encontrado. ⚠️ Detalhes do novo programa de recompra (14/08/2026) além do tamanho (3,2 milhões de ações) não confirmados em profundidade.",
     "veredicto": {
       "emoji": "🟡",
@@ -5820,12 +5830,12 @@
       "criterio": "P/L",
       "metodos": [
         {
-          "metodo": "LPA projetado 2026 R$ 7,31 × P/L 8,79x",
-          "precoJusto": "R$ 64,21"
+          "metodo": "LPA projetado 2026 R$ 7,31 × P/L 8,46x",
+          "precoJusto": "R$ 61,79"
         }
       ],
-      "origemMult": "a média entre o P/L mediano da própria empresa ao longo de 6 anos (8,46x) e o dos 9 pares do grupo FIN (9,11x)",
-      "precoJusto": "R$ 64,21",
+      "origemMult": "a média entre o P/L mediano da própria empresa ao longo de 6 anos (8,46x) e o dos 11 pares do grupo FIN (8,45x)",
+      "precoJusto": "R$ 61,79",
       "verificacao": [
         {
           "metodo": "VPA R$ 26,44 × P/VP 2,90x",
