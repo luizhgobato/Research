@@ -52,9 +52,24 @@ LN = {k: (float(v), mo) for k, v, mo in
 FIN = {k for k, v in M['MOTOR'].items() if v in ('FIN', 'NAV')}
 
 
-def normalizado(t, A):
-    """Lucro normalizado + nome do motor. Prioriza tir.data.js; senão recalcula pela regra."""
-    if t in LN:
+def normalizado(t, A, usar_cache=True):
+    """Lucro normalizado + nome do motor.
+
+    ⚠️ `usar_cache` existe por causa de um CICLO, achado em 13/09/2026 quando o usuário
+    perguntou por que o lucro normalizado da TIM (R$ 3,38 bi) estava abaixo do lucro de 2025:
+    `gerar_tir.py` chamava esta função para CALCULAR o lucroNorm que ele grava em
+    data/tir.data.js — e esta função começa lendo o lucroNorm de data/tir.data.js. O gerador
+    lia a própria saída anterior. Uma vez escrito, o número nunca mais mudava, por mais que a
+    base andasse. A TIM estava três regerações atrasada (3,38 contra 3,85 recalculado).
+    Quem ESCREVE o cache passa usar_cache=False; quem só LÊ a planilha continua no padrão.
+
+    ⚠️ MEDIANA COM TENDÊNCIA, não mediana simples. Também da pergunta da TIM: a margem líquida
+    dela foi 7,8% → 11,9% → 12,4% → 16,2% → 15,8%. Isso não oscila, isso SOBE — e a mediana de
+    6 anos (14,1%) ancorava no pior período e punia a empresa por ter melhorado. É exatamente o
+    defeito que `mediana_com_tendencia` foi escrita para corrigir no ROE dos bancos (seção do
+    motor), e que aqui nunca tinha sido aplicado. Com ela, a margem usada vira 15,8%.
+    """
+    if usar_cache and t in LN:
         return LN[t][0], LN[t][1], 'data/tir.data.js'
     val, q = M['anos_validos'](A)
     c = A[max(A)]
@@ -62,11 +77,13 @@ def normalizado(t, A):
         roes = [A[y]['roe'] for y in val if A[y].get('roe') is not None]
         v, pap = M['vpa'](t, A), M['papeis'](t, A)
         if roes and v and pap:
-            return st.median(roes)/100*v*pap, 'ROE mediano × patrimônio líquido', 'calculado agora'
+            roe, _nota = M['mediana_com_tendencia'](roes, limiar_abs=2.0)
+            return roe/100*v*pap, 'ROE mediano × patrimônio líquido', 'calculado agora'
     mg = [A[y]['lucrolin']/A[y]['receita'] for y in val
           if A[y].get('receita') and A[y].get('lucrolin')]
     if mg and c.get('receita'):
-        return st.median(mg)*c['receita'], 'receita × margem líquida mediana', 'calculado agora'
+        m, _nota = M['mediana_com_tendencia'](mg)
+        return m*c['receita'], 'receita × margem líquida mediana', 'calculado agora'
     return None, None, None
 
 

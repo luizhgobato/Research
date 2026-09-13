@@ -108,8 +108,12 @@ MOTOR = {
     # Telecom entra aqui por decisão nova: infraestrutura, receita recorrente, capex pesado —
     # mesmo perfil econômico de utility. Antes não tinha motor nenhum na metodologia.
     **{t: 'UTIL' for t in ['CPFE3','PASS3','CLSC4','AXIA3','AURE3','SBSP3','TIMS3','FIQE3']},
-    # shoppings → FFO/cap rate (mantidos manuais: exigem NOI e cap rate de mercado)
+    # shoppings → P/FFO próprio (ver teto_ffo). Lucro e patrimônio não servem aqui: o imóvel
+    # entra a custo histórico e é depreciado, quando na prática não perde valor.
     **{t: 'SHOP' for t in ['ALOS3','MULT3']},
+    # varejo → estavam SEM grupo desde que foram adicionadas em 13/09/2026, caíam no default
+    # e ficavam sem preço justo nenhum.
+    **{t: 'VAREJO' for t in ['VIVA3','ASAI3']},
     # industrial/serviço de lucro estável → E/P histórico
     **{t: 'IND' for t in ['LEVE3','SHUL4','FLRY3']},
 }
@@ -247,10 +251,35 @@ def quebra_operacional(A):
             ult = ys[i]
     return ult
 
+def anos_nao_operacionais(A):
+    """Anos em que o LUCRO não veio de operar o negócio.
+
+    POR QUE EXISTE — o caso ALOS3 2023, achado pelo usuário ao perguntar de onde saía o teto.
+    A fusão com a brMalls gerou ganho contábil de reavaliação: lucro de R$ 3,49 bi contra ~R$
+    1,0 bi de operação normal, e P/L de 3,4x contra 13x a 16x nos outros anos. O filtro de
+    quebra de série detectou a fusão (na contagem de ações, em 2022) e, ao cortar o que vinha
+    ANTES, deixou justamente o ano do ganho. Resultado: o percentil 25 da série de P/L caía
+    sobre esse 3,4x e o teto da ALOS3 saía 24% abaixo do que qualquer ano real sustentava.
+
+    Regra: margem líquida acima de 100% — lucro maior que a receita, o que operação nenhuma
+    produz — em empresa cuja margem TÍPICA fica abaixo disso. A segunda metade da regra é o
+    que protege a ITSA4: numa holding a "receita" é equivalência patrimonial e a margem passa
+    de 160% em TODOS os anos. Margem alta o tempo todo é o negócio; margem alta em um ano só
+    é evento.
+    """
+    mg = {y: A[y].get('mgLiq') for y in A if A[y].get('mgLiq') is not None}
+    if len(mg) < 3:
+        return set()
+    if st.median(mg.values()) > 100:
+        return set()
+    return {y for y, v in mg.items() if v > 100}
+
+
 def anos_validos(A):
-    """Anos utilizáveis para múltiplo per-share: só os posteriores à última quebra."""
+    """Anos utilizáveis para múltiplo per-share: posteriores à última quebra e operacionais."""
     q = max([x for x in (ano_quebra(A), quebra_operacional(A)) if x], default=None)
-    ys = sorted(A)
+    fora = anos_nao_operacionais(A)
+    ys = [y for y in sorted(A) if y not in fora]
     return ([y for y in ys if y >= q], q) if q else (ys, None)
 
 def mediana_com_tendencia(vals, limiar_rel=0.12, limiar_abs=None):
@@ -876,6 +905,61 @@ def teto_ev_receita(t, A):
 # que ter um jeito de calcular o preço justo".
 #
 # Entra SÓ quando há menos de 2 métodos próprios, e sempre com ★☆☆.
+def teto_ffo(t, A):
+    """P/FFO próprio — o múltiplo certo para shopping.
+
+    POR QUE SHOPPING NÃO PODE USAR E/P NEM P/VP, e a própria metodologia já dizia isso antes
+    de o motor obedecer: a contabilidade carrega o imóvel a CUSTO HISTÓRICO e o deprecia como
+    se ele virasse pó em algumas décadas. Shopping bem administrado não perde valor — ganha.
+    Essa depreciação é despesa que não sai caixa nenhum, e ela derruba as duas pontas ao mesmo
+    tempo: o LUCRO (denominador do E/P) e o PATRIMÔNIO (denominador do P/VP). Na ALOS3 são
+    R$ 630 mi por ano, 29% do EBITDA — o lucro aparece como R$ 1,03 bi quando a operação gera
+    R$ 1,66 bi de caixa.
+
+    FFO = lucro líquido + depreciação e amortização. É o padrão do setor por esse motivo.
+    ⚠️ PROXY, declarado: o FFO oficial (NAREIT/ABRASCE) também tira ganho de venda de ativo e
+    ajuste a valor justo, que a base não separa. Por isso ele diverge do FFO que a companhia
+    reporta — na ALOS3, R$ 1,66 bi aqui contra R$ 1,36 bi no release.
+
+    ⚠️ E por isso o P/FFO NÃO é comparável ENTRE empresas: MULT3 e IGTI11 usam valor justo e
+    quase não depreciam (6% e 11% do EBITDA contra 29% da ALOS3), então "lucro + D&A" mede
+    coisas diferentes em cada uma. Trocar lucro reportado por recorrente inverte quem está
+    mais barata. Aqui ele é usado só contra a PRÓPRIA série da empresa, que é onde a definição
+    se mantém constante.
+    """
+    val, q = anos_validos(A)
+    fator = FATOR_UNIT.get(t, 1)
+
+    def _ffo_pap(y):
+        d = A[y]
+        li, lpa, eb, ei = d.get('lucrolin'), d.get('lpa'), d.get('ebitda'), d.get('ebit')
+        if not (li and lpa and eb and ei) or lpa == 0 or li <= 0:
+            return None
+        pap = li / lpa                      # papéis implícitos, da mesma fonte do LPA
+        v = (li + eb - ei) / pap * fator
+        return v if v > 0 else None
+
+    pfs = []
+    for y in val:
+        f, pr = _ffo_pap(y), A[y].get('preco')
+        if f and pr:
+            pfs.append(pr / f)
+    atual = _ffo_pap(max(A))
+    if len(pfs) < 3 or not atual:
+        return None
+    p25, alvo, p75, nfx = faixa_com_tendencia(pfs, limiar_rel=0.15)
+    return dict(justo=alvo * atual, conv=2, chave='P/FFO',
+        faixa=(p25 * atual, p75 * atual),
+        motor=f'P/FFO {alvo:.2f}x × FFO/papel R$ {atual:.2f} (faixa {p25:.2f}x–{p75:.2f}x)',
+        nota=f'P/FFO-alvo = {nfx}, série de {len(pfs)} anos ({min(pfs):.1f}x a {max(pfs):.1f}x). '
+             f'FFO = lucro líquido + depreciação — devolve a despesa que não sai caixa e que a '
+             f'contabilidade cobra do imóvel como se ele se desgastasse. '
+             f'⚠️ PROXY: o FFO oficial também exclui ganho de venda de ativo e ajuste a valor '
+             f'justo, que a base não separa. ⚠️ NÃO comparar com o P/FFO de outra operadora: '
+             f'quem usa valor justo quase não deprecia e o mesmo cálculo mede outra coisa.'
+             + (f' Restrito a partir de {q} por quebra de série.' if q else ''))
+
+
 def teto_setorial(t, A, H, campo=None):
     """campo=None tenta EV/EBITDA e cai para P/VP quando o EV não cobre a dívida.
 
@@ -1178,6 +1262,10 @@ def _calcular_bruto(t, A, H=None):
             pai = PARENT.get(t)
             rp = _calcular_bruto(pai, H[pai], H) if pai and pai in H else None
             add(teto_nav(t, A, H, rp['justo'] if rp and rp.get('justo') else None))
+        # P/VP entra aqui porque o bloco geral abaixo deixou de adicioná-lo para NAV. Sem esta
+        # linha a ITSA4 e a BRAP4 ficavam com UM método só, caíam na trava de método único e
+        # saíam sem preço justo nenhum — regressão que a primeira versão desta mudança criou.
+        add(teto_pvp(t, A))
     elif m == 'CICL':
         # CÍCLICA DE COMMODITY: métodos baseados em LUCRO ficam de fora, de propósito.
         # A KLBN11 mostrou por quê: em 2026 o LPA dela é R$0,09 (fundo do ciclo da celulose),
@@ -1186,15 +1274,42 @@ def _calcular_bruto(t, A, H=None):
         # Sobram os métodos que atravessam o ciclo: EV/EBITDA sobre a MÉDIA de 6 anos,
         # EV/Receita (receita oscila muito menos que lucro) e P/VP (patrimônio não some).
         add(teto_ev(t, A, True))
+    elif m == 'FIN':
+        # BANCO E SEGURADORA: lucro e patrimônio, que é do que o negócio é feito. O P/VP entra
+        # aqui porque o bloco geral abaixo não o adiciona mais para este grupo.
+        add(teto_ep(t, A, pl_setor=PL_SETOR.get(m)))
+        add(teto_pvp(t, A))
+    elif m == 'SHOP':
+        # SHOPPING: lucro e patrimônio ficam de fora, os dois pelo mesmo motivo — o imóvel
+        # entra a custo e é depreciado. Ver teto_ffo. Sobram o caixa da operação (P/FFO) e o
+        # aluguel (EV/Receita), que a depreciação não toca.
+        add(teto_ffo(t, A))
     else:
         add(teto_ep(t, A, pl_setor=PL_SETOR.get(m)))
-    # Universais para TODOS os grupos, financeiras incluídas. A exclusão do P/VP nas
-    # financeiras existia porque `teto_fin` já o usava internamente; sem teto_fin, a duplicata
-    # que ela evitava não existe mais.
-    add(teto_pvp(t, A))
-    add(teto_ev_receita(t, A))
-    # EV/EBITDA: calculado para aparecer na nota como verificação cruzada, fora do voto.
-    verificacao = teto_ev(t, A, m == 'CICL') if m != 'NAV' else None
+
+    # ── O QUE MAIS VOTA, POR GRUPO ───────────────────────────────────────────────────────
+    # ⚠️ 13/09/2026 — antes daqui, P/VP e EV/Receita votavam em TODO MUNDO e EV/EBITDA em
+    # ninguém (fora as cíclicas). Pedido do usuário: "cada segmento é diferente do outro,
+    # precisamos colocar isso no motor". Três correções concretas:
+    #
+    #  · EV/Receita SAI das financeiras e das holdings. "EV" é valor de mercado MAIS dívida,
+    #    uma conta que só faz sentido quando a dívida financia o ativo. Em banco e seguradora
+    #    a dívida É a matéria-prima (depósito, provisão técnica) — somá-la ao valor de mercado
+    #    não descreve nada. A PSSA3 e a ITSA4 eram as duas que tinham dado para o método rodar,
+    #    e rodavam.
+    #  · EV/EBITDA ENTRA nas utilities. Elétrica, saneamento e telecom são o caso clássico do
+    #    múltiplo: ativo pesado, receita regulada, EBITDA estável e previsível, e depreciação
+    #    grande o bastante para distorcer o lucro. Era o único grupo em que o múltiplo padrão
+    #    do setor estava fora do voto.
+    #  · SHOPPING troca lucro e patrimônio por FFO (bloco acima).
+    if m not in ('FIN', 'NAV', 'SHOP'):
+        add(teto_pvp(t, A))
+    if m not in ('FIN', 'NAV'):
+        add(teto_ev_receita(t, A))
+    if m in ('UTIL', 'VAREJO'):
+        add(teto_ev(t, A, False))
+    # EV/EBITDA onde NÃO vota: calculado para aparecer na nota como verificação cruzada.
+    verificacao = teto_ev(t, A, m == 'CICL') if m not in ('NAV', 'UTIL', 'VAREJO') else None
 
     # Só quando NÃO SOBROU NADA. A primeira versão acionava com menos de 2 métodos e o peer
     # comp acabou votando nas financeiras, que já têm consenso interno de 3 motores: o BBSE3
