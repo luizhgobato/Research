@@ -93,21 +93,21 @@ function _celTip(cell, valorHTML, tipFallback) {
 
 function atualizarDivDY(row, cotacao) {
   const cells = row.querySelectorAll('td');
-  if (!cotacao || !cells[10] || !cells[11]) return;
+  if (!cotacao || !cells[8] || !cells[9]) return;
   const payout = parseFloat(row.dataset.payout) || 0;
-  const lpa = parseFloat((cells[8]?.textContent || '').replace(/[^0-9,.-]/g, '').replace(',', '.')) || 0;
+  const lpa = parseFloat((cells[6]?.textContent || '').replace(/[^0-9,.-]/g, '').replace(',', '.')) || 0;
 
   if (payout > 0 && lpa > 0) {
     const dps = lpa * payout;
-    _celTip(cells[10], `R$ ${dps.toFixed(2).replace('.', ',')}`);
-    _celTip(cells[11], ((dps / cotacao) * 100).toFixed(2).replace('.', ',') + '%');
+    _celTip(cells[8], `R$ ${dps.toFixed(2).replace('.', ',')}`);
+    _celTip(cells[9], ((dps / cotacao) * 100).toFixed(2).replace('.', ',') + '%');
     row.dataset.dyProj = (dps / cotacao).toFixed(4);   // mantém o resto do app consistente
     return;
   }
   const dyProj = parseFloat(row.dataset.dyProj) || 0;  // rota antiga, para linha sem payout
   if (dyProj > 0) {
-    _celTip(cells[10], `R$ ${(dyProj * cotacao).toFixed(2).replace('.', ',')}`);
-    _celTip(cells[11], (dyProj * 100).toFixed(2).replace('.', ',') + '%');
+    _celTip(cells[8], `R$ ${(dyProj * cotacao).toFixed(2).replace('.', ',')}`);
+    _celTip(cells[9], (dyProj * 100).toFixed(2).replace('.', ',') + '%');
   }
 }
 
@@ -115,7 +115,7 @@ function calcularDerivadosRadar() {
   document.querySelectorAll('#tableBody tr[data-ticker]').forEach(row => {
     const cells = row.querySelectorAll('td');
     const dyProj  = parseFloat(row.dataset.dyProj) || 0;
-    const cotacao = parseFloat((cells[17]?.textContent||'').replace(/[^0-9,.]/g,'').replace(',','.')) || 0;
+    const cotacao = parseFloat((cells[15]?.textContent||'').replace(/[^0-9,.]/g,'').replace(',','.')) || 0;
     if (!cotacao) return;
 
     // Div./Ação proj (cell 9) e DY proj (cell 10) — ver atualizarDivDY() acima
@@ -149,9 +149,9 @@ function calcularDerivadosRadar() {
 // (ver comentário no topo de data/radar-rows.data.js).
 function calcularPrecoJusto(row, cotacaoOverride) {
   const cells   = row.querySelectorAll('td');
-  const lpa     = parseFloat((cells[8]?.textContent||'').replace(/[^0-9,.]/g,'').replace(',','.')) || 0;
+  const lpa     = parseFloat((cells[6]?.textContent||'').replace(/[^0-9,.]/g,'').replace(',','.')) || 0;
   const plHist  = parseFloat(row.dataset.plHist) || 0;
-  const cotacao = cotacaoOverride || parseFloat((cells[17]?.textContent||'').replace(/[^0-9,.]/g,'').replace(',','.')) || 0;
+  const cotacao = cotacaoOverride || parseFloat((cells[15]?.textContent||'').replace(/[^0-9,.]/g,'').replace(',','.')) || 0;
   const dyProj  = parseFloat(row.dataset.dyProj) || 0;
   if (!lpa || !plHist || !cotacao) return;
   const pAlvo = lpa * plHist;             // preço-alvo por múltiplo histórico
@@ -159,7 +159,7 @@ function calcularPrecoJusto(row, cotacaoOverride) {
   const desc  = 1 + IPCA + PREMIO_IPCA;   // taxa de desconto exigida
   const justo = (dps + pAlvo) / desc;
   row.dataset.precoJusto = justo.toFixed(2);
-  if (cells[16]) {
+  if (cells[14]) {
     const tip = [
       'PREÇO JUSTO — variáveis','',
       'LPA proj.: ' + _fmtBR(lpa),
@@ -174,12 +174,12 @@ function calcularPrecoJusto(row, cotacaoOverride) {
       'Justo = (DPS + P-alvo) ÷ Desconto',
       '= (' + _fmtBR(dps) + ' + ' + _fmtBR(pAlvo) + ') ÷ ' + _fmtNM(desc, 3) + ' = ' + _fmtBR(justo)
     ].join('\n');
-    cells[16].innerHTML = '';
+    cells[14].innerHTML = '';
     const val = document.createElement('span');
     val.textContent = _fmtBR(justo);
-    cells[16].appendChild(val);
-    cells[16].appendChild(document.createTextNode(' '));
-    cells[16].appendChild(_varTipBtn(tip));
+    cells[14].appendChild(val);
+    cells[14].appendChild(document.createTextNode(' '));
+    cells[14].appendChild(_varTipBtn(tip));
   }
 }
 
@@ -221,8 +221,8 @@ function renderMargemRetorno(cells, margemCell, precoJusto, cotacao, dyProj){
   }
 
   // Retorno Total
-  if (cells[19]) {
-    cells[19].innerHTML = '';
+  if (cells[17]) {
+    cells[17].innerHTML = '';
     const v = document.createElement('span');
     v.textContent = (ret >= 0 ? '+' : '') + ret.toFixed(1) + '%';
     const tipR = [
@@ -236,9 +236,9 @@ function renderMargemRetorno(cells, margemCell, precoJusto, cotacao, dyProj){
       '──────────────',
       'Retorno = Valorização + DY = ' + (ret >= 0 ? '+' : '') + _fmtNM(ret) + '%'
     ].join('\n');
-    cells[19].appendChild(v);
-    cells[19].appendChild(document.createTextNode(' '));
-    cells[19].appendChild(_varTipBtn(tipR));
+    cells[17].appendChild(v);
+    cells[17].appendChild(document.createTextNode(' '));
+    cells[17].appendChild(_varTipBtn(tipR));
   }
 }
 
@@ -282,75 +282,11 @@ function renderMargemRetorno(cells, margemCell, precoJusto, cotacao, dyProj){
 // de setor (METODOLOGIA_ANALISE.md seções 10 e 23). A projeção por CAGR não é usada em lugar
 // nenhum da decisão — o preço-teto usa múltiplo sobre lucro realizado, e a TIR usa o lucro
 // normalizado. Mantida como código morto documentado em vez de apagada, para o registro.
-function calcularLucroEstimado() {
-  return;   // ← ver bloco acima
-  const currentYear = new Date().getFullYear();
-  document.querySelectorAll('#tableBody tr[data-ticker]').forEach(row => {
-    const ticker = (row.dataset.ticker || '').replace('.SA', '');
-    // data-lucro-manual="true": a projeção de lucro (cenários) veio de análise própria,
-    // não do CAGR genérico capado por setor — preserva Lucro 2025/Estimado como estão no HTML.
-    if (row.dataset.lucroManual === 'true') return;
-    const hist   = HIST_SEED[ticker];
-    if (!hist) return;
-
-    // 2 anos mais recentes anteriores ao ano atual com lucro positivo
-    const anos = Object.keys(hist).map(Number)
-      .filter(y => y < currentYear && hist[y]?.lucrolin > 0)
-      .sort((a, b) => b - a);
-    if (anos.length < 2) return;
-
-    const newest    = anos[0];
-    const prev      = anos[1];
-    const lucroNew  = hist[newest].lucrolin;
-    const lucroPrev = hist[prev].lucrolin;
-    const nYears    = newest - prev;
-    if (!lucroNew || !lucroPrev || nYears <= 0) return;
-
-    const cagr        = Math.pow(lucroNew / lucroPrev, 1 / nYears) - 1;
-    const capSeg      = CRESCIMENTO_SEGMENTO[row.dataset.segmento] ?? 0.15;
-    const crescimento = Math.max(IPCA, Math.min(cagr, capSeg));
-    const lucroEst    = lucroNew * (1 + crescimento);
-
-    const cells = row.querySelectorAll('td');
-
-    // Tooltip memória de cálculo
-    const fmtMi = v => v >= 1e9
-      ? `R$ ${(v/1e9).toFixed(1).replace('.',',')} bi`
-      : `R$ ${Math.round(v/1e6)} mi`;
-    const segNome = row.dataset.segmento || 'Padrão';
-    const tipText = [
-      `Base: ${newest} → ${fmtMi(lucroNew)}`,
-      `Ref.:  ${prev} → ${fmtMi(lucroPrev)}`,
-      `CAGR: ${cagr>=0?'+':''}${(cagr*100).toFixed(1)}% (${nYears} ano${nYears>1?'s':''})`,
-      `Cap ${segNome}: ${(capSeg*100).toFixed(0)}%`,
-      `Crescimento aplicado: ${(crescimento*100).toFixed(1)}%`,
-      ``,
-      `${fmtMi(lucroNew)} × ${(1+crescimento).toFixed(2)} = ${fmtMi(lucroEst)}`,
-    ].join('\n');
-
-    // Lucro histórico (cells[5]) — auto-popula do HIST_SEED; dispensa valor manual no HTML
-    if (cells[5]) cells[5].textContent = fmtMi(lucroNew);
-
-    // Lucro Estimado (cells[6]) — usa DOM API para preservar \n no data-tip (innerHTML normaliza)
-    if (cells[6]) {
-      cells[6].textContent = fmtMi(lucroEst);
-      const _tip = document.createElement('span');
-      _tip.className = 'col-tip';
-      _tip.setAttribute('data-tip', tipText);
-      _tip.textContent = 'ⓘ';
-      cells[6].appendChild(_tip);
-    }
-
-    // Armazena lpaEst internamente — NÃO sobrescreve cells[8] (LPA real LTM) nem data-dy-proj
-    const lpaReal = hist[newest]?.lpa;
-    if (lpaReal && lucroNew > 0) {
-      row.dataset.lpaEst = (lucroEst / (lucroNew / lpaReal)).toFixed(4);
-    }
-  });
-  calcCrescimentoLucro();
-  calcularDerivadosRadar();
-}
-
+// ⚠️ REMOVIDA EM 13/09/2026. Era uma projeção de lucro por CAGR de dois pontos, capada por
+// segmento, e já estava DESLIGADA (a função começava com `return;`) desde que o lucro
+// normalizado passou a vir de scripts/gerar_colunas.py. As células em que ela escrevia — Lucro
+// LTM e Lucro normalizado — deixaram de existir quando a coluna Lucro Projetado 2026 entrou, e
+// a projeção agora é gerada no Python, com taxa vinda do lucro recorrente por regressão log.
 function applyMobileColHide(){
   // No mobile as colunas ficam todas visíveis via CSS (scroll horizontal)
   // Esta função só aplica classes para referência — CSS mobile sobrescreve com display:table-cell

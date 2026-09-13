@@ -97,7 +97,7 @@ applyMobileColHide();
         const pct = ((precoJusto-preco)/precoJusto)*100;
         margemCell.innerHTML = margemTag(pct);
         const ret = ((precoJusto-preco)/preco)*100 + (dyProj*100);
-        if(cells[19]) cells[19].textContent = (ret>=0?'+':'')+ret.toFixed(1)+'%';
+        if(cells[17]) cells[17].textContent = (ret>=0?'+':'')+ret.toFixed(1)+'%';
       }
       if(typeof atualizarPLAtualLinha==='function') atualizarPLAtualLinha(r);
     });
@@ -137,7 +137,6 @@ document.querySelectorAll('#tableBody tr[data-ticker] td.frozen-1 .empresa-name'
   nameEl.parentNode.insertBefore(a, nameEl);
   a.appendChild(nameEl);
 });
-calcularLucroEstimado();
 initRadarRealCells();
 // Sincroniza as células do Radar com o ano mais recente que a fonte tem para cada ticker
 // (antes exigia o ano corrente — quem fechou o último exercício no ano anterior ficava vazio).
