@@ -168,14 +168,29 @@ def gerar():
         A = H[t]; c = A[max(A)]
         ano = max(A)
         ltm = c.get('lucrolin')
-        ln, motor, fonte = normalizado(t, A)
+        ln, motor, fonte = normalizado(t, A)   # segue alimentando a TIR; não é mais coluna
         pap = M['papeis'](t, A)
         po, npo, pf = M['payout_final'](t, A, H)
-        lpa = (ln/pap) if (ln and pap and ln > 0) else None
+        l25 = (A.get(2025) or {}).get('lucrolin')
+        g, (origem_g, g_bruto) = crescimento(t)
+        proj = l25 * (1 + g/100) if (l25 and l25 > 0 and g is not None) else None
+
+        # ⚠️ 13/09/2026 — O LPA PASSOU A SAIR DO LUCRO PROJETADO, não do normalizado.
+        # O usuário: "o LPA você está utilizando o lucro normalizado mas não tem mais essa
+        # coluna". Estava — e o problema não era só a tooltip citar uma coluna que sumiu: a
+        # cadeia inteira (LPA → dividendo → DY) pendurava num número que não aparecia em lugar
+        # nenhum da tela. No Itaú o LPA de R$ 4,76 vinha de R$ 46,65 bi, que não é nem o lucro
+        # de 2025 (R$ 45,85 bi) nem o projetado (R$ 50,54 bi). Não havia como conferir.
+        # Agora a linha fecha e cada passo é visível: 2025 → projetado 2026 → ÷ papéis = LPA
+        # → × payout = dividendo → ÷ cotação = DY.
+        # ⚠️ O CUSTO, declarado: o normalizado existia para tirar o CICLO da conta. A VALE3 cai
+        # de LPA 3,89 para 2,67 porque a projeção extrapola a queda do minério em vez de
+        # suavizá-la. Para dividendo de UM ano isso é defensável — empresa no fundo do ciclo
+        # paga menos mesmo —, mas quem ler o DY da VALE3 está lendo fundo de ciclo, não média.
+        lpa = (proj/pap) if (proj and pap and proj > 0) else None
         dps = (lpa*po) if (lpa and po) else None
         preco = c.get('preco')
         dy = (dps/preco*100) if (dps and preco) else None
-        delta = (ltm/ln - 1)*100 if (ltm and ln and ln > 0) else None
 
         base = (f'Fonte: MCP Partnr (B3/CVM), exercício {ano} — série TTM com data-base '
                 f'30/06/2026. Nenhum valor digitado à mão: gerado por scripts/gerar_colunas.py.')
@@ -186,7 +201,6 @@ def gerar():
         # responde: o LTM atravessa dois exercícios (2S25 + 1S26), então quando ele sobe não
         # dá para saber se foi o semestre novo que veio forte ou o velho que era fraco. Com o
         # ano fechado ao lado, a comparação fica direta.
-        l25 = (A.get(2025) or {}).get('lucrolin')
         cells[4] = cel(dinheiro(l25) or VAZIO,
             'LUCRO LÍQUIDO — EXERCÍCIO FECHADO DE 2025&#10;&#10;'
             'Fonte: MCP Partnr (B3/CVM), 1º de janeiro a 31 de dezembro de 2025.&#10;&#10;'
@@ -194,8 +208,7 @@ def gerar():
             'dois exercícios. Esta aqui é o ano civil fechado, sem mistura.')
 
         # ── Coluna 5 · LUCRO PROJETADO 2026 ─────────────────────────────────────────────
-        g, (origem, bruto) = crescimento(t)
-        proj = l25 * (1 + g/100) if (l25 and l25 > 0 and g is not None) else None
+        origem, bruto = origem_g, g_bruto
         cortado = (g is not None and bruto is not None and abs(bruto - g) > 0.05)
         cells[5] = cel(dinheiro(proj) or VAZIO,
             (f'LUCRO PROJETADO 2026 = lucro 2025 R$ {br((l25 or 0)/1e9)} bi × (1 + {br(g)}%)'
@@ -214,8 +227,8 @@ def gerar():
               'PIOROU o poder de ordenar em 8,9 p.p. Está aqui para leitura.&#10;' + base)
 
         cells[6] = cel(f'R$ {br(lpa)}' if lpa else VAZIO,
-            (f'LPA NORMALIZADO = lucro normalizado R$ {br(ln/1e9)} bi ÷ {pap/1e6:.0f} mi papéis'
-             if lpa else 'LPA NORMALIZADO — sem lucro normalizado positivo')
+            (f'LUCRO POR AÇÃO = lucro projetado 2026 R$ {br(proj/1e9)} bi ÷ {pap/1e6:.0f} mi papéis'
+             if lpa else 'LUCRO POR AÇÃO — sem lucro projetado 2026')
             + '&#10;&#10;Papéis NEGOCIADOS: a contagem é derivada de lucro ÷ LPA da própria base, '
               'ancorada no ano mais recente e usando só os anos cuja contagem fica a ±25% dele — '
               'assim um desdobramento não mistura bases (a SBSP3 fez 5:1 e a contagem foi de '
@@ -230,8 +243,8 @@ def gerar():
                'pares': 'payout mediano dos pares — não é da empresa',
                'realizado': 'realizado da própria série'}.get(pf[0], pf[0])
         cells[8] = cel(f'R$ {br(dps)}' if dps else VAZIO,
-            (f'DIVIDENDO POR AÇÃO = LPA normalizado R$ {br(lpa)} × payout {po*100:.0f}%'
-             if dps else 'DIVIDENDO POR AÇÃO — sem LPA normalizado ou sem payout')
+            (f'DIVIDENDO POR AÇÃO = LPA R$ {br(lpa)} × payout {po*100:.0f}%'
+             if dps else 'DIVIDENDO POR AÇÃO — sem LPA ou sem payout')
             + f'&#10;&#10;Payout: {rot} (detalhe na coluna Payout).&#10;'
               'É FUNDAMENTO, não deriva do preço: até 06/09/2026 o DPS era calculado como '
               '"DY × cotação", o que fazia o dividendo por ação subir quando a AÇÃO subia. '
@@ -269,6 +282,19 @@ def gerar():
                    else tag.replace(' data-veredicto=', f' data-lpa-fonte="{fonte_lpa}" data-veredicto=', 1))
         if 'data-lpa-manual=' not in tag:
             tag = tag.replace(' data-veredicto=', ' data-lpa-manual="true" data-veredicto=', 1)
+
+        # ⚠️ 13/09/2026 — data-dy-proj PASSA A SER GERADO AQUI. Ele estava congelado de uma
+        # geração antiga e divergia da própria coluna de DY em 28 das 30 linhas, às vezes pela
+        # metade: SBSP3 mostrava 5,07% com o atributo em 10,67%, BRAP4 3,78% contra 9,53%,
+        # PETR4 13,91% contra 6,24%. E não é enfeite — é ele que alimenta o Retorno Total e a
+        # perna de dividendos da TIR real, então a tabela decidia com um número e exibia outro.
+        # js/calculos.js já refazia a conta em runtime (atualizarDivDY), mas só DEPOIS de
+        # "Atualizar Cotações"; em quem abre a página e não clica, o valor velho valia.
+        # Escrever na geração deixa o arquivo coerente antes de qualquer JS rodar.
+        if dy is not None:
+            tag = (re.sub(r'data-dy-proj="[^"]*"', f'data-dy-proj="{dy/100:.4f}"', tag)
+                   if 'data-dy-proj=' in tag
+                   else tag.replace(' data-veredicto=', f' data-dy-proj="{dy/100:.4f}" data-veredicto=', 1))
         blk = tag + blk[tag_end:]
         h = h[:i] + blk + h[end:]
         log.append((t, ltm, ln, lpa, po, dps, dy))
