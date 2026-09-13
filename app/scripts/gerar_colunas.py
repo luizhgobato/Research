@@ -143,14 +143,26 @@ def gerar():
                 f'30/06/2026. Nenhum valor digitado à mão: gerado por scripts/gerar_colunas.py.')
         cells = {}
 
-        cells[4] = cel(dinheiro(ltm) or VAZIO,
+        # ── Coluna 4 · LUCRO DO EXERCÍCIO FECHADO DE 2025 ────────────────────────────────
+        # Pedido do usuário em 13/09/2026, e ela responde uma pergunta que o LTM sozinho não
+        # responde: o LTM atravessa dois exercícios (2S25 + 1S26), então quando ele sobe não
+        # dá para saber se foi o semestre novo que veio forte ou o velho que era fraco. Com o
+        # ano fechado ao lado, a comparação fica direta.
+        l25 = (A.get(2025) or {}).get('lucrolin')
+        cells[4] = cel(dinheiro(l25) or VAZIO,
+            'LUCRO LÍQUIDO — EXERCÍCIO FECHADO DE 2025&#10;&#10;'
+            'Fonte: MCP Partnr (B3/CVM), 1º de janeiro a 31 de dezembro de 2025.&#10;&#10;'
+            'A coluna ao lado é o LTM, que vai de 01/07/2025 a 30/06/2026 e portanto mistura '
+            'dois exercícios. Esta aqui é o ano civil fechado, sem mistura.')
+
+        cells[5] = cel(dinheiro(ltm) or VAZIO,
             f'LUCRO LÍQUIDO LTM (últimos 12 meses)&#10;&#10;{base}&#10;&#10;'
             f'⚠️ Esta coluna já se chamou "Lucro 2025 REAL" e o rótulo estava errado em 20 das '
             f'30 linhas — elas traziam o LTM de 2026, não o exercício fechado de 2025. '
             f'Agora o rótulo e o conteúdo são a mesma coisa em todas.')
 
         if ln and ln > 0:
-            cells[5] = cel(dinheiro(ln),
+            cells[6] = cel(dinheiro(ln),
                 f'LUCRO NORMALIZADO — {motor}&#10;&#10;'
                 f'NÃO é projeção de 2026. É quanto a empresa ganha num ano REPRESENTATIVO, '
                 f'calculado pelo motor do setor: indústria e serviço usam receita atual × margem '
@@ -161,7 +173,7 @@ def gerar():
                 f'minério; a KLBN11 idem na celulose.&#10;&#10;Origem: {fonte}. Motor documentado '
                 f'em METODOLOGIA_ANALISE.md seção 10.&#10;{base}')
         else:
-            cells[5] = cel(VAZIO,
+            cells[6] = cel(VAZIO,
                 'LUCRO NORMALIZADO — não calculável&#10;&#10;'
                 + ('A margem líquida mediana da série é NEGATIVA (prejuízo em mais da metade dos '
                    'anos válidos), então não existe "ano representativo" positivo para normalizar. '
@@ -170,7 +182,7 @@ def gerar():
                    'normalização (menos de 2 anos válidos).')
                 + 'Célula vazia é melhor que número errado.&#10;' + base)
 
-        cells[6] = cel(
+        cells[7] = cel(
             (f'<span class="tag {"tag-green" if delta>=0 else "tag-red"}">'
              f'{"+" if delta>=0 else ""}{delta:.0f}%</span>') if delta is not None else VAZIO,
             'DISTÂNCIA DO NORMALIZADO = lucro LTM ÷ lucro normalizado − 1&#10;&#10;'
@@ -182,7 +194,7 @@ def gerar():
             'A KLBN11 com −83% não vai cair 83%: ela está 83% abaixo do seu próprio padrão.&#10;'
             + base)
 
-        cells[7] = cel(f'R$ {br(lpa)}' if lpa else VAZIO,
+        cells[8] = cel(f'R$ {br(lpa)}' if lpa else VAZIO,
             (f'LPA NORMALIZADO = lucro normalizado R$ {br(ln/1e9)} bi ÷ {pap/1e6:.0f} mi papéis'
              if lpa else 'LPA NORMALIZADO — sem lucro normalizado positivo')
             + '&#10;&#10;Papéis NEGOCIADOS: a contagem é derivada de lucro ÷ LPA da própria base, '
@@ -198,7 +210,7 @@ def gerar():
                'nao_paga': 'a empresa não paga dividendos',
                'pares': 'payout mediano dos pares — não é da empresa',
                'realizado': 'realizado da própria série'}.get(pf[0], pf[0])
-        cells[9] = cel(f'R$ {br(dps)}' if dps else VAZIO,
+        cells[10] = cel(f'R$ {br(dps)}' if dps else VAZIO,
             (f'DIVIDENDO POR AÇÃO = LPA normalizado R$ {br(lpa)} × payout {po*100:.0f}%'
              if dps else 'DIVIDENDO POR AÇÃO — sem LPA normalizado ou sem payout')
             + f'&#10;&#10;Payout: {rot} (detalhe na coluna Payout).&#10;'
@@ -206,7 +218,7 @@ def gerar():
               '"DY × cotação", o que fazia o dividendo por ação subir quando a AÇÃO subia. '
               'A relação foi invertida — o DPS sai do lucro, e o DY é que deriva dele.&#10;' + base)
 
-        cells[10] = cel(f'{br(dy,2)}%' if dy else VAZIO,
+        cells[11] = cel(f'{br(dy,2)}%' if dy else VAZIO,
             (f'DIVIDEND YIELD = Div./Ação R$ {br(dps)} ÷ cotação R$ {br(preco)}'
              if dy else 'DIVIDEND YIELD — sem dividendo por ação calculável')
             + '&#10;&#10;Recalculado a cada atualização de cotação: o dividendo é fixo (vem do '
@@ -252,4 +264,4 @@ if __name__ == '__main__':
         print(f"{t:8}{(f'{ltm/1e9:.2f}' if ltm else '—'):>10}{(f'{ln/1e9:.2f}' if ln else '—'):>10}"
               f"{(f'{lpa:.2f}' if lpa else '—'):>8}{(f'{po*100:.0f}%' if po is not None else '—'):>6}"
               f"{(f'{dps:.2f}' if dps else '—'):>8}{(f'{dy:.1f}%' if dy else '—'):>8}")
-    print(f"\n{len(log)} linhas regeneradas — colunas 4,5,6,7,9,10")
+    print(f"\n{len(log)} linhas regeneradas — colunas 4,5,6,7,8,10,11")

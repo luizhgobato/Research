@@ -91,13 +91,13 @@ applyMobileColHide();
       if(_oldDy>0&&_oldCot>0&&preco>0) r.dataset.dyProj=(_oldDy*_oldCot/preco).toFixed(4);
   atualizarDivDY(r, preco);   // DPS = LPA × payout; DY = DPS ÷ preço (js/calculos.js)
       calcularPrecoTeto(r, preco);
-      const precoTeto = parseFloat(r.dataset.precoTeto)||null;
+      const precoJusto = parseFloat(r.dataset.precoJusto)||null;
       const margemCell = r.querySelector('.margem-cell');
-      if(preco>0 && margemCell && precoTeto){
-        const pct = ((precoTeto-preco)/precoTeto)*100;
+      if(preco>0 && margemCell && precoJusto){
+        const pct = ((precoJusto-preco)/precoJusto)*100;
         margemCell.innerHTML = margemTag(pct);
-        const ret = ((precoTeto-preco)/preco)*100 + (dyProj*100);
-        if(cells[18]) cells[18].textContent = (ret>=0?'+':'')+ret.toFixed(1)+'%';
+        const ret = ((precoJusto-preco)/preco)*100 + (dyProj*100);
+        if(cells[19]) cells[19].textContent = (ret>=0?'+':'')+ret.toFixed(1)+'%';
       }
       if(typeof atualizarPLAtualLinha==='function') atualizarPLAtualLinha(r);
     });

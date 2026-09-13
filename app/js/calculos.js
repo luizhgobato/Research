@@ -93,21 +93,21 @@ function _celTip(cell, valorHTML, tipFallback) {
 
 function atualizarDivDY(row, cotacao) {
   const cells = row.querySelectorAll('td');
-  if (!cotacao || !cells[9] || !cells[10]) return;
+  if (!cotacao || !cells[10] || !cells[11]) return;
   const payout = parseFloat(row.dataset.payout) || 0;
-  const lpa = parseFloat((cells[7]?.textContent || '').replace(/[^0-9,.-]/g, '').replace(',', '.')) || 0;
+  const lpa = parseFloat((cells[8]?.textContent || '').replace(/[^0-9,.-]/g, '').replace(',', '.')) || 0;
 
   if (payout > 0 && lpa > 0) {
     const dps = lpa * payout;
-    _celTip(cells[9], `R$ ${dps.toFixed(2).replace('.', ',')}`);
-    _celTip(cells[10], ((dps / cotacao) * 100).toFixed(2).replace('.', ',') + '%');
+    _celTip(cells[10], `R$ ${dps.toFixed(2).replace('.', ',')}`);
+    _celTip(cells[11], ((dps / cotacao) * 100).toFixed(2).replace('.', ',') + '%');
     row.dataset.dyProj = (dps / cotacao).toFixed(4);   // mantém o resto do app consistente
     return;
   }
   const dyProj = parseFloat(row.dataset.dyProj) || 0;  // rota antiga, para linha sem payout
   if (dyProj > 0) {
-    _celTip(cells[9], `R$ ${(dyProj * cotacao).toFixed(2).replace('.', ',')}`);
-    _celTip(cells[10], (dyProj * 100).toFixed(2).replace('.', ',') + '%');
+    _celTip(cells[10], `R$ ${(dyProj * cotacao).toFixed(2).replace('.', ',')}`);
+    _celTip(cells[11], (dyProj * 100).toFixed(2).replace('.', ',') + '%');
   }
 }
 
@@ -115,7 +115,7 @@ function calcularDerivadosRadar() {
   document.querySelectorAll('#tableBody tr[data-ticker]').forEach(row => {
     const cells = row.querySelectorAll('td');
     const dyProj  = parseFloat(row.dataset.dyProj) || 0;
-    const cotacao = parseFloat((cells[16]?.textContent||'').replace(/[^0-9,.]/g,'').replace(',','.')) || 0;
+    const cotacao = parseFloat((cells[17]?.textContent||'').replace(/[^0-9,.]/g,'').replace(',','.')) || 0;
     if (!cotacao) return;
 
     // Div./Ação proj (cell 9) e DY proj (cell 10) — ver atualizarDivDY() acima
@@ -149,9 +149,9 @@ function calcularDerivadosRadar() {
 // (ver comentário no topo de data/radar-rows.data.js).
 function calcularPrecoJusto(row, cotacaoOverride) {
   const cells   = row.querySelectorAll('td');
-  const lpa     = parseFloat((cells[7]?.textContent||'').replace(/[^0-9,.]/g,'').replace(',','.')) || 0;
+  const lpa     = parseFloat((cells[8]?.textContent||'').replace(/[^0-9,.]/g,'').replace(',','.')) || 0;
   const plHist  = parseFloat(row.dataset.plHist) || 0;
-  const cotacao = cotacaoOverride || parseFloat((cells[16]?.textContent||'').replace(/[^0-9,.]/g,'').replace(',','.')) || 0;
+  const cotacao = cotacaoOverride || parseFloat((cells[17]?.textContent||'').replace(/[^0-9,.]/g,'').replace(',','.')) || 0;
   const dyProj  = parseFloat(row.dataset.dyProj) || 0;
   if (!lpa || !plHist || !cotacao) return;
   const pAlvo = lpa * plHist;             // preço-alvo por múltiplo histórico
@@ -159,7 +159,7 @@ function calcularPrecoJusto(row, cotacaoOverride) {
   const desc  = 1 + IPCA + PREMIO_IPCA;   // taxa de desconto exigida
   const justo = (dps + pAlvo) / desc;
   row.dataset.precoJusto = justo.toFixed(2);
-  if (cells[15]) {
+  if (cells[16]) {
     const tip = [
       'PREÇO JUSTO — variáveis','',
       'LPA proj.: ' + _fmtBR(lpa),
@@ -174,12 +174,12 @@ function calcularPrecoJusto(row, cotacaoOverride) {
       'Justo = (DPS + P-alvo) ÷ Desconto',
       '= (' + _fmtBR(dps) + ' + ' + _fmtBR(pAlvo) + ') ÷ ' + _fmtNM(desc, 3) + ' = ' + _fmtBR(justo)
     ].join('\n');
-    cells[15].innerHTML = '';
+    cells[16].innerHTML = '';
     const val = document.createElement('span');
     val.textContent = _fmtBR(justo);
-    cells[15].appendChild(val);
-    cells[15].appendChild(document.createTextNode(' '));
-    cells[15].appendChild(_varTipBtn(tip));
+    cells[16].appendChild(val);
+    cells[16].appendChild(document.createTextNode(' '));
+    cells[16].appendChild(_varTipBtn(tip));
   }
 }
 
@@ -221,8 +221,8 @@ function renderMargemRetorno(cells, margemCell, precoJusto, cotacao, dyProj){
   }
 
   // Retorno Total
-  if (cells[18]) {
-    cells[18].innerHTML = '';
+  if (cells[19]) {
+    cells[19].innerHTML = '';
     const v = document.createElement('span');
     v.textContent = (ret >= 0 ? '+' : '') + ret.toFixed(1) + '%';
     const tipR = [
@@ -236,9 +236,9 @@ function renderMargemRetorno(cells, margemCell, precoJusto, cotacao, dyProj){
       '──────────────',
       'Retorno = Valorização + DY = ' + (ret >= 0 ? '+' : '') + _fmtNM(ret) + '%'
     ].join('\n');
-    cells[18].appendChild(v);
-    cells[18].appendChild(document.createTextNode(' '));
-    cells[18].appendChild(_varTipBtn(tipR));
+    cells[19].appendChild(v);
+    cells[19].appendChild(document.createTextNode(' '));
+    cells[19].appendChild(_varTipBtn(tipR));
   }
 }
 
@@ -328,20 +328,20 @@ function calcularLucroEstimado() {
       `${fmtMi(lucroNew)} × ${(1+crescimento).toFixed(2)} = ${fmtMi(lucroEst)}`,
     ].join('\n');
 
-    // Lucro histórico (cells[4]) — auto-popula do HIST_SEED; dispensa valor manual no HTML
-    if (cells[4]) cells[4].textContent = fmtMi(lucroNew);
+    // Lucro histórico (cells[5]) — auto-popula do HIST_SEED; dispensa valor manual no HTML
+    if (cells[5]) cells[5].textContent = fmtMi(lucroNew);
 
-    // Lucro Estimado (cells[5]) — usa DOM API para preservar \n no data-tip (innerHTML normaliza)
-    if (cells[5]) {
-      cells[5].textContent = fmtMi(lucroEst);
+    // Lucro Estimado (cells[6]) — usa DOM API para preservar \n no data-tip (innerHTML normaliza)
+    if (cells[6]) {
+      cells[6].textContent = fmtMi(lucroEst);
       const _tip = document.createElement('span');
       _tip.className = 'col-tip';
       _tip.setAttribute('data-tip', tipText);
       _tip.textContent = 'ⓘ';
-      cells[5].appendChild(_tip);
+      cells[6].appendChild(_tip);
     }
 
-    // Armazena lpaEst internamente — NÃO sobrescreve cells[7] (LPA real LTM) nem data-dy-proj
+    // Armazena lpaEst internamente — NÃO sobrescreve cells[8] (LPA real LTM) nem data-dy-proj
     const lpaReal = hist[newest]?.lpa;
     if (lpaReal && lucroNew > 0) {
       row.dataset.lpaEst = (lucroEst / (lucroNew / lpaReal)).toFixed(4);
