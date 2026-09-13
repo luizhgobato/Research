@@ -115,7 +115,7 @@ const RADAR_ROWS_HTML = `
     <td class="sep"><span class="muted">—</span></td>
     <td class="sep report-cell"><span class="btn-ver-off">📄 Pendente</span></td>
   </tr>
-  <tr data-ticker="ALOS3.SA" data-payout-fonte="realizado" data-veredicto="compra" data-segmento="Shoppings" data-empresa="Allos ALOS3" data-preco-teto="19.61" data-carteira="false" data-dy-proj="0.0884" data-dy-manual="true" data-report="true" data-report-date="15/08/2026" data-payout="0.6334" data-lpa-ltm="1.9680" data-lpa-manual="true" data-lpa-fonte="LPA LTM = lucro dos últimos 12 meses R$ 1,03 bi ÷ 523 mi papéis negociados (units resolvidas). Fonte: MCP Partnr (B3/CVM), TTM 2T26. Gerado por scripts/gerar_colunas.py.">
+  <tr data-ticker="ALOS3.SA" data-payout-fonte="realizado" data-veredicto="compra" data-segmento="Shoppings" data-empresa="Allos ALOS3" data-preco-teto="21.42" data-carteira="false" data-dy-proj="0.0884" data-dy-manual="true" data-report="true" data-report-date="15/08/2026" data-payout="0.6334" data-lpa-ltm="1.9680" data-lpa-manual="true" data-lpa-fonte="LPA LTM = lucro dos últimos 12 meses R$ 1,03 bi ÷ 523 mi papéis negociados (units resolvidas). Fonte: MCP Partnr (B3/CVM), TTM 2T26. Gerado por scripts/gerar_colunas.py." data-faixa-lo="21.42" data-faixa-hi="32.07">
     <td class="frozen-1 left"><span class="empresa-name">Allos</span></td>
     <td class="frozen-2"><span class="ticker-badge">ALOS3</span></td>
     <td><span class="fund-seg">Shoppings</span></td>
@@ -137,7 +137,7 @@ const RADAR_ROWS_HTML = `
     <td class="sep"><span class="muted">—</span></td>
     <td class="sep report-cell"><span class="btn-ver-off">📄 Pendente</span></td>
   </tr>
-  <tr data-ticker="FIQE3.SA" data-payout-fonte="realizado" data-veredicto="compra" data-segmento="Telecom" data-empresa="Unifique FIQE3" data-preco-teto="3.66" data-carteira="false" data-dy-proj="0.0550" data-dy-manual="true" data-report="true" data-report-date="24/08/2026" data-payout="0.3433" data-lpa-ltm="0.6182" data-lpa-manual="true" data-lpa-fonte="LPA LTM = lucro dos últimos 12 meses R$ 0,22 bi ÷ 364 mi papéis negociados (units resolvidas). Fonte: MCP Partnr (B3/CVM), TTM 2T26. Gerado por scripts/gerar_colunas.py.">
+  <tr data-ticker="FIQE3.SA" data-payout-fonte="realizado" data-veredicto="compra" data-segmento="Telecom" data-empresa="Unifique FIQE3" data-preco-teto="4.27" data-carteira="false" data-dy-proj="0.0550" data-dy-manual="true" data-report="true" data-report-date="24/08/2026" data-payout="0.3433" data-lpa-ltm="0.6182" data-lpa-manual="true" data-lpa-fonte="LPA LTM = lucro dos últimos 12 meses R$ 0,22 bi ÷ 364 mi papéis negociados (units resolvidas). Fonte: MCP Partnr (B3/CVM), TTM 2T26. Gerado por scripts/gerar_colunas.py." data-faixa-lo="4.27" data-faixa-hi="6.64">
     <td class="frozen-1 left"><span class="empresa-name">Unifique</span></td>
     <td class="frozen-2"><span class="ticker-badge">FIQE3</span></td>
     <td><span class="fund-seg">Telecom</span></td>
@@ -159,7 +159,7 @@ const RADAR_ROWS_HTML = `
     <td class="sep"><span class="muted">—</span></td>
     <td class="sep report-cell"><span class="btn-ver-off">📄 Pendente</span></td>
   </tr>
-  <tr data-ticker="TIMS3.SA" data-payout-fonte="outra_base" data-veredicto="aguardar" data-segmento="Telecom" data-empresa="TIM TIMS3" data-preco-teto="17.72" data-carteira="false" data-dy-proj="0.0905" data-dy-manual="true" data-report="true" data-report-date="24/08/2026" data-payout="0.8032" data-lpa-ltm="1.7855" data-lpa-manual="true" data-lpa-fonte="LPA LTM = lucro dos últimos 12 meses R$ 4,33 bi ÷ 2423 mi papéis negociados (units resolvidas). Fonte: MCP Partnr (B3/CVM), TTM 2T26. Gerado por scripts/gerar_colunas.py.">
+  <tr data-ticker="TIMS3.SA" data-payout-fonte="outra_base" data-veredicto="aguardar" data-segmento="Telecom" data-empresa="TIM TIMS3" data-preco-teto="18.50" data-carteira="false" data-dy-proj="0.0905" data-dy-manual="true" data-report="true" data-report-date="24/08/2026" data-payout="0.8032" data-lpa-ltm="1.7855" data-lpa-manual="true" data-lpa-fonte="LPA LTM = lucro dos últimos 12 meses R$ 4,33 bi ÷ 2423 mi papéis negociados (units resolvidas). Fonte: MCP Partnr (B3/CVM), TTM 2T26. Gerado por scripts/gerar_colunas.py." data-faixa-lo="18.50" data-faixa-hi="26.25">
     <td class="frozen-1 left"><span class="empresa-name">TIM</span></td>
     <td class="frozen-2"><span class="ticker-badge">TIMS3</span></td>
     <td><span class="fund-seg">Telecom</span></td>
@@ -203,7 +203,7 @@ const RADAR_ROWS_HTML = `
     <td class="sep"><span class="muted">—</span></td>
     <td class="sep report-cell"><span class="btn-ver-off">📄 Pendente</span></td>
   </tr>
-  <tr data-ticker="CPFE3.SA" data-payout-fonte="piso" data-veredicto="aguardar" data-segmento="Utilities" data-empresa="CPFL Energia CPFE3" data-preco-teto="38.12" data-carteira="false" data-dy-proj="0.0881" data-dy-manual="true" data-report="true" data-report-date="24/08/2026" data-payout="0.6855" data-lpa-ltm="5.4582" data-lpa-manual="true" data-lpa-fonte="LPA LTM = lucro dos últimos 12 meses R$ 6,29 bi ÷ 1152 mi papéis negociados (units resolvidas). Fonte: MCP Partnr (B3/CVM), TTM 2T26. Gerado por scripts/gerar_colunas.py.">
+  <tr data-ticker="CPFE3.SA" data-payout-fonte="piso" data-veredicto="aguardar" data-segmento="Utilities" data-empresa="CPFL Energia CPFE3" data-preco-teto="42.99" data-carteira="false" data-dy-proj="0.0881" data-dy-manual="true" data-report="true" data-report-date="24/08/2026" data-payout="0.6855" data-lpa-ltm="5.4582" data-lpa-manual="true" data-lpa-fonte="LPA LTM = lucro dos últimos 12 meses R$ 6,29 bi ÷ 1152 mi papéis negociados (units resolvidas). Fonte: MCP Partnr (B3/CVM), TTM 2T26. Gerado por scripts/gerar_colunas.py." data-faixa-lo="42.99" data-faixa-hi="47.17">
     <td class="frozen-1 left"><span class="empresa-name">CPFL Energia</span></td>
     <td class="frozen-2"><span class="ticker-badge">CPFE3</span></td>
     <td><span class="fund-seg">Utilities</span></td>
@@ -225,7 +225,7 @@ const RADAR_ROWS_HTML = `
     <td class="sep"><span class="muted">—</span></td>
     <td class="sep report-cell"><span class="btn-ver-off">📄 Pendente</span></td>
   </tr>
-  <tr data-ticker="LEVE3.SA" data-payout-fonte="realizado" data-veredicto="acima" data-segmento="Industriais" data-empresa="Mahle Metal Leve LEVE3" data-preco-teto="29.12" data-carteira="false" data-dy-proj="0.0744" data-dy-manual="true" data-report="true" data-report-date="24/08/2026" data-payout="0.8586" data-lpa-ltm="5.1434" data-lpa-manual="true" data-lpa-fonte="LPA LTM = lucro dos últimos 12 meses R$ 0,70 bi ÷ 136 mi papéis negociados (units resolvidas). Fonte: MCP Partnr (B3/CVM), TTM 2T26. Gerado por scripts/gerar_colunas.py.">
+  <tr data-ticker="LEVE3.SA" data-payout-fonte="realizado" data-veredicto="acima" data-segmento="Industriais" data-empresa="Mahle Metal Leve LEVE3" data-preco-teto="29.99" data-carteira="false" data-dy-proj="0.0744" data-dy-manual="true" data-report="true" data-report-date="24/08/2026" data-payout="0.8586" data-lpa-ltm="5.1434" data-lpa-manual="true" data-lpa-fonte="LPA LTM = lucro dos últimos 12 meses R$ 0,70 bi ÷ 136 mi papéis negociados (units resolvidas). Fonte: MCP Partnr (B3/CVM), TTM 2T26. Gerado por scripts/gerar_colunas.py." data-faixa-lo="29.99" data-faixa-hi="38.76">
     <td class="frozen-1 left"><span class="empresa-name">Mahle Metal Leve</span></td>
     <td class="frozen-2"><span class="ticker-badge">LEVE3</span></td>
     <td><span class="fund-seg">Industriais</span></td>
@@ -247,7 +247,7 @@ const RADAR_ROWS_HTML = `
     <td class="sep"><span class="muted">—</span></td>
     <td class="sep report-cell"><span class="btn-ver-off">📄 Pendente</span></td>
   </tr>
-  <tr data-ticker="RANI3.SA" data-payout-fonte="realizado" data-veredicto="acima" data-segmento="Papel e celulose" data-empresa="Irani RANI3" data-preco-teto="7.26" data-carteira="true" data-dy-proj="0.0292" data-dy-manual="true" data-report="true" data-report-date="24/08/2026" data-payout="0.5037" data-lpa-ltm="0.5400" data-lpa-manual="true" data-lpa-fonte="LPA LTM = lucro dos últimos 12 meses R$ 0,13 bi ÷ 240 mi papéis negociados (units resolvidas). Fonte: MCP Partnr (B3/CVM), TTM 2T26. Gerado por scripts/gerar_colunas.py.">
+  <tr data-ticker="RANI3.SA" data-payout-fonte="realizado" data-veredicto="acima" data-segmento="Papel e celulose" data-empresa="Irani RANI3" data-preco-teto="7.70" data-carteira="true" data-dy-proj="0.0292" data-dy-manual="true" data-report="true" data-report-date="24/08/2026" data-payout="0.5037" data-lpa-ltm="0.5400" data-lpa-manual="true" data-lpa-fonte="LPA LTM = lucro dos últimos 12 meses R$ 0,13 bi ÷ 240 mi papéis negociados (units resolvidas). Fonte: MCP Partnr (B3/CVM), TTM 2T26. Gerado por scripts/gerar_colunas.py." data-faixa-lo="7.70" data-faixa-hi="8.92">
     <td class="frozen-1 left"><span class="empresa-name">Irani</span></td>
     <td class="frozen-2"><span class="ticker-badge">RANI3</span></td>
     <td><span class="fund-seg">Papel e celulose</span></td>
@@ -269,7 +269,7 @@ const RADAR_ROWS_HTML = `
     <td class="sep"><span class="muted">—</span></td>
     <td class="sep report-cell"><span class="btn-ver-off">📄 Pendente</span></td>
   </tr>
-  <tr data-ticker="CXSE3.SA" data-payout-fonte="realizado" data-veredicto="acima" data-segmento="Seguros" data-empresa="Caixa Seguridade CXSE3" data-preco-teto="12.78" data-carteira="true" data-dy-proj="0.0694" data-dy-manual="true" data-report="true" data-report-date="27/08/2026" data-payout="0.7997" data-lpa-ltm="1.5049" data-lpa-manual="true" data-lpa-fonte="LPA LTM = lucro dos últimos 12 meses R$ 4,52 bi ÷ 3005 mi papéis negociados (units resolvidas). Fonte: MCP Partnr (B3/CVM), TTM 2T26. Gerado por scripts/gerar_colunas.py.">
+  <tr data-ticker="CXSE3.SA" data-payout-fonte="realizado" data-veredicto="acima" data-segmento="Seguros" data-empresa="Caixa Seguridade CXSE3" data-preco-teto="16.07" data-carteira="true" data-dy-proj="0.0694" data-dy-manual="true" data-report="true" data-report-date="27/08/2026" data-payout="0.7997" data-lpa-ltm="1.5049" data-lpa-manual="true" data-lpa-fonte="LPA LTM = lucro dos últimos 12 meses R$ 4,52 bi ÷ 3005 mi papéis negociados (units resolvidas). Fonte: MCP Partnr (B3/CVM), TTM 2T26. Gerado por scripts/gerar_colunas.py." data-faixa-lo="16.07" data-faixa-hi="18.98">
     <td class="frozen-1 left"><span class="empresa-name">Caixa Seguridade</span></td>
     <td class="frozen-2"><span class="ticker-badge">CXSE3</span></td>
     <td><span class="fund-seg">Seguros</span></td>
@@ -291,7 +291,7 @@ const RADAR_ROWS_HTML = `
     <td class="sep"><span class="muted">—</span></td>
     <td class="sep report-cell"><span class="btn-ver-off">📄 Pendente</span></td>
   </tr>
-  <tr data-ticker="BBSE3.SA" data-payout-fonte="estatutario" data-veredicto="aguardar" data-segmento="Seguros" data-empresa="BB Seguridade BBSE3" data-preco-teto="26.89" data-carteira="true" data-dy-proj="0.1078" data-dy-manual="true" data-report="true" data-report-date="25/08/2026" data-payout="0.7076" data-lpa-ltm="4.5945" data-lpa-manual="true" data-lpa-fonte="LPA LTM = lucro dos últimos 12 meses R$ 9,19 bi ÷ 2000 mi papéis negociados (units resolvidas). Fonte: MCP Partnr (B3/CVM), TTM 2T26. Gerado por scripts/gerar_colunas.py.">
+  <tr data-ticker="BBSE3.SA" data-payout-fonte="estatutario" data-veredicto="aguardar" data-segmento="Seguros" data-empresa="BB Seguridade BBSE3" data-preco-teto="32.32" data-carteira="true" data-dy-proj="0.1078" data-dy-manual="true" data-report="true" data-report-date="25/08/2026" data-payout="0.7076" data-lpa-ltm="4.5945" data-lpa-manual="true" data-lpa-fonte="LPA LTM = lucro dos últimos 12 meses R$ 9,19 bi ÷ 2000 mi papéis negociados (units resolvidas). Fonte: MCP Partnr (B3/CVM), TTM 2T26. Gerado por scripts/gerar_colunas.py." data-faixa-lo="32.32" data-faixa-hi="40.09">
     <td class="frozen-1 left"><span class="empresa-name">BB Seguridade</span></td>
     <td class="frozen-2"><span class="ticker-badge">BBSE3</span></td>
     <td><span class="fund-seg">Seguros</span></td>
@@ -313,7 +313,7 @@ const RADAR_ROWS_HTML = `
     <td class="sep"><span class="muted">—</span></td>
     <td class="sep report-cell"><span class="btn-ver-off">📄 Pendente</span></td>
   </tr>
-  <tr data-ticker="IRBR3.SA" data-payout-fonte="pares" data-veredicto="acima" data-segmento="Resseguros" data-empresa="IRB(Re) IRBR3" data-preco-teto="25.75" data-carteira="true" data-dy-proj="0.035" data-dy-manual="true" data-payout="0.4687" data-lpa-ltm="2.9400" data-lpa-manual="true" data-report="true" data-report-date="25/08/2026" data-lpa-fonte="LPA LTM = lucro dos últimos 12 meses R$ 0,24 bi ÷ 82 mi papéis negociados (units resolvidas). Fonte: MCP Partnr (B3/CVM), TTM 2T26. Gerado por scripts/gerar_colunas.py.">
+  <tr data-ticker="IRBR3.SA" data-payout-fonte="pares" data-veredicto="acima" data-segmento="Resseguros" data-empresa="IRB(Re) IRBR3" data-carteira="true" data-dy-proj="0.035" data-dy-manual="true" data-payout="0.4687" data-lpa-ltm="2.9400" data-lpa-manual="true" data-report="true" data-report-date="25/08/2026" data-lpa-fonte="LPA LTM = lucro dos últimos 12 meses R$ 0,24 bi ÷ 82 mi papéis negociados (units resolvidas). Fonte: MCP Partnr (B3/CVM), TTM 2T26. Gerado por scripts/gerar_colunas.py." data-faixa-lo="24.25" data-faixa-hi="55.79">
     <td class="frozen-1 left"><span class="empresa-name">IRB(Re) Brasil</span></td>
     <td class="frozen-2"><span class="ticker-badge">IRBR3</span></td>
     <td><span class="fund-seg">Resseguros</span></td>
@@ -335,7 +335,7 @@ const RADAR_ROWS_HTML = `
     <td class="sep"><span class="muted">—</span></td>
     <td class="sep report-cell"><span class="btn-ver-off">📄 Pendente</span></td>
   </tr>
-  <tr data-ticker="ITUB3.SA" data-payout-fonte="estatutario" data-veredicto="acima" data-segmento="Bancos" data-empresa="Itaú Unibanco ITUB3" data-preco-teto="35.28" data-carteira="false" data-dy-proj="0.0751" data-dy-manual="true" data-report="true" data-report-date="25/08/2026" data-payout="0.4997" data-lpa-ltm="4.8951" data-lpa-manual="true" data-lpa-fonte="LPA LTM = lucro dos últimos 12 meses R$ 47,94 bi ÷ 9794 mi papéis negociados (units resolvidas). Fonte: MCP Partnr (B3/CVM), TTM 2T26. Gerado por scripts/gerar_colunas.py.">
+  <tr data-ticker="ITUB3.SA" data-payout-fonte="estatutario" data-veredicto="acima" data-segmento="Bancos" data-empresa="Itaú Unibanco ITUB3" data-preco-teto="33.62" data-carteira="false" data-dy-proj="0.0751" data-dy-manual="true" data-report="true" data-report-date="25/08/2026" data-payout="0.4997" data-lpa-ltm="4.8951" data-lpa-manual="true" data-lpa-fonte="LPA LTM = lucro dos últimos 12 meses R$ 47,94 bi ÷ 9794 mi papéis negociados (units resolvidas). Fonte: MCP Partnr (B3/CVM), TTM 2T26. Gerado por scripts/gerar_colunas.py." data-faixa-lo="33.62" data-faixa-hi="44.57">
     <td class="frozen-1 left"><span class="empresa-name">Itaú Unibanco</span></td>
     <td class="frozen-2"><span class="ticker-badge">ITUB3</span></td>
     <td><span class="fund-seg">Bancos</span></td>
@@ -357,7 +357,7 @@ const RADAR_ROWS_HTML = `
     <td class="sep"><span class="muted">—</span></td>
     <td class="sep report-cell"><span class="btn-ver-off">📄 Pendente</span></td>
   </tr>
-  <tr data-ticker="PASS3.SA" data-payout="0.5144" data-payout-fonte="pares" data-lpa-manual="true" data-veredicto="aguardar" data-segmento="Utilities (gás)" data-empresa="Compass Gás e Energia PASS3" data-preco-teto="12.80" data-carteira="false" data-dy-proj="0.0264" data-dy-manual="true" data-report="true" data-report-date="25/08/2026" data-lpa-ltm="1.8985" data-lpa-fonte="LPA LTM = lucro dos últimos 12 meses R$ 1,36 bi ÷ 714 mi papéis negociados (units resolvidas). Fonte: MCP Partnr (B3/CVM), TTM 2T26. Gerado por scripts/gerar_colunas.py.">
+  <tr data-ticker="PASS3.SA" data-payout="0.5144" data-payout-fonte="pares" data-lpa-manual="true" data-veredicto="aguardar" data-segmento="Utilities (gás)" data-empresa="Compass Gás e Energia PASS3" data-carteira="false" data-dy-proj="0.0264" data-dy-manual="true" data-report="true" data-report-date="25/08/2026" data-lpa-ltm="1.8985" data-lpa-fonte="LPA LTM = lucro dos últimos 12 meses R$ 1,36 bi ÷ 714 mi papéis negociados (units resolvidas). Fonte: MCP Partnr (B3/CVM), TTM 2T26. Gerado por scripts/gerar_colunas.py." data-faixa-lo="17.49" data-faixa-hi="17.49">
     <td class="frozen-1 left"><span class="empresa-name">Compass Gás e Energia</span></td>
     <td class="frozen-2"><span class="ticker-badge">PASS3</span></td>
     <td><span class="fund-seg">Utilities (gás)</span></td>
@@ -379,7 +379,7 @@ const RADAR_ROWS_HTML = `
     <td class="sep"><span class="muted">—</span></td>
     <td class="sep report-cell"><span class="btn-ver-off">📄 Pendente</span></td>
   </tr>
-  <tr data-ticker="MULT3.SA" data-payout-fonte="realizado" data-veredicto="aguardar" data-segmento="Shoppings" data-empresa="Multiplan MULT3" data-preco-teto="24.20" data-carteira="false" data-dy-proj="0.0503" data-dy-manual="true" data-report="true" data-report-date="25/08/2026" data-payout="0.3553" data-lpa-ltm="2.6673" data-lpa-manual="true" data-lpa-fonte="LPA LTM = lucro dos últimos 12 meses R$ 1,39 bi ÷ 520 mi papéis negociados (units resolvidas). Fonte: MCP Partnr (B3/CVM), TTM 2T26. Gerado por scripts/gerar_colunas.py.">
+  <tr data-ticker="MULT3.SA" data-payout-fonte="realizado" data-veredicto="aguardar" data-segmento="Shoppings" data-empresa="Multiplan MULT3" data-preco-teto="26.33" data-carteira="false" data-dy-proj="0.0503" data-dy-manual="true" data-report="true" data-report-date="25/08/2026" data-payout="0.3553" data-lpa-ltm="2.6673" data-lpa-manual="true" data-lpa-fonte="LPA LTM = lucro dos últimos 12 meses R$ 1,39 bi ÷ 520 mi papéis negociados (units resolvidas). Fonte: MCP Partnr (B3/CVM), TTM 2T26. Gerado por scripts/gerar_colunas.py." data-faixa-lo="26.33" data-faixa-hi="37.35">
     <td class="frozen-1 left"><span class="empresa-name">Multiplan</span></td>
     <td class="frozen-2"><span class="ticker-badge">MULT3</span></td>
     <td><span class="fund-seg">Shoppings</span></td>
@@ -401,7 +401,7 @@ const RADAR_ROWS_HTML = `
     <td class="sep"><span class="muted">—</span></td>
     <td class="sep report-cell"><span class="btn-ver-off">📄 Pendente</span></td>
   </tr>
-  <tr data-ticker="BMEB4.SA" data-payout-fonte="realizado" data-veredicto="acima" data-segmento="Bancos" data-empresa="Banco Mercantil do Brasil BMEB4" data-preco-teto="50.11" data-carteira="false" data-dy-proj="0.0302" data-dy-manual="true" data-payout="0.2751" data-lpa-ltm="8.1234" data-lpa-manual="true" data-report="true" data-report-date="25/08/2026" data-lpa-fonte="LPA LTM = lucro dos últimos 12 meses R$ 0,85 bi ÷ 105 mi papéis negociados (units resolvidas). Fonte: MCP Partnr (B3/CVM), TTM 2T26. Gerado por scripts/gerar_colunas.py.">
+  <tr data-ticker="BMEB4.SA" data-payout-fonte="realizado" data-veredicto="acima" data-segmento="Bancos" data-empresa="Banco Mercantil do Brasil BMEB4" data-preco-teto="56.67" data-carteira="false" data-dy-proj="0.0302" data-dy-manual="true" data-payout="0.2751" data-lpa-ltm="8.1234" data-lpa-manual="true" data-report="true" data-report-date="25/08/2026" data-lpa-fonte="LPA LTM = lucro dos últimos 12 meses R$ 0,85 bi ÷ 105 mi papéis negociados (units resolvidas). Fonte: MCP Partnr (B3/CVM), TTM 2T26. Gerado por scripts/gerar_colunas.py." data-faixa-lo="56.67" data-faixa-hi="86.46">
     <td class="frozen-1 left"><span class="empresa-name">Banco Mercantil do Brasil</span></td>
     <td class="frozen-2"><span class="ticker-badge">BMEB4</span></td>
     <td><span class="fund-seg">Bancos</span></td>
@@ -423,7 +423,7 @@ const RADAR_ROWS_HTML = `
     <td class="sep"><span class="muted">—</span></td>
     <td class="sep report-cell"><span class="btn-ver-off">📄 Pendente</span></td>
   </tr>
-  <tr data-ticker="VALE3.SA" data-lpa-manual="true" data-payout="0.6638" data-payout-fonte="outra_base" data-veredicto="acima" data-segmento="Mineração" data-empresa="Vale VALE3" data-carteira="false" data-preco-teto="69.32" data-dy-proj="0.0626" data-dy-manual="true" data-lpa-ltm="1.9133" data-lpa-fonte="LPA LTM = lucro dos últimos 12 meses R$ 8,69 bi ÷ 4542 mi papéis negociados (units resolvidas). Fonte: MCP Partnr (B3/CVM), TTM 2T26. Gerado por scripts/gerar_colunas.py.">
+  <tr data-ticker="VALE3.SA" data-lpa-manual="true" data-payout="0.6638" data-payout-fonte="outra_base" data-veredicto="acima" data-segmento="Mineração" data-empresa="Vale VALE3" data-carteira="false" data-preco-teto="66.75" data-dy-proj="0.0626" data-dy-manual="true" data-lpa-ltm="1.9133" data-lpa-fonte="LPA LTM = lucro dos últimos 12 meses R$ 8,69 bi ÷ 4542 mi papéis negociados (units resolvidas). Fonte: MCP Partnr (B3/CVM), TTM 2T26. Gerado por scripts/gerar_colunas.py." data-faixa-lo="66.75" data-faixa-hi="89.11">
     <td class="frozen-1 left"><span class="empresa-name">Vale</span></td>
     <td class="frozen-2"><span class="ticker-badge">VALE3</span></td>
     <td><span class="fund-seg">Mineração</span></td>
@@ -445,7 +445,7 @@ const RADAR_ROWS_HTML = `
     <td class="sep"><span class="muted">—</span></td>
     <td class="sep report-cell"><span class="btn-ver-off">📄 Pendente</span></td>
   </tr>
-  <tr data-ticker="PETR4.SA" data-lpa-manual="true" data-payout="0.7422" data-payout-fonte="outra_base" data-veredicto="acima" data-segmento="Petróleo e Gás" data-empresa="Petrobras PETR4" data-carteira="false" data-preco-teto="42.38" data-dy-proj="0.0624" data-dy-manual="true" data-lpa-ltm="10.3154" data-lpa-fonte="LPA LTM = lucro dos últimos 12 meses R$ 133,76 bi ÷ 12967 mi papéis negociados (units resolvidas). Fonte: MCP Partnr (B3/CVM), TTM 2T26. Gerado por scripts/gerar_colunas.py.">
+  <tr data-ticker="PETR4.SA" data-lpa-manual="true" data-payout="0.7422" data-payout-fonte="outra_base" data-veredicto="acima" data-segmento="Petróleo e Gás" data-empresa="Petrobras PETR4" data-carteira="false" data-preco-teto="42.94" data-dy-proj="0.0624" data-dy-manual="true" data-lpa-ltm="10.3154" data-lpa-fonte="LPA LTM = lucro dos últimos 12 meses R$ 133,76 bi ÷ 12967 mi papéis negociados (units resolvidas). Fonte: MCP Partnr (B3/CVM), TTM 2T26. Gerado por scripts/gerar_colunas.py." data-faixa-lo="42.94" data-faixa-hi="56.22">
     <td class="frozen-1 left"><span class="empresa-name">Petrobras</span></td>
     <td class="frozen-2"><span class="ticker-badge">PETR4</span></td>
     <td><span class="fund-seg">Petróleo e Gás</span></td>
@@ -467,7 +467,7 @@ const RADAR_ROWS_HTML = `
     <td class="sep"><span class="muted">—</span></td>
     <td class="sep report-cell"><span class="btn-ver-off">📄 Pendente</span></td>
   </tr>
-  <tr data-ticker="SBSP3.SA" data-lpa-manual="true" data-payout="0.5000" data-payout-fonte="teto" data-veredicto="acima" data-segmento="Saneamento" data-empresa="Sabesp SBSP3" data-carteira="false" data-preco-teto="21.05" data-dy-proj="0.1067" data-dy-manual="true" data-lpa-ltm="2.2900" data-lpa-fonte="LPA LTM = lucro dos últimos 12 meses R$ 8,06 bi ÷ 3519 mi papéis negociados (units resolvidas). Fonte: MCP Partnr (B3/CVM), TTM 2T26. Gerado por scripts/gerar_colunas.py.">
+  <tr data-ticker="SBSP3.SA" data-lpa-manual="true" data-payout="0.5000" data-payout-fonte="teto" data-veredicto="acima" data-segmento="Saneamento" data-empresa="Sabesp SBSP3" data-carteira="false" data-preco-teto="25.28" data-dy-proj="0.1067" data-dy-manual="true" data-lpa-ltm="2.2900" data-lpa-fonte="LPA LTM = lucro dos últimos 12 meses R$ 8,06 bi ÷ 3519 mi papéis negociados (units resolvidas). Fonte: MCP Partnr (B3/CVM), TTM 2T26. Gerado por scripts/gerar_colunas.py." data-faixa-lo="25.28" data-faixa-hi="29.03">
     <td class="frozen-1 left"><span class="empresa-name">Sabesp</span></td>
     <td class="frozen-2"><span class="ticker-badge">SBSP3</span></td>
     <td><span class="fund-seg">Saneamento</span></td>
@@ -489,7 +489,7 @@ const RADAR_ROWS_HTML = `
     <td class="sep"><span class="muted">—</span></td>
     <td class="sep report-cell"><span class="btn-ver-off">📄 Pendente</span></td>
   </tr>
-  <tr data-ticker="KLBN11.SA" data-lpa-manual="true" data-payout="0.5390" data-payout-fonte="outra_base" data-veredicto="aguardar" data-segmento="Papel e Celulose" data-empresa="Klabin KLBN11" data-carteira="false" data-preco-teto="18.15" data-dy-proj="0.0504" data-dy-manual="true" data-lpa-ltm="0.4413" data-lpa-fonte="LPA LTM = lucro dos últimos 12 meses R$ 0,54 bi ÷ 1215 mi papéis negociados (units resolvidas). Fonte: MCP Partnr (B3/CVM), TTM 2T26. Gerado por scripts/gerar_colunas.py.">
+  <tr data-ticker="KLBN11.SA" data-lpa-manual="true" data-payout="0.5390" data-payout-fonte="outra_base" data-veredicto="aguardar" data-segmento="Papel e Celulose" data-empresa="Klabin KLBN11" data-carteira="false" data-preco-teto="19.44" data-dy-proj="0.0504" data-dy-manual="true" data-lpa-ltm="0.4413" data-lpa-fonte="LPA LTM = lucro dos últimos 12 meses R$ 0,54 bi ÷ 1215 mi papéis negociados (units resolvidas). Fonte: MCP Partnr (B3/CVM), TTM 2T26. Gerado por scripts/gerar_colunas.py." data-faixa-lo="19.44" data-faixa-hi="27.52">
     <td class="frozen-1 left"><span class="empresa-name">Klabin</span></td>
     <td class="frozen-2"><span class="ticker-badge">KLBN11</span></td>
     <td><span class="fund-seg">Papel e Celulose</span></td>
@@ -511,7 +511,7 @@ const RADAR_ROWS_HTML = `
     <td class="sep"><span class="muted">—</span></td>
     <td class="sep report-cell"><span class="btn-ver-off">📄 Pendente</span></td>
   </tr>
-  <tr data-ticker="ITSA4.SA" data-lpa-manual="true" data-payout="0.5362" data-payout-fonte="realizado" data-veredicto="aguardar" data-segmento="Holding" data-empresa="Itaúsa ITSA4" data-carteira="false" data-preco-teto="12.31" data-dy-proj="0.0994" data-dy-manual="true" data-lpa-ltm="1.7050" data-lpa-fonte="LPA LTM = lucro dos últimos 12 meses R$ 18,23 bi ÷ 10691 mi papéis negociados (units resolvidas). Fonte: MCP Partnr (B3/CVM), TTM 2T26. Gerado por scripts/gerar_colunas.py.">
+  <tr data-ticker="ITSA4.SA" data-lpa-manual="true" data-payout="0.5362" data-payout-fonte="realizado" data-veredicto="aguardar" data-segmento="Holding" data-empresa="Itaúsa ITSA4" data-carteira="false" data-preco-teto="12.66" data-dy-proj="0.0994" data-dy-manual="true" data-lpa-ltm="1.7050" data-lpa-fonte="LPA LTM = lucro dos últimos 12 meses R$ 18,23 bi ÷ 10691 mi papéis negociados (units resolvidas). Fonte: MCP Partnr (B3/CVM), TTM 2T26. Gerado por scripts/gerar_colunas.py." data-faixa-lo="12.66" data-faixa-hi="14.25">
     <td class="frozen-1 left"><span class="empresa-name">Itaúsa</span></td>
     <td class="frozen-2"><span class="ticker-badge">ITSA4</span></td>
     <td><span class="fund-seg">Holding</span></td>
@@ -533,7 +533,7 @@ const RADAR_ROWS_HTML = `
     <td class="sep"><span class="muted">—</span></td>
     <td class="sep report-cell"><span class="btn-ver-off">📄 Pendente</span></td>
   </tr>
-  <tr data-ticker="BRAP4.SA" data-lpa-manual="true" data-payout="0.6023" data-payout-fonte="realizado" data-veredicto="aguardar" data-segmento="Holding" data-empresa="Bradespar BRAP4" data-carteira="false" data-preco-teto="19.10" data-dy-proj="0.0953" data-dy-manual="true" data-lpa-ltm="1.4858" data-lpa-fonte="LPA LTM = lucro dos últimos 12 meses R$ 0,58 bi ÷ 393 mi papéis negociados (units resolvidas). Fonte: MCP Partnr (B3/CVM), TTM 2T26. Gerado por scripts/gerar_colunas.py.">
+  <tr data-ticker="BRAP4.SA" data-lpa-manual="true" data-payout="0.6023" data-payout-fonte="realizado" data-veredicto="aguardar" data-segmento="Holding" data-empresa="Bradespar BRAP4" data-carteira="false" data-preco-teto="19.69" data-dy-proj="0.0953" data-dy-manual="true" data-lpa-ltm="1.4858" data-lpa-fonte="LPA LTM = lucro dos últimos 12 meses R$ 0,58 bi ÷ 393 mi papéis negociados (units resolvidas). Fonte: MCP Partnr (B3/CVM), TTM 2T26. Gerado por scripts/gerar_colunas.py." data-faixa-lo="19.69" data-faixa-hi="24.11">
     <td class="frozen-1 left"><span class="empresa-name">Bradespar</span></td>
     <td class="frozen-2"><span class="ticker-badge">BRAP4</span></td>
     <td><span class="fund-seg">Holding</span></td>
@@ -555,7 +555,7 @@ const RADAR_ROWS_HTML = `
     <td class="sep"><span class="muted">—</span></td>
     <td class="sep report-cell"><span class="btn-ver-off">📄 Pendente</span></td>
   </tr>
-  <tr data-ticker="SANB11.SA" data-lpa-manual="true" data-payout="0.5325" data-payout-fonte="realizado" data-veredicto="acima" data-segmento="Bancos" data-empresa="Santander Brasil SANB11" data-carteira="false" data-preco-teto="20.96" data-dy-proj="0.0639" data-dy-manual="true" data-lpa-ltm="3.8619" data-lpa-fonte="LPA LTM = lucro dos últimos 12 meses R$ 14,50 bi ÷ 3755 mi papéis negociados (units resolvidas). Fonte: MCP Partnr (B3/CVM), TTM 2T26. Gerado por scripts/gerar_colunas.py.">
+  <tr data-ticker="SANB11.SA" data-lpa-manual="true" data-payout="0.5325" data-payout-fonte="realizado" data-veredicto="acima" data-segmento="Bancos" data-empresa="Santander Brasil SANB11" data-carteira="false" data-dy-proj="0.0639" data-dy-manual="true" data-lpa-ltm="3.8619" data-lpa-fonte="LPA LTM = lucro dos últimos 12 meses R$ 14,50 bi ÷ 3755 mi papéis negociados (units resolvidas). Fonte: MCP Partnr (B3/CVM), TTM 2T26. Gerado por scripts/gerar_colunas.py." data-faixa-lo="29.53" data-faixa-hi="64.60">
     <td class="frozen-1 left"><span class="empresa-name">Santander Brasil</span></td>
     <td class="frozen-2"><span class="ticker-badge">SANB11</span></td>
     <td><span class="fund-seg">Bancos</span></td>
@@ -577,7 +577,7 @@ const RADAR_ROWS_HTML = `
     <td class="sep"><span class="muted">—</span></td>
     <td class="sep report-cell"><span class="btn-ver-off">📄 Pendente</span></td>
   </tr>
-  <tr data-ticker="BPAC11.SA" data-lpa-manual="true" data-payout="0.2342" data-payout-fonte="realizado" data-veredicto="acima" data-segmento="Bancos" data-empresa="BTG Pactual BPAC11" data-carteira="false" data-preco-teto="42.63" data-dy-proj="0.0219" data-dy-manual="true" data-lpa-ltm="5.0042" data-lpa-fonte="LPA LTM = lucro dos últimos 12 meses R$ 19,25 bi ÷ 3847 mi papéis negociados (units resolvidas). Fonte: MCP Partnr (B3/CVM), TTM 2T26. Gerado por scripts/gerar_colunas.py.">
+  <tr data-ticker="BPAC11.SA" data-lpa-manual="true" data-payout="0.2342" data-payout-fonte="realizado" data-veredicto="acima" data-segmento="Bancos" data-empresa="BTG Pactual BPAC11" data-carteira="false" data-dy-proj="0.0219" data-dy-manual="true" data-lpa-ltm="5.0042" data-lpa-fonte="LPA LTM = lucro dos últimos 12 meses R$ 19,25 bi ÷ 3847 mi papéis negociados (units resolvidas). Fonte: MCP Partnr (B3/CVM), TTM 2T26. Gerado por scripts/gerar_colunas.py." data-faixa-lo="48.39" data-faixa-hi="202.01">
     <td class="frozen-1 left"><span class="empresa-name">BTG Pactual</span></td>
     <td class="frozen-2"><span class="ticker-badge">BPAC11</span></td>
     <td><span class="fund-seg">Bancos</span></td>
@@ -599,7 +599,7 @@ const RADAR_ROWS_HTML = `
     <td class="sep"><span class="muted">—</span></td>
     <td class="sep report-cell"><span class="btn-ver-off">📄 Pendente</span></td>
   </tr>
-  <tr data-ticker="BRSR6.SA" data-lpa-manual="true" data-payout="0.4000" data-payout-fonte="piso" data-veredicto="compra" data-segmento="Bancos" data-empresa="Banrisul BRSR6" data-carteira="false" data-preco-teto="17.88" data-dy-proj="0.0964" data-dy-manual="true" data-lpa-ltm="4.0174" data-lpa-fonte="LPA LTM = lucro dos últimos 12 meses R$ 1,64 bi ÷ 409 mi papéis negociados (units resolvidas). Fonte: MCP Partnr (B3/CVM), TTM 2T26. Gerado por scripts/gerar_colunas.py.">
+  <tr data-ticker="BRSR6.SA" data-lpa-manual="true" data-payout="0.4000" data-payout-fonte="piso" data-veredicto="compra" data-segmento="Bancos" data-empresa="Banrisul BRSR6" data-carteira="false" data-preco-teto="14.68" data-dy-proj="0.0964" data-dy-manual="true" data-lpa-ltm="4.0174" data-lpa-fonte="LPA LTM = lucro dos últimos 12 meses R$ 1,64 bi ÷ 409 mi papéis negociados (units resolvidas). Fonte: MCP Partnr (B3/CVM), TTM 2T26. Gerado por scripts/gerar_colunas.py." data-faixa-lo="14.68" data-faixa-hi="21.08">
     <td class="frozen-1 left"><span class="empresa-name">Banrisul</span></td>
     <td class="frozen-2"><span class="ticker-badge">BRSR6</span></td>
     <td><span class="fund-seg">Bancos</span></td>
@@ -621,7 +621,7 @@ const RADAR_ROWS_HTML = `
     <td class="sep"><span class="muted">—</span></td>
     <td class="sep report-cell"><span class="btn-ver-off">📄 Pendente</span></td>
   </tr>
-  <tr data-ticker="PSSA3.SA" data-lpa-manual="true" data-payout="0.4376" data-payout-fonte="realizado" data-veredicto="acima" data-segmento="Seguros" data-empresa="Porto Seguro PSSA3" data-carteira="false" data-preco-teto="52.81" data-dy-proj="0.0507" data-dy-manual="true" data-lpa-ltm="5.7494" data-lpa-fonte="LPA LTM = lucro dos últimos 12 meses R$ 3,72 bi ÷ 647 mi papéis negociados (units resolvidas). Fonte: MCP Partnr (B3/CVM), TTM 2T26. Gerado por scripts/gerar_colunas.py.">
+  <tr data-ticker="PSSA3.SA" data-lpa-manual="true" data-payout="0.4376" data-payout-fonte="realizado" data-veredicto="acima" data-segmento="Seguros" data-empresa="Porto Seguro PSSA3" data-carteira="false" data-preco-teto="48.57" data-dy-proj="0.0507" data-dy-manual="true" data-lpa-ltm="5.7494" data-lpa-fonte="LPA LTM = lucro dos últimos 12 meses R$ 3,72 bi ÷ 647 mi papéis negociados (units resolvidas). Fonte: MCP Partnr (B3/CVM), TTM 2T26. Gerado por scripts/gerar_colunas.py." data-faixa-lo="48.57" data-faixa-hi="72.37">
     <td class="frozen-1 left"><span class="empresa-name">Porto Seguro</span></td>
     <td class="frozen-2"><span class="ticker-badge">PSSA3</span></td>
     <td><span class="fund-seg">Seguros</span></td>
@@ -643,7 +643,7 @@ const RADAR_ROWS_HTML = `
     <td class="sep"><span class="muted">—</span></td>
     <td class="sep report-cell"><span class="btn-ver-off">📄 Pendente</span></td>
   </tr>
-  <tr data-ticker="SAUD3.SA" data-lpa-manual="true" data-payout="0.4687" data-payout-fonte="pares" data-veredicto="acima" data-segmento="Saúde" data-empresa="Bradsaúde SAUD3" data-carteira="false" data-preco-teto="8.37" data-dy-proj="0" data-dy-manual="true" data-lpa-ltm="0.3600" data-lpa-fonte="LPA LTM = lucro dos últimos 12 meses R$ 1,05 bi ÷ 2927 mi papéis negociados (units resolvidas). Fonte: MCP Partnr (B3/CVM), TTM 2T26. Gerado por scripts/gerar_colunas.py.">
+  <tr data-ticker="SAUD3.SA" data-lpa-manual="true" data-payout="0.4687" data-payout-fonte="pares" data-veredicto="acima" data-segmento="Saúde" data-empresa="Bradsaúde SAUD3" data-carteira="false" data-dy-proj="0" data-dy-manual="true" data-lpa-ltm="0.3600" data-lpa-fonte="LPA LTM = lucro dos últimos 12 meses R$ 1,05 bi ÷ 2927 mi papéis negociados (units resolvidas). Fonte: MCP Partnr (B3/CVM), TTM 2T26. Gerado por scripts/gerar_colunas.py." data-faixa-lo="3.20" data-faixa-hi="3.20">
     <td class="frozen-1 left"><span class="empresa-name">Bradsaúde</span></td>
     <td class="frozen-2"><span class="ticker-badge">SAUD3</span></td>
     <td><span class="fund-seg">Saúde</span></td>
@@ -665,7 +665,7 @@ const RADAR_ROWS_HTML = `
     <td class="sep"><span class="muted">—</span></td>
     <td class="sep report-cell"><span class="btn-ver-off">📄 Pendente</span></td>
   </tr>
-  <tr data-ticker="FLRY3.SA" data-lpa-manual="true" data-payout="0.7500" data-payout-fonte="realizado" data-veredicto="aguardar" data-segmento="Saúde" data-empresa="Fleury FLRY3" data-carteira="false" data-preco-teto="14.34" data-dy-proj="0.0459" data-dy-manual="true" data-lpa-ltm="1.2675" data-lpa-fonte="LPA LTM = lucro dos últimos 12 meses R$ 0,69 bi ÷ 547 mi papéis negociados (units resolvidas). Fonte: MCP Partnr (B3/CVM), TTM 2T26. Gerado por scripts/gerar_colunas.py.">
+  <tr data-ticker="FLRY3.SA" data-lpa-manual="true" data-payout="0.7500" data-payout-fonte="realizado" data-veredicto="aguardar" data-segmento="Saúde" data-empresa="Fleury FLRY3" data-carteira="false" data-preco-teto="16.05" data-dy-proj="0.0459" data-dy-manual="true" data-lpa-ltm="1.2675" data-lpa-fonte="LPA LTM = lucro dos últimos 12 meses R$ 0,69 bi ÷ 547 mi papéis negociados (units resolvidas). Fonte: MCP Partnr (B3/CVM), TTM 2T26. Gerado por scripts/gerar_colunas.py." data-faixa-lo="16.05" data-faixa-hi="22.84">
     <td class="frozen-1 left"><span class="empresa-name">Fleury</span></td>
     <td class="frozen-2"><span class="ticker-badge">FLRY3</span></td>
     <td><span class="fund-seg">Saúde</span></td>
@@ -687,7 +687,7 @@ const RADAR_ROWS_HTML = `
     <td class="sep"><span class="muted">—</span></td>
     <td class="sep report-cell"><span class="btn-ver-off">📄 Pendente</span></td>
   </tr>
-  <tr data-ticker="AURE3.SA" data-lpa-manual="true" data-payout="0.5144" data-payout-fonte="pares" data-lpa-ltm="-0.9791" data-veredicto="acima" data-segmento="Energia Elétrica" data-empresa="Auren Energia AURE3" data-carteira="false" data-preco-teto="14.48" data-dy-proj="0.0000" data-dy-manual="true" data-lpa-fonte="LPA LTM = lucro dos últimos 12 meses R$ -1,03 bi ÷ 1052 mi papéis negociados (units resolvidas). Fonte: MCP Partnr (B3/CVM), TTM 2T26. Gerado por scripts/gerar_colunas.py.">
+  <tr data-ticker="AURE3.SA" data-lpa-manual="true" data-payout="0.5144" data-payout-fonte="pares" data-lpa-ltm="-0.9791" data-veredicto="acima" data-segmento="Energia Elétrica" data-empresa="Auren Energia AURE3" data-carteira="false" data-dy-proj="0.0000" data-dy-manual="true" data-lpa-fonte="LPA LTM = lucro dos últimos 12 meses R$ -1,03 bi ÷ 1052 mi papéis negociados (units resolvidas). Fonte: MCP Partnr (B3/CVM), TTM 2T26. Gerado por scripts/gerar_colunas.py." data-faixa-lo="19.31" data-faixa-hi="19.31">
     <td class="frozen-1 left"><span class="empresa-name">Auren Energia</span></td>
     <td class="frozen-2"><span class="ticker-badge">AURE3</span></td>
     <td><span class="fund-seg">Energia Elétrica</span></td>
@@ -709,7 +709,7 @@ const RADAR_ROWS_HTML = `
     <td class="sep"><span class="muted">—</span></td>
     <td class="sep report-cell"><span class="btn-ver-off">📄 Pendente</span></td>
   </tr>
-  <tr data-ticker="CLSC4.SA" data-lpa-manual="true" data-payout="0.2925" data-payout-fonte="realizado" data-veredicto="acima" data-segmento="Energia Elétrica" data-empresa="Celesc CLSC4" data-carteira="false" data-preco-teto="90.32" data-dy-proj="0.0519" data-dy-manual="true" data-lpa-ltm="22.6856" data-lpa-fonte="LPA LTM = lucro dos últimos 12 meses R$ 0,88 bi ÷ 39 mi papéis negociados (units resolvidas). Fonte: MCP Partnr (B3/CVM), TTM 2T26. Gerado por scripts/gerar_colunas.py.">
+  <tr data-ticker="CLSC4.SA" data-lpa-manual="true" data-payout="0.2925" data-payout-fonte="realizado" data-veredicto="acima" data-segmento="Energia Elétrica" data-empresa="Celesc CLSC4" data-carteira="false" data-preco-teto="99.86" data-dy-proj="0.0519" data-dy-manual="true" data-lpa-ltm="22.6856" data-lpa-fonte="LPA LTM = lucro dos últimos 12 meses R$ 0,88 bi ÷ 39 mi papéis negociados (units resolvidas). Fonte: MCP Partnr (B3/CVM), TTM 2T26. Gerado por scripts/gerar_colunas.py." data-faixa-lo="99.86" data-faixa-hi="159.90">
     <td class="frozen-1 left"><span class="empresa-name">Celesc</span></td>
     <td class="frozen-2"><span class="ticker-badge">CLSC4</span></td>
     <td><span class="fund-seg">Energia Elétrica</span></td>
@@ -731,7 +731,7 @@ const RADAR_ROWS_HTML = `
     <td class="sep"><span class="muted">—</span></td>
     <td class="sep report-cell"><span class="btn-ver-off">📄 Pendente</span></td>
   </tr>
-  <tr data-ticker="AXIA3.SA" data-lpa-manual="true" data-payout="0.9273" data-payout-fonte="realizado" data-veredicto="acima" data-segmento="Energia Elétrica" data-empresa="Axia Energia AXIA3" data-carteira="false" data-preco-teto="36.91" data-dy-proj="0.0356" data-dy-manual="true" data-lpa-ltm="4.1182" data-lpa-fonte="LPA LTM = lucro dos últimos 12 meses R$ 12,06 bi ÷ 2928 mi papéis negociados (units resolvidas). Fonte: MCP Partnr (B3/CVM), TTM 2T26. Gerado por scripts/gerar_colunas.py.">
+  <tr data-ticker="AXIA3.SA" data-lpa-manual="true" data-payout="0.9273" data-payout-fonte="realizado" data-veredicto="acima" data-segmento="Energia Elétrica" data-empresa="Axia Energia AXIA3" data-carteira="false" data-dy-proj="0.0356" data-dy-manual="true" data-lpa-ltm="4.1182" data-lpa-fonte="LPA LTM = lucro dos últimos 12 meses R$ 12,06 bi ÷ 2928 mi papéis negociados (units resolvidas). Fonte: MCP Partnr (B3/CVM), TTM 2T26. Gerado por scripts/gerar_colunas.py." data-faixa-lo="37.74" data-faixa-hi="37.74">
     <td class="frozen-1 left"><span class="empresa-name">Axia Energia</span></td>
     <td class="frozen-2"><span class="ticker-badge">AXIA3</span></td>
     <td><span class="fund-seg">Energia Elétrica</span></td>
@@ -753,7 +753,7 @@ const RADAR_ROWS_HTML = `
     <td class="sep"><span class="muted">—</span></td>
     <td class="sep report-cell"><span class="btn-ver-off">📄 Pendente</span></td>
   </tr>
-  <tr data-ticker="SHUL4.SA" data-lpa-manual="true" data-payout="0.0577" data-payout-fonte="realizado" data-lpa-ltm="0.7287" data-veredicto="compra" data-segmento="Bens Industriais" data-empresa="Schulz SHUL4" data-carteira="false" data-preco-teto="4.61" data-dy-proj="0.0094" data-dy-manual="true" data-lpa-fonte="LPA LTM = lucro dos últimos 12 meses R$ 0,26 bi ÷ 356 mi papéis negociados (units resolvidas). Fonte: MCP Partnr (B3/CVM), TTM 2T26. Gerado por scripts/gerar_colunas.py.">
+  <tr data-ticker="SHUL4.SA" data-lpa-manual="true" data-payout="0.0577" data-payout-fonte="realizado" data-lpa-ltm="0.7287" data-veredicto="compra" data-segmento="Bens Industriais" data-empresa="Schulz SHUL4" data-carteira="false" data-preco-teto="4.53" data-dy-proj="0.0094" data-dy-manual="true" data-lpa-fonte="LPA LTM = lucro dos últimos 12 meses R$ 0,26 bi ÷ 356 mi papéis negociados (units resolvidas). Fonte: MCP Partnr (B3/CVM), TTM 2T26. Gerado por scripts/gerar_colunas.py." data-faixa-lo="4.53" data-faixa-hi="5.91">
     <td class="frozen-1 left"><span class="empresa-name">Schulz</span></td>
     <td class="frozen-2"><span class="ticker-badge">SHUL4</span></td>
     <td><span class="fund-seg">Bens Industriais</span></td>

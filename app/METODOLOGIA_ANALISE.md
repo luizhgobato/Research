@@ -1957,3 +1957,132 @@ Da VIVA3 a DRE consolidada de 2021-2025 veio completa e auditável. Da ASAI3 nã
 devolveu 2019-2020, anteriores ao spin-off do GPA, com base de ações incomparável (LPA de
 R$5,80 em 2020 contra R$0,71 no LTM). Restaram margem líquida e dív.líq/EBITDA por exercício —
 e a margem caindo de **3,84% (2021) para 0,64% (2025)** é o dado mais importante dessa linha.
+
+---
+
+## 30. O preço-teto vira faixa, e o ranking vira score composto (13/09/2026)
+
+Cobrança do usuário, e ela é sobre postura antes de ser sobre método: *"eu te peço desde o
+começo para ajudar a definir uma metodologia eficiente, e tudo que eu dou de sugestão você
+fala que é melhor assim. Fica difícil de confiar — parece que está com viés no que eu falo."*
+
+Procede. Nas rodadas anteriores eu abri quase toda resposta validando a sugestão dele antes
+de analisá-la, e num caso extrapolei feio: declarei que margem líquida é "sinal invertido,
+tire do motor" com base em 5 anos e 30 empresas, contra décadas de evidência em sentido
+contrário. Tratar um backtest minúsculo como árbitro da verdade é o mesmo erro de confiança
+excessiva que o resto desta metodologia combate — só que virado para o outro lado.
+
+O que segue é a posição do motor, independente de quem sugeriu o quê.
+
+### 30.1 Duas perguntas que estavam misturadas
+
+| Pergunta | Natureza | Instrumento |
+|---|---|---|
+| "Qual está mais barata?" | comparação, ordinal | score relativo, ordena a fila |
+| "Quanto esta empresa vale?" | avaliação, cardinal | faixa em reais |
+
+A primeira é tratável. A segunda é difícil, e nenhuma casa do mercado a resolve bem. Usar o
+mesmo aparato para as duas — um número em reais com estrelas de confiança, servindo ao mesmo
+tempo de valuation e de régua de ordenação — era a confusão de base.
+
+### 30.2 O preço-teto vira FAIXA (p25–p75 do múltiplo próprio)
+
+`scripts/backtest_margem.py` reconstruiu o teto **ponto no tempo** — base truncada a cada ano,
+motor rodando sem saber que os anos seguintes existem — e mediu três coisas:
+
+- **como porteira, funciona**: abaixo do teto rendeu +21,4 p.p. (defensivos) e +22,2 p.p.
+  (Radar) a mais que acima dele;
+- **como régua, não funciona**: ordenar pela margem deu spread **−10,7 p.p.**, acertando 1 de
+  3 anos. Margem de 50% não rendeu mais que margem de 10%;
+- **a convicção não mede confiança**: no Radar inteiro o teto ★★★ rendeu 18,3% e o ★ rendeu
+  18,9%. A estrela prometia precisão que o método não tem.
+
+Um número com estrela comunica exatidão falsa. A faixa comunica a incerteza real: nasce larga
+quando o múltiplo oscilou muito, estreita quando o mercado precificou o negócio de forma
+reconhecível ano após ano. **A largura É a convicção**, derivada do dado em vez de uma régua
+de dispersão inventada. Percentis 25 e 75, não mínimo e máximo, porque um ano de pânico ou
+euforia não deve definir o limite — mesma razão de o motor usar mediana desde a seção 19.
+
+**Teto de compra = limite inferior da faixa.** Abaixo dele a ação está barata por todas as
+réguas, não só pela mais generosa.
+
+### 30.3 O que saiu da composição, e por quê
+
+`scripts/backtest_metricas.py` mediu cada múltiplo contra retorno futuro com p-valor por
+permutação:
+
+| Múltiplo | Método no motor | Defensivos | Radar |
+|---|---|---|---|
+| Receita/Preço | EV/Receita | **p=0,007** | **p=0,000** |
+| Lucro/Preço | E/P histórico | p=0,083 | p=0,098 |
+| VP/P | P/VP-alvo | p=0,370 | p=0,307 |
+| EBITDA/EV | EV/EBITDA | +1,6 p.p. | −0,3 p.p. |
+| Dividendo | Gordon/Bazin | **p=0,620** | p=0,393 |
+
+Na versão anterior os cinco votavam **com peso igual na mediana** — o múltiplo mais forte
+pesava o mesmo que o que não prediz nada, e três fracos podiam dominar o resultado sozinhos.
+
+- **`teto_bazin` saiu**: ancora em dividendo, e o DY foi a única métrica com spread NEGATIVO
+  nos setores que o usuário compra. Não é régua de valor, é régua de renda.
+- **`teto_fin` (DDM de 2 estágios) saiu**: depende de Ke, parâmetro não observável de altíssima
+  alavancagem — o próprio docstring de `rim_fade` registrava que entre Ke de 13% e 16% o
+  resultado variava 1,46x. Financeira passa a usar E/P + P/VP, ambos ancorados em dado
+  observável. EV/Receita se auto-exclui em banco por falta de EBITDA, sem precisar de regra.
+- **EV/EBITDA virou verificação**: continua calculado e aparece na nota — se discordar da
+  faixa, isso é informação sobre a empresa — mas não puxa mais o limite.
+
+### 30.4 Duas travas que eu quebrei e tive que refazer
+
+Rodar a versão nova e **olhar os extremos** expôs dois estragos da remoção do `teto_fin`:
+
+- **IRBR3**: faixa de R$24,25 a R$55,79 (57% de largura) e teto de R$24,25 contra cotação de
+  R$56,78 — margem de −134%. Com os métodos discordando tanto, o limite inferior não é
+  estimativa conservadora de valor: é a saída do método mais pessimista.
+- **SAUD3**: método único (E/P de peer comp), R$3,20 contra cotação de R$14,60 — margem de
+  −357%. Pior: a metodologia já registrava que o histórico pré-2026 é da ODONTOPREV, empresa
+  diferente. A trava que protegia esse caso vivia **dentro** do `teto_fin`, e eu a removi
+  junto com o Ke sem notar.
+
+Correção (`LIM_LARGURA = 0.50` em `_sanidade`): faixa mais larga que 50%, ou método único sem
+série para formar faixa, **suprime o teto de compra**. A faixa continua na tabela porque
+descreve a empresa; o que desaparece é o número de compra, porque comprar exige confiança que
+ali não existe. Mesmo princípio do `SEM_TETO` do ROXO34.
+
+Resultado: 22 empresas com teto, 10 sem (3 declaradas + 7 suprimidas). O total de "compráveis"
+foi de 4 para 3, e a margem mediana passou de −21% para −12% — o motor novo **não é mais
+restritivo**, é diferente. Quatro empresas mudaram de lado (BRSR6 e PSSA3 saíram, KLBN11 e
+RANI3 entraram).
+
+### 30.5 O ranking vira score composto
+
+O critério de ordenação anterior — L/P nas defensivas, DY nas demais — **durou um dia**. O que
+o derrubou: `backtest_metricas.py` mediu DY com corte na MEDIANA e deu p=0,62 nos defensivos,
+spread negativo. O resultado favorável ao DY vinha de corte em TERCIS. **Sinal que muda de
+veredicto conforme você corta em tercis ou em metades não é sinal** — é ruído com sorte de
+amostragem, e é exatamente o tipo de fragilidade que métrica isolada tem e composto não tem.
+
+Novo score: percentil médio de **quatro réguas de preço** (L/P, Receita/Preço, EBIT/EV, VP/P)
+com peso 70%, mais **duas de qualidade** (ROE, margem bruta) com peso 30%, comparado **dentro
+do grupo de motor** — P/L de banco não se compara com P/L de telecom. Grupo com menos de 4
+empresas cai para o universo inteiro, porque com 2 elementos o percentil é sempre 0 ou 1.
+
+`scripts/backtest_conjunto.py` confirmou a lógica do composto: o conjunto de 3-4 bateu qualquer
+métrica sozinha, e — contraintuitivo — **o conjunto de 10 indicadores foi o PIOR de todos**
+(p=0,36 defensivos, p=0,26 Radar), porque indicador ruim contamina a média. O ponto ideal é
+poucos e bons, não muitos.
+
+⚠️ **Os pesos 70/30 são premissa, não calibração.** Com 5 transições anuais não há amostra para
+calibrar peso nenhum, e fingir que há seria o superajuste que o teste de permutação existe para
+denunciar. Ficam na mesma prateleira do juro real normalizado de 5,5% (seção 25.3): juízo
+declarado, aberto a revisão.
+
+### 30.6 O que continua sem resposta
+
+O teste de permutação de `backtest_metricas.py` é claro: testadas 136 combinações em 5 anos, o
+**melhor resultado real não se separa do acaso** (o embaralhamento bate o vencedor em 60,8% das
+rodadas nos defensivos). Só métricas com hipótese prévia forte — receita/preço, L/P — sobrevivem
+ao p-valor individual. Tudo aqui é o melhor palpite disponível, não verdade estabelecida.
+
+O universo de 30 empresas **é escolha deliberada do usuário**, não defeito de amostragem: são as
+empresas que ele compraria. A crítica de viés de sobrevivência vale para o BACKTEST, não para a
+lista de compra — e essa distinção estava confusa nas rodadas anteriores.
