@@ -74,11 +74,25 @@ def normalizado(t, A, usar_cache=True):
     val, q = M['anos_validos'](A)
     c = A[max(A)]
     if t in FIN:
+        # ⚠️ O PATRIMÔNIO VEM DA CONTABILIDADE, NÃO DO PREÇO. Até 13/09/2026 esta linha fazia
+        # `vpa() × papeis()`, e vpa() é preço ÷ P/VP — ou seja, o lucro NORMALIZADO, que é um
+        # número de fundamento, se mexia quando a ação subia ou caía. Pior: o P/VP da base não
+        # reconcilia com o par lucro/ROE da mesma base. O usuário achou pelo Itaú, cujo lucro
+        # normalizado saía em R$ 40,1 bi contra R$ 45,9 bi de lucro real em 2025 — o P/VP
+        # dizia patrimônio de R$ 190,9 bi e o ROE dizia R$ 228,0 bi, 16% de diferença. A
+        # varredura achou o mesmo em quase todo o grupo: BMEB4 −12%, BRSR6 +11%, e a SAUD3
+        # com +244%, que é a incorporação de 2026 batendo em cheio no P/VP.
+        # Patrimônio = lucro ÷ ROE resolve: os dois campos são contábeis, da mesma fonte e do
+        # mesmo exercício, e o preço sai da conta. Na prática a fórmula vira
+        # `lucro_atual × (ROE típico ÷ ROE de hoje)` — escala o lucro pela distância entre a
+        # rentabilidade normal do banco e a de agora, que é exatamente o que normalizar quer
+        # dizer.
         roes = [A[y]['roe'] for y in val if A[y].get('roe') is not None]
-        v, pap = M['vpa'](t, A), M['papeis'](t, A)
-        if roes and v and pap:
+        roe_hoje, lucro_hoje = c.get('roe'), c.get('lucrolin')
+        if roes and roe_hoje and roe_hoje > 0 and lucro_hoje and lucro_hoje > 0:
+            pl_contabil = lucro_hoje / (roe_hoje / 100)
             roe, _nota = M['mediana_com_tendencia'](roes, limiar_abs=2.0)
-            return roe/100*v*pap, 'ROE mediano × patrimônio líquido', 'calculado agora'
+            return roe/100*pl_contabil, 'ROE mediano × patrimônio líquido', 'calculado agora'
     mg = [A[y]['lucrolin']/A[y]['receita'] for y in val
           if A[y].get('receita') and A[y].get('lucrolin')]
     if mg and c.get('receita'):
