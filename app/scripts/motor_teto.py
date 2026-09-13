@@ -377,6 +377,11 @@ def faixa_com_tendencia(vals, limiar_rel=0.12, limiar_abs=None):
     return _p(0.25), _p(0.50), _p(0.75), nota
 
 
+def papeis_txt(pap):
+    """Contagem de papéis para leitura humana. "4542 mi papéis" faz o leitor contar zeros."""
+    return f'{pap/1e9:.1f} bi papéis'.replace('.', ',') if pap >= 1e9 else f'{pap/1e6:.0f} mi papéis'
+
+
 def recentrar(p25, p50, p75, alvo):
     """Faixa do múltiplo próprio, RECENTRADA no múltiplo que de fato foi aplicado.
 
@@ -768,6 +773,10 @@ def teto_ev(t, A, ciclico):
     conv = 3 if len(mult) >= 5 else 2
     base = 'EBITDA médio de %d anos (R$ %.1f bi)' % (len(eb), ebitda/1e9) if ciclico else 'EBITDA LTM (R$ %.1f bi)' % (ebitda/1e9)
     return dict(justo=justo, conv=conv, chave='EV/EBITDA', faixa=fx,
+        conta=(f'{base} × EV/EBITDA {alvo:.2f}x − dívida líquida R$ {dl/1e9:.1f} bi, '
+               f'÷ {papeis_txt(pap)}'),
+        origem_mult=(f'{nota_alvo.lower()} do próprio histórico, {len(mult)} anos '
+                     f'({min(mult):.1f}x a {max(mult):.1f}x)'),
         motor=f'EV/EBITDA {alvo:.2f}x sobre {base}',
         nota=f'Múltiplo-alvo {alvo:.2f}x = {nota_alvo} do próprio histórico ({len(mult)} anos: {min(mult):.1f}x a {max(mult):.1f}x), não de pares. '
              f'Faixa {p25:.2f}x a {p75:.2f}x ({nota_fx}). '
@@ -957,7 +966,7 @@ def teto_ep(t, A, pl_setor=None, com_pares=True):
     # papéis é ancorada com a regra de ±25% e nem sempre cai no divisor que a fonte usou.
     # Partindo do lucro, a identidade fecha por construção.
     alvo0 = alvo
-    alvo, nota_pares = (alvo_com_pares(t, 'E/P', alvo) if com_pares else (alvo, ''))
+    alvo, nota_pares, origem_mult = (alvo_com_pares(t, 'E/P', alvo) if com_pares else (alvo, '', f'mediana da própria série ({alvo:.2f}x)'))
     if faixa_mult:
         faixa_mult = recentrar(faixa_mult[0], mediana_propria, faixa_mult[1], alvo)
     l25 = (A.get(2025) or {}).get('lucrolin')
@@ -970,7 +979,13 @@ def teto_ep(t, A, pl_setor=None, com_pares=True):
     else:
         lpa_unit = lpa * FATOR_UNIT.get(t, 1)
         g, nota_g = None, ' ⚠️ Sem lucro de 2025 positivo: usa o LPA dos últimos 12 meses.'
+    # `conta` e `origem_mult` existem SÓ para a tooltip do preço justo, e é de propósito que
+    # sejam campos e não a string `motor`: o usuário pediu, três vezes, que ali esteja "o
+    # racional pra chegar no valor, somente isso". Parsear `motor` com regex para extrair a
+    # conta já falhou neste projeto (o vazamento de valor entre tickers do `gCagr`).
     return dict(justo=alvo*lpa_unit, conv=conv, chave='E/P', alvo=alvo0,
+        conta=f'LPA projetado 2026 R$ {lpa_unit:.2f} × P/L {alvo:.2f}x',
+        origem_mult=origem_mult,
         faixa=((faixa_mult[0]*lpa_unit, faixa_mult[1]*lpa_unit) if faixa_mult else None),
         motor=f'E/P: P/L {nota_pares or f"{alvo:.2f}x"} × LPA projetado R$ {lpa_unit:.2f}',
         nota=nota + nota_g)
@@ -1041,9 +1056,10 @@ def teto_pvp(t, A, com_pares=True):
     v = vpa(t, A)
     if not v or v <= 0: return None
     alvo0 = alvo
-    alvo, nota_pares = (alvo_com_pares(t, 'P/VP', alvo) if com_pares else (alvo, ''))
+    alvo, nota_pares, origem_mult = (alvo_com_pares(t, 'P/VP', alvo) if com_pares else (alvo, '', f'mediana da própria série ({alvo:.2f}x)'))
     p25, p75 = recentrar(p25, alvo0, p75, alvo)
     return dict(justo=alvo*v, conv=2, chave='P/VP', alvo=alvo0, faixa=(p25*v, p75*v),
+        conta=f'VPA R$ {v:.2f} × P/VP {alvo:.2f}x', origem_mult=origem_mult,
         motor=f'P/VP {nota_pares or f"{alvo:.2f}x"} × VPA R$ {v:.2f} por papel',
         nota=f'P/VP-alvo = {nota} de {len(pv)} anos ({min(pv):.2f}x a {max(pv):.2f}x), corrigido para units. '
              f'Não depende de lucro — é o método que sobrevive a prejuízo e a lucro contábil distorcido. '
@@ -1068,13 +1084,16 @@ def teto_ev_receita(t, A, com_pares=True):
     def _justo(mult):
         return (mult*c['receita'] - dl) / pap
     alvo0 = alvo
-    alvo, nota_pares = (alvo_com_pares(t, 'EV/Receita', alvo) if com_pares else (alvo, ''))
+    alvo, nota_pares, origem_mult = (alvo_com_pares(t, 'EV/Receita', alvo) if com_pares else (alvo, '', f'mediana da própria série ({alvo:.2f}x)'))
     p25, p75 = recentrar(p25, alvo0, p75, alvo)
     justo = _justo(alvo)
     if justo <= 0: return None
     fx = tuple(sorted((_justo(p25), _justo(p75))))
     return dict(justo=justo, conv=2, chave='EV/Receita', alvo=alvo0,
         faixa=(fx if fx[0] > 0 else None),
+        conta=(f'receita R$ {c["receita"]/1e9:.1f} bi × EV/Receita {alvo:.2f}x '
+               f'− dívida líquida R$ {dl/1e9:.1f} bi, ÷ {papeis_txt(pap)}'),
+        origem_mult=origem_mult,
         motor=f'EV/Receita {nota_pares or f"{alvo:.2f}x"} × receita R$ {c["receita"]/1e9:.1f} bi',
         nota=f'EV/Receita-alvo = {nota} de {len(r)} anos ({min(r):.2f}x a {max(r):.2f}x). '
              f'Não depende de lucro nem de EBITDA — sobrevive a margem colapsando e a EBITDA volátil. '
@@ -1138,7 +1157,7 @@ def teto_ffo(t, A, com_pares=True):
         return None
     p25, alvo, p75, nfx = faixa_com_tendencia(pfs, limiar_rel=0.15)
     alvo0 = alvo
-    alvo, nota_pares = (alvo_com_pares(t, 'P/FFO', alvo) if com_pares else (alvo, ''))
+    alvo, nota_pares, origem_mult = (alvo_com_pares(t, 'P/FFO', alvo) if com_pares else (alvo, '', f'mediana da própria série ({alvo:.2f}x)'))
     p25, p75 = recentrar(p25, alvo0, p75, alvo)
     atual0 = atual
     atual, g, fonte_g = projetar(t, A, atual0, H_GLOBAL)   # mesmo motivo do E/P
@@ -1146,6 +1165,8 @@ def teto_ffo(t, A, com_pares=True):
         nfx += f' · FFO/papel projetado R$ {atual:.2f} = R$ {atual0:.2f} × (1{g:+.1f}%), {fonte_g}'
     return dict(justo=alvo * atual, conv=2, chave='P/FFO', alvo=alvo0,
         faixa=(p25 * atual, p75 * atual),
+        conta=f'FFO por papel projetado R$ {atual:.2f} × P/FFO {alvo:.2f}x',
+        origem_mult=origem_mult,
         motor=f'P/FFO {nota_pares or f"{alvo:.2f}x"} × FFO/papel projetado R$ {atual:.2f}',
         nota=f'P/FFO-alvo = {nfx}, série de {len(pfs)} anos ({min(pfs):.1f}x a {max(pfs):.1f}x). '
              f'FFO = lucro líquido + depreciação — devolve a despesa que não sai caixa e que a '
@@ -1188,6 +1209,7 @@ def teto_setorial(t, A, H, campo=None):
         justo = alvo * v
         fx = (lo_m*v, hi_m*v)
         desc = f'P/VP mediano dos pares {alvo:.2f}x × VPA R$ {v:.2f}'
+        conta = f'VPA R$ {v:.2f} × P/VP {alvo:.2f}x'
     else:
         eb = c.get('ebitda'); pap = papeis(t, A)
         if not eb or eb <= 0 or not pap: return None
@@ -1195,12 +1217,16 @@ def teto_setorial(t, A, H, campo=None):
         justo = (alvo*eb - dl) / pap
         fx = ((lo_m*eb - dl)/pap, (hi_m*eb - dl)/pap)
         desc = f'EV/EBITDA mediano dos pares {alvo:.2f}x × EBITDA R$ {eb/1e9:.1f} bi'
+        conta = (f'EBITDA R$ {eb/1e9:.1f} bi × EV/EBITDA {alvo:.2f}x − dívida líquida '
+                 f'R$ {dl/1e9:.1f} bi, ÷ {papeis_txt(pap)}')
     if justo <= 0:
         return teto_setorial(t, A, H, 'pvp') if campo != 'pvp' else None
     if not (fx[0] and fx[0] > 0 and fx[1] > fx[0]):
         fx = None
     return dict(justo=justo, conv=1, chave='Pares', faixa=fx,
-        motor=desc,
+        motor=desc, conta=conta,
+        origem_mult=(f'mediana dos {len(pares)} pares do grupo {m} — a própria empresa não '
+                     f'tem série utilizável'),
         nota=(f'⚠️ ÚLTIMO RECURSO — a própria empresa não tem série utilizável (quebra recente '
               f'ou histórico curto demais), então o múltiplo vem dos {len(pares)} pares do grupo '
               f'{m} com pelo menos 4 anos limpos (faixa {lo_m:.2f}x a {hi_m:.2f}x = desacordo '
@@ -1253,6 +1279,9 @@ def teto_nav(t, A, H, justo_pai):
     conv = 2 if disp < 0.30 else 1          # teto de ★★☆: ver limite honesto acima
     return dict(justo=alvo*justo_pai, conv=conv, chave='Paridade',
         faixa=((p25*justo_pai, p75*justo_pai) if p75 > p25 else None),
+        conta=f'preço justo de {pai} R$ {justo_pai:.2f} × paridade {alvo:.3f}',
+        origem_mult=(f'razão entre o preço de {t} e o de {pai} ao longo de {len(raz)} anos '
+                     f'({alvo:.3f}) — o desconto de holding que o mercado pratica'),
         motor=f'Paridade com {pai}: {alvo:.3f}× o preço justo de {pai} (R$ {justo_pai:.2f})',
         nota=(f'Razão preço {t} ÷ preço {pai} = {nota_alvo} de {len(raz)} anos '
               f'({min(raz):.3f} a {max(raz):.3f}, dispersão {disp*100:.0f}%; faixa '
@@ -1364,7 +1393,7 @@ def _sanidade(t, r, cot):
              f'Convicção forçada a ★☆☆. Isto pode significar que o mercado discorda muito do '
              f'histórico da empresa — ou que os métodos ainda não descrevem bem este caso.'}
     return dict(justo=None, conv=0, recusa=True,
-        motor='SEM PREÇO-TETO — o motor não descreve esta empresa',
+        motor='SEM PREÇO JUSTO — o motor não descreve esta empresa',
         nota=(f'RECUSADO: o teto calculado (R$ {teto:.2f}) fica {abs(marg)*100:.0f}% {lado} da '
               f'cotação de R$ {cot:.2f}. Além de {LIM_MARGEM*100:.0f}% eu não consigo distinguir '
               f'"o mercado está errado" de "o meu motor está errado" — e nas 5 vezes em que isso '
@@ -1397,7 +1426,7 @@ SEM_TETO = {
                'sem série para separar padrão de ano atípico. Gordon, lucro residual e múltiplo '
                'próprio rodariam todos sobre esse único ponto — "consenso de métodos" seria '
                'validação cruzada aparente, não real: os três concordariam porque vêm da mesma '
-               'fonte única. Sem segunda fonte independente, não há preço-teto defensável. '
+               'fonte única. Sem segunda fonte independente, não há preço justo defensável. '
                'Payout, TIR real e as demais colunas continuam calculados normalmente.'),
     # ── Adicionadas em 13/09/2026 ────────────────────────────────────────────────────────
     # Caso DIFERENTE do ROXO34 e pelo mesmo motivo de fundo: falta de dado, não falha de
@@ -1413,18 +1442,18 @@ SEM_TETO = {
               'nem P/VP por exercício para ancorar múltiplo da própria série. A DRE de '
               '2021-2025 está completa e auditável (receita, lucro, EBITDA, margens, LPA) — '
               'o que falta é só o lado do PREÇO. Assim que a série de cotação entrar, esta '
-              'linha sai do SEM_TETO sem mudar mais nada.'),
+              'linha passa a ter preço justo sem mudar mais nada.'),
     'ASAI3': ('Mesma falta de preço histórico da VIVA3, e ainda menos série: a DRE anual '
               'recente não voltou da API (só 2019-2020, anteriores ao spin-off do GPA, com '
               'base de ações incomparável — LPA de R$5,80 em 2020 contra R$0,71 no LTM). '
               'Restam margem líquida e dív.líq/EBITDA por exercício. A margem caindo de '
-              '3,84% (2021) para 0,64% (2025) é informação real e está na tabela; teto, não.'),
+              '3,84% (2021) para 0,64% (2025) é informação real e está na tabela; preço justo, não.'),
 }
 
 def calcular(t, A):
     if t in SEM_TETO:
         return dict(justo=None, conv=0, recusa=True,
-            motor='SEM PREÇO-TETO — declarado',
+            motor='SEM PREÇO JUSTO — declarado',
             nota=f'RECUSA DECLARADA: {SEM_TETO[t]}')
     return _sanidade(t, _calcular_bruto(t, A, H_GLOBAL), (A[max(A)] or {}).get('preco'))
 
@@ -1549,7 +1578,8 @@ def _calcular_bruto(t, A, H=None):
 
     # A ARITMÉTICA, campo a campo: o que DECIDE vem primeiro e marcado.
     detalhe = ([dict(chave=escolhido, justo=round(justo, 2), papel='principal',
-                     conta=principal.get('motor', ''),
+                     conta=principal.get('conta') or principal.get('motor', ''),
+                     origemMult=principal.get('origem_mult', ''),
                      faixa=[round(faixa_lo, 2), round(faixa_hi, 2)])]
                + [dict(chave=x.get('chave') or '—', justo=round(x['justo'], 2),
                        papel='verificação', conta=x.get('motor', ''),
@@ -1651,16 +1681,26 @@ def multiplos_pares(H):
 PARES_SEM = {'P/VP'}
 
 def alvo_com_pares(t, chave, alvo_proprio):
-    """Média entre o múltiplo da empresa e a mediana dos pares. Devolve (alvo, nota)."""
-    if chave in PARES_SEM:
-        return alvo_proprio, ''
+    """Média entre o múltiplo da empresa e a mediana dos pares. (alvo, nota, origem).
+
+    `origem` é uma frase em português dizendo DE ONDE o múltiplo saiu, escrita para a tooltip
+    do preço justo — o pedido do usuário é que ali esteja o racional para chegar ao valor e
+    nada mais. Nasceu separada de `nota` porque `nota` é prosa do motor, cheia de ressalva, e
+    a tooltip precisa de uma linha só.
+    """
     g = MOTOR.get(t)
+    if chave in PARES_SEM:
+        return alvo_proprio, '', f'mediana da própria série ({alvo_proprio:.2f}x)'
     pares = [v for (o, v) in MULT_PARES.get((g, chave), []) if o != t]
     if len(pares) < MIN_PARES:
-        return alvo_proprio, f'{alvo_proprio:.2f}x próprio (sem {MIN_PARES} pares no grupo {g})'
+        return (alvo_proprio, f'{alvo_proprio:.2f}x próprio (sem {MIN_PARES} pares no grupo {g})',
+                f'mediana da própria série ({alvo_proprio:.2f}x) — o grupo {g} não tem '
+                f'{MIN_PARES} pares para comparar')
     mp = st.median(pares)
-    return (alvo_proprio + mp) / 2, (f'{(alvo_proprio + mp) / 2:.2f}x = média entre '
-                                     f'{alvo_proprio:.2f}x próprio e {mp:.2f}x dos {len(pares)} pares {g}')
+    a = (alvo_proprio + mp) / 2
+    return a, (f'{a:.2f}x = média entre {alvo_proprio:.2f}x próprio e {mp:.2f}x dos {len(pares)} pares {g}'), \
+           (f'média entre {alvo_proprio:.2f}x da própria série e {mp:.2f}x dos {len(pares)} '
+            f'pares do grupo {g}')
 
 if __name__ == '__main__':
     H = carregar(); out = {}

@@ -26,20 +26,6 @@ RAIZ = Path(__file__).resolve().parent.parent
 TETOS = RAIZ / 'analise' / 'tetos.json'
 ROWS = RAIZ / 'data' / 'radar-rows.data.js'
 
-# Como o critério de cada método se lê em uma linha. É o "quanto a empresa deveria valer
-# baseada em algum critério" que o usuário cobrou — a régua, não o nome do método.
-CRITERIO = {
-    'E/P': 'LPA projetado 2026 × P/L que a empresa deve negociar',
-    'P/L': 'LPA projetado 2026 × P/L que a empresa deve negociar',
-    'P/FFO': 'FFO por papel projetado × P/FFO que a empresa deve negociar',
-    'EV/EBITDA': 'EBITDA × EV/EBITDA que a empresa deve negociar, menos a dívida líquida',
-    'EV/Receita': 'Receita × EV/Receita que a empresa deve negociar, menos a dívida líquida',
-    'P/VP': 'VPA × P/VP que a empresa deve negociar',
-    'Paridade': 'Preço justo da investida × o desconto de holding que o mercado pratica',
-    'Pares': 'Múltiplo mediano dos pares do setor (a empresa não tem série própria)',
-}
-
-
 def brl(v):
     return f'R$ {v:,.2f}'.replace(',', '§').replace('.', ',').replace('§', '.')
 
@@ -71,17 +57,18 @@ def tooltip(t, r):
     met = (r.get('metodos') or [{}])[0]
     chave = met.get('chave') or '—'
     justo = r['justo']
-    linhas = [f'PREÇO JUSTO — {brl(justo)}', '']
-    linhas.append(f'CRITÉRIO · {CRITERIO.get(chave, chave)}')
-    linhas.append(f'CONTA    · {ptbr(conta_limpa(met.get("conta") or ""))} = {brl(justo)}')
-    lo, hi = r.get('faixaLo'), r.get('faixaHi')
-    if lo and hi and hi > lo:
-        linhas.append(f'FAIXA    · {brl(lo)} a {brl(hi)} — oscilação histórica do múltiplo')
-    if r.get('teto'):
-        linhas.append(f'TETO     · {brl(r["teto"])} — limite inferior da faixa, o preço de compra')
-    elif r.get('teto_suprimido'):
-        linhas.append('TETO     · sem preço de compra — a faixa é larga demais para virar entrada')
-    return '\n'.join(linhas)
+    # ⚠️ TRÊS LINHAS, e a terceira só existe porque o múltiplo é a metade da conta que o
+    # leitor não consegue conferir sozinho. Não entra faixa, não entra teto de compra, não
+    # entra ressalva de método: o usuário foi explícito — "não quero preço teto, quero o preço
+    # justo: LPA × o múltiplo que ela deve ser negociada". Teto de compra é outra pergunta e
+    # tem a coluna de Margem de Segurança ao lado para respondê-la.
+    return '\n'.join([
+        f'PREÇO JUSTO — {brl(justo)}',
+        '',
+        f'{ptbr(met.get("conta") or conta_limpa(met.get("motor") or ""))} = {brl(justo)}',
+        '',
+        f'O múltiplo é a {ptbr(met.get("origemMult") or "mediana da própria série")}.',
+    ])
 
 
 def main():

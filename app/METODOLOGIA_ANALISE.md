@@ -2179,9 +2179,26 @@ visível da ALOS3 mostrava R$19,61 enquanto o atributo da mesma linha dizia R$21
 tinha sido colado), e em 13/09 um deslocamento de índice apagou a escrita de uma coluna em
 silêncio. É sempre a mesma falha: duas fontes de verdade, e a errada é a que o usuário lê.
 
-A tooltip tem **quatro linhas e nada mais** — critério, conta, faixa, teto —, atendendo ao pedido
-que o usuário já tinha feito duas vezes: "ali deve ter o racional pra chegar no valor, somente
-isso, e esse critério deve estar lá".
+A tooltip tem **três linhas e nada mais**: a conta, o resultado, e de onde saiu o múltiplo.
+
+```
+PREÇO JUSTO — R$ 48,47
+
+LPA projetado 2026 R$ 5,16 × P/L 9,39x = R$ 48,47
+
+O múltiplo é a média entre 10,00x da própria série e 8,79x dos 8 pares do grupo FIN.
+```
+
+A primeira versão trazia também FAIXA e TETO, e o usuário cortou as duas na hora: *"aqui no texto
+você colocou como preço teto, mas não quero preço teto, quero o preço justo — LPA × o múltiplo que
+ela deve ser negociada"*. Ele está certo: teto de compra é outra pergunta, e a coluna de Margem de
+Segurança ao lado já a responde. A faixa continua no motor e em `analise/tetos.json`, onde serve
+para auditoria e para as travas de supressão — só não polui a tooltip.
+
+Para isso os métodos passaram a devolver dois campos NOVOS, `conta` e `origem_mult`, em vez de a
+tooltip parsear a string `motor` com regex. Extrair número de prosa com expressão regular já
+falhou neste projeto (o vazamento de `gCagr` entre tickers vizinhos, 12/09/2026) e não havia
+motivo para repetir o padrão.
 
 ### 31.6 Onde isto é PIOR que a mediana
 
