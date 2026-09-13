@@ -53,6 +53,44 @@ def conta_limpa(motor):
     return m.strip()
 
 
+MULT_ROTULO = {'E/P': 'P/L', 'P/L': 'P/L', 'P/FFO': 'P/FFO', 'EV/EBITDA': 'EV/EBITDA',
+                'EV/Receita': 'EV/Receita', 'P/VP': 'P/VP', 'Paridade': 'paridade',
+                'Pares': 'múltiplo dos pares'}
+
+
+def extrair_multiplo(met):
+    """(rótulo, valor formatado) do múltiplo aplicado, lido da string `conta` do método.
+
+    A conta sai do motor já formatada — "LPA projetado 2026 R$ 5,16 × P/L 9,39x" — e o
+    múltiplo é o número seguido de 'x' (ou de três casas, no caso da paridade de holding).
+    Extrair daqui em vez de criar mais um campo evita que a coluna e a tooltip do preço justo
+    discordem: as duas leem a MESMA string.
+    """
+    conta = met.get('conta') or ''
+    chave = met.get('chave') or ''
+    m = re.search(r'×\s*(?:[A-Za-z/]+\s+)?([\d.,]+)x', conta)
+    if m:
+        return MULT_ROTULO.get(chave, chave), ptbr(m.group(1)) + 'x'
+    m = re.search(r'×\s*paridade\s*([\d.,]+)', conta)
+    if m:
+        return 'paridade', ptbr(m.group(1))
+    return MULT_ROTULO.get(chave, chave), None
+
+
+def tooltip_multiplo(t, r):
+    met = (r.get('metodos') or [{}])[0]
+    rot, val = extrair_multiplo(met)
+    if not val:
+        return 'SEM MÚLTIPLO — esta linha não tem preço justo calculado.'
+    return '\n'.join([
+        f'{rot.upper()} APLICADO — {val}',
+        '',
+        f'{ptbr(met.get("conta") or "")} = {brl(r["justo"])}',
+        '',
+        f'O múltiplo é {ptbr(met.get("origemMult") or "o mediano da própria série")}.',
+    ])
+
+
 def tooltip(t, r):
     met = (r.get('metodos') or [{}])[0]
     chave = met.get('chave') or '—'
@@ -69,6 +107,10 @@ def tooltip(t, r):
         '',
         f'O múltiplo é {ptbr(met.get("origemMult") or "o mediano da própria série")}.',
     ])
+
+
+# A célula da coluna 16 quando não há múltiplo. `sep` mantém a divisória visual do grupo.
+CEL_MULT_VAZIA = '<td class="sep"><span class="muted">—</span></td>'
 
 
 def main():
@@ -97,14 +139,38 @@ def main():
             cel = (f'<td>{brl(justo)}<span class="col-tip" data-tip="{esc(tooltip(t, r))}">'
                    f'ⓘ</span></td>')
             attr = f'data-preco-justo="{justo:.2f}"'
+            _rot, _val = extrair_multiplo((r.get('metodos') or [{}])[0])
+            cel_mult = (f'<td class="sep"><span style="font-weight:600;">{_val}</span>'
+                        f'<span style="font-size:9px;color:#6b7280;margin-left:4px;">{_rot}</span>'
+                        f'<span class="col-tip" data-tip="{esc(tooltip_multiplo(t, r))}">ⓘ</span></td>'
+                        if _val else CEL_MULT_VAZIA)
         else:
             motivo = (r.get('nota') or 'sem motor aplicável').split('||')[0].strip()
             cel = (f'<td><span class="muted">—</span><span class="col-tip" '
                    f'data-tip="{esc("SEM PREÇO JUSTO" + chr(10) + chr(10) + motivo)}">ⓘ</span></td>')
             attr = None
+            cel_mult = CEL_MULT_VAZIA
             sem.append(t)
 
-        # A CÉLULA — identificada pela tooltip, que é única na linha.
+        # ── COLUNA 16 · MÚLTIPLO ────────────────────────────────────────────────────
+        # Pedido do usuário: "acrescente uma coluna com o múltiplo que o LPA está sendo
+        # multiplicado e o tooltip com cálculo". Ela entra ANTES do preço justo, e é gerada
+        # aqui de propósito: o múltiplo e o preço saem do mesmo método, na mesma passada.
+        # Gerar em lugares diferentes seria repetir o defeito que esta sessão passou o dia
+        # corrigindo — dois números do mesmo conceito, escritos por donos diferentes.
+        tds = [x for x in re.finditer(r'<td\b[^>]*>.*?</td>', bloco, re.S)]
+        if len(tds) >= 17 and 'data-tip="MÚLTIPLO' not in bloco and 'P/L APLICADO' not in bloco \
+           and not re.search(r'data-tip="[A-Z/]+ APLICADO', bloco):
+            # ainda no layout de 21 colunas: insere a célula nova na posição 16
+            pos = tds[16].start()
+            bloco = bloco[:pos] + cel_mult + bloco[pos:]
+        else:
+            # já migrado: substitui a célula 16 no lugar
+            tds = [x for x in re.finditer(r'<td\b[^>]*>.*?</td>', bloco, re.S)]
+            if len(tds) > 16:
+                bloco = bloco[:tds[16].start()] + cel_mult + bloco[tds[16].end():]
+
+        # A CÉLULA DO PREÇO JUSTO — identificada pela tooltip, que é única na linha.
         novo, n = re.subn(
             r'<td>[^<]*<span class="col-tip" data-tip="PREÇO JUSTO[^"]*">ⓘ</span></td>'
             r'|<td><span class="muted">—</span><span class="col-tip" '
