@@ -22,6 +22,10 @@
   --teal:#0891b2;--teal-bg:#ecfeff;--teal-border:#a5f3fc;
   --purple:#7c3aed;--purple-bg:#f5f3ff;--purple-border:#ddd6fe;
   --gray-bg:#f9fafb;
+  /* Altura da .nav e da .radar-controls. Ambas saem do fluxo (position:fixed — ver abaixo),
+     então o conteúdo precisa de um respiro do tamanho exato delas. js/decisao.js remede as
+     duas a cada load/resize/troca de aba e reescreve estas variáveis. */
+  --nav-h:56px;
   --shadow:0 1px 3px rgba(0,0,0,0.08),0 1px 2px rgba(0,0,0,0.04);
   --shadow-md:0 4px 6px rgba(0,0,0,0.07),0 2px 4px rgba(0,0,0,0.05);
   --shadow-lg:0 10px 15px rgba(0,0,0,0.08),0 4px 6px rgba(0,0,0,0.04);
@@ -32,13 +36,19 @@
    Removida a barra de dentro (ver .table-wrap), então agora é a página que precisa rolar: o
    html rola, o body só evita que a barra apareça duas vezes (uma no html, outra no body). */
 html{overflow-x:auto;}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:visible;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:visible;padding-top:var(--nav-h);}
 
 /* ── NAV ── */
 .nav{
   background: linear-gradient(135deg, #0a0a14 0%, #0f0f1f 40%, #0d1020 100%);
   border-bottom: 1px solid rgba(79,70,229,0.2);
-  position: sticky; top: 0; z-index: 100;
+  /* ⚠️ 13/09/2026 — era position:sticky. Sticky gruda no eixo VERTICAL apenas: como a
+     página inteira rola de lado (html{overflow-x:auto}, ver acima) e a barra só tem a
+     largura da viewport, arrastar a tabela para a direita levava a barra junto e ela saía
+     inteira da tela — o usuário via a tabela flutuando sem cabeçalho nenhum em cima.
+     position:fixed ancora na viewport nos dois eixos: rola para baixo ou para o lado, a
+     barra fica. Em troca sai do fluxo — o body compensa com padding-top:var(--nav-h). */
+  position: fixed; top: 0; left: 0; width: 100%; z-index: 100;
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   display: flex; align-items: stretch; padding: 0 2rem; gap: 0;
@@ -283,10 +293,18 @@ thead tr.col-header,#fundTable thead tr{overflow:visible;}
 .patr-legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:12px;}
 .patr-leg-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text2);}
 .patr-leg-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0;}
+/* ── ROSCA + LEGENDA (js/graficos.js, makeSVGDonut) ──
+   A rosca tem 210px fixos e não encolhe. A legenda precisa de ~180px para caber "R$ 244.074"
+   sem quebrar. Quando os dois não cabem lado a lado, a legenda desce para a linha de baixo em
+   vez de ser espremida e vazar da tela. */
+.svg-donut-row{display:flex;flex-wrap:wrap;align-items:center;gap:16px;}
+.svg-donut-svg{flex:0 0 auto;}
+.svg-donut-legend{flex:1 1 180px;min-width:0;}
+.svg-donut-leg-item{min-width:0;}
 
 /* ── REPORT PAGE (SPA) ── */
 .page-report{display:none;}.page-report.active{display:block;}
-.report-topbar{background:#111827;padding:0.75rem 2rem;display:flex;align-items:center;gap:1rem;border-bottom:1px solid #1f2937;position:sticky;top:56px;z-index:90;}
+.report-topbar{background:#111827;padding:0.75rem 2rem;display:flex;align-items:center;gap:1rem;border-bottom:1px solid #1f2937;position:sticky;top:var(--nav-h);z-index:90;}
 .btn-voltar{display:inline-flex;align-items:center;gap:6px;background:transparent;border:1px solid #374151;border-radius:7px;color:#9ca3af;padding:6px 14px;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s;}
 .btn-voltar:hover{background:#1f2937;color:#fff;border-color:#6b7280;}
 .report-topbar-info{display:flex;align-items:center;gap:10px;flex:1;}
@@ -459,7 +477,10 @@ thead tr.col-header,#fundTable thead tr{overflow:visible;}
 #page-flavia #progFlaviaTempo *,#page-resumoluiz #progLuizTempo *{font-size:14px !important;}
 .rp-code{background:#1a1a2e;color:#e2e8f0;border-radius:8px;padding:1rem 1.1rem;font-family:'SF Mono',Consolas,monospace;font-size:11px;line-height:1.6;white-space:pre-wrap;word-break:break-word;overflow-x:auto;}
 @media(max-width:700px){.rp-bull-bear{grid-template-columns:1fr;}.report-body{padding:1rem;}}
-.radar-controls{padding:0.75rem 2rem;display:flex;gap:0.75rem;align-items:center;flex-wrap:wrap;border-bottom:1px solid var(--border);background:var(--bg2);position:sticky;top:56px;z-index:50;}
+/* Fixa pelo mesmo motivo da .nav (sticky fugia de lado junto com a tabela). Fora do fluxo,
+   então #page-radar abre padding-top do tamanho dela. */
+.radar-controls{padding:0.75rem 2rem;display:flex;gap:0.75rem;align-items:center;flex-wrap:wrap;border-bottom:1px solid var(--border);background:var(--bg2);position:fixed;top:var(--nav-h);left:0;width:100%;z-index:50;}
+#page-radar{padding-top:var(--radar-controls-h,56px);}
 .search-wrap{position:relative;flex:1;min-width:180px;max-width:260px;}
 .search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:13px;}
 .search-input{width:100%;background:#fff;border:1px solid var(--border2);border-radius:7px;padding:7px 10px 7px 30px;color:var(--text);font-family:inherit;font-size:12px;outline:none;transition:border-color 0.2s;}
@@ -499,7 +520,7 @@ thead tr.col-header,#fundTable thead tr{overflow:visible;}
    linha em telas estreitas). Sem isso o cabeçalho da tabela ficaria colado sob os controles
    e um cortaria o outro. js/decisao.js mede .radar-controls e escreve --radar-controls-h no
    :root a cada load/resize — ver _syncTheadSticky() no fim daquele arquivo. */
-#mainTable thead{position:sticky;top:calc(56px + var(--radar-controls-h, 56px));z-index:50;}
+#mainTable thead{position:sticky;top:calc(var(--nav-h) + var(--radar-controls-h, 56px));z-index:50;}
 /* Colgroup define larguras — não usar min-width nas frozen */
 .frozen-1,.frozen-2{position:sticky;z-index:5;}
 .frozen-1{left:0;background:inherit;}
@@ -607,7 +628,7 @@ tbody tr:nth-child(n){animation-delay:calc(var(--i,0)*0.02s);}
 
 /* ── BASE DE DADOS ── */
 .dados-header{padding:1.25rem 2rem;background:var(--bg2);border-bottom:1px solid var(--border);}
-.dados-controls{padding:0.6rem 2rem;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;position:sticky;top:52px;z-index:50;}
+.dados-controls{padding:0.6rem 2rem;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;position:sticky;top:var(--nav-h);z-index:50;}
 .fund-search{flex:1;min-width:180px;max-width:280px;background:#fff;border:1px solid var(--border2);border-radius:7px;padding:7px 10px 7px 32px;color:var(--text);font-family:inherit;font-size:12px;outline:none;transition:border-color .2s;}
 .fund-search:focus{border-color:var(--accent);}
 .sem-legend{display:flex;align-items:center;gap:1rem;margin-left:auto;flex-wrap:wrap;}
@@ -730,7 +751,7 @@ tbody tr:nth-child(n){animation-delay:calc(var(--i,0)*0.02s);}
   .patr-leg-item{font-size:10px;}
 
   /* RADAR — controles */
-  .radar-controls{padding:0.6rem 1rem;top:48px;flex-wrap:wrap;gap:0.5rem;}
+  .radar-controls{padding:0.6rem 1rem;flex-wrap:wrap;gap:0.5rem;}
   .search-wrap{min-width:140px;max-width:100%;flex:1;}
   .stats-row{margin-left:0;width:100%;justify-content:space-between;display:flex;}
   .filter-group{display:none;} /* esconde filtros de segmento no mobile */
@@ -8635,9 +8656,13 @@ function makeSVGDonut(el, labels, values, colors, opts){
     const a=amt(i);
     const valTxt=a?`<span style="font-weight:700;color:#333;margin-left:6px;white-space:nowrap;">${a}</span><span style="color:#888;margin-left:5px;white-space:nowrap;">${pct}%</span>`
                  :`<span style="font-weight:700;color:#333;margin-left:6px;">${pct}%</span>`;
-    legend+=`<div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;font-size:11px;color:#555;"><div style="width:9px;height:9px;border-radius:2px;background:${colors[i%colors.length]};flex-shrink:0;"></div><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${l}</span>${valTxt}</div>`;
+    legend+=`<div class="svg-donut-leg-item" style="display:flex;align-items:center;gap:6px;margin-bottom:6px;font-size:11px;color:#555;"><div style="width:9px;height:9px;border-radius:2px;background:${colors[i%colors.length]};flex-shrink:0;"></div><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${l}</span>${valTxt}</div>`;
   });
-  el.innerHTML=`<div style="display:flex;align-items:center;gap:16px;"><svg width="210" height="${H}" viewBox="0 0 210 ${H}" style="flex-shrink:0;">${paths}</svg><div style="flex:1;min-width:0;">${legend}</div></div>`;
+  // As classes existem para o CSS poder empilhar rosca e legenda quando não cabem lado a lado.
+  // Sem isso a legenda ficava espremida numa coluna de 82px no celular e os valores (que são
+  // white-space:nowrap, senão "R$ 244.074" quebraria no meio) vazavam para fora da tela — era
+  // esse vazamento que fazia a página inteira rolar 49px de lado sem ter nada lá.
+  el.innerHTML=`<div class="svg-donut-row"><svg class="svg-donut-svg" width="210" height="${H}" viewBox="0 0 210 ${H}">${paths}</svg><div class="svg-donut-legend">${legend}</div></div>`;
 }
 
 function makeSVGBar(el, labels, values, colors, fmt){
@@ -12271,13 +12296,32 @@ initColunasDecisao();
 // exatamente sob .nav + .radar-controls, não sob a viewport inteira. A .radar-controls quebra
 // linha em telas estreitas (flex-wrap), então a altura dela não é uma constante: mede-se e
 // escreve-se em --radar-controls-h no :root, que #mainTable thead (css/styles.css) já lê.
+// .nav e .radar-controls são position:fixed (ver o porquê em css/styles.css, na .nav): saem do
+// fluxo, então o conteúdo abaixo precisa de um respiro EXATO do tamanho delas. As duas mudam de
+// altura sozinhas — a nav encolhe no mobile, os controles quebram em duas ou três linhas conforme
+// a largura — e não dá para fixar os números no CSS sem sobrar buraco ou faltar espaço. Mede as
+// duas aqui e escreve nas variáveis que o CSS consome.
 function _syncTheadSticky() {
+  const nav = document.querySelector('.nav');
   const controls = document.querySelector('.radar-controls');
+  const raiz = document.documentElement;
+  if (nav) {
+    const h = nav.getBoundingClientRect().height;
+    if (h > 0) raiz.style.setProperty('--nav-h', h + 'px');
+  }
   if (!controls) return;
-  document.documentElement.style.setProperty('--radar-controls-h', controls.getBoundingClientRect().height + 'px');
+  const hc = controls.getBoundingClientRect().height;
+  // Aba não-Radar deixa os controles em display:none (altura 0). Guardar esse 0 colapsaria o
+  // padding e, na volta para o Radar, a tabela subiria por baixo da barra por um quadro.
+  if (hc > 0) raiz.style.setProperty('--radar-controls-h', hc + 'px');
 }
 _syncTheadSticky();
 window.addEventListener('resize', _syncTheadSticky);
+// Trocar de aba remonta a barra (os controles só existem visíveis no Radar) — remede depois que
+// o navegador aplicou o display novo.
+document.addEventListener('click', (e) => {
+  if (e.target.closest('.nav-tab, .nav-tabs a, [data-page]')) requestAnimationFrame(_syncTheadSticky);
+}, true);
 // A barra também muda de altura quando o usuário alterna carteira/filtros (mesmos controles,
 // conteúdo condicional) — reobserva no próprio elemento em vez de só no resize da janela.
 (function () {

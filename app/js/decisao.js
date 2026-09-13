@@ -741,13 +741,32 @@ initColunasDecisao();
 // exatamente sob .nav + .radar-controls, não sob a viewport inteira. A .radar-controls quebra
 // linha em telas estreitas (flex-wrap), então a altura dela não é uma constante: mede-se e
 // escreve-se em --radar-controls-h no :root, que #mainTable thead (css/styles.css) já lê.
+// .nav e .radar-controls são position:fixed (ver o porquê em css/styles.css, na .nav): saem do
+// fluxo, então o conteúdo abaixo precisa de um respiro EXATO do tamanho delas. As duas mudam de
+// altura sozinhas — a nav encolhe no mobile, os controles quebram em duas ou três linhas conforme
+// a largura — e não dá para fixar os números no CSS sem sobrar buraco ou faltar espaço. Mede as
+// duas aqui e escreve nas variáveis que o CSS consome.
 function _syncTheadSticky() {
+  const nav = document.querySelector('.nav');
   const controls = document.querySelector('.radar-controls');
+  const raiz = document.documentElement;
+  if (nav) {
+    const h = nav.getBoundingClientRect().height;
+    if (h > 0) raiz.style.setProperty('--nav-h', h + 'px');
+  }
   if (!controls) return;
-  document.documentElement.style.setProperty('--radar-controls-h', controls.getBoundingClientRect().height + 'px');
+  const hc = controls.getBoundingClientRect().height;
+  // Aba não-Radar deixa os controles em display:none (altura 0). Guardar esse 0 colapsaria o
+  // padding e, na volta para o Radar, a tabela subiria por baixo da barra por um quadro.
+  if (hc > 0) raiz.style.setProperty('--radar-controls-h', hc + 'px');
 }
 _syncTheadSticky();
 window.addEventListener('resize', _syncTheadSticky);
+// Trocar de aba remonta a barra (os controles só existem visíveis no Radar) — remede depois que
+// o navegador aplicou o display novo.
+document.addEventListener('click', (e) => {
+  if (e.target.closest('.nav-tab, .nav-tabs a, [data-page]')) requestAnimationFrame(_syncTheadSticky);
+}, true);
 // A barra também muda de altura quando o usuário alterna carteira/filtros (mesmos controles,
 // conteúdo condicional) — reobserva no próprio elemento em vez de só no resize da janela.
 (function () {
