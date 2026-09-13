@@ -51,6 +51,44 @@ LN = {k: (float(v), mo) for k, v, mo in
       re.findall(r"(\w+):\s*\{[^}]*lucroNorm:(-?[\d.]+)[^}]*motor:'([^']*)'", tir)}
 FIN = {k for k, v in M['MOTOR'].items() if v in ('FIN', 'NAV')}
 
+# Taxa de crescimento por ticker, de data/tir.data.js. Registro a registro, não por regex solto
+# sobre o arquivo inteiro: `gCagr:` é null em metade dos tickers, e um `.*?` preguiçoso pula o
+# null e pega o gCagr do PRÓXIMO ticker — 10 empresas saíram com a taxa da vizinha antes de eu
+# perceber.
+_REG = {m.group(1): m.group(2) for m in re.finditer(r'(\w+):\s*\{([^}]*)\}', tir)}
+
+def _tircampo(t, c):
+    b = _REG.get(t)
+    if not b: return None
+    m = re.search(r'\b%s:\s*(-?[\d.]+|null)' % c, b)
+    return None if (not m or m.group(1) == 'null') else float(m.group(1))
+
+CRESC_CAP = 25.0   # projeção de UM ano; o cap de 15% do motor é para perpetuidade de 10 anos
+
+def crescimento(t):
+    """(taxa %, origem) para projetar 2026 a partir de 2025.
+
+    Pedido do usuário: "utilize o lucro recorrente pra calcular a taxa de crescimento". É o
+    `gCagr` que gerar_tir.py já produz — REGRESSÃO LOG sobre a série de lucro recorrente de
+    data/fluxo.json. A escolha do estimador está justificada em cagr_recorrente(): média
+    aritmética tem viés de Jensen e explodiu a ALOS3 para 59,7% por causa do ano da fusão;
+    mediana das variações esconde queda monotônica e salvava a PASS3 indevidamente; CAGR de
+    pontas usa 2 pontos e ignora o meio. A regressão usa todos.
+
+    ⚠️ O motor ANULA gCagr para financeira, holding e cíclica de commodity — lucro recorrente
+    não é conceito aplicável ali. São 21 dos 32 tickers. Nesses vale ROE × retenção, que é o
+    crescimento que a empresa sustenta com o lucro que não distribui, e é o que o próprio motor
+    usa como a outra metade do `g`.
+    """
+    g = _tircampo(t, 'gCagr')
+    if g is not None:
+        return max(-CRESC_CAP, min(g, CRESC_CAP)), ('CAGR do lucro recorrente por regressão log', g)
+    g = _tircampo(t, 'gRoe')
+    if g is not None:
+        return max(-CRESC_CAP, min(g, CRESC_CAP)), ('ROE × retenção — o lucro recorrente não se '
+                                                    'aplica a banco, seguradora, holding ou cíclica', g)
+    return None, (None, None)
+
 
 def normalizado(t, A, usar_cache=True):
     """Lucro normalizado + nome do motor.
@@ -155,46 +193,27 @@ def gerar():
             'A coluna ao lado é o LTM, que vai de 01/07/2025 a 30/06/2026 e portanto mistura '
             'dois exercícios. Esta aqui é o ano civil fechado, sem mistura.')
 
-        cells[5] = cel(dinheiro(ltm) or VAZIO,
-            f'LUCRO LÍQUIDO LTM (últimos 12 meses)&#10;&#10;{base}&#10;&#10;'
-            f'⚠️ Esta coluna já se chamou "Lucro 2025 REAL" e o rótulo estava errado em 20 das '
-            f'30 linhas — elas traziam o LTM de 2026, não o exercício fechado de 2025. '
-            f'Agora o rótulo e o conteúdo são a mesma coisa em todas.')
+        # ── Coluna 5 · LUCRO PROJETADO 2026 ─────────────────────────────────────────────
+        g, (origem, bruto) = crescimento(t)
+        proj = l25 * (1 + g/100) if (l25 and l25 > 0 and g is not None) else None
+        cortado = (g is not None and bruto is not None and abs(bruto - g) > 0.05)
+        cells[5] = cel(dinheiro(proj) or VAZIO,
+            (f'LUCRO PROJETADO 2026 = lucro 2025 R$ {br((l25 or 0)/1e9)} bi × (1 + {br(g)}%)'
+             if proj else 'LUCRO PROJETADO 2026 — não calculável')
+            + '&#10;&#10;'
+            + (f'Taxa: {origem}.&#10;' if origem else
+               'Sem taxa de crescimento: a empresa não tem série de lucro recorrente nem ROE '
+               'utilizável na base.&#10;')
+            + (f'⚠️ VALOR BRUTO {br(bruto)}% — limitado a ±{br(CRESC_CAP,0)}%. Projetar mais que '
+               f'isso em um ano a partir de série curta é chute com casa decimal.&#10;' if cortado else '')
+            + (('' if l25 and l25 > 0 else
+                'Lucro de 2025 ausente ou negativo: sem base positiva não existe percentual de '
+                'crescimento com significado.&#10;'))
+            + '&#10;⚠️ É PROJEÇÃO, não medida. Não entra no preço justo nem no ranking: o backtest '
+              '(scripts/backtest_ranking.py) mostrou que somar crescimento ao earnings yield '
+              'PIOROU o poder de ordenar em 8,9 p.p. Está aqui para leitura.&#10;' + base)
 
-        if ln and ln > 0:
-            cells[6] = cel(dinheiro(ln),
-                f'LUCRO NORMALIZADO — {motor}&#10;&#10;'
-                f'NÃO é projeção de 2026. É quanto a empresa ganha num ano REPRESENTATIVO, '
-                f'calculado pelo motor do setor: indústria e serviço usam receita atual × margem '
-                f'líquida MEDIANA da série; financeira usa ROE mediano × patrimônio; shopping usa '
-                f'FFO (FCO − capex); e onde o Partnr publica lucro recorrente, ele é usado direto.'
-                f'&#10;&#10;Existe para tirar o ciclo e o não-recorrente da conta: a VALE3 tem '
-                f'LTM de R$8,69 bi e normalizado de R$62,03 bi porque o LTM pegou o fundo do '
-                f'minério; a KLBN11 idem na celulose.&#10;&#10;Origem: {fonte}. Motor documentado '
-                f'em METODOLOGIA_ANALISE.md seção 10.&#10;{base}')
-        else:
-            cells[6] = cel(VAZIO,
-                'LUCRO NORMALIZADO — não calculável&#10;&#10;'
-                + ('A margem líquida mediana da série é NEGATIVA (prejuízo em mais da metade dos '
-                   'anos válidos), então não existe "ano representativo" positivo para normalizar. '
-                   if ln is not None else
-                   'A empresa não tem série suficiente na base para nenhum dos motores de '
-                   'normalização (menos de 2 anos válidos).')
-                + 'Célula vazia é melhor que número errado.&#10;' + base)
-
-        cells[7] = cel(
-            (f'<span class="tag {"tag-green" if delta>=0 else "tag-red"}">'
-             f'{"+" if delta>=0 else ""}{delta:.0f}%</span>') if delta is not None else VAZIO,
-            'DISTÂNCIA DO NORMALIZADO = lucro LTM ÷ lucro normalizado − 1&#10;&#10;'
-            '⚠️ MUDOU DE SIGNIFICADO em 06/09/2026. Esta coluna era "crescimento projetado", '
-            'comparando dois números que estavam em bases diferentes. Agora é DIAGNÓSTICO DE '
-            'CICLO, não previsão.&#10;&#10;'
-            'Positivo = a empresa está ganhando ACIMA do que a própria série sugere como normal '
-            '(pode ser melhora estrutural, pode ser pico de ciclo). Negativo = está abaixo.&#10;'
-            'A KLBN11 com −83% não vai cair 83%: ela está 83% abaixo do seu próprio padrão.&#10;'
-            + base)
-
-        cells[8] = cel(f'R$ {br(lpa)}' if lpa else VAZIO,
+        cells[6] = cel(f'R$ {br(lpa)}' if lpa else VAZIO,
             (f'LPA NORMALIZADO = lucro normalizado R$ {br(ln/1e9)} bi ÷ {pap/1e6:.0f} mi papéis'
              if lpa else 'LPA NORMALIZADO — sem lucro normalizado positivo')
             + '&#10;&#10;Papéis NEGOCIADOS: a contagem é derivada de lucro ÷ LPA da própria base, '
@@ -210,7 +229,7 @@ def gerar():
                'nao_paga': 'a empresa não paga dividendos',
                'pares': 'payout mediano dos pares — não é da empresa',
                'realizado': 'realizado da própria série'}.get(pf[0], pf[0])
-        cells[10] = cel(f'R$ {br(dps)}' if dps else VAZIO,
+        cells[8] = cel(f'R$ {br(dps)}' if dps else VAZIO,
             (f'DIVIDENDO POR AÇÃO = LPA normalizado R$ {br(lpa)} × payout {po*100:.0f}%'
              if dps else 'DIVIDENDO POR AÇÃO — sem LPA normalizado ou sem payout')
             + f'&#10;&#10;Payout: {rot} (detalhe na coluna Payout).&#10;'
@@ -218,7 +237,7 @@ def gerar():
               '"DY × cotação", o que fazia o dividendo por ação subir quando a AÇÃO subia. '
               'A relação foi invertida — o DPS sai do lucro, e o DY é que deriva dele.&#10;' + base)
 
-        cells[11] = cel(f'{br(dy,2)}%' if dy else VAZIO,
+        cells[9] = cel(f'{br(dy,2)}%' if dy else VAZIO,
             (f'DIVIDEND YIELD = Div./Ação R$ {br(dps)} ÷ cotação R$ {br(preco)}'
              if dy else 'DIVIDEND YIELD — sem dividendo por ação calculável')
             + '&#10;&#10;Recalculado a cada atualização de cotação: o dividendo é fixo (vem do '
@@ -264,4 +283,4 @@ if __name__ == '__main__':
         print(f"{t:8}{(f'{ltm/1e9:.2f}' if ltm else '—'):>10}{(f'{ln/1e9:.2f}' if ln else '—'):>10}"
               f"{(f'{lpa:.2f}' if lpa else '—'):>8}{(f'{po*100:.0f}%' if po is not None else '—'):>6}"
               f"{(f'{dps:.2f}' if dps else '—'):>8}{(f'{dy:.1f}%' if dy else '—'):>8}")
-    print(f"\n{len(log)} linhas regeneradas — colunas 4,5,6,7,8,10,11")
+    print(f"\n{len(log)} linhas regeneradas — colunas 4,5,6,8,9")
