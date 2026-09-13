@@ -2253,3 +2253,55 @@ métodos"` sobreviveu a duas correções que a tinham removido do motor.
 É a pior forma da falha de duas fontes de verdade que já apareceu quatro vezes neste projeto,
 porque aqui as duas fontes são o MESMO arquivo em dois caminhos. `build.py` agora escreve os dois
 de uma vez. **Passo manual em pipeline é passo que não existe.**
+
+### 31.9 Shopping mede FFO em TODAS as colunas (13/09/2026)
+
+> "Para shopping trocar lucro líquido por FFO em todas as colunas."
+
+O motivo é contábil, não preferência. O shopping registra o imóvel a **custo** e o deprecia como
+se ele se desgastasse — mas shopping bem administrado não perde valor, ganha. E o peso dessa
+depreciação depende de como cada empresa contabiliza:
+
+| ano | D&A ÷ EBITDA · ALOS3 | D&A ÷ EBITDA · MULT3 |
+|---|---|---|
+| 2024 | **30%** | 7% |
+| 2025 | **29%** | 7% |
+| 2026 | **29%** | **6%** |
+
+A MULT3 usa valor justo e quase não deprecia; a ALOS3 usa custo e deprecia quatro vezes mais.
+O lucro líquido de shopping mede política contábil junto com operação. FFO = lucro + D&A devolve
+a despesa que não sai caixa — é o que o setor usa e o que o preço justo já multiplicava pelo
+múltiplo. Agora é o que a tabela inteira mostra, com uma etiqueta **FFO** roxa em cada célula
+afetada.
+
+| coluna | ALOS3 antes | ALOS3 depois |
+|---|---|---|
+| Lucro 2025 | R$ 945 mi | **R$ 1,58 bi** (FFO) |
+| Projetado 2026 | R$ 1,11 bi | **R$ 1,70 bi** |
+| Crescimento 25→26 | +17,9% (CAGR do lucro recorrente) | **+7,7%** (regressão log do FFO) |
+| Lucro por ação | R$ 2,20 | **R$ 3,37** (FFO/ação) |
+| Payout | 63% (estático, errado) | **60%** sobre FFO |
+| Div./Ação | R$ 1,39 | **R$ 2,02** |
+| DY projetado | 5,36% | **7,75%** |
+| P/L | 12,8x | **7,9x** (P/FFO) |
+| ROE | 7,6% | **12,3%** (FFO ÷ PL) |
+
+O DY projetado passou a bater com o DY realizado de 2025 (7,75% contra 7,54%), o que antes não
+acontecia — a projeção sobre lucro contábil dava 5,36% para uma empresa que tinha acabado de
+pagar 7,54%.
+
+**A regra mora em `crescimento()`, dentro de `motor_teto.py`, não no gerador de colunas.** É a
+mesma função que `teto_ffo()` usa para projetar o FFO por papel do preço justo: se a tabela
+crescesse o FFO e o motor crescesse o lucro, a coluna "Projetado 2026" e o fundamento dentro do
+preço justo divergiriam na mesma linha. Como efeito, o preço justo da ALOS3 caiu de R$ 31,53 para
+**R$ 28,80** — a projeção de FFO cresce 7,7% ao ano, não os 17,9% do lucro recorrente.
+
+**O ROE foi trocado com ressalva registrada.** Levantei que FFO ÷ patrimônio não é ROE e que o
+denominador continua a custo histórico; o usuário confirmou a troca. A ressalva não some por
+decisão, então ela está na tooltip da célula: o retorno sai alto por construção e **não é
+comparável** com o ROE das outras linhas.
+
+**Duas colunas manuais a menos.** A coluna 8 (Payout) nunca esteve na lista do gerador e estava
+divergindo em silêncio: a célula exibia 63% para a ALOS3 enquanto o motor usava 100% para calcular
+o dividendo da mesma linha. O atributo `data-payout` idem. Quinta aparição de "duas fontes de
+verdade" nesta base — as duas entraram na geração.

@@ -882,6 +882,19 @@ def crescimento(t, A, H=None):
     # banco na base mede outra coisa. Nas cíclicas o motivo é o outro já conhecido: o CAGR
     # herdado mede a queda até o fundo do ciclo, e projetar isso é tratar ano ruim como
     # capacidade normal (a KLBN11 saía com −70%).
+    # ⚠️ SHOPPING PROJETA O FFO. Pedido do usuário em 13/09/2026 ("para shopping trocar lucro
+    # líquido por FFO em todas as colunas"), e a regra tem que morar AQUI, não em
+    # gerar_colunas.py: `crescimento()` é o que teto_ffo() usa para projetar o FFO por papel do
+    # preço justo. Se a tabela crescesse o FFO e o motor crescesse o lucro, a coluna "Lucro
+    # Projetado 2026" e o fundamento dentro do preço justo divergiriam na mesma linha — que é
+    # o defeito que esta sessão inteira veio corrigir.
+    # O lucro de shopping carrega reavaliação de ativo e ganho de venda; o FFO, não. Crescer um
+    # e multiplicar o outro pelo múltiplo é misturar duas grandezas.
+    if MOTOR.get(t) == 'SHOP':
+        gf = _reg_log(serie_ffo(t, A))
+        if gf is not None:
+            return (max(-CRESC_CAP, min(gf, CRESC_CAP)),
+                    'regressão log do FFO da própria série (shopping não projeta lucro contábil)')
     rec = _recorrente(t) if MOTOR.get(t) not in ('FIN', 'NAV', 'CICL') else None
     if rec is not None:
         return max(-CRESC_CAP, min(rec, CRESC_CAP)), 'CAGR do lucro recorrente por regressão log'
@@ -1118,6 +1131,32 @@ def teto_ev_receita(t, A, com_pares=True):
 # que ter um jeito de calcular o preço justo".
 #
 # Entra SÓ quando há menos de 2 métodos próprios, e sempre com ★☆☆.
+def ffo_ano(t, A, y):
+    """FFO do exercício `y`, em reais TOTAIS (não por papel). None quando falta insumo.
+
+    FFO = lucro líquido + depreciação e amortização, e D&A sai de EBITDA − EBIT porque a base
+    não traz a linha separada. É a definição que o motor de shopping usa desde 07/09/2026.
+
+    ⚠️ Esta função existe no nível do MÓDULO desde 13/09/2026, quando o usuário pediu que a
+    tabela inteira trocasse lucro líquido por FFO nos shoppings. Antes a conta morava dentro
+    de teto_ffo() como função local, e gerar_colunas.py teria que reimplementá-la — que é
+    exatamente o padrão de "duas definições do mesmo conceito" que já custou quatro bugs
+    neste projeto. Uma definição, dois consumidores.
+    """
+    d = A.get(y) or {}
+    li, eb, ei = d.get('lucrolin'), d.get('ebitda'), d.get('ebit')
+    if li is None or eb is None or ei is None:
+        return None
+    v = li + eb - ei
+    return v if v > 0 else None
+
+
+def serie_ffo(t, A, respeitar_quebra=True):
+    """[(ano, FFO)] dos exercícios comparáveis."""
+    ys, _q = anos_validos(A) if respeitar_quebra else (sorted(A), None)
+    return [(y, f) for y in ys for f in (ffo_ano(t, A, y),) if f]
+
+
 def teto_ffo(t, A, com_pares=True):
     """P/FFO próprio — o múltiplo certo para shopping.
 
@@ -1144,13 +1183,14 @@ def teto_ffo(t, A, com_pares=True):
     fator = FATOR_UNIT.get(t, 1)
 
     def _ffo_pap(y):
+        # FFO POR PAPEL. Os papéis saem de lucro ÷ LPA (implícitos, da mesma fonte do LPA)
+        # para que numerador e denominador venham do mesmo lugar — ver a nota de units.
         d = A[y]
-        li, lpa, eb, ei = d.get('lucrolin'), d.get('lpa'), d.get('ebitda'), d.get('ebit')
-        if not (li and lpa and eb and ei) or lpa == 0 or li <= 0:
+        li, lpa = d.get('lucrolin'), d.get('lpa')
+        f = ffo_ano(t, A, y)
+        if not f or not li or not lpa or lpa == 0 or li <= 0:
             return None
-        pap = li / lpa                      # papéis implícitos, da mesma fonte do LPA
-        v = (li + eb - ei) / pap * fator
-        return v if v > 0 else None
+        return f / (li / lpa) * fator
 
     pfs = []
     for y in val:

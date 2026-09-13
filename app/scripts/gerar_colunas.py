@@ -169,6 +169,12 @@ def dinheiro(v):
 
 VAZIO = '<span class="muted">—</span>'
 
+# Etiqueta que marca, NA PRÓPRIA CÉLULA, que aquele número é FFO e não lucro líquido. O
+# cabeçalho da coluna é global e continua dizendo "Lucro"; sem a marca, duas linhas da tabela
+# mostrariam outra grandeza sem avisar — que é o tipo de coisa que só se descobre conferindo.
+TAG_FFO = ('<span style="font-size:9px;font-weight:700;color:#7c3aed;background:#f3e8ff;'
+           'border-radius:3px;padding:1px 4px;margin-left:4px;vertical-align:middle;">FFO</span>')
+
 
 def cel(txt, tip):
     return f'{txt}<span class="col-tip" data-tip="{tip}">ⓘ</span>'
@@ -183,11 +189,40 @@ def gerar():
             continue
         A = H[t]; c = A[max(A)]
         ano = max(A)
-        ltm = c.get('lucrolin')
+
+        # ══ SHOPPING MEDE FFO, NÃO LUCRO LÍQUIDO ═══════════════════════════════════════
+        # Pedido do usuário, 13/09/2026: "para shopping trocar lucro líquido por FFO em todas
+        # as colunas". O motivo é contábil e não é preferência: o shopping registra o imóvel a
+        # CUSTO e o deprecia como se ele se desgastasse — só que shopping bem administrado não
+        # perde valor, ganha. A depreciação come de 6% a 30% do EBITDA dependendo de como cada
+        # empresa contabiliza (ALOS3 deprecia 29%, MULT3 6%, porque a MULT3 usa valor justo),
+        # então o lucro líquido de shopping mede política contábil junto com operação.
+        # FFO = lucro + D&A devolve a despesa que não sai caixa. É o que o setor inteiro usa,
+        # é o que o motor de preço justo já usava, e agora é o que a tabela mostra.
+        #
+        # O QUE NÃO MUDA, e é o teste de consistência da troca: o DIVIDENDO POR AÇÃO. Ele é
+        # FFO/ação × payout-sobre-FFO, e payout-sobre-FFO = payout-sobre-lucro × lucro/FFO.
+        # O FFO se cancela e sobra LPA × payout — o mesmo dividendo de antes. Se a conta
+        # tivesse mudado o dividendo, seria sinal de erro em algum dos dois lados.
+        ffo_shop = M['MOTOR'].get(t) == 'SHOP'
+        metrica = 'FFO' if ffo_shop else 'Lucro líquido'
+
+        def _val(y):
+            """O fundamento do exercício `y`: FFO em shopping, lucro líquido no resto."""
+            return (M['ffo_ano'](t, A, y) if ffo_shop
+                    else (A.get(y) or {}).get('lucrolin'))
+
+        ltm = _val(ano)
         ln, motor, fonte = normalizado(t, A)   # segue alimentando a TIR; não é mais coluna
         pap = M['papeis'](t, A)
         po, npo, pf = M['payout_final'](t, A, H)
-        l25 = (A.get(2025) or {}).get('lucrolin')
+        l25 = _val(2025)
+        # Payout sobre FFO = payout sobre lucro × (lucro ÷ FFO). O FFO é maior que o lucro,
+        # então o payout sobre FFO é MENOR — e é a leitura certa: mede quanto do caixa da
+        # operação vira dividendo, não quanto do lucro contábil.
+        po_lucro, lucro25 = po, (A.get(2025) or {}).get('lucrolin')
+        if ffo_shop and po and lucro25 and l25:
+            po = min(po * (lucro25 / l25), 1.5)
         g, (origem_g, g_bruto) = crescimento(t)
         proj = l25 * (1 + g/100) if (l25 and l25 > 0 and g is not None) else None
 
@@ -217,18 +252,26 @@ def gerar():
         # responde: o LTM atravessa dois exercícios (2S25 + 1S26), então quando ele sobe não
         # dá para saber se foi o semestre novo que veio forte ou o velho que era fraco. Com o
         # ano fechado ao lado, a comparação fica direta.
-        cells[4] = cel(dinheiro(l25) or VAZIO,
-            'LUCRO LÍQUIDO — EXERCÍCIO FECHADO DE 2025&#10;&#10;'
-            'Fonte: MCP Partnr (B3/CVM), 1º de janeiro a 31 de dezembro de 2025.&#10;&#10;'
-            'A coluna ao lado é o LTM, que vai de 01/07/2025 a 30/06/2026 e portanto mistura '
-            'dois exercícios. Esta aqui é o ano civil fechado, sem mistura.')
+        cells[4] = cel((dinheiro(l25) + (TAG_FFO if ffo_shop else '')) if l25 else VAZIO,
+            (f'FFO — EXERCÍCIO FECHADO DE 2025 — {dinheiro(l25)}&#10;&#10;'
+             f'FFO = lucro líquido {dinheiro(lucro25)} + depreciação e amortização&#10;&#10;'
+             'Shopping registra o imóvel a CUSTO e o deprecia como se ele se desgastasse — '
+             'mas shopping bem administrado não perde valor. O FFO devolve essa despesa, que '
+             'não sai caixa. É a medida que o setor usa e a que o preço justo multiplica pelo '
+             'múltiplo.&#10;Fonte: MCP Partnr (B3/CVM), exercício de 2025.'
+             if ffo_shop else
+             'LUCRO LÍQUIDO — EXERCÍCIO FECHADO DE 2025&#10;&#10;'
+             'Fonte: MCP Partnr (B3/CVM), 1º de janeiro a 31 de dezembro de 2025.&#10;&#10;'
+             'A coluna ao lado é o LTM, que vai de 01/07/2025 a 30/06/2026 e portanto mistura '
+             'dois exercícios. Esta aqui é o ano civil fechado, sem mistura.'))
 
         # ── Coluna 5 · LUCRO PROJETADO 2026 ─────────────────────────────────────────────
         origem, bruto = origem_g, g_bruto
         cortado = (g is not None and bruto is not None and abs(bruto - g) > 0.05)
-        cells[5] = cel(dinheiro(proj) or VAZIO,
-            (f'LUCRO PROJETADO 2026 — {dinheiro(proj)}&#10;&#10;'
-             f'Lucro 2025 {dinheiro(l25)} × (1 {"+" if g >= 0 else "−"} {br(abs(g),1)}%)&#10;&#10;'
+        cells[5] = cel((dinheiro(proj) + (TAG_FFO if ffo_shop else '')) if proj else VAZIO,
+            (f'{"FFO" if ffo_shop else "LUCRO"} PROJETADO 2026 — {dinheiro(proj)}&#10;&#10;'
+             f'{"FFO" if ffo_shop else "Lucro"} 2025 {dinheiro(l25)} × '
+             f'(1 {"+" if g >= 0 else "−"} {br(abs(g),1)}%)&#10;&#10;'
              f'A taxa e a origem dela estão na coluna ao lado.'
              if proj else
              'LUCRO PROJETADO 2026 — não calculável&#10;&#10;'
@@ -251,11 +294,41 @@ def gerar():
              if g is not None else
              'SEM TAXA DE CRESCIMENTO&#10;&#10;Nem lucro recorrente nem ROE utilizável na base.'))
 
-        cells[7] = cel(f'R$ {br(lpa)}' if lpa else VAZIO,
-            (f'LUCRO POR AÇÃO — R$ {br(lpa)}&#10;&#10;'
-             f'Lucro projetado 2026 {dinheiro(proj)} ÷ {pap/1e6:.0f} mi papéis&#10;&#10;'
+        cells[7] = cel((f'R$ {br(lpa)}' + (TAG_FFO if ffo_shop else '')) if lpa else VAZIO,
+            (f'{"FFO" if ffo_shop else "LUCRO"} POR AÇÃO — R$ {br(lpa)}&#10;&#10;'
+             f'{"FFO" if ffo_shop else "Lucro"} projetado 2026 {dinheiro(proj)} ÷ '
+             f'{pap/1e6:.0f} mi papéis&#10;&#10;'
              f'Papéis negociados, units já resolvidas — mesma base do preço e do dividendo.'
-             if lpa else 'LUCRO POR AÇÃO — sem lucro projetado 2026'))
+             + ('&#10;&#10;É este número que o preço justo multiplica pelo P/FFO.' if ffo_shop else '')
+             if lpa else f'{"FFO" if ffo_shop else "LUCRO"} POR AÇÃO — sem projeção para 2026'))
+
+        # ── Coluna 8 · PAYOUT ───────────────────────────────────────────────────────────
+        # ⚠️ ÚLTIMA COLUNA MANUAL DA TABELA, e ela estava divergindo em silêncio: o motor
+        # calculava 100% para a ALOS3 e a célula mostrava 63%, colado de uma geração antiga.
+        # A célula 8 nunca entrou na lista do gerador (4,5,6,7,9,10,11,12) — então o payout
+        # que a tabela EXIBIA e o payout que ela USAVA para o dividendo eram números
+        # diferentes na mesma linha. Quinta vez que "duas fontes de verdade" aparece nesta
+        # base. Entra na lista agora.
+        rot8 = {'piso': 'piso da política declarada', 'teto': 'teto da política declarada',
+                'estatutario': 'realizado — a política é só o mínimo legal',
+                'outra_base': 'realizado — a política não é % do lucro',
+                'nao_paga': 'a empresa não paga dividendos',
+                'pares': 'payout mediano dos PARES, não da empresa',
+                'realizado': 'realizado da própria série'}.get(pf[0], pf[0])
+        base8 = 'FFO' if ffo_shop else 'lucro'
+        cells[8] = cel((f'{po*100:.0f}%' + (TAG_FFO if ffo_shop else '')) if po is not None else VAZIO,
+            (f'PAYOUT {po*100:.0f}% SOBRE O {base8.upper()} — {rot8}&#10;&#10;'
+             f'Σ dividendos ÷ Σ {base8} de {npo} exercício(s), pela identidade '
+             f'payout = DY × P/L (o preço se cancela).'
+             + (f'&#10;&#10;Sobre o lucro contábil daria {po_lucro*100:.0f}%. O FFO é maior '
+                f'que o lucro, então o payout sobre ele é menor — e é a leitura certa em '
+                f'shopping: mede quanto do CAIXA da operação vira dividendo, não quanto do '
+                f'lucro depois da depreciação do imóvel.' if ffo_shop else '')
+             + f'&#10;&#10;É este payout que gera o Div./Ação desta linha: '
+               f'{"FFO/ação" if ffo_shop else "LPA"} × {po*100:.0f}%.&#10;'
+               'Anos de prejuízo e anos sem DY na base saem dos dois lados. Teto de 100% '
+               'sobre o lucro. Metodologia: seção 22.'
+             if po is not None else 'PAYOUT — sem dado de dividendo utilizável na base.'))
 
         rot = {'piso': 'piso da política', 'teto': 'teto da política',
                'estatutario': 'realizado (a política é só o mínimo legal)',
@@ -264,7 +337,11 @@ def gerar():
                'pares': 'payout mediano dos pares — não é da empresa',
                'realizado': 'realizado da própria série'}.get(pf[0], pf[0])
         cells[9] = cel(f'R$ {br(dps)}' if dps else VAZIO,
-            (f'DIVIDENDO POR AÇÃO = LPA R$ {br(lpa)} × payout {po*100:.0f}%'
+            (f'DIVIDENDO POR AÇÃO = {"FFO/ação" if ffo_shop else "LPA"} R$ {br(lpa)} × '
+             f'payout {po*100:.0f}%'
+             + (f'&#10;&#10;O payout aqui é sobre o FFO ({po*100:.0f}%), não sobre o lucro '
+                f'contábil ({po_lucro*100:.0f}%). O dividendo em reais é o MESMO das duas '
+                f'formas — o FFO se cancela entre numerador e denominador.' if ffo_shop else '')
              if dps else 'DIVIDENDO POR AÇÃO — sem LPA ou sem payout')
             + f'&#10;&#10;Payout: {rot} (detalhe na coluna Payout).&#10;'
               'É FUNDAMENTO, não deriva do preço: até 06/09/2026 o DPS era calculado como '
@@ -334,19 +411,48 @@ def gerar():
         # LPA LTM por papel — alimenta a coluna P/L (js/fundamentos.js). Antes vinha curado à
         # mão e ficava defasado; agora sai da mesma base. Negativo é mantido de propósito: a
         # coluna de P/L precisa saber que houve prejuízo para declarar isso em vez de calar.
+        # Em shopping isto é o FFO POR PAPEL, e a coluna 13 vira P/FFO. `data-metrica-lucro`
+        # avisa o js/fundamentos.js para rotular a célula e a tooltip corretamente — sem ele a
+        # coluna diria "P/L" sobre um denominador que não é lucro.
         lpa_ltm = (ltm/pap) if (ltm and pap) else None
         tag_end = blk.find('>')
         tag = blk[:tag_end]
         if lpa_ltm is not None:
-            fonte_lpa = (f'LPA LTM = lucro dos últimos 12 meses R$ {br(ltm/1e9)} bi ÷ '
-                         f'{pap/1e6:.0f} mi papéis negociados (units resolvidas). '
-                         f'Fonte: MCP Partnr (B3/CVM), TTM 2T26. Gerado por scripts/gerar_colunas.py.')
+            fonte_lpa = ((f'FFO por papel (LTM) = FFO dos últimos 12 meses R$ {br(ltm/1e9)} bi '
+                          f'÷ {pap/1e6:.0f} mi papéis. FFO = lucro + depreciação, porque o imóvel '
+                          f'do shopping entra a custo e é depreciado como se se desgastasse.'
+                          if ffo_shop else
+                          f'LPA LTM = lucro dos últimos 12 meses R$ {br(ltm/1e9)} bi ÷ '
+                          f'{pap/1e6:.0f} mi papéis negociados (units resolvidas).')
+                         + ' Fonte: MCP Partnr (B3/CVM), TTM 2T26. Gerado por scripts/gerar_colunas.py.')
             tag = (re.sub(r'data-lpa-ltm="[^"]*"', f'data-lpa-ltm="{lpa_ltm:.4f}"', tag)
                    if 'data-lpa-ltm=' in tag
                    else tag.replace(' data-veredicto=', f' data-lpa-ltm="{lpa_ltm:.4f}" data-veredicto=', 1))
             tag = (re.sub(r'data-lpa-fonte="[^"]*"', f'data-lpa-fonte="{fonte_lpa}"', tag)
                    if 'data-lpa-fonte=' in tag
                    else tag.replace(' data-veredicto=', f' data-lpa-fonte="{fonte_lpa}" data-veredicto=', 1))
+        # ── MÉTRICA DA LINHA + ROE ──────────────────────────────────────────────────────
+        # ROE do shopping passa a ser FFO ÷ patrimônio líquido, a pedido do usuário ("trocar
+        # lucro líquido por FFO em TODAS as colunas"), repetido depois de eu levantar a
+        # ressalva. A ressalva fica registrada aqui porque ela não some por decisão: o
+        # denominador (patrimônio) continua medido a custo histórico, então FFO ÷ PL é um
+        # retorno sobre um capital subavaliado — lê-se ALTO por construção, e não é comparável
+        # com o ROE de uma empresa que não carrega imóvel no balanço. A tooltip diz isso.
+        roe_ffo = None
+        if ffo_shop and ltm:
+            roe_base = c.get('roe')
+            lucro_ltm = c.get('lucrolin')
+            if roe_base and lucro_ltm and lucro_ltm > 0:
+                pl_patr = lucro_ltm / (roe_base/100)          # patrimônio implícito do ROE da base
+                roe_ffo = ltm / pl_patr * 100
+        # data-payout também estava congelado: 0,6334 no atributo contra 60% na célula que
+        # este script acabou de gerar. Mesmo defeito da coluna 8, no atributo em vez da célula.
+        for at, val in (('data-metrica-lucro', 'FFO' if ffo_shop else None),
+                        ('data-roe-ffo', f'{roe_ffo:.2f}' if roe_ffo else None),
+                        ('data-payout', f'{po:.4f}' if po is not None else None)):
+            tag = re.sub(r'\s*%s="[^"]*"' % at, '', tag)
+            if val:
+                tag = tag.replace(' data-veredicto=', f' {at}="{val}" data-veredicto=', 1)
         if 'data-lpa-manual=' not in tag:
             tag = tag.replace(' data-veredicto=', ' data-lpa-manual="true" data-veredicto=', 1)
 
