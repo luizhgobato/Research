@@ -68,44 +68,88 @@ const _TIR_IPCA = 0.0444;                 // igual a IPCA em scripts/motor_teto.
 const _TIR_GT = _TIR_IPCA + 0.02;         // perpetuidade: IPCA + 2%, igual ao gerador
 const _TIR_ANOS_G1 = 10;
 
-// ── CRITÉRIO DE ORDENAÇÃO, POR GRUPO DE MOTOR (13/09/2026) ───────────────────────────────
-// Até 13/09/2026 a lista "Por onde começar" era ordenada pela TIR real — critério que NUNCA
-// tinha sido testado contra retorno futuro. `scripts/backtest_ranking.py` testou, e o
-// resultado derrubou a escolha:
+// ── POR QUE A TIR REAL DEIXOU DE ORDENAR A FILA (13/09/2026) ────────────────────────────
+// Ela ordenava desde a seção 24 sem nunca ter sido testada contra retorno futuro — herdou o
+// lugar da Nota 0-100 por ser melhor construída, não por ter medido melhor.
+// `scripts/backtest_ranking.py` mediu, nos setores defensivos:
+//     L/P puro              +20,3 p.p. · 5 de 5 anos · t +2,52
+//     TIR real (ey + g)     +11,4 p.p. · 3 de 5 anos · t +1,04
+//     `g` isolado            +8,3 p.p. · 2 de 5 anos
+// Somar `g` ao earnings yield PIORA o spread em 8,9 p.p. — o componente que a TIR acrescenta
+// não tem sinal próprio nesses setores. A TIR continua na tabela: ela responde "quanto rende
+// acima da NTN-B", pergunta diferente de "qual está mais barata". Só deixou de ordenar.
+// ── SCORE COMPOSTO DE VALOR + QUALIDADE (13/09/2026) ────────────────────────────────────
+// SUBSTITUIU o critério único por grupo (L/P nas defensivas, DY nas demais) que durou um dia.
+// O que derrubou aquele: `backtest_metricas.py` mediu DY com corte na MEDIANA e deu p=0,62
+// nos setores defensivos — spread NEGATIVO. O resultado anterior, favorável ao DY, vinha de
+// corte em TERCIS. Sinal que muda de veredicto conforme você corta em tercis ou em metades
+// não é sinal; é ruído com sorte de amostragem. DY saiu de régua de barateza e voltou a ser
+// o que sempre foi: medida de RENDA.
 //
-//   DEFENSIVOS (FIN + UTIL — bancos, seguradoras, elétricas, telecom, saneamento)
-//     L/P puro                 spread barato−caro +20,3 p.p. · acertou 5 de 5 anos · t +2,52
-//     TIR real (proxy ey+g)    spread             +11,4 p.p. · acertou 3 de 5 anos · t +1,04
-//     `g` isolado              spread              +8,3 p.p. · acertou 2 de 5 anos · t +0,64
-//   → somar `g` ao earnings yield PIORA o spread em 8,9 p.p. O componente que a TIR acrescenta
-//     ao L/P não tem sinal próprio nesses setores; ele dilui o sinal que o L/P já entrega.
+// POR QUE COMPOSTO, e não a melhor métrica isolada:
+// cada múltiplo tem um jeito próprio de ser enganado — lucro por contabilidade, patrimônio
+// por reavaliação, EBITDA por capex escondido, receita por margem que não existe. Quatro
+// medindo a mesma coisa por caminhos diferentes cancelam parte do erro individual. O teste
+// de conjuntos (`backtest_conjunto.py`) confirmou: o conjunto de 3-4 bateu qualquer métrica
+// sozinha, e — contraintuitivo — o conjunto de 10 foi o PIOR de todos (p=0,36), porque
+// indicador ruim contamina a média. O ponto ideal é poucos e bons.
 //
-//   CONTROLE (CICL, IND, SHOP, NAV — cíclicas, indústria, shoppings, holdings)
-//     Dividend yield           spread             +19,5 p.p. · acertou 5 de 5 anos · t +3,89
-//     L/P puro                 spread              +8,0 p.p. · acertou 3 de 5 anos · t +1,05
-//     `g` isolado              spread             −10,3 p.p. · acertou 2 de 5 anos · t −1,37
-//
-// A régua que funciona MUDA com o grupo, e há razão econômica para isso — não é só o número:
-// banco, seguradora, elétrica, telecom e saneamento têm lucro estável e regulado, então o
-// lucro de hoje já é um proxy razoável do lucro normal, e L/P mede valor direto. Na cíclica e
-// na construtora o lucro do ano engana (pico de ciclo vira P/L baixo enganoso), e o DIVIDENDO
-// é o sinal mais honesto: a empresa só distribui o caixa que realmente tem, então o dividendo
-// é revelado pela administração, não apurado por competência.
-//
-// ⚠️ 5 transições anuais, observações correlacionadas dentro do ano. O n efetivo para
-// significância é o número de ANOS, não o de observações. Isto NÃO prova que L/P prediz
-// retorno; prova que a TIR real, no período medido e nestes setores, ordenou PIOR que o
-// insumo mais simples que ela usa por dentro. Ordenar pelo que errou menos é o mínimo
-// defensável — não é a mesma coisa que ter um critério validado.
-//
-// A TIR real continua na tabela, com a faixa das três medidas: ela responde "quanto rende
-// acima da NTN-B", que é uma pergunta diferente de "qual está mais barata". Ela só deixou de
-// ORDENAR a fila.
-const RANK_CRIT_POR_GRUPO = { FIN: 'ey', UTIL: 'ey' };   // demais grupos → 'dy'
-const RANK_CRIT_PADRAO = 'dy';
+// ⚠️ OS PESOS SÃO PREMISSA, NÃO RESULTADO. 70% valor / 30% qualidade não sai de calibração:
+// com 5 transições anuais não há amostra para calibrar peso nenhum, e fingir que há seria
+// exatamente o superajuste que o teste de permutação existe para denunciar. É juízo
+// declarado, na mesma prateleira do juro real normalizado de 5,5% (seção 25.3).
+const RANK_PESO_VALOR = 0.70;
+const RANK_PESO_QUALIDADE = 0.30;
 
-function _rankCriterio(seg) {
-  return RANK_CRIT_POR_GRUPO[seg] || RANK_CRIT_PADRAO;
+// Percentil dentro do grupo de motor. Comparar P/L de banco com P/L de software não diz nada
+// sobre qual está barata — múltiplo só é comparável dentro de negócios parecidos. Grupo com
+// menos de 4 empresas não forma percentil (com 2 elementos o percentil é sempre 0 ou 1), e aí
+// cai para o universo inteiro, que é pior mas não é ruído.
+const RANK_MIN_GRUPO = 4;
+
+function _rankPercentis(linhas, chave) {
+  // Devolve Map ticker → percentil (0 = pior, 1 = melhor) entre quem TEM o dado.
+  const com = linhas.filter(l => l[chave] != null && isFinite(l[chave]));
+  const out = new Map();
+  if (com.length < 2) return out;
+  const ord = [...com].sort((a, b) => a[chave] - b[chave]);
+  ord.forEach((l, i) => out.set(l.ticker, i / (ord.length - 1)));
+  return out;
+}
+
+const RANK_VALOR = ['ey', 'recPreco', 'ebitEv', 'vpPreco'];
+const RANK_QUALIDADE = ['roe', 'mgBruta'];
+
+function _calcularScores(linhas) {
+  // Agrupa por motor; grupo pequeno demais usa o universo inteiro como referência.
+  const porGrupo = new Map();
+  linhas.forEach(l => {
+    const g = l.seg || '—';
+    if (!porGrupo.has(g)) porGrupo.set(g, []);
+    porGrupo.get(g).push(l);
+  });
+  linhas.forEach(l => {
+    const grupo = porGrupo.get(l.seg || '—') || [];
+    const ref = grupo.length >= RANK_MIN_GRUPO ? grupo : linhas;
+    l.rankRef = grupo.length >= RANK_MIN_GRUPO ? (l.seg || '—') : 'todos';
+    const pct = (chaves) => {
+      const vs = [];
+      chaves.forEach(c => {
+        const p = _rankPercentis(ref, c).get(l.ticker);
+        if (p != null) vs.push(p);
+      });
+      return vs.length ? vs.reduce((a, b) => a + b, 0) / vs.length : null;
+    };
+    const pv = pct(RANK_VALOR);
+    const pq = pct(RANK_QUALIDADE);
+    l.pctValor = pv;
+    l.pctQualidade = pq;
+    // Sem nenhuma métrica de valor a linha não entra na fila — não dá para ordenar por
+    // barateza quem não tem nenhuma medida de barateza. Sem qualidade, o valor responde
+    // sozinho, em vez de a linha sumir.
+    l.score = pv == null ? null
+      : (pq == null ? pv : RANK_PESO_VALOR * pv + RANK_PESO_QUALIDADE * pq);
+  });
 }
 
 function _tirReal(nom) {
@@ -249,7 +293,7 @@ function calcularCriterios(row) {
   const bruto = { premio: null, margem: null, roe: null, alav: null, cresc: null, dyLtm: null };
 
   // DY REALIZADO, recalculado com a cotação ao vivo. É o insumo do ranking dos grupos não
-  // defensivos (ver RANK_CRIT_POR_GRUPO) e precisa ser o MESMO conceito que o backtest mediu:
+  // defensivos (ver o score composto no topo) e precisa ser o MESMO conceito que o teste mediu:
   // `dy` do HIST_SEED, que é dividendo pago ÷ preço do fechamento daquele exercício — provento
   // que a empresa JÁ distribuiu, não o DY projetado da coluna 10 (que sai do lucro normalizado
   // e é estimativa). Como o `dy` da base está preso ao preço do data-base, reconstituímos o
@@ -441,27 +485,31 @@ function atualizarDecisaoLinha(row) {
   row.dataset.veredicto = veredictoDerivado(row, r, T);
   row.dataset.decTir = T && T.med != null ? T.med.toFixed(2) : '';
 
-  // ── YIELD DE RANKING — a régua validada para o grupo desta empresa ──────────────────────
-  // Ver RANK_CRIT_POR_GRUPO no topo do arquivo. Os dois critérios são YIELDS na mesma unidade
-  // (% ao ano sobre o preço de hoje), então ordenar a fila inteira por um eixo só é legítimo
-  // mesmo trocando a régua por grupo — não é preciso normalizar percentil, que com grupo de 2
-  // elementos (SHOP) não significaria nada.
-  // Sem grupo conhecido (linha nova, ainda sem TIR gerada) cai no padrão 'dy'.
-  const _ey = r.ey != null && isFinite(r.ey) ? r.ey * 100 : null;
-  const _dy = r.bruto.dyLtm;
-  let rankCrit = _rankCriterio(T && T.seg);
-  let rankY = rankCrit === 'ey' ? _ey : _dy;
-  // FALLBACK: se a régua do grupo não tem dado nesta linha, usa a outra em vez de sumir da
-  // fila. Linha nova entra com série incompleta (VIVA3 e ASAI3 não têm DY por exercício
-  // porque a API não serviu valuation ratios anuais) e some da fila justamente enquanto é a
-  // que mais precisa de olho. O cartão mostra qual régua foi usada — "L/P 9,0%" e "DY 5,1%"
-  // não se confundem —, então trocar sem avisar não acontece.
-  if (rankY == null) {
-    const alt = rankCrit === 'ey' ? _dy : _ey;
-    if (alt != null) { rankY = alt; rankCrit = rankCrit === 'ey' ? 'dy' : 'ey'; }
-  }
-  row.dataset.decRankY = rankY != null ? rankY.toFixed(2) : '';
-  row.dataset.decRankCrit = rankCrit;
+  // ── INSUMOS DO SCORE COMPOSTO ────────────────────────────────────────────────────────
+  // Todos recalculados com a COTAÇÃO AO VIVO, não travados no preço do data-base — mesma
+  // disciplina de _tirAoVivo() e calcularPrecoTeto(). O denominador (lucro, receita, EBIT,
+  // patrimônio) não depende de preço; só o numerador muda, então basta dividir de novo.
+  const seed = (typeof histSeedUltimoAno === 'function')
+    ? histSeedUltimoAno((row.dataset.ticker || '').replace(/\.SA$/i, '')) : null;
+  const cot = _decCotacao(row);
+  // Papéis: prefere `pap` de data/tir.data.js, que é a contagem já corrigida para units
+  // (KLBN11 ÷5, SANB11 ÷2, BPAC11 ÷3). Sem ela, deriva de lucro ÷ LPA como o motor faz.
+  const pap = (T && T.pap) ? T.pap
+    : (seed && seed.lucrolin && seed.lpa ? Math.abs(seed.lucrolin / seed.lpa) : null);
+  const mcap = (pap && cot > 0) ? pap * cot : null;
+  row.dataset.decEy = r.ey != null && isFinite(r.ey) ? (r.ey * 100).toFixed(3) : '';
+  row.dataset.decRecPreco = (seed && seed.receita && mcap) ? (seed.receita / mcap).toFixed(4) : '';
+  // EBIT/EV — EV = valor de mercado + dívida líquida. Dívida líquida negativa (caixa) reduz
+  // o EV, que é o comportamento certo: quem tem caixa vale menos do que o preço sugere.
+  const ev = (mcap != null && seed && seed.divliq != null) ? mcap + seed.divliq : null;
+  row.dataset.decEbitEv = (seed && seed.ebit && ev && ev > 0) ? (seed.ebit / ev).toFixed(4) : '';
+  // VP/P ao vivo: o `pvp` da base está preso ao preço do data-base, então reescala pela razão
+  // entre aquele preço e a cotação de agora.
+  row.dataset.decVpPreco = (seed && seed.pvp > 0 && seed.preco > 0 && cot > 0)
+    ? ((1 / seed.pvp) * (seed.preco / cot)).toFixed(4) : '';
+  row.dataset.decRoe = (seed && seed.roe != null) ? seed.roe.toFixed(2) : '';
+  row.dataset.decMgBruta = (seed && seed.mgBruta != null) ? seed.mgBruta.toFixed(2) : '';
+  row.dataset.decDyLtm = r.bruto.dyLtm != null ? r.bruto.dyLtm.toFixed(2) : '';
   // Coluna 23 · crescimento
   const cG = cells[DEC_COL_G];
   if (cG) {
@@ -571,30 +619,33 @@ function renderRankingDecisao() {
     tir: row.dataset.decTir === '' ? null : parseFloat(row.dataset.decTir),
     amp: row.dataset.decAmp === '' ? null : parseFloat(row.dataset.decAmp),
     lo: row.dataset.decLo === '' ? null : parseFloat(row.dataset.decLo),
-    rankY: row.dataset.decRankY === '' ? null : parseFloat(row.dataset.decRankY),
-    rankCrit: row.dataset.decRankCrit || RANK_CRIT_PADRAO
+    ey: row.dataset.decEy === '' ? null : parseFloat(row.dataset.decEy),
+    recPreco: row.dataset.decRecPreco === '' ? null : parseFloat(row.dataset.decRecPreco),
+    ebitEv: row.dataset.decEbitEv === '' ? null : parseFloat(row.dataset.decEbitEv),
+    vpPreco: row.dataset.decVpPreco === '' ? null : parseFloat(row.dataset.decVpPreco),
+    roe: row.dataset.decRoe === '' ? null : parseFloat(row.dataset.decRoe),
+    mgBruta: row.dataset.decMgBruta === '' ? null : parseFloat(row.dataset.decMgBruta),
+    dyLtm: row.dataset.decDyLtm === '' ? null : parseFloat(row.dataset.decDyLtm)
   })).filter(l => l.total > 0);
 
-  // Ordenação: o YIELD VALIDADO PARA O GRUPO da empresa (L/P nas defensivas, DY nas demais —
-  // ver RANK_CRIT_POR_GRUPO no topo do arquivo e scripts/backtest_ranking.py).
+  _calcularScores(linhas);
+
+  // Ordenação: SCORE COMPOSTO de valor + qualidade, por grupo de motor (ver _calcularScores).
   //
-  // ⚠️ ATÉ 13/09/2026 QUEM ORDENAVA ERA A TIR REAL, com o argumento de que "é a única medida
-  // na mesma unidade da alternativa sem risco". O argumento continua verdadeiro e continua
-  // irrelevante para ESTA pergunta: estar na unidade certa não é o mesmo que ordenar certo, e
-  // quando a TIR foi finalmente testada ela ordenou pior que o L/P puro nos setores que o
-  // usuário compra (spread +11,4 p.p. contra +20,4 p.p., acertando 3 de 5 anos contra 5 de 5).
-  // A TIR responde "quanto rende acima da NTN-B"; a fila pergunta "qual está mais barata".
-  // São perguntas diferentes, e a coluna da TIR continua respondendo a dela.
+  // Histórico curto e instrutivo desta linha: até 12/09 ordenava pela TIR real, que nunca
+  // tinha sido testada; em 13/09 passou ao yield validado por grupo (L/P nas defensivas, DY
+  // nas demais); e no mesmo dia o DY caiu, porque o teste por MEDIANA o reprovou (p=0,62)
+  // depois de o teste por TERCIS o ter aprovado. Métrica isolada é frágil a como você corta
+  // a amostra — o composto é justamente a resposta a isso.
   //
-  // Quem não tem yield calculável cai para o fim — não por ser ruim, mas porque não dá para
-  // comparar o que não foi medido. Desempate: critérios de qualidade, depois convergência das
-  // medidas da TIR (amplitude menor = leitura mais confiável), depois a própria TIR.
+  // Quem não tem NENHUMA métrica de valor cai para o fim: não dá para ordenar por barateza
+  // quem não tem medida de barateza. Desempate: critérios de qualidade, depois convergência
+  // das medidas da TIR.
   linhas.sort((a, b) =>
-    ((b.rankY != null) - (a.rankY != null)) ||
-    ((b.rankY ?? -99) - (a.rankY ?? -99)) ||
+    ((b.score != null) - (a.score != null)) ||
+    ((b.score ?? -99) - (a.score ?? -99)) ||
     (b.ratio - a.ratio) ||
-    ((a.amp ?? 99) - (b.amp ?? 99)) ||
-    ((b.tir ?? -99) - (a.tir ?? -99)));
+    ((a.amp ?? 99) - (b.amp ?? 99)));
 
   const top = linhas.slice(0, 8);
   const comPremio = linhas.filter(l => l.premio != null && l.premio >= 0).length;
@@ -604,23 +655,25 @@ function renderRankingDecisao() {
   wrap.innerHTML = `
     <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:baseline;margin-bottom:8px;">
       <strong style="font-size:13px;">🎯 Por onde começar</strong>
-      <span style="font-size:11px;color:#666;">ordenado pelo yield validado por grupo · <b>L/P</b> em bancos, seguros, elétricas, telecom e saneamento · <b>DY</b> nos demais</span>
+      <span style="font-size:11px;color:#666;">ordenado por <b>score composto</b> — 70% valor (L/P · Receita/Preço · EBIT/EV · VP/P) + 30% qualidade (ROE · margem bruta), comparado dentro do grupo</span>
     </div>
     <div style="display:flex;flex-wrap:wrap;gap:6px;">
       ${top.map((l, i) => `
         <div style="border:1px solid #e3e3e3;border-radius:8px;padding:6px 10px;background:#fff;min-width:132px;">
           <div style="font-size:10px;color:#999;">${i + 1}º · ${l.seg}</div>
           <div style="font-weight:600;font-size:12px;">${l.ticker}</div>
-          <div style="font-size:13px;color:#0a5c35;font-weight:700;">${l.rankY == null ? '—' : (l.rankCrit === 'ey' ? 'L/P ' : 'DY ') + l.rankY.toFixed(1).replace('.', ',') + '%'}</div>
+          <div style="font-size:13px;color:#0a5c35;font-weight:700;">${l.score == null ? '—' : 'score ' + (l.score * 100).toFixed(0)}</div>
+          <div style="font-size:10px;color:#888;">${l.ey == null ? '' : 'L/P ' + l.ey.toFixed(1).replace('.', ',') + '%'}${l.pctQualidade != null ? ' · qual. ' + (l.pctQualidade * 100).toFixed(0) : ''}</div>
           <div style="font-size:10.5px;color:${l.tir != null && l.tir >= TIR_NTNB ? '#0a5c35' : '#888'};">${l.tir == null ? 'TIR —' : 'TIR ' + l.tir.toFixed(1).replace('.', ',') + '%'}</div>
           <div style="font-size:10.5px;color:#888;">${l.passa}/${l.total} critérios</div>
         </div>`).join('')}
     </div>
     <div style="font-size:11px;color:#666;margin-top:8px;line-height:1.6;">
-      A fila é ordenada pela régua que <b>funcionou no teste histórico daquele grupo</b> (<code>scripts/backtest_ranking.py</code>):
-      nas defensivas o <b>L/P</b> separou barato de caro com spread de +20,3 p.p. acertando 5 de 5 anos, enquanto a TIR real ficou em +11,4 p.p. e 3 de 5;
-      nas cíclicas e construtoras quem separou foi o <b>DY</b> (+19,5 p.p., 5 de 5). <b>São 5 anos de amostra — isso não prova que a régua prediz retorno,
-      só que a anterior errou mais.</b>
+      O <b>score</b> é o percentil médio de quatro réguas de preço e duas de qualidade, comparado <b>dentro do grupo de motor</b> — P/L de banco
+      não se compara com P/L de telecom. Composto e não métrica única porque cada múltiplo tem um jeito próprio de ser enganado (lucro por contabilidade,
+      patrimônio por reavaliação, EBITDA por capex escondido); quatro medindo o mesmo por caminhos diferentes cancelam parte do erro individual.
+      <b>Os pesos 70/30 são premissa declarada, não calibração</b> — com 5 anos de amostra não há como calibrar peso, e fingir que há seria o superajuste
+      que o teste de permutação existe para denunciar.
       <br>
       <strong>${batemNtnb}</strong> de <strong>${comTir}</strong> ativos com TIR calculada superam a NTN-B (IPCA + ${TIR_NTNB.toFixed(2).replace('.', ',')}%) — a TIR continua na tabela
       respondendo "quanto rende acima da renda fixa", que é pergunta diferente de "qual está mais barata". Ranking alto não é ordem de compra: é a fila para ler o relatório.
