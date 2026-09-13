@@ -12,7 +12,8 @@
     "chave": "P/FFO",
     "justo": 31.53,
     "papel": "principal",
-    "conta": "P/FFO 8.13x próprio (sem 3 pares no grupo SHOP) × FFO/papel projetado R$ 3.88",
+    "conta": "FFO por papel projetado R$ 3.88 × P/FFO 8.13x",
+    "origemMult": "mediana da própria série (8.13x) — o grupo SHOP não tem 3 pares para comparar",
     "faixa": [
      26.56,
      35.18
@@ -71,8 +72,8 @@
   "justo": null,
   "conv": 0,
   "recusa": true,
-  "motor": "SEM PREÇO-TETO — declarado",
-  "nota": "RECUSA DECLARADA: Mesma falta de preço histórico da VIVA3, e ainda menos série: a DRE anual recente não voltou da API (só 2019-2020, anteriores ao spin-off do GPA, com base de ações incomparável — LPA de R$5,80 em 2020 contra R$0,71 no LTM). Restam margem líquida e dív.líq/EBITDA por exercício. A margem caindo de 3,84% (2021) para 0,64% (2025) é informação real e está na tabela; teto, não.",
+  "motor": "SEM PREÇO JUSTO — declarado",
+  "nota": "RECUSA DECLARADA: Mesma falta de preço histórico da VIVA3, e ainda menos série: a DRE anual recente não voltou da API (só 2019-2020, anteriores ao spin-off do GPA, com base de ações incomparável — LPA de R$5,80 em 2020 contra R$0,71 no LTM). Restam margem líquida e dív.líq/EBITDA por exercício. A margem caindo de 3,84% (2021) para 0,64% (2025) é informação real e está na tabela; preço justo, não.",
   "teto": null,
   "cot": 9.82
  },
@@ -89,7 +90,8 @@
     "chave": "Pares",
     "justo": 19.31,
     "papel": "principal",
-    "conta": "P/VP mediano dos pares 1.48x × VPA R$ 13.04",
+    "conta": "VPA R$ 13.04 × P/VP 1.48x",
+    "origemMult": "mediana dos 4 pares do grupo UTIL — a própria empresa não tem série utilizável",
     "faixa": [
      11.28,
      27.92
@@ -127,7 +129,8 @@
     "chave": "P/L",
     "justo": 38.56,
     "papel": "principal",
-    "conta": "E/P: P/L 9.00x = média entre 8.45x próprio e 9.55x dos 8 pares FIN × LPA projetado R$ 4.28",
+    "conta": "LPA projetado 2026 R$ 4.28 × P/L 9.00x",
+    "origemMult": "média entre 8.45x da própria série e 9.55x dos 8 pares do grupo FIN",
     "faixa": [
      37.6,
      38.67
@@ -165,7 +168,8 @@
     "chave": "P/L",
     "justo": 65.83,
     "papel": "principal",
-    "conta": "E/P: P/L 9.01x = média entre 8.46x próprio e 9.55x dos 8 pares FIN × LPA projetado R$ 7.31",
+    "conta": "LPA projetado 2026 R$ 7.31 × P/L 9.01x",
+    "origemMult": "média entre 8.46x da própria série e 9.55x dos 8 pares do grupo FIN",
     "faixa": [
      64.0,
      93.03
@@ -203,7 +207,8 @@
     "chave": "P/L",
     "justo": 121.75,
     "papel": "principal",
-    "conta": "E/P: P/L 24.12x = média entre 39.45x próprio e 8.79x dos 8 pares FIN × LPA projetado R$ 5.05",
+    "conta": "LPA projetado 2026 R$ 5.05 × P/L 24.12x",
+    "origemMult": "média entre 39.45x da própria série e 8.79x dos 8 pares do grupo FIN",
     "faixa": [
      111.05,
      125.96
@@ -241,7 +246,8 @@
     "chave": "Paridade",
     "justo": 19.27,
     "papel": "principal",
-    "conta": "Paridade com VALE3: 0.289× o preço justo de VALE3 (R$ 66.75)",
+    "conta": "preço justo de VALE3 R$ 66.75 × paridade 0.289",
+    "origemMult": "razão entre o preço de BRAP4 e o de VALE3 ao longo de 6 anos (0.289) — o desconto de holding que o mercado pratica",
     "faixa": [
      18.76,
      19.67
@@ -299,7 +305,8 @@
     "chave": "P/L",
     "justo": 31.56,
     "papel": "principal",
-    "conta": "E/P: P/L 7.01x = média entre 4.46x próprio e 9.55x dos 8 pares FIN × LPA projetado R$ 4.50",
+    "conta": "LPA projetado 2026 R$ 4.50 × P/L 7.01x",
+    "origemMult": "média entre 4.46x da própria série e 9.55x dos 8 pares do grupo FIN",
     "faixa": [
      26.16,
      37.11
@@ -337,7 +344,8 @@
     "chave": "P/L",
     "justo": 153.56,
     "papel": "principal",
-    "conta": "E/P: P/L 7.90x = média entre 5.82x próprio e 9.98x dos 4 pares UTIL × LPA projetado R$ 19.43",
+    "conta": "LPA projetado 2026 R$ 19.43 × P/L 7.90x",
+    "origemMult": "média entre 5.82x da própria série e 9.98x dos 4 pares do grupo UTIL",
     "faixa": [
      135.09,
      167.15
@@ -395,7 +403,8 @@
     "chave": "P/L",
     "justo": 46.76,
     "papel": "principal",
-    "conta": "E/P: P/L 9.10x = média entre 8.21x próprio e 9.98x dos 4 pares UTIL × LPA projetado R$ 5.14",
+    "conta": "LPA projetado 2026 R$ 5.14 × P/L 9.10x",
+    "origemMult": "média entre 8.21x da própria série e 9.98x dos 4 pares do grupo UTIL",
     "faixa": [
      46.05,
      49.21
@@ -463,7 +472,8 @@
     "chave": "P/L",
     "justo": 15.48,
     "papel": "principal",
-    "conta": "E/P: P/L 10.20x = média entre 11.62x próprio e 8.79x dos 8 pares FIN × LPA projetado R$ 1.52",
+    "conta": "LPA projetado 2026 R$ 1.52 × P/L 10.20x",
+    "origemMult": "média entre 11.62x da própria série e 8.79x dos 8 pares do grupo FIN",
     "faixa": [
      14.75,
      16.74
@@ -511,7 +521,8 @@
     "chave": "P/L",
     "justo": 6.66,
     "papel": "principal",
-    "conta": "E/P: P/L 9.28x = média entre 8.93x próprio e 9.62x dos 4 pares UTIL × LPA projetado R$ 0.72",
+    "conta": "LPA projetado 2026 R$ 0.72 × P/L 9.28x",
+    "origemMult": "média entre 8.93x da própria série e 9.62x dos 4 pares do grupo UTIL",
     "faixa": [
      6.3,
      7.07
@@ -569,7 +580,8 @@
     "chave": "P/L",
     "justo": 20.52,
     "papel": "principal",
-    "conta": "E/P: P/L 15.05x próprio (sem 3 pares no grupo IND) × LPA projetado R$ 1.36",
+    "conta": "LPA projetado 2026 R$ 1.36 × P/L 15.05x",
+    "origemMult": "mediana da própria série (15.05x) — o grupo IND não tem 3 pares para comparar",
     "faixa": [
      19.19,
      22.17
@@ -637,7 +649,8 @@
     "chave": "P/L",
     "justo": 31.9,
     "papel": "principal",
-    "conta": "E/P: P/L 8.90x = média entre 8.25x próprio e 9.55x dos 8 pares FIN × LPA projetado R$ 3.58",
+    "conta": "LPA projetado 2026 R$ 3.58 × P/L 8.90x",
+    "origemMult": "média entre 8.25x da própria série e 9.55x dos 8 pares do grupo FIN",
     "faixa": [
      31.74,
      73.81
@@ -676,7 +689,8 @@
     "chave": "Paridade",
     "justo": 15.63,
     "papel": "principal",
-    "conta": "Paridade com ITUB3: 0.322× o preço justo de ITUB3 (R$ 48.47)",
+    "conta": "preço justo de ITUB3 R$ 48.47 × paridade 0.322",
+    "origemMult": "razão entre o preço de ITSA4 e o de ITUB3 ao longo de 6 anos (0.322) — o desconto de holding que o mercado pratica",
     "faixa": [
      15.48,
      15.74
@@ -754,7 +768,8 @@
     "chave": "P/L",
     "justo": 48.47,
     "papel": "principal",
-    "conta": "E/P: P/L 9.39x = média entre 10.00x próprio e 8.79x dos 8 pares FIN × LPA projetado R$ 5.16",
+    "conta": "LPA projetado 2026 R$ 5.16 × P/L 9.39x",
+    "origemMult": "média entre 10.00x da própria série e 8.79x dos 8 pares do grupo FIN",
     "faixa": [
      40.98,
      49.66
@@ -792,7 +807,8 @@
     "chave": "EV/EBITDA",
     "justo": 20.17,
     "papel": "principal",
-    "conta": "EV/EBITDA 5.73x sobre EBITDA médio de 6 anos (R$ 8.6 bi)",
+    "conta": "EBITDA médio de 6 anos (R$ 8.6 bi) × EV/EBITDA 5.73x − dívida líquida R$ 24.8 bi, ÷ 1,2 bi papéis",
+    "origemMult": "mediana da série inteira (cíclica cobre pico e fundo) do próprio histórico, 6 anos (4.5x a 6.6x)",
     "faixa": [
      15.98,
      24.31
@@ -860,7 +876,8 @@
     "chave": "P/L",
     "justo": 33.37,
     "papel": "principal",
-    "conta": "E/P: P/L 7.41x próprio (sem 3 pares no grupo IND) × LPA projetado R$ 4.50",
+    "conta": "LPA projetado 2026 R$ 4.50 × P/L 7.41x",
+    "origemMult": "mediana da própria série (7.41x) — o grupo IND não tem 3 pares para comparar",
     "faixa": [
      30.89,
      33.96
@@ -928,7 +945,8 @@
     "chave": "P/FFO",
     "justo": 34.94,
     "papel": "principal",
-    "conta": "P/FFO 9.43x próprio (sem 3 pares no grupo SHOP) × FFO/papel projetado R$ 3.70",
+    "conta": "FFO por papel projetado R$ 3.70 × P/FFO 9.43x",
+    "origemMult": "mediana da própria série (9.43x) — o grupo SHOP não tem 3 pares para comparar",
     "faixa": [
      31.18,
      37.75
@@ -995,7 +1013,8 @@
     "chave": "EV/EBITDA",
     "justo": 42.94,
     "papel": "principal",
-    "conta": "EV/EBITDA 3.21x sobre EBITDA médio de 6 anos (R$ 270.5 bi)",
+    "conta": "EBITDA médio de 6 anos (R$ 270.5 bi) × EV/EBITDA 3.21x − dívida líquida R$ 312.8 bi, ÷ 13,0 bi papéis",
+    "origemMult": "mediana da série inteira (cíclica cobre pico e fundo) do próprio histórico, 6 anos (1.6x a 4.3x)",
     "faixa": [
      30.95,
      53.37
@@ -1063,7 +1082,8 @@
     "chave": "P/L",
     "justo": 54.67,
     "papel": "principal",
-    "conta": "E/P: P/L 9.17x = média entre 9.11x próprio e 9.23x dos 8 pares FIN × LPA projetado R$ 5.96",
+    "conta": "LPA projetado 2026 R$ 5.96 × P/L 9.17x",
+    "origemMult": "média entre 9.11x da própria série e 9.23x dos 8 pares do grupo FIN",
     "faixa": [
      50.69,
      62.33
@@ -1121,7 +1141,8 @@
     "chave": "EV/EBITDA",
     "justo": 8.06,
     "papel": "principal",
-    "conta": "EV/EBITDA 5.04x sobre EBITDA médio de 6 anos (R$ 0.6 bi)",
+    "conta": "EBITDA médio de 6 anos (R$ 0.6 bi) × EV/EBITDA 5.04x − dívida líquida R$ 1.1 bi, ÷ 240 mi papéis",
+    "origemMult": "mediana da série inteira (cíclica cobre pico e fundo) do próprio histórico, 6 anos (4.8x a 5.9x)",
     "faixa": [
      7.49,
      8.99
@@ -1180,8 +1201,8 @@
   "justo": null,
   "conv": 0,
   "recusa": true,
-  "motor": "SEM PREÇO-TETO — declarado",
-  "nota": "RECUSA DECLARADA: BDR de empresa estrangeira (Nu Holdings, NYSE/Cayman), fora da cobertura B3/CVM do MCP Partnr. A base tem exatamente 1 ano de dado (2025, lido à mão de release), sem série para separar padrão de ano atípico. Gordon, lucro residual e múltiplo próprio rodariam todos sobre esse único ponto — \"consenso de métodos\" seria validação cruzada aparente, não real: os três concordariam porque vêm da mesma fonte única. Sem segunda fonte independente, não há preço-teto defensável. Payout, TIR real e as demais colunas continuam calculados normalmente.",
+  "motor": "SEM PREÇO JUSTO — declarado",
+  "nota": "RECUSA DECLARADA: BDR de empresa estrangeira (Nu Holdings, NYSE/Cayman), fora da cobertura B3/CVM do MCP Partnr. A base tem exatamente 1 ano de dado (2025, lido à mão de release), sem série para separar padrão de ano atípico. Gordon, lucro residual e múltiplo próprio rodariam todos sobre esse único ponto — \"consenso de métodos\" seria validação cruzada aparente, não real: os três concordariam porque vêm da mesma fonte única. Sem segunda fonte independente, não há preço justo defensável. Payout, TIR real e as demais colunas continuam calculados normalmente.",
   "teto": null,
   "cot": 12.4
  },
@@ -1198,7 +1219,8 @@
     "chave": "P/L",
     "justo": 41.98,
     "papel": "principal",
-    "conta": "E/P: P/L 12.24x = média entre 15.70x próprio e 8.79x dos 8 pares FIN × LPA projetado R$ 3.43",
+    "conta": "LPA projetado 2026 R$ 3.43 × P/L 12.24x",
+    "origemMult": "média entre 15.70x da própria série e 8.79x dos 8 pares do grupo FIN",
     "faixa": [
      36.23,
      44.75
@@ -1245,7 +1267,8 @@
     "chave": "P/L",
     "justo": 21.63,
     "papel": "principal",
-    "conta": "E/P: P/L 9.80x = média entre 11.04x próprio e 8.57x dos 4 pares UTIL × LPA projetado R$ 2.21",
+    "conta": "LPA projetado 2026 R$ 2.21 × P/L 9.80x",
+    "origemMult": "média entre 11.04x da própria série e 8.57x dos 4 pares do grupo UTIL",
     "faixa": [
      15.87,
      25.41
@@ -1313,7 +1336,8 @@
     "chave": "P/L",
     "justo": 5.5,
     "papel": "principal",
-    "conta": "E/P: P/L 7.01x próprio (sem 3 pares no grupo IND) × LPA projetado R$ 0.79",
+    "conta": "LPA projetado 2026 R$ 0.79 × P/L 7.01x",
+    "origemMult": "mediana da própria série (7.01x) — o grupo IND não tem 3 pares para comparar",
     "faixa": [
      4.87,
      6.35
@@ -1351,7 +1375,8 @@
     "chave": "P/L",
     "justo": 23.5,
     "papel": "principal",
-    "conta": "E/P: P/L 11.43x = média entre 14.28x próprio e 8.57x dos 4 pares UTIL × LPA projetado R$ 2.06",
+    "conta": "LPA projetado 2026 R$ 2.06 × P/L 11.43x",
+    "origemMult": "média entre 14.28x da própria série e 8.57x dos 4 pares do grupo UTIL",
     "faixa": [
      20.07,
      23.86
@@ -1419,7 +1444,8 @@
     "chave": "EV/EBITDA",
     "justo": 66.75,
     "papel": "principal",
-    "conta": "EV/EBITDA 4.30x sobre EBITDA médio de 6 anos (R$ 86.4 bi)",
+    "conta": "EBITDA médio de 6 anos (R$ 86.4 bi) × EV/EBITDA 4.30x − dívida líquida R$ 68.2 bi, ÷ 4,5 bi papéis",
+    "origemMult": "mediana da série inteira (cíclica cobre pico e fundo) do próprio histórico, 6 anos (2.5x a 8.9x)",
     "faixa": [
      53.15,
      120.7
@@ -1479,8 +1505,8 @@
   "justo": null,
   "conv": 0,
   "recusa": true,
-  "motor": "SEM PREÇO-TETO — declarado",
-  "nota": "RECUSA DECLARADA: Série sem preço histórico: a chave de API do MCP Partnr desta sessão não tem escopo de cotação histórica nem de valuation ratios anuais, então não há P/L nem P/VP por exercício para ancorar múltiplo da própria série. A DRE de 2021-2025 está completa e auditável (receita, lucro, EBITDA, margens, LPA) — o que falta é só o lado do PREÇO. Assim que a série de cotação entrar, esta linha sai do SEM_TETO sem mudar mais nada.",
+  "motor": "SEM PREÇO JUSTO — declarado",
+  "nota": "RECUSA DECLARADA: Série sem preço histórico: a chave de API do MCP Partnr desta sessão não tem escopo de cotação histórica nem de valuation ratios anuais, então não há P/L nem P/VP por exercício para ancorar múltiplo da própria série. A DRE de 2021-2025 está completa e auditável (receita, lucro, EBITDA, margens, LPA) — o que falta é só o lado do PREÇO. Assim que a série de cotação entrar, esta linha passa a ter preço justo sem mudar mais nada.",
   "teto": null,
   "cot": 22.33
  }
