@@ -2086,3 +2086,113 @@ ao p-valor individual. Tudo aqui é o melhor palpite disponível, não verdade e
 O universo de 30 empresas **é escolha deliberada do usuário**, não defeito de amostragem: são as
 empresas que ele compraria. A crítica de viés de sobrevivência vale para o BACKTEST, não para a
 lista de compra — e essa distinção estava confusa nas rodadas anteriores.
+
+---
+
+## 31. Um múltiplo, não uma mediana de vários (13/09/2026)
+
+### 31.1 O que o usuário disse
+
+> "O preço justo ainda não está LPA × múltiplo que a empresa deve ser negociada. Está a mediana
+> de um monte de critérios que não acho justo. Deve ser **LPA projetado × múltiplo que a empresa
+> deve ser negociada com base no seu histórico e de seus pares**."
+
+Ele estava certo, e o defeito era conceitual, não numérico.
+
+### 31.2 Por que a mediana de métodos era indefensável
+
+A arquitetura de 06/09/2026 (seção 19) rodava todos os métodos que o dado permitisse e tirava a
+mediana. O argumento era bom no papel — "a mediana ignora o método que enlouqueceu" — e produzia
+um número que **ninguém consegue explicar em uma frase**.
+
+A ALOS3 é o caso que expôs isso. O motor devolvia R$21,42 e depois R$32,06 sem que fosse possível
+dizer POR QUÊ: era o meio de P/FFO R$26,74, EV/Receita R$32,60 e mais dois. No mesmo dia, o
+relatório embutido da ALOS3 dizia R$29,50 usando o que qualquer analista usa — FFO projetado ×
+P/FFO que o setor pratica — e era o número que fazia sentido. A tabela e o relatório discordavam
+porque **a tabela respondia a uma pergunta que ninguém tinha feito**: "qual o número do meio entre
+quatro réguas diferentes?"
+
+Três defeitos concretos da composição por mediana:
+
+1. **Dupla contagem.** E/P, EV/Receita e EV/EBITDA não são opiniões independentes — são a mesma
+   demonstração de resultado dividida em pontos diferentes. Somar três leituras da mesma linha e
+   chamar de consenso é inventar corroboração.
+2. **Múltiplo fraco com voto igual ao forte.** O backtest de 13/09 (seção 30) já tinha mostrado
+   que P/VP não tem sinal (p=0,37) e receita/preço tem (p=0,007). Na mediana, os dois pesavam igual.
+3. **A faixa media a coisa errada.** "Do método mais pessimista ao mais otimista" descreve o
+   desacordo entre réguas, não a incerteza sobre a empresa.
+
+### 31.3 O que passou a valer
+
+Cada empresa tem **UM método que decide**, escolhido pelo que o negócio é:
+
+| Grupo | Método | Por quê |
+|---|---|---|
+| Geral (IND, UTIL, VAREJO, FIN) | **P/L** | LPA projetado 2026 × múltiplo-alvo |
+| Shopping | **P/FFO** | o imóvel entra a custo e é depreciado — lucro e patrimônio mentem |
+| Cíclica de commodity | **EV/EBITDA** sobre a MÉDIA do ciclo | o lucro de um ano é fundo ou pico, nunca normal |
+| Holding | **Paridade** com a investida | vale o que a investida vale, com o desconto que o mercado pratica |
+
+O múltiplo-alvo continua sendo a **média entre a própria história e a dos pares** — a âncora que
+`backtest_pares.py` mediu em +14,1 p.p. contra as duas pontas isoladas (seção 30). O que mudou é
+que o resultado dessa conta **é** o preço justo, em vez de ser um voto entre vários.
+
+Os demais métodos continuam calculados e aparecem na tooltip como **verificação**: se discordarem
+muito, isso é informação sobre a empresa. Só não entram na conta.
+
+### 31.4 Quatro bugs que só apareceram quando um método passou a decidir sozinho
+
+Todos estavam escondidos pela mediana, que os diluía.
+
+**(a) O justo caía FORA da própria faixa.** BPAC11 R$121,75 com faixa de R$181,65 a R$206,04;
+SANB11, CXSE3, TIMS3, BBSE3 e BRSR6 igual. Causa: `justo` usava o múltiplo já misturado com os
+pares, e p25/p75 vinham da série da própria empresa, sem a mistura. Duas réguas na mesma linha.
+Corrigido por `recentrar()` — a faixa preserva a **amplitude relativa** da oscilação histórica e
+passa a ser aplicada ao múltiplo efetivamente usado.
+
+**(b) EV/EBITDA e paridade não tinham faixa nenhuma.** Nunca precisaram: como um voto entre
+vários, a faixa saía do conjunto. Decidindo sozinhos, as cíclicas (KLBN11, PETR4, VALE3, RANI3) e
+as holdings (ITSA4, BRAP4) ficavam com largura zero e o teto de compra era suprimido por uma
+convenção, não pelo dado. Ambos ganharam faixa própria — percentis do múltiplo e do desconto de
+holding.
+
+**(c) Série de 3 anos virava ponto único.** `faixa_com_tendencia` devolvia p25=p50=p75 abaixo de
+4 observações. Agora, com exatamente 3, devolve a **amplitude observada (mín-máx)**: mais larga
+que percentis, que é o lado certo para errar — comunica amostra pequena em vez de fingir precisão.
+
+**(d) A trava de supressão passou a misturar duas incertezas.** `largura` mudou de significado —
+antes media desacordo ENTRE MÉTODOS, agora mede oscilação histórica de UM múltiplo. Virou duas
+travas:
+
+- **sem faixa nenhuma** (menos de 3 exercícios): recusa o preço justo inteiro. Um ponto não
+  descreve quanto a empresa deveria valer; descreve um ano. Atinge AXIA3, PASS3 e SAUD3.
+- **faixa larga** (acima de 50%): mantém o preço justo — a mediana do múltiplo continua sendo a
+  melhor estimativa única — e suprime só o **teto de compra**. É o retrato honesto de uma cíclica.
+  Atinge AURE3, IRBR3 e VALE3.
+
+### 31.5 A cópia manual da coluna acabou
+
+`scripts/gerar_preco_justo.py` (novo) propaga `analise/tetos.json` para
+`data/radar-rows.data.js` — célula, tooltip e `data-preco-justo`, de uma vez. Era a última
+coluna colada à mão, e a cópia manual já tinha cobrado o preço duas vezes: em 11/09 a célula
+visível da ALOS3 mostrava R$19,61 enquanto o atributo da mesma linha dizia R$21,42 (só o atributo
+tinha sido colado), e em 13/09 um deslocamento de índice apagou a escrita de uma coluna em
+silêncio. É sempre a mesma falha: duas fontes de verdade, e a errada é a que o usuário lê.
+
+A tooltip tem **quatro linhas e nada mais** — critério, conta, faixa, teto —, atendendo ao pedido
+que o usuário já tinha feito duas vezes: "ali deve ter o racional pra chegar no valor, somente
+isso, e esse critério deve estar lá".
+
+### 31.6 Onde isto é PIOR que a mediana
+
+Honestidade sobre o custo da mudança:
+
+- **Cíclica no fundo do ciclo.** O EV/EBITDA médio protege, mas se a série de EBITDA for curta o
+  método se recusa e a linha fica sem preço justo — onde antes três métodos fracos produziam um
+  número qualquer.
+- **Prejuízo ou LPA perto de zero.** P/L não existe com lucro negativo. A empresa desce o
+  encadeamento de métodos do grupo e, se nada responder, sai sem número.
+- **Três linhas a menos com preço justo** (AXIA3, PASS3, SAUD3) do que na versão anterior.
+
+É o preço de ter um método com significado: ele pode dizer "não se aplica". A mediana nunca dizia,
+e era essa a aparência de robustez que a versão anterior vendia.

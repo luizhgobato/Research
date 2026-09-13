@@ -344,9 +344,17 @@ def faixa_com_tendencia(vals, limiar_rel=0.12, limiar_abs=None):
     deve definir o limite — é a mesma razão de o motor usar mediana em vez de média desde a
     seção 19.
     """
-    if len(vals) < 4:
+    if len(vals) < 3:
         m = st.median(vals)
         return m, m, m, 'série curta — sem faixa, ponto único'
+    if len(vals) == 3:
+        # ⚠️ 13/09/2026 — com 3 pontos não existe percentil, mas existe AMPLITUDE OBSERVADA,
+        # e ela é informação. Devolver ponto único aqui custava o teto de compra inteiro:
+        # desde que UM método decide sozinho, faixa de largura zero aciona a supressão do
+        # _sanidade, e ALOS3, AXIA3, IRBR3, PASS3, SAUD3 e SBSP3 saíam sem teto por causa da
+        # convenção, não do dado. Mínimo a máximo de 3 anos é mais largo que p25-p75 — é o
+        # lado certo para errar: comunica que a amostra é pequena em vez de fingir precisão.
+        return min(vals), st.median(vals), max(vals), 'série de 3 anos — amplitude observada (mín-máx), não percentis'
     base = sorted(vals)
     nota = f'percentis de {len(vals)} anos'
     if len(vals) >= 5:
@@ -367,6 +375,28 @@ def faixa_com_tendencia(vals, limiar_rel=0.12, limiar_abs=None):
         return base[lo] + (base[hi] - base[lo]) * (i - lo)
 
     return _p(0.25), _p(0.50), _p(0.75), nota
+
+
+def recentrar(p25, p50, p75, alvo):
+    """Faixa do múltiplo próprio, RECENTRADA no múltiplo que de fato foi aplicado.
+
+    ⚠️ Bug encontrado em 13/09/2026, quando o preço justo virou método único e a faixa passou
+    a ser a do próprio método em vez do conjunto: o justo saía FORA da própria faixa. BPAC11
+    R$121,75 com faixa de R$181,65 a R$206,04; SANB11, CXSE3, TIMS3, BBSE3 e BRSR6 igual.
+
+    A causa: `justo` usa o múltiplo-alvo já MISTURADO com os pares (alvo_com_pares), enquanto
+    p25/p75 vinham da série da própria empresa, sem a mistura. Duas réguas diferentes na mesma
+    linha — e uma faixa que não contém o número que ela deveria descrever não é faixa, é ruído.
+
+    A correção preserva o que a faixa mede — a AMPLITUDE RELATIVA da oscilação histórica do
+    múltiplo — e a aplica ao múltiplo usado: k = alvo ÷ mediana própria, faixa × k. Se o
+    mercado paga 8x e a empresa oscilou entre −20% e +30% da própria mediana, a faixa vira
+    6,4x a 10,4x. O que a mistura com pares muda é o CENTRO, não a incerteza.
+    """
+    if not p50 or p50 <= 0 or not alvo or alvo <= 0:
+        return p25, p75
+    k = alvo / p50
+    return p25 * k, p75 * k
 
 
 def serie_pvp(t, A, val=None):
@@ -710,20 +740,38 @@ def teto_ev(t, A, ciclico):
     # commodity, ela faz RE-RATING ESTRUTURAL (privatização, revisão tarifária).
     # CLSC4: EV/EBITDA subiu 3,15x → 5,70x de forma monotônica em 6 anos. A mediana (≈4,2x)
     # descreve uma empresa que não existe mais e devolvia teto de R$51,72 contra R$156,00.
+    # ⚠️ A FAIXA (p25-p75 do próprio múltiplo) passou a ser OBRIGATÓRIA aqui em 13/09/2026.
+    # Antes teto_ev era um dos vários métodos votando e a faixa saía do conjunto; agora ele
+    # DECIDE SOZINHO nas cíclicas, e sem faixa própria o limite inferior não existe — o
+    # _sanidade suprimia o teto de compra de KLBN11, PETR4, VALE3 e RANI3 por "método único
+    # sem série para formar faixa", quando a série existia e era justamente a do múltiplo.
+    p25, p50, p75, nota_fx = faixa_com_tendencia(mult, limiar_rel=0.12)
     if ciclico:
-        alvo, nota_alvo = st.median(mult), 'MEDIANA da série inteira (cíclica cobre pico e fundo)'
+        # Cíclica não corta a série pela metade: o ciclo inteiro É a amostra, e a metade
+        # recente descreve só onde o ciclo estava. Percentis da série toda.
+        b = sorted(mult); n = len(b)
+        _p = lambda q: b[int(q*(n-1))] + (b[min(int(q*(n-1))+1, n-1)] - b[int(q*(n-1))]) * (q*(n-1) - int(q*(n-1)))
+        p25, p50, p75 = _p(0.25), st.median(mult), _p(0.75)
+        alvo, nota_alvo = p50, 'MEDIANA da série inteira (cíclica cobre pico e fundo)'
+        nota_fx = f'percentis dos {len(mult)} anos, série inteira'
     else:
         alvo, nota_alvo = mediana_com_tendencia(mult, limiar_rel=0.12)
     ebitda = st.mean(eb) if ciclico else eb[-1]
     pap = papeis(t, A)
     if not pap: return None
-    justo = (alvo*ebitda - (c.get('divliq') or 0)) / pap
+    dl = (c.get('divliq') or 0)
+    _pr = lambda mu: (mu*ebitda - dl) / pap
+    justo = _pr(alvo)
+    fx = (_pr(p25), _pr(p75))
+    if not (fx[0] and fx[1] and fx[0] > 0 and fx[1] > fx[0]):
+        fx = None
     conv = 3 if len(mult) >= 5 else 2
     base = 'EBITDA médio de %d anos (R$ %.1f bi)' % (len(eb), ebitda/1e9) if ciclico else 'EBITDA LTM (R$ %.1f bi)' % (ebitda/1e9)
-    return dict(justo=justo, conv=conv, chave='EV/EBITDA',
+    return dict(justo=justo, conv=conv, chave='EV/EBITDA', faixa=fx,
         motor=f'EV/EBITDA {alvo:.2f}x sobre {base}',
         nota=f'Múltiplo-alvo {alvo:.2f}x = {nota_alvo} do próprio histórico ({len(mult)} anos: {min(mult):.1f}x a {max(mult):.1f}x), não de pares. '
-             f'EV justo − dívida líquida R$ {(c.get("divliq") or 0)/1e9:.1f} bi ÷ {pap/1e6:.0f} mi papéis.')
+             f'Faixa {p25:.2f}x a {p75:.2f}x ({nota_fx}). '
+             f'EV justo − dívida líquida R$ {dl/1e9:.1f} bi ÷ {pap/1e6:.0f} mi papéis.')
 
 def teto_bazin(t, A):
     """Gordon sobre dividendo sustentável. Substitui o Bazin de yield arbitrário."""
@@ -882,6 +930,7 @@ def teto_ep(t, A, pl_setor=None, com_pares=True):
     if len(pls) >= 3:
         p25, alvo, p75, nfx = faixa_com_tendencia(pls)
         faixa_mult = (p25, p75)
+        mediana_propria = alvo
         conv = 3 if len(pls) >= 5 else 2
         nota = (f'P/L: faixa {p25:.1f}x–{p75:.1f}x (mediana {alvo:.1f}x) · {nfx}, '
                 f'série de {len(pls)} anos ({min(pls):.1f}x a {max(pls):.1f}x)'
@@ -889,7 +938,7 @@ def teto_ep(t, A, pl_setor=None, com_pares=True):
     elif pl_setor:
         # Sem histórico próprio comparável: usa a mediana dos PARES do mesmo motor que NÃO
         # têm quebra. Introduz viés de peer comp, então a convicção cai para ★☆☆.
-        alvo = pl_setor; conv = 1
+        alvo = pl_setor; conv = 1; mediana_propria = pl_setor
         nota = (f'⚠️ Só {len(pls)} anos de P/L comparável' + (f' (quebra de série em {q})' if q else ' na base') + ', insuficiente. '
                 f'Ancorado no P/L mediano dos PARES sem quebra ({alvo:.1f}x) — peer comp tem viés '
                 f'próprio, por isso ★☆☆ e margem de 25%.'
@@ -909,6 +958,8 @@ def teto_ep(t, A, pl_setor=None, com_pares=True):
     # Partindo do lucro, a identidade fecha por construção.
     alvo0 = alvo
     alvo, nota_pares = (alvo_com_pares(t, 'E/P', alvo) if com_pares else (alvo, ''))
+    if faixa_mult:
+        faixa_mult = recentrar(faixa_mult[0], mediana_propria, faixa_mult[1], alvo)
     l25 = (A.get(2025) or {}).get('lucrolin')
     pap_ep = papeis(t, A)
     if l25 and l25 > 0 and pap_ep:
@@ -991,6 +1042,7 @@ def teto_pvp(t, A, com_pares=True):
     if not v or v <= 0: return None
     alvo0 = alvo
     alvo, nota_pares = (alvo_com_pares(t, 'P/VP', alvo) if com_pares else (alvo, ''))
+    p25, p75 = recentrar(p25, alvo0, p75, alvo)
     return dict(justo=alvo*v, conv=2, chave='P/VP', alvo=alvo0, faixa=(p25*v, p75*v),
         motor=f'P/VP {nota_pares or f"{alvo:.2f}x"} × VPA R$ {v:.2f} por papel',
         nota=f'P/VP-alvo = {nota} de {len(pv)} anos ({min(pv):.2f}x a {max(pv):.2f}x), corrigido para units. '
@@ -1017,6 +1069,7 @@ def teto_ev_receita(t, A, com_pares=True):
         return (mult*c['receita'] - dl) / pap
     alvo0 = alvo
     alvo, nota_pares = (alvo_com_pares(t, 'EV/Receita', alvo) if com_pares else (alvo, ''))
+    p25, p75 = recentrar(p25, alvo0, p75, alvo)
     justo = _justo(alvo)
     if justo <= 0: return None
     fx = tuple(sorted((_justo(p25), _justo(p75))))
@@ -1086,6 +1139,7 @@ def teto_ffo(t, A, com_pares=True):
     p25, alvo, p75, nfx = faixa_com_tendencia(pfs, limiar_rel=0.15)
     alvo0 = alvo
     alvo, nota_pares = (alvo_com_pares(t, 'P/FFO', alvo) if com_pares else (alvo, ''))
+    p25, p75 = recentrar(p25, alvo0, p75, alvo)
     atual0 = atual
     atual, g, fonte_g = projetar(t, A, atual0, H_GLOBAL)   # mesmo motivo do E/P
     if g is not None:
@@ -1123,23 +1177,35 @@ def teto_setorial(t, A, H, campo=None):
         if len(s) >= 4: pares.append(st.median(s))
     if len(pares) < 2: return None
     alvo = st.median(pares)
+    # A faixa do peer comp é a DISPERSÃO ENTRE OS PARES: mínimo e máximo do múltiplo de cada
+    # um. Não é a oscilação histórica de ninguém — é o desacordo do setor sobre quanto vale
+    # este tipo de negócio hoje. Sem ela, quem cai no último recurso (AURE3) saía também sem
+    # teto de compra, agora que um método decide sozinho.
+    lo_m, hi_m = min(pares), max(pares)
     if campo == 'pvp':
         v = vpa(t, A)
         if not v or v <= 0: return None
         justo = alvo * v
+        fx = (lo_m*v, hi_m*v)
         desc = f'P/VP mediano dos pares {alvo:.2f}x × VPA R$ {v:.2f}'
     else:
         eb = c.get('ebitda'); pap = papeis(t, A)
         if not eb or eb <= 0 or not pap: return None
-        justo = (alvo*eb - (c.get('divliq') or 0)) / pap
+        dl = (c.get('divliq') or 0)
+        justo = (alvo*eb - dl) / pap
+        fx = ((lo_m*eb - dl)/pap, (hi_m*eb - dl)/pap)
         desc = f'EV/EBITDA mediano dos pares {alvo:.2f}x × EBITDA R$ {eb/1e9:.1f} bi'
     if justo <= 0:
         return teto_setorial(t, A, H, 'pvp') if campo != 'pvp' else None
-    return dict(justo=justo, conv=1, chave='Pares',
+    if not (fx[0] and fx[0] > 0 and fx[1] > fx[0]):
+        fx = None
+    return dict(justo=justo, conv=1, chave='Pares', faixa=fx,
         motor=desc,
         nota=(f'⚠️ ÚLTIMO RECURSO — a própria empresa não tem série utilizável (quebra recente '
               f'ou histórico curto demais), então o múltiplo vem dos {len(pares)} pares do grupo '
-              f'{m} com pelo menos 4 anos limpos. Peer comp carrega o viés de quem montou a lista '
+              f'{m} com pelo menos 4 anos limpos (faixa {lo_m:.2f}x a {hi_m:.2f}x = desacordo '
+              f'entre os pares, não oscilação histórica desta empresa). '
+              f'Peer comp carrega o viés de quem montou a lista '
               f'e ignora o que esta empresa tem de diferente. Convicção ★☆☆ obrigatória.'))
 
 
@@ -1179,12 +1245,18 @@ def teto_nav(t, A, H, justo_pai):
     if len(raz) < 4:
         return None
     alvo, nota_alvo = mediana_com_tendencia(raz, limiar_rel=0.10)
+    # Faixa = p25-p75 do DESCONTO DE HOLDING praticado pelo mercado. Mesmo motivo de teto_ev:
+    # o método decide sozinho nas holdings desde 13/09/2026, então precisa da própria faixa.
+    # Sem ela, ITSA4 e BRAP4 saíam com o teto de compra suprimido.
+    p25, _p50, p75, nota_fx = faixa_com_tendencia(raz, limiar_rel=0.10)
     disp = (max(raz) - min(raz)) / max(raz)
     conv = 2 if disp < 0.30 else 1          # teto de ★★☆: ver limite honesto acima
     return dict(justo=alvo*justo_pai, conv=conv, chave='Paridade',
+        faixa=((p25*justo_pai, p75*justo_pai) if p75 > p25 else None),
         motor=f'Paridade com {pai}: {alvo:.3f}× o preço justo de {pai} (R$ {justo_pai:.2f})',
         nota=(f'Razão preço {t} ÷ preço {pai} = {nota_alvo} de {len(raz)} anos '
-              f'({min(raz):.3f} a {max(raz):.3f}, dispersão {disp*100:.0f}%). É o desconto de '
+              f'({min(raz):.3f} a {max(raz):.3f}, dispersão {disp*100:.0f}%; faixa '
+              f'{p25:.3f} a {p75:.3f}, {nota_fx}). É o desconto de '
               f'holding medido pelo próprio mercado, não um NAV estimado por mim. '
               f'⚠️ NÃO enxerga os demais ativos da holding nem a dívida dela, e não sabe dizer '
               f'se o par inteiro está caro: se o motor errar em {pai}, erra aqui junto. '
@@ -1238,18 +1310,37 @@ def _sanidade(t, r, cot):
     if not r or not cot or not r.get('justo'):
         return r
     larg = r.get('largura')
-    n_met = r.get('nMetodos', 1)
-    if larg is not None and (larg > LIM_LARGURA or (larg == 0 and n_met <= 1)):
-        motivo = (f'os métodos discordam {larg*100:.0f}% entre si (faixa de R$ '
-                  f"{r['faixa'][0]:.2f} a R$ {r['faixa'][1]:.2f})"
-                  if larg > LIM_LARGURA else
-                  'só um método aplicável e sem série para formar faixa')
+    # ⚠️ 13/09/2026 — esta trava era UMA e passou a ser DUAS, porque `largura` mudou de
+    # significado quando o preço justo virou método único. Antes ela media o DESACORDO ENTRE
+    # MÉTODOS (E/P dizendo R$20 e P/VP dizendo R$50); agora mede a OSCILAÇÃO HISTÓRICA de um
+    # múltiplo só. São incertezas de naturezas diferentes e merecem respostas diferentes:
+    #
+    #  · SEM FAIXA NENHUMA (largura 0) — a série tem menos de 3 anos utilizáveis. Não é
+    #    "o múltiplo é estável", é "não há múltiplo". Um ponto não é preço justo, e publicar
+    #    o AXIA3 a R$22,33 contra cotação de R$55,52 seria dar cara de opinião a n=2.
+    #    → RECUSA: a linha sai sem preço justo, com o motivo escrito.
+    #  · FAIXA LARGA (acima de LIM_LARGURA) — a série existe e é volátil. É o retrato honesto
+    #    de uma cíclica: o EV/EBITDA da VALE3 foi de 2,6x a 6,0x ao longo do ciclo. A mediana
+    #    continua sendo a melhor estimativa única e FICA na tabela; o que não se sustenta é
+    #    transformar o limite inferior de uma faixa dessas em preço de entrada.
+    #    → mantém o preço justo, suprime só o TETO DE COMPRA.
+    if larg is not None and larg == 0 and not (r.get('faixa') and r['faixa'][1] > r['faixa'][0]):
+        return dict(justo=None, conv=0, recusa=True,
+            motor='SEM PREÇO JUSTO — série curta demais para formar faixa',
+            nota=(f'RECUSADO: o método que decide esta linha ({(r.get("metodos") or [{}])[0].get("chave", "—")}) '
+                  f'rodou sobre menos de 3 exercícios comparáveis, então não há amplitude '
+                  f'observada — só um ponto. Um ponto não descreve quanto a empresa deveria '
+                  f'valer; descreve um ano. O que existe de real sobre a empresa continua nas '
+                  f'outras colunas (L/P, ROE, dívida, crescimento). || ' + (r.get('nota') or '')))
+    if larg is not None and larg > LIM_LARGURA:
         return {**r, 'teto_suprimido': True,
-                'nota': (f'⛔ SEM TETO DE COMPRA — {motivo}. A faixa continua na tabela porque '
-                         f'descreve a empresa, mas não vira preço de compra: o limite inferior de '
-                         f'uma faixa larga é a saída do método mais pessimista, não uma estimativa '
-                         f'conservadora de valor. Dar um número aqui seria emprestar precisão a um '
-                         f'desacordo. Mesmo princípio do SEM_TETO declarado. || ' + r['nota'])}
+                'nota': (f'⛔ SEM TETO DE COMPRA — o múltiplo oscilou {larg*100:.0f}% ao longo da '
+                         f"série (faixa de R$ {r['faixa'][0]:.2f} a R$ {r['faixa'][1]:.2f}). O preço "
+                         f'justo continua valendo — é a mediana do múltiplo, a melhor estimativa '
+                         f'única —, mas o limite inferior de uma faixa tão larga é o ano mais '
+                         f'pessimista da série, não uma estimativa conservadora de valor. '
+                         f'Dar um preço de entrada aqui seria emprestar precisão à volatilidade. '
+                         + '|| ' + r['nota'])}
     # O teto é o LIMITE INFERIOR DA FAIXA desde 13/09/2026 — não mais justo × (1 − margem por
     # convicção). A margem fixa por estrela dava falsa precisão e a estrela não media confiança
     # (ver faixa_com_tendencia). Quem não tem faixa (método único sem série) cai no justo.
@@ -1338,181 +1429,158 @@ def calcular(t, A):
     return _sanidade(t, _calcular_bruto(t, A, H_GLOBAL), (A[max(A)] or {}).get('preco'))
 
 def _calcular_bruto(t, A, H=None):
-    """CONSENSO — roda TODOS os métodos aplicáveis e devolve a MEDIANA deles.
+    """UM MÚLTIPLO, NÃO UMA MEDIANA DE VÁRIOS.
 
-    ══ A mudança de arquitetura de 06/09/2026, pedida pelo usuário ══
-    Antes, cada empresa tinha UM motor por setor, e quando ele falhava eu recusava o número.
-    O usuário desmontou a lógica: "não é porque o motor trouxe o número errado que vamos
-    recusar. Toda ação tem que ter um jeito de calcular o preço justo."
+    ══ A mudança de 13/09/2026, pedida pelo usuário ══
+    "O preço justo ainda não está LPA × múltiplo que a empresa deve ser negociada. Está a
+    mediana de um monte de critérios que não acho justo. Deve ser LPA projetado × múltiplo
+    que a empresa deve ser negociada com base no seu histórico e de seus pares."
 
-    Ele está certo, e o erro era meu em dois níveis:
-      · RECUSAR não ajuda quem decide. "Não sei" é honesto sobre a minha incerteza e inútil
-        para a pergunta que a tabela existe para responder.
-      · O problema nunca foi "esta empresa não tem valor calculável". Foi "o método que EU
-        escolhi para ela não serve". A resposta é trocar de método, não apagar a linha.
+    Ele está certo, e o defeito da versão anterior era conceitual, não numérico. Rodar E/P,
+    P/VP, EV/Receita e EV/EBITDA e tirar a mediana responde a uma pergunta que ninguém fez —
+    "qual o número do meio entre quatro réguas diferentes?" — e o resultado não é defensável
+    em uma frase. A ALOS3 saía por R$21,42 sem que fosse possível dizer POR QUE: era o meio
+    de P/FFO R$26,74 e EV/Receita R$32,60 e mais dois. O relatório dela dizia R$29,50 usando
+    o que qualquer analista usa — FFO projetado × P/FFO que o setor pratica — e era o número
+    que fazia sentido.
 
-    Agora todo ativo passa por todos os métodos que o dado dele permite:
+    Agora cada empresa tem UM método que DECIDE, escolhido pelo que o negócio é:
 
-      E/P · EV/EBITDA · Gordon/Bazin · P/VP×ROE (+ lucro residual) · P/VP · EV/Receita
-      · paridade com a investida (holdings)
+      SHOP  → P/FFO      · o imóvel entra a custo e é depreciado; lucro e patrimônio mentem
+      NAV   → Paridade   · holding vale o que a investida vale, com o desconto que o mercado pratica
+      CICL  → EV/EBITDA  · sobre a MÉDIA do ciclo; o lucro de um ano é fundo ou pico, nunca normal
+      resto → P/L        · LPA PROJETADO × múltiplo-alvo (própria história + pares)
 
-    Quem produz número entra na votação. O resultado é a MEDIANA — não a média, porque a
-    mediana ignora o método que enlouqueceu, que é exatamente o comportamento que faltava.
-    Foi o que quebrou a CLSC4: a média de EV/EBITDA (R$136) com um Gordon defeituoso (R$68)
-    dava R$102, um número que nenhum dos dois métodos defendia.
+    Os outros métodos continuam sendo calculados e aparecem na tooltip como VERIFICAÇÃO —
+    se discordarem muito, isso é informação sobre a empresa —, mas não entram na conta.
 
-    A convicção passa a medir DISPERSÃO ENTRE MÉTODOS, que é a incerteza real:
-      ★★★ 3+ métodos concordando dentro de 20%
-      ★★☆ 2+ métodos, ou dispersão até 40%
-      ★☆☆ 1 método só, ou métodos discordando muito
+    A FAIXA passa a ser a do próprio método: percentil 25 a 75 do múltiplo ao longo da série.
+    Antes era "do mais pessimista ao mais otimista entre métodos", que media desacordo entre
+    réguas; agora mede a OSCILAÇÃO HISTÓRICA da régua escolhida, que é a incerteza real.
+
+    ⚠️ ONDE ISTO É PIOR QUE A MEDIANA, e o usuário precisa saber:
+      · CÍCLICA NO FUNDO — o EV/EBITDA médio protege, mas se a série de EBITDA for curta o
+        método se recusa e a linha fica sem preço justo, onde antes três métodos fracos
+        produziam um número qualquer.
+      · PREJUÍZO ou LPA perto de zero — P/L não existe com lucro negativo. A empresa cai no
+        encadeamento abaixo e, se nada responder, sai sem número. É o preço de ter um método
+        com significado: ele pode dizer "não se aplica", e a mediana nunca dizia.
     """
-    metodos = []
-    def add(r):
-        if r and r.get('justo') and r['justo'] > 0: metodos.append(r)
-
-    # ══ COMPOSIÇÃO REVISTA EM 13/09/2026 — só múltiplos com evidência ═══════════════════
-    # `backtest_metricas.py` mediu cada múltiplo contra o retorno futuro, com p-valor por
-    # permutação. O resultado reordenou o que merece votar no teto:
-    #
-    #   Receita/Preço (EV/Receita)  p=0,007 defensivos · p=0,000 Radar   → o mais forte
-    #   Lucro/Preço   (E/P)         p=0,083 defensivos · p=0,098 Radar   → moderado
-    #   VP/P          (P/VP)        p=0,370 defensivos · p=0,307 Radar   → fraco
-    #   EBITDA/EV     (EV/EBITDA)   +1,6 p.p. / −0,3 p.p.                 → fraco
-    #   Dividendo     (Gordon/Bazin) p=0,620 defensivos                   → sem sinal nenhum
-    #
-    # SAÍRAM DA COMPOSIÇÃO:
-    #  · teto_bazin — ancora em dividendo, e dividend yield foi a ÚNICA métrica com spread
-    #    NEGATIVO nos setores que o usuário compra. Não é régua de valor; é régua de renda.
-    #  · teto_fin (DDM de 2 estágios) — depende de Ke, parâmetro não observável de altíssima
-    #    alavancagem: 1 p.p. de Ke movia o teto ~11%, e o próprio docstring de rim_fade
-    #    registra que entre Ke 13% e 16% o resultado variava 1,46x. Financeira passa a usar
-    #    os mesmos métodos universais (E/P + P/VP), ambos ancorados em dado observável.
-    #    EV/Receita se auto-exclui em banco por falta de EBITDA na base, sem precisar de regra.
-    #
-    # FICARAM COMO VERIFICAÇÃO, não como voto: EV/EBITDA. Continua calculado e aparece na
-    # nota — se discordar muito da faixa, isso é informação sobre a empresa —, mas não puxa
-    # mais o limite. Múltiplo fraco com voto igual ao forte era o defeito central da versão
-    # anterior: três métodos fracos podiam dominar a mediana sozinhos.
     m = MOTOR.get(t)
-    if m == 'NAV':
-        # HOLDING: só paridade e P/VP. E/P e Gordon ficam de fora porque o "lucro" de uma
-        # holding é equivalência patrimonial — ele herda o ciclo da controlada amplificado.
-        # A BRAP4 dava E/P R$7,23 e Gordon R$8,36 contra paridade R$19,05 e P/VP R$22,95:
-        # o lucro dela caiu de R$8,1 bi para R$0,6 bi acompanhando o minério, e nenhum dos
-        # dois primeiros descreve o valor de uma participação na Vale.
-        if H:
-            pai = PARENT.get(t)
-            rp = _calcular_bruto(pai, H[pai], H) if pai and pai in H else None
-            add(teto_nav(t, A, H, rp['justo'] if rp and rp.get('justo') else None))
-        # P/VP entra aqui porque o bloco geral abaixo deixou de adicioná-lo para NAV. Sem esta
-        # linha a ITSA4 e a BRAP4 ficavam com UM método só, caíam na trava de método único e
-        # saíam sem preço justo nenhum — regressão que a primeira versão desta mudança criou.
-        add(teto_pvp(t, A))
+
+    def _nav():
+        if not H: return None
+        pai = PARENT.get(t)
+        rp = _calcular_bruto(pai, H[pai], H) if pai and pai in H else None
+        return teto_nav(t, A, H, rp['justo'] if rp and rp.get('justo') else None)
+
+    # ── O ENCADEAMENTO, por grupo ────────────────────────────────────────────────────────
+    # O PRIMEIRO que produzir número é o método que decide. Os demais viram verificação.
+    # A ordem não é preferência estética: é o que descreve o negócio, do mais específico ao
+    # mais genérico. Existe justamente porque um método com significado pode se recusar —
+    # P/L não existe com prejuízo, P/FFO não existe sem D&A na base.
+    if m == 'SHOP':
+        ordem = [('P/FFO', lambda: teto_ffo(t, A)),
+                 ('EV/Receita', lambda: teto_ev_receita(t, A)),
+                 ('P/L', lambda: teto_ep(t, A, pl_setor=PL_SETOR.get(m)))]
+    elif m == 'NAV':
+        ordem = [('Paridade', _nav), ('P/VP', lambda: teto_pvp(t, A))]
     elif m == 'CICL':
-        # CÍCLICA DE COMMODITY: métodos baseados em LUCRO ficam de fora, de propósito.
-        # A KLBN11 mostrou por quê: em 2026 o LPA dela é R$0,09 (fundo do ciclo da celulose),
-        # e E/P e Gordon devolviam R$4,62 e R$2,21 contra cotação de R$19,40. Não é a Klabin
-        # valendo um quarto — é o lucro de UM ano ruim sendo tratado como capacidade normal.
-        # Sobram os métodos que atravessam o ciclo: EV/EBITDA sobre a MÉDIA de 6 anos,
-        # EV/Receita (receita oscila muito menos que lucro) e P/VP (patrimônio não some).
-        add(teto_ev(t, A, True))
+        ordem = [('EV/EBITDA', lambda: teto_ev(t, A, True)),
+                 ('EV/Receita', lambda: teto_ev_receita(t, A)),
+                 ('P/VP', lambda: teto_pvp(t, A))]
     elif m == 'FIN':
-        # BANCO E SEGURADORA: lucro e patrimônio, que é do que o negócio é feito. O P/VP entra
-        # aqui porque o bloco geral abaixo não o adiciona mais para este grupo.
-        add(teto_ep(t, A, pl_setor=PL_SETOR.get(m)))
-        add(teto_pvp(t, A))
-    elif m == 'SHOP':
-        # SHOPPING: lucro e patrimônio ficam de fora, os dois pelo mesmo motivo — o imóvel
-        # entra a custo e é depreciado. Ver teto_ffo. Sobram o caixa da operação (P/FFO) e o
-        # aluguel (EV/Receita), que a depreciação não toca.
-        add(teto_ffo(t, A))
+        ordem = [('P/L', lambda: teto_ep(t, A, pl_setor=PL_SETOR.get(m))),
+                 ('P/VP', lambda: teto_pvp(t, A))]
+    elif m in ('UTIL', 'VAREJO'):
+        ordem = [('P/L', lambda: teto_ep(t, A, pl_setor=PL_SETOR.get(m))),
+                 ('EV/EBITDA', lambda: teto_ev(t, A, False)),
+                 ('EV/Receita', lambda: teto_ev_receita(t, A))]
     else:
-        add(teto_ep(t, A, pl_setor=PL_SETOR.get(m)))
+        ordem = [('P/L', lambda: teto_ep(t, A, pl_setor=PL_SETOR.get(m))),
+                 ('EV/Receita', lambda: teto_ev_receita(t, A)),
+                 ('P/VP', lambda: teto_pvp(t, A))]
 
-    # ── O QUE MAIS VOTA, POR GRUPO ───────────────────────────────────────────────────────
-    # ⚠️ 13/09/2026 — antes daqui, P/VP e EV/Receita votavam em TODO MUNDO e EV/EBITDA em
-    # ninguém (fora as cíclicas). Pedido do usuário: "cada segmento é diferente do outro,
-    # precisamos colocar isso no motor". Três correções concretas:
-    #
-    #  · EV/Receita SAI das financeiras e das holdings. "EV" é valor de mercado MAIS dívida,
-    #    uma conta que só faz sentido quando a dívida financia o ativo. Em banco e seguradora
-    #    a dívida É a matéria-prima (depósito, provisão técnica) — somá-la ao valor de mercado
-    #    não descreve nada. A PSSA3 e a ITSA4 eram as duas que tinham dado para o método rodar,
-    #    e rodavam.
-    #  · EV/EBITDA ENTRA nas utilities. Elétrica, saneamento e telecom são o caso clássico do
-    #    múltiplo: ativo pesado, receita regulada, EBITDA estável e previsível, e depreciação
-    #    grande o bastante para distorcer o lucro. Era o único grupo em que o múltiplo padrão
-    #    do setor estava fora do voto.
-    #  · SHOPPING troca lucro e patrimônio por FFO (bloco acima).
-    if m not in ('FIN', 'NAV', 'SHOP'):
-        add(teto_pvp(t, A))
-    if m not in ('FIN', 'NAV'):
-        add(teto_ev_receita(t, A))
-    if m in ('UTIL', 'VAREJO'):
-        add(teto_ev(t, A, False))
-    # EV/EBITDA onde NÃO vota: calculado para aparecer na nota como verificação cruzada.
-    verificacao = teto_ev(t, A, m == 'CICL') if m not in ('NAV', 'UTIL', 'VAREJO') else None
-
-    # Só quando NÃO SOBROU NADA. A primeira versão acionava com menos de 2 métodos e o peer
-    # comp acabou votando nas financeiras, que já têm consenso interno de 3 motores: o BBSE3
-    # caiu de R$29,04 para R$17,76 por causa de um P/VP mediano de pares que nada tem a ver
-    # com uma seguradora de ROE 79%. Último recurso quer dizer último.
-    if not metodos and H:
-        add(teto_setorial(t, A, H))
-    if not metodos:
-        return None
-    vals = sorted(x['justo'] for x in metodos)
-    justo = st.median(vals)
-
-    # ── A FAIXA ──────────────────────────────────────────────────────────────────────────
-    # Limite inferior = o MENOR p25 entre os métodos. Limite superior = o MAIOR p75.
-    # Ou seja: a faixa cobre desde o mais pessimista dos métodos até o mais otimista. É
-    # deliberadamente conservadora no piso, porque é o piso que vira teto de compra.
-    #
-    # Método sem faixa própria (série curta, peer comp) entra com o ponto dos dois lados —
-    # não alarga nem estreita, só participa.
-    los, his = [], []
-    for x in metodos:
-        fx = x.get('faixa')
-        if fx and fx[0] and fx[1] and fx[0] > 0:
-            los.append(fx[0]); his.append(fx[1])
+    principal, escolhido, posicao, verif = None, None, 0, []
+    for i, (nome, f) in enumerate(ordem):
+        try:
+            r = f()
+        except Exception:
+            r = None
+        if not (r and r.get('justo') and r['justo'] > 0):
+            continue
+        if principal is None:
+            principal, escolhido, posicao = r, nome, i
         else:
-            los.append(x['justo']); his.append(x['justo'])
-    faixa_lo, faixa_hi = min(los), max(his)
+            verif.append(r)
+
+    # ÚLTIMO RECURSO — peer comp puro, quando a empresa não tem série própria para múltiplo
+    # nenhum. Continua sendo um método só, não uma mediana.
+    if principal is None and H:
+        r = teto_setorial(t, A, H)
+        if r and r.get('justo') and r['justo'] > 0:
+            principal, escolhido, posicao = r, 'Pares', 99
+    if principal is None:
+        return None
+
+    # ── VERIFICAÇÃO — calculada, mostrada, sem voto ──────────────────────────────────────
+    # Tudo que não entrou no encadeamento do grupo. Nunca muda o preço justo; existe para a
+    # tooltip poder dizer "a outra régua daria R$X" quando as duas discordam.
+    ja = {id(principal)} | {id(x) for x in verif}
+    for f in (lambda: teto_ep(t, A, pl_setor=PL_SETOR.get(m)), lambda: teto_pvp(t, A),
+              lambda: teto_ev_receita(t, A), lambda: teto_ev(t, A, m == 'CICL'),
+              lambda: teto_ffo(t, A)):
+        try:
+            r = f()
+        except Exception:
+            r = None
+        if r and r.get('justo') and r['justo'] > 0 and id(r) not in ja \
+           and not any(x.get('chave') == r.get('chave') for x in verif) \
+           and r.get('chave') != principal.get('chave'):
+            verif.append(r)
+
+    justo = principal['justo']
+    fx = principal.get('faixa')
+    if fx and fx[0] and fx[1] and fx[0] > 0:
+        faixa_lo, faixa_hi = fx
+    else:
+        faixa_lo = faixa_hi = justo
     largura = (faixa_hi - faixa_lo) / faixa_hi if faixa_hi > 0 else 1.0
 
-    lista = ' · '.join(f"{x.get('chave') or x['motor'].split(':')[0].split(' sobre')[0]} R$ {x['justo']:.2f}"
-                       for x in sorted(metodos, key=lambda z: z['justo']))
+    # A ARITMÉTICA, campo a campo: o que DECIDE vem primeiro e marcado.
+    detalhe = ([dict(chave=escolhido, justo=round(justo, 2), papel='principal',
+                     conta=principal.get('motor', ''),
+                     faixa=[round(faixa_lo, 2), round(faixa_hi, 2)])]
+               + [dict(chave=x.get('chave') or '—', justo=round(x['justo'], 2),
+                       papel='verificação', conta=x.get('motor', ''),
+                       faixa=([round(v, 2) for v in x['faixa']]
+                              if (x.get('faixa') and x['faixa'][0] and x['faixa'][1]) else None))
+                  for x in sorted(verif, key=lambda z: z['justo'])])
+
+    fora = [x for x in verif
+            if x['justo'] and not (faixa_lo <= x['justo'] <= faixa_hi)]
     nota_verif = ''
-    if verificacao and verificacao.get('justo'):
-        vj = verificacao['justo']
-        dentro = faixa_lo <= vj <= faixa_hi
-        nota_verif = (f' || VERIFICAÇÃO (fora do voto) — EV/EBITDA daria R$ {vj:.2f}, '
-                      + ('DENTRO da faixa: os métodos concordam. ' if dentro else
-                         f'FORA da faixa: o múltiplo de EBITDA conta outra história, olhe a empresa. '))
-    # A ARITMÉTICA DE CADA MÉTODO, guardada campo a campo. Até 13/09/2026 só sobrevivia a
-    # string `motor` composta ("P/FFO R$ 26.74 · EV/Receita R$ 32.60"), que diz o RESULTADO de
-    # cada método e não a CONTA. O usuário: "no preço justo o tooltip deve ter o racional pra
-    # chegar no valor, somente isso — e o racional é quanto a empresa deveria valer baseada em
-    # algum critério, e esse critério deve estar lá". Sem esta lista a tooltip não tinha como
-    # mostrar "múltiplo × fundamento = preço" e acabava despejando a metodologia inteira.
-    detalhe = [dict(chave=x.get('chave') or '—', justo=round(x['justo'], 2),
-                    conta=x.get('motor', ''),
-                    faixa=([round(v, 2) for v in x['faixa']]
-                           if (x.get('faixa') and x['faixa'][0] and x['faixa'][1]) else None))
-               for x in sorted(metodos, key=lambda z: z['justo'])]
-    return dict(justo=justo, faixa=(faixa_lo, faixa_hi), largura=largura, nMetodos=len(vals),
+    if verif:
+        nota_verif = (' || VERIFICAÇÃO (não entra na conta): '
+                      + ' · '.join(f"{x.get('chave')} R$ {x['justo']:.2f}" for x in
+                                   sorted(verif, key=lambda z: z['justo']))
+                      + ('. Todas dentro da faixa. ' if not fora else
+                         f". {len(fora)} fora da faixa — as réguas discordam, olhe a empresa. "))
+    nota_fb = ''
+    if posicao > 0:
+        nota_fb = (f'⚠️ O método padrão do grupo não se aplicou a esta empresa (dado faltando ou '
+                   f'fundamento negativo); decidiu {escolhido}, o seguinte do encadeamento. ')
+
+    return dict(justo=justo, faixa=(faixa_lo, faixa_hi), largura=largura, nMetodos=1,
         metodos=detalhe,
-        motor=f'Faixa de {len(vals)} métodos: R$ {faixa_lo:.2f} a R$ {faixa_hi:.2f} · {lista}',
-        nota=(f'FAIXA DE VALOR de {len(vals)} método(s), largura {largura*100:.0f}%. '
-              f'O limite INFERIOR (R$ {faixa_lo:.2f}) é o teto de compra: abaixo dele a ação está '
-              f'barata por todas as réguas, não só pela mais generosa. '
-              f'A LARGURA é a incerteza — faixa estreita significa que o mercado precificou este '
-              f'negócio de forma reconhecível ano após ano; faixa larga avisa que o múltiplo oscilou '
-              f'muito e o número do meio não merece confiança. Substituiu a convicção em estrelas em '
-              f'13/09/2026, que o backtest mostrou não medir confiança (teto ★★★ rendeu 18,3% e ★ '
-              f'rendeu 18,9%). '
-              + ' || '.join(x['nota'] for x in metodos) + nota_verif))
+        motor=f'{escolhido} · faixa R$ {faixa_lo:.2f} a R$ {faixa_hi:.2f}',
+        nota=(f'PREÇO JUSTO por {escolhido}, MÉTODO ÚNICO — o múltiplo que descreve este '
+              f'negócio, aplicado ao fundamento projetado. Não é mediana de réguas diferentes. '
+              f'A faixa de R$ {faixa_lo:.2f} a R$ {faixa_hi:.2f} (largura {largura*100:.0f}%) é a '
+              f'OSCILAÇÃO HISTÓRICA do próprio múltiplo — percentil 25 a 75 da série —, e o '
+              f'limite inferior é o teto de compra. '
+              + nota_fb + principal.get('nota', '') + nota_verif))
+
 
 def pl_setorial(H):
     """P/L mediano dos pares de cada motor, usando SÓ empresas sem quebra de série."""
@@ -1612,7 +1680,9 @@ if __name__ == '__main__':
             # para o JSON com justo=None para que o Radar apague o teto e exiba o motivo — é
             # diferente de "não tenho motor para isto".
             out[t] = {**r, 'teto': None, 'cot': A[max(A)].get('preco')}
-            motivo = 'SEM-TETO DECLARADO' if t in SEM_TETO else f'margem além de ±{LIM_MARGEM*100:.0f}%'
+            motivo = ('SEM-TETO DECLARADO' if t in SEM_TETO
+                      else 'SÉRIE CURTA — sem faixa' if 'série curta' in r.get('motor', '')
+                      else f'margem além de ±{LIM_MARGEM*100:.0f}%')
             print(f"{t:>7} {MOTOR.get(t,'—'):>5}   ⛔ RECUSADO — {motivo}")
             continue
         if not r or not r['justo'] or r['justo'] <= 0:
