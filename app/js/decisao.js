@@ -99,57 +99,18 @@ const _TIR_ANOS_G1 = 10;
 // declarado, na mesma prateleira do juro real normalizado de 5,5% (seção 25.3).
 const RANK_PESO_VALOR = 0.70;
 const RANK_PESO_QUALIDADE = 0.30;
-
-// Percentil dentro do grupo de motor. Comparar P/L de banco com P/L de software não diz nada
-// sobre qual está barata — múltiplo só é comparável dentro de negócios parecidos. Grupo com
-// menos de 4 empresas não forma percentil (com 2 elementos o percentil é sempre 0 ou 1), e aí
-// cai para o universo inteiro, que é pior mas não é ruído.
-const RANK_MIN_GRUPO = 4;
-
-function _rankPercentis(linhas, chave) {
-  // Devolve Map ticker → percentil (0 = pior, 1 = melhor) entre quem TEM o dado.
-  const com = linhas.filter(l => l[chave] != null && isFinite(l[chave]));
-  const out = new Map();
-  if (com.length < 2) return out;
-  const ord = [...com].sort((a, b) => a[chave] - b[chave]);
-  ord.forEach((l, i) => out.set(l.ticker, i / (ord.length - 1)));
-  return out;
-}
-
-const RANK_VALOR = ['ey', 'recPreco', 'ebitEv', 'vpPreco'];
-const RANK_QUALIDADE = ['roe', 'mgBruta'];
-
-function _calcularScores(linhas) {
-  // Agrupa por motor; grupo pequeno demais usa o universo inteiro como referência.
-  const porGrupo = new Map();
-  linhas.forEach(l => {
-    const g = l.seg || '—';
-    if (!porGrupo.has(g)) porGrupo.set(g, []);
-    porGrupo.get(g).push(l);
-  });
-  linhas.forEach(l => {
-    const grupo = porGrupo.get(l.seg || '—') || [];
-    const ref = grupo.length >= RANK_MIN_GRUPO ? grupo : linhas;
-    l.rankRef = grupo.length >= RANK_MIN_GRUPO ? (l.seg || '—') : 'todos';
-    const pct = (chaves) => {
-      const vs = [];
-      chaves.forEach(c => {
-        const p = _rankPercentis(ref, c).get(l.ticker);
-        if (p != null) vs.push(p);
-      });
-      return vs.length ? vs.reduce((a, b) => a + b, 0) / vs.length : null;
-    };
-    const pv = pct(RANK_VALOR);
-    const pq = pct(RANK_QUALIDADE);
-    l.pctValor = pv;
-    l.pctQualidade = pq;
-    // Sem nenhuma métrica de valor a linha não entra na fila — não dá para ordenar por
-    // barateza quem não tem nenhuma medida de barateza. Sem qualidade, o valor responde
-    // sozinho, em vez de a linha sumir.
-    l.score = pv == null ? null
-      : (pq == null ? pv : RANK_PESO_VALOR * pv + RANK_PESO_QUALIDADE * pq);
-  });
-}
+// O BLOCO "Por onde começar" — cards de score e dois parágrafos de metodologia acima da
+// tabela — foi REMOVIDO em 13/09/2026 a pedido do usuário, junto com o score composto que
+// só ele consumia (_calcularScores, _rankPercentis, RANK_VALOR, RANK_QUALIDADE).
+//
+// ⚠️ O QUE ISSO CUSTA, declarado: o score ordenava os CARDS, não a tabela — o Radar sempre
+// esteve na ordem do HTML, e continua. Então a "fila para ler o relatório" que a seção 30 da
+// metodologia descreve não existe mais na tela. A régua está documentada e o backtest que a
+// validou (scripts/backtest_conjunto.py) continua no repositório; se ela voltar, o lugar
+// certo é ordenar a TABELA por ela, não recriar os cards.
+//
+// O filtro "✅ Passa no filtro" NÃO depende disto: ele lê row.dataset.decScore, escrito por
+// atualizarDecisaoLinha() a partir dos critérios — outro número com o mesmo apelido.
 
 function _tirReal(nom) {
   return ((1 + nom) / (1 + _TIR_IPCA) - 1) * 100;
@@ -506,7 +467,6 @@ function atualizarDecisaoLinha(row) {
 
 function atualizarTodasDecisoes() {
   document.querySelectorAll('#tableBody tr[data-ticker]').forEach(atualizarDecisaoLinha);
-  if (typeof renderRankingDecisao === 'function') renderRankingDecisao();
   // ⚠️ 13/09/2026 — O CONTADOR DO TOPO CONTAVA OS VEREDICTOS VELHOS. applyFilters() lê
   // data-veredicto e soma; ele rodava no load, ANTES de atualizarDecisaoLinha() reescrever
   // cada veredicto a partir da margem, da TIR e dos critérios. O cabeçalho ficava dizendo
@@ -528,85 +488,6 @@ function initColunasDecisao() {
   if (!table || table.dataset.decisaoOk === '1') return;
   table.dataset.decisaoOk = '1';
   atualizarTodasDecisoes();
-}
-
-// ── RANKING NO TOPO DA ABA ────────────────────────────────────────────────────────────────
-// A coluna resolve "esta empresa passa?". O ranking resolve "por onde começo?" — que era a
-// pergunta do usuário. Ordena por critérios aprovados e, no empate, por prêmio sobre a Selic.
-function renderRankingDecisao() {
-  const wrap = document.getElementById('rankingDecisao');
-  if (!wrap) return;
-
-  const linhas = Array.from(document.querySelectorAll('#tableBody tr[data-ticker]')).map(row => ({
-    ticker: (row.dataset.ticker || '').replace(/\.SA$/i, ''),
-    empresa: (row.querySelector('.empresa-name')?.textContent || '').trim(),
-    seg: row.dataset.segmento || '',
-    passa: parseInt(row.dataset.decPassa) || 0,
-    total: parseInt(row.dataset.decTotal) || 0,
-    premio: row.dataset.decPremio === '' ? null : parseFloat(row.dataset.decPremio),
-    ratio: parseFloat(row.dataset.decScore) || 0,
-    tir: row.dataset.decTir === '' ? null : parseFloat(row.dataset.decTir),
-    amp: row.dataset.decAmp === '' ? null : parseFloat(row.dataset.decAmp),
-    lo: row.dataset.decLo === '' ? null : parseFloat(row.dataset.decLo),
-    ey: row.dataset.decEy === '' ? null : parseFloat(row.dataset.decEy),
-    recPreco: row.dataset.decRecPreco === '' ? null : parseFloat(row.dataset.decRecPreco),
-    ebitEv: row.dataset.decEbitEv === '' ? null : parseFloat(row.dataset.decEbitEv),
-    vpPreco: row.dataset.decVpPreco === '' ? null : parseFloat(row.dataset.decVpPreco),
-    roe: row.dataset.decRoe === '' ? null : parseFloat(row.dataset.decRoe),
-    mgBruta: row.dataset.decMgBruta === '' ? null : parseFloat(row.dataset.decMgBruta),
-    dyLtm: row.dataset.decDyLtm === '' ? null : parseFloat(row.dataset.decDyLtm)
-  })).filter(l => l.total > 0);
-
-  _calcularScores(linhas);
-
-  // Ordenação: SCORE COMPOSTO de valor + qualidade, por grupo de motor (ver _calcularScores).
-  //
-  // Histórico curto e instrutivo desta linha: até 12/09 ordenava pela TIR real, que nunca
-  // tinha sido testada; em 13/09 passou ao yield validado por grupo (L/P nas defensivas, DY
-  // nas demais); e no mesmo dia o DY caiu, porque o teste por MEDIANA o reprovou (p=0,62)
-  // depois de o teste por TERCIS o ter aprovado. Métrica isolada é frágil a como você corta
-  // a amostra — o composto é justamente a resposta a isso.
-  //
-  // Quem não tem NENHUMA métrica de valor cai para o fim: não dá para ordenar por barateza
-  // quem não tem medida de barateza. Desempate: critérios de qualidade, depois convergência
-  // das medidas da TIR.
-  linhas.sort((a, b) =>
-    ((b.score != null) - (a.score != null)) ||
-    ((b.score ?? -99) - (a.score ?? -99)) ||
-    (b.ratio - a.ratio) ||
-    ((a.amp ?? 99) - (b.amp ?? 99)));
-
-  const top = linhas.slice(0, 8);
-  const comPremio = linhas.filter(l => l.premio != null && l.premio >= 0).length;
-  const batemNtnb = linhas.filter(l => l.tir != null && l.tir >= TIR_NTNB).length;
-  const comTir = linhas.filter(l => l.tir != null).length;
-
-  wrap.innerHTML = `
-    <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:baseline;margin-bottom:8px;">
-      <strong style="font-size:13px;">🎯 Por onde começar</strong>
-      <span style="font-size:11px;color:#666;">ordenado por <b>score composto</b> — 70% valor (L/P · Receita/Preço · EBIT/EV · VP/P) + 30% qualidade (ROE · margem bruta), comparado dentro do grupo</span>
-    </div>
-    <div style="display:flex;flex-wrap:wrap;gap:6px;">
-      ${top.map((l, i) => `
-        <div style="border:1px solid #e3e3e3;border-radius:8px;padding:6px 10px;background:#fff;min-width:132px;">
-          <div style="font-size:10px;color:#999;">${i + 1}º · ${l.seg}</div>
-          <div style="font-weight:600;font-size:12px;">${l.ticker}</div>
-          <div style="font-size:13px;color:#0a5c35;font-weight:700;">${l.score == null ? '—' : 'score ' + (l.score * 100).toFixed(0)}</div>
-          <div style="font-size:10px;color:#888;">${l.ey == null ? '' : 'L/P ' + l.ey.toFixed(1).replace('.', ',') + '%'}${l.pctQualidade != null ? ' · qual. ' + (l.pctQualidade * 100).toFixed(0) : ''}</div>
-          <div style="font-size:10.5px;color:${l.tir != null && l.tir >= TIR_NTNB ? '#0a5c35' : '#888'};">${l.tir == null ? 'TIR —' : 'TIR ' + l.tir.toFixed(1).replace('.', ',') + '%'}</div>
-          <div style="font-size:10.5px;color:#888;">${l.passa}/${l.total} critérios</div>
-        </div>`).join('')}
-    </div>
-    <div style="font-size:11px;color:#666;margin-top:8px;line-height:1.6;">
-      O <b>score</b> é o percentil médio de quatro réguas de preço e duas de qualidade, comparado <b>dentro do grupo de motor</b> — P/L de banco
-      não se compara com P/L de telecom. Composto e não métrica única porque cada múltiplo tem um jeito próprio de ser enganado (lucro por contabilidade,
-      patrimônio por reavaliação, EBITDA por capex escondido); quatro medindo o mesmo por caminhos diferentes cancelam parte do erro individual.
-      <b>Os pesos 70/30 são premissa declarada, não calibração</b> — com 5 anos de amostra não há como calibrar peso, e fingir que há seria o superajuste
-      que o teste de permutação existe para denunciar.
-      <br>
-      <strong>${batemNtnb}</strong> de <strong>${comTir}</strong> ativos com TIR calculada superam a NTN-B (IPCA + ${TIR_NTNB.toFixed(2).replace('.', ',')}%) — a TIR continua na tabela
-      respondendo "quanto rende acima da renda fixa", que é pergunta diferente de "qual está mais barata". Ranking alto não é ordem de compra: é a fila para ler o relatório.
-    </div>`;
 }
 
 // ── FILTRO ────────────────────────────────────────────────────────────────────────────────

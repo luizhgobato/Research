@@ -2376,3 +2376,61 @@ Duas correções:
    alguém edite HTML à mão.
 
 Conferido com três execuções seguidas: 33 linhas, todas com 22 células.
+
+### 31.13 Toda empresa passa a ter preço justo (13/09/2026)
+
+> "Para as empresas que não têm preço justo, preencher — toda empresa deve ter um preço justo
+> com base no LPA × múltiplo."
+
+Sete linhas estavam sem número. Três travas caíram:
+
+1. **`SEM_TETO` deixou de recusar.** VIVA3, ASAI3 e ROXO34 não têm série de preço própria, então
+   não têm múltiplo PRÓPRIO — mas o múltiplo não precisa ser próprio: o dos pares serve, e o
+   lucro delas é real e auditável. A série curta vira ressalva na nota, não ausência de número.
+2. **Série curta deixou de recusar** (AXIA3, PASS3, SAUD3). Sem 3 exercícios não há faixa, mas há
+   múltiplo dos pares e há lucro. O preço justo fica; o **teto de compra** continua suprimido,
+   porque não se deriva preço de entrada de uma amostra sem dispersão.
+3. **`PL_SETOR['_UNIVERSO']`** — o grupo VAREJO tem duas empresas e as duas entraram sem histórico
+   de preço, então o grupo não produzia mediana nenhuma. Sem par, o múltiplo vem da mediana das
+   22 empresas com série limpa (7,87x). Referência pior que a do setor certo, melhor que nenhuma,
+   e a célula diz qual das duas está em uso.
+
+Também: `teto_ep` passou a derivar o LPA de `lucro ÷ papéis` quando o campo `lpa` falta na base —
+a ASAI3 saía sem preço justo por falta de **um campo**, tendo lucro e contagem de papéis.
+
+**Resultado: 33 de 33 linhas com preço justo.**
+
+### 31.14 AURE3: por que P/VP e não LPA × múltiplo
+
+> "Por que o de energia você deixou VPA × P/VP? Não dá para deixar LPA × algum múltiplo?"
+
+Não dá, e a razão está nos números da própria empresa. As três réguas foram testadas:
+
+| régua | conta | resultado |
+|---|---|---|
+| **LPA × P/L** | LPA LTM = **−R$ 0,98** | não existe — múltiplo sobre lucro negativo não é múltiplo |
+| **EBITDA × EV/EBITDA** | 3,96x × R$ 3,16 bi − R$ 20,02 bi de dívida | **−R$ 7,15** por ação |
+| **VPA × P/VP** | 1,48x × R$ 13,04 | **R$ 19,31** |
+
+A Auren deu prejuízo em 2023, 2025 e 2026, e carrega dívida líquida de **6,3x EBITDA** (herança da
+compra da AES Brasil). Com alavancagem dessa ordem, o valor de firma pelo múltiplo dos pares não
+cobre a dívida e o equity sai negativo — o que é informação real sobre a empresa, não falha de
+conta, mas não é exibível como preço. Sobra o patrimônio.
+
+Isso agora está escrito na tooltip da célula, com os três números.
+
+### 31.15 O bloco "Por onde começar" saiu (13/09/2026)
+
+> "Tire os cards e os textos acima da tabela dessa página."
+
+Removidos o contêiner `#rankingDecisao` do `index.html` e, em `js/decisao.js`, a função
+`renderRankingDecisao()` junto com o score composto que só ela consumia (`_calcularScores`,
+`_rankPercentis`, `RANK_VALOR`, `RANK_QUALIDADE`) — 131 linhas.
+
+⚠️ **O que isso custa, declarado:** o score ordenava os CARDS, não a tabela — o Radar sempre
+esteve na ordem do HTML. Então a "fila para ler o relatório" que a seção 30 descreve não existe
+mais na tela. A régua continua documentada e `scripts/backtest_conjunto.py`, que a validou, segue
+no repositório; se ela voltar, o lugar certo é **ordenar a tabela** por ela, não recriar os cards.
+
+O filtro "✅ Passa no filtro" não depende disso: ele lê `row.dataset.decScore`, escrito por
+`atualizarDecisaoLinha()` a partir dos critérios — outro número com o mesmo apelido.

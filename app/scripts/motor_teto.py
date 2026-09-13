@@ -948,7 +948,13 @@ def teto_ep(t, A, pl_setor=None, com_pares=True):
         return None
 
     pls = [x for x in (_pl(y) for y in val) if x]
+    # LPA de referência: o campo da base, ou derivado do lucro LTM ÷ papéis quando ele falta.
+    # A ASAI3 é o caso — a base não traz `lpa` para ela, e sem este fallback a empresa saía
+    # sem preço justo por falta de UM campo, tendo lucro e contagem de papéis.
     lpa = c.get('lpa')
+    if not lpa or lpa <= 0:
+        _l, _p = c.get('lucrolin'), papeis(t, A)
+        lpa = (_l / _p) if (_l and _l > 0 and _p) else None
     if not lpa or lpa <= 0: return None
     faixa_mult = None
     if len(pls) >= 3:
@@ -959,13 +965,19 @@ def teto_ep(t, A, pl_setor=None, com_pares=True):
         nota = (f'P/L: faixa {p25:.1f}x–{p75:.1f}x (mediana {alvo:.1f}x) · {nfx}, '
                 f'série de {len(pls)} anos ({min(pls):.1f}x a {max(pls):.1f}x)'
                 + (f', restrito a partir de {q} por QUEBRA DE SÉRIE.' if q else '.'))
-    elif pl_setor:
+    elif pl_setor or PL_SETOR.get('_UNIVERSO'):
         # Sem histórico próprio comparável: usa a mediana dos PARES do mesmo motor que NÃO
-        # têm quebra. Introduz viés de peer comp, então a convicção cai para ★☆☆.
-        alvo = pl_setor; conv = 1; mediana_propria = pl_setor
+        # têm quebra; sem pares, a do universo inteiro. Introduz viés de peer comp, e desde
+        # 13/09/2026 é o que garante que TODA empresa com lucro positivo tenha preço justo —
+        # pedido do usuário: "toda empresa deve ter um preço justo com base no LPA × múltiplo".
+        universo = pl_setor is None
+        pl_setor = pl_setor or PL_SETOR['_UNIVERSO']
+        alvo = pl_setor; conv = 1; mediana_propria = pl_setor; mediana_propria = pl_setor
         nota = (f'⚠️ Só {len(pls)} anos de P/L comparável' + (f' (quebra de série em {q})' if q else ' na base') + ', insuficiente. '
-                f'Ancorado no P/L mediano dos PARES sem quebra ({alvo:.1f}x) — peer comp tem viés '
-                f'próprio, por isso ★☆☆ e margem de 25%.'
+                + (f'O grupo {MOTOR.get(t) or "—"} não tem par com série limpa, então o múltiplo '
+                   f'vem do P/L mediano do UNIVERSO ({alvo:.1f}x). ' if universo else
+                   f'Ancorado no P/L mediano dos PARES sem quebra ({alvo:.1f}x). ')
+                + 'Peer comp tem viés próprio — é a régua do setor, não desta empresa.'
                 + (f' O histórico anterior a {q} descreve uma empresa com outra base acionária '
                    f'e NÃO serve de âncora.' if q else ''))
     else:
@@ -1266,7 +1278,18 @@ def teto_setorial(t, A, H, campo=None):
         conta = (f'EBITDA R$ {eb/1e9:.1f} bi × EV/EBITDA {alvo:.2f}x − dívida líquida '
                  f'R$ {dl/1e9:.1f} bi, ÷ {papeis_txt(pap)}')
     if justo <= 0:
-        return teto_setorial(t, A, H, 'pvp') if campo != 'pvp' else None
+        # EV não cobre a dívida: o equity dá NEGATIVO. Informação real sobre a empresa, não
+        # falha de conta — mas não é exibível como preço. Cai para o patrimônio.
+        r = teto_setorial(t, A, H, 'pvp') if campo != 'pvp' else None
+        if r:
+            r['nota'] = (f'⚠️ POR QUE P/VP E NÃO LPA × MÚLTIPLO: a empresa dá PREJUÍZO, então '
+                         f'P/L não existe — múltiplo sobre lucro negativo não é múltiplo. E o '
+                         f'EV/EBITDA dos pares ({alvo:.2f}x) sobre o EBITDA de '
+                         f'R$ {(c.get("ebitda") or 0)/1e9:.1f} bi não cobre a dívida líquida de '
+                         f'R$ {(c.get("divliq") or 0)/1e9:.1f} bi: o valor do equity sai '
+                         f'NEGATIVO (R$ {justo:.2f}), que é informação real sobre a alavancagem '
+                         f'e não é exibível como preço. Sobra o patrimônio. || ' + r['nota'])
+        return r
     if not (fx[0] and fx[0] > 0 and fx[1] > fx[0]):
         fx = None
     return dict(justo=justo, conv=1, chave='Pares', faixa=fx,
@@ -1400,13 +1423,16 @@ def _sanidade(t, r, cot):
     #    transformar o limite inferior de uma faixa dessas em preço de entrada.
     #    → mantém o preço justo, suprime só o TETO DE COMPRA.
     if larg is not None and larg == 0 and not (r.get('faixa') and r['faixa'][1] > r['faixa'][0]):
-        return dict(justo=None, conv=0, recusa=True,
-            motor='SEM PREÇO JUSTO — série curta demais para formar faixa',
-            nota=(f'RECUSADO: o método que decide esta linha ({(r.get("metodos") or [{}])[0].get("chave", "—")}) '
-                  f'rodou sobre menos de 3 exercícios comparáveis, então não há amplitude '
-                  f'observada — só um ponto. Um ponto não descreve quanto a empresa deveria '
-                  f'valer; descreve um ano. O que existe de real sobre a empresa continua nas '
-                  f'outras colunas (L/P, ROE, dívida, crescimento). || ' + (r.get('nota') or '')))
+        # ⚠️ ISTO RECUSAVA O PREÇO JUSTO até 13/09/2026 (AXIA3, PASS3, SAUD3). Passou a só
+        # AVISAR, pela mesma decisão do usuário que derrubou o SEM_TETO: sem série própria não
+        # há faixa, mas há múltiplo dos pares e há lucro. A faixa vira ponto único e o TETO DE
+        # COMPRA continua suprimido — não dá para derivar preço de entrada de uma amostra que
+        # não tem dispersão. O preço justo fica, com a ressalva escrita.
+        return {**r, 'teto_suprimido': True,
+                'nota': ('⚠️ SEM FAIXA — o método que decide esta linha rodou sobre menos de 3 '
+                         'exercícios comparáveis, então não há amplitude histórica: o número é '
+                         'um ponto, não uma faixa. Sem teto de compra por isso. Trate como '
+                         'marcador, não como preço de entrada. || ' + (r.get('nota') or ''))}
     if larg is not None and larg > LIM_LARGURA:
         return {**r, 'teto_suprimido': True,
                 'nota': (f'⛔ SEM TETO DE COMPRA — o múltiplo oscilou {larg*100:.0f}% ao longo da '
@@ -1497,11 +1523,23 @@ SEM_TETO = {
 }
 
 def calcular(t, A):
-    if t in SEM_TETO:
+    r = _sanidade(t, _calcular_bruto(t, A, H_GLOBAL), (A[max(A)] or {}).get('preco'))
+    # ⚠️ SEM_TETO DEIXOU DE RECUSAR em 13/09/2026. O usuário: "para as empresas que não têm
+    # preço justo, preencher — toda empresa deve ter um preço justo com base no LPA × múltiplo".
+    #
+    # A recusa declarada existia porque essas empresas não têm SÉRIE DE PREÇO própria (VIVA3,
+    # ASAI3) ou têm um ano só de dado (ROXO34), e sem série não há múltiplo PRÓPRIO. Só que o
+    # múltiplo não precisa ser próprio: o dos pares serve, e o lucro delas é real e auditável.
+    # O que a série curta tira é a possibilidade de dizer "esta empresa costuma negociar a X" —
+    # e isso vira ressalva na nota, não ausência de número.
+    if t in SEM_TETO and r and r.get('justo'):
+        r = {**r, 'nota': (f'⚠️ SÉRIE PRÓPRIA INSUFICIENTE — o múltiplo NÃO é o histórico desta '
+                           f'empresa, é o dos pares. {SEM_TETO[t]} || ') + r['nota']}
+    elif t in SEM_TETO:
         return dict(justo=None, conv=0, recusa=True,
-            motor='SEM PREÇO JUSTO — declarado',
+            motor='SEM PREÇO JUSTO — sem lucro nem múltiplo aplicável',
             nota=f'RECUSA DECLARADA: {SEM_TETO[t]}')
-    return _sanidade(t, _calcular_bruto(t, A, H_GLOBAL), (A[max(A)] or {}).get('preco'))
+    return r
 
 def _calcular_bruto(t, A, H=None):
     """UM MÚLTIPLO, NÃO UMA MEDIANA DE VÁRIOS.
@@ -1659,14 +1697,27 @@ def _calcular_bruto(t, A, H=None):
 
 
 def pl_setorial(H):
-    """P/L mediano dos pares de cada motor, usando SÓ empresas sem quebra de série."""
+    """P/L mediano dos pares de cada motor, usando SÓ empresas sem quebra de série.
+
+    A chave `_UNIVERSO` é a mediana de TODAS as empresas com série limpa, e existe desde
+    13/09/2026 para o grupo que não tem par nenhum: VAREJO tem duas empresas (VIVA3 e ASAI3)
+    e as duas entraram sem histórico de preço, então o grupo não produzia mediana e as duas
+    ficavam sem preço justo. Um P/L de 22 empresas é referência pior que a do setor certo, e
+    melhor que nenhuma — e a célula diz qual das duas está sendo usada.
+    """
     por = {}
+    todas = []
     for t, A in H.items():
         m = MOTOR.get(t)
-        if not m or ano_quebra(A): continue
+        if ano_quebra(A): continue
         pls = [A[y]['pl'] for y in A if A[y].get('pl') and 0 < A[y]['pl'] < 60]
-        if len(pls) >= 4: por.setdefault(m, []).append(st.median(pls))
-    return {k: st.median(v) for k, v in por.items() if v}
+        if len(pls) >= 4:
+            todas.append(st.median(pls))
+            if m: por.setdefault(m, []).append(st.median(pls))
+    out = {k: st.median(v) for k, v in por.items() if v}
+    if todas:
+        out['_UNIVERSO'] = st.median(todas)
+    return out
 
 PL_SETOR = {}
 
