@@ -158,17 +158,29 @@ def main():
         # aqui de propósito: o múltiplo e o preço saem do mesmo método, na mesma passada.
         # Gerar em lugares diferentes seria repetir o defeito que esta sessão passou o dia
         # corrigindo — dois números do mesmo conceito, escritos por donos diferentes.
+        # ⚠️ A MIGRAÇÃO É DETECTADA PELA CONTAGEM DE CÉLULAS, não por procurar a tooltip no
+        # texto. A primeira versão procurava 'APLICADO' no bloco e, numa linha que já tinha a
+        # célula 16 vazia (um ticker recém-incluído), inseria em vez de substituir — o BBDC3
+        # ficou com 23 células e a linha inteira deslocada em relação ao cabeçalho. Contar é
+        # a única verificação que não depende do conteúdo ter sido escrito antes.
         tds = [x for x in re.finditer(r'<td\b[^>]*>.*?</td>', bloco, re.S)]
-        if len(tds) >= 17 and 'data-tip="MÚLTIPLO' not in bloco and 'P/L APLICADO' not in bloco \
-           and not re.search(r'data-tip="[A-Z/]+ APLICADO', bloco):
-            # ainda no layout de 21 colunas: insere a célula nova na posição 16
-            pos = tds[16].start()
-            bloco = bloco[:pos] + cel_mult + bloco[pos:]
-        else:
-            # já migrado: substitui a célula 16 no lugar
+        if len(tds) == 23:
+            # REPARO. A primeira versão desta migração detectava "já migrado" procurando a
+            # tooltip do múltiplo no texto da linha. Nas 6 linhas SEM preço justo não há
+            # tooltip nenhuma, então a detecção dizia "ainda não migrou" toda vez e a segunda
+            # execução inseriu a célula de novo: VIVA3, ASAI3, ROXO34, PASS3, SAUD3 e AXIA3
+            # foram publicadas com 23 células e a linha inteira deslocada em relação ao
+            # cabeçalho — cotação aparecendo na coluna da margem, e assim por diante.
+            # Remove a duplicata e segue. O gerador conserta o arquivo em vez de exigir que
+            # alguém edite HTML à mão.
+            bloco = bloco[:tds[16].start()] + bloco[tds[16].end():]
             tds = [x for x in re.finditer(r'<td\b[^>]*>.*?</td>', bloco, re.S)]
-            if len(tds) > 16:
-                bloco = bloco[:tds[16].start()] + cel_mult + bloco[tds[16].end():]
+        if len(tds) == 21:
+            bloco = bloco[:tds[16].start()] + cel_mult + bloco[tds[16].start():]   # layout antigo
+        elif len(tds) == 22:
+            bloco = bloco[:tds[16].start()] + cel_mult + bloco[tds[16].end():]     # já migrado
+        else:
+            raise SystemExit(f'{t}: {len(tds)} células — esperado 21 (a migrar) ou 22')
 
         # A CÉLULA DO PREÇO JUSTO — identificada pela tooltip, que é única na linha.
         novo, n = re.subn(
@@ -177,7 +189,16 @@ def main():
             r'data-tip="SEM PREÇO JUSTO[^"]*">ⓘ</span></td>',
             lambda m: cel, bloco, count=1)
         if n != 1:
-            raise SystemExit(f'{t}: célula de preço justo não encontrada (n={n})')
+            # LINHA NOVA, ainda sem tooltip de preço justo (é assim que um ticker recém-
+            # incluído chega aqui — o BBDC3 em 13/09/2026). Cai para a posição: a célula 17 é
+            # o Preço Justo no layout de 22 colunas. Levantar erro obrigaria quem inclui um
+            # ativo a colar a tooltip à mão antes de rodar o gerador, que é exatamente o
+            # trabalho manual que estes scripts existem para eliminar.
+            tds2 = [x for x in re.finditer(r'<td\b[^>]*>.*?</td>', novo, re.S)]
+            if len(tds2) > 17:
+                novo = novo[:tds2[17].start()] + cel + novo[tds2[17].end():]
+            else:
+                raise SystemExit(f'{t}: linha com {len(tds2)} células, esperado 22')
 
         # O ATRIBUTO — a fonte que o JS lê. Tem que sair junto ou volta a divergir da célula.
         # Escrito DEPOIS do data-ticker, para o corte acima continuar funcionando na próxima
