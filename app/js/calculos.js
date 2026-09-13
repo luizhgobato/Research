@@ -115,7 +115,7 @@ function calcularDerivadosRadar() {
   document.querySelectorAll('#tableBody tr[data-ticker]').forEach(row => {
     const cells = row.querySelectorAll('td');
     const dyProj  = parseFloat(row.dataset.dyProj) || 0;
-    const cotacao = parseFloat((cells[17]?.textContent||'').replace(/[^0-9,.]/g,'').replace(',','.')) || 0;
+    const cotacao = parseFloat((cells[18]?.textContent||'').replace(/[^0-9,.]/g,'').replace(',','.')) || 0;
     if (!cotacao) return;
 
     // Div./Ação proj (cell 9) e DY proj (cell 10) — ver atualizarDivDY() acima
@@ -151,7 +151,7 @@ function calcularPrecoJusto(row, cotacaoOverride) {
   const cells   = row.querySelectorAll('td');
   const lpa     = parseFloat((cells[7]?.textContent||'').replace(/[^0-9,.]/g,'').replace(',','.')) || 0;
   const plHist  = parseFloat(row.dataset.plHist) || 0;
-  const cotacao = cotacaoOverride || parseFloat((cells[17]?.textContent||'').replace(/[^0-9,.]/g,'').replace(',','.')) || 0;
+  const cotacao = cotacaoOverride || parseFloat((cells[18]?.textContent||'').replace(/[^0-9,.]/g,'').replace(',','.')) || 0;
   const dyProj  = parseFloat(row.dataset.dyProj) || 0;
   if (!lpa || !plHist || !cotacao) return;
   const pAlvo = lpa * plHist;             // preço-alvo por múltiplo histórico
@@ -159,7 +159,7 @@ function calcularPrecoJusto(row, cotacaoOverride) {
   const desc  = 1 + IPCA + PREMIO_IPCA;   // taxa de desconto exigida
   const justo = (dps + pAlvo) / desc;
   row.dataset.precoJusto = justo.toFixed(2);
-  if (cells[16]) {
+  if (cells[17]) {
     const tip = [
       'PREÇO JUSTO — variáveis','',
       'LPA proj.: ' + _fmtBR(lpa),
@@ -174,12 +174,12 @@ function calcularPrecoJusto(row, cotacaoOverride) {
       'Justo = (DPS + P-alvo) ÷ Desconto',
       '= (' + _fmtBR(dps) + ' + ' + _fmtBR(pAlvo) + ') ÷ ' + _fmtNM(desc, 3) + ' = ' + _fmtBR(justo)
     ].join('\n');
-    cells[16].innerHTML = '';
+    cells[17].innerHTML = '';
     const val = document.createElement('span');
     val.textContent = _fmtBR(justo);
-    cells[16].appendChild(val);
-    cells[16].appendChild(document.createTextNode(' '));
-    cells[16].appendChild(_varTipBtn(tip));
+    cells[17].appendChild(val);
+    cells[17].appendChild(document.createTextNode(' '));
+    cells[17].appendChild(_varTipBtn(tip));
   }
 }
 
@@ -221,8 +221,8 @@ function renderMargemRetorno(cells, margemCell, precoJusto, cotacao, dyProj){
   }
 
   // Retorno Total
-  if (cells[19]) {
-    cells[19].innerHTML = '';
+  if (cells[20]) {
+    cells[20].innerHTML = '';
     const v = document.createElement('span');
     v.textContent = (ret >= 0 ? '+' : '') + ret.toFixed(1) + '%';
     const tipR = [
@@ -236,9 +236,9 @@ function renderMargemRetorno(cells, margemCell, precoJusto, cotacao, dyProj){
       '──────────────',
       'Retorno = Valorização + DY = ' + (ret >= 0 ? '+' : '') + _fmtNM(ret) + '%'
     ].join('\n');
-    cells[19].appendChild(v);
-    cells[19].appendChild(document.createTextNode(' '));
-    cells[19].appendChild(_varTipBtn(tipR));
+    cells[20].appendChild(v);
+    cells[20].appendChild(document.createTextNode(' '));
+    cells[20].appendChild(_varTipBtn(tipR));
   }
 }
 

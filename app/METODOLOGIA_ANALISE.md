@@ -2305,3 +2305,33 @@ comparável** com o ROE das outras linhas.
 divergindo em silêncio: a célula exibia 63% para a ALOS3 enquanto o motor usava 100% para calcular
 o dividendo da mesma linha. O atributo `data-payout` idem. Quinta aparição de "duas fontes de
 verdade" nesta base — as duas entraram na geração.
+
+### 31.10 Coluna Múltiplo (13/09/2026)
+
+> "Acrescente uma coluna com o múltiplo que o LPA está sendo multiplicado e o tooltip com cálculo."
+
+Entra na posição 16, imediatamente antes do Preço Justo, e mostra o múltiplo aplicado com o
+rótulo do que ele é — `9,39x P/L`, `8,13x P/FFO`, `4,30x EV/EBITDA`, `0,322 paridade`. A tooltip
+traz a conta inteira:
+
+```
+P/L APLICADO — 9,39x
+
+LPA projetado 2026 R$ 5,16 × P/L 9,39x = R$ 48,47
+
+O múltiplo é a média entre o P/L mediano da própria empresa ao longo de 6 anos (10,00x)
+e o dos 8 pares do grupo FIN (8,79x).
+```
+
+Com ela, a linha fica conferível de ponta a ponta sem abrir tooltip nenhuma: **Lucro 2025 →
+Projetado 2026 → LPA → × Múltiplo → Preço Justo**.
+
+O valor é extraído da mesma string `conta` que alimenta a tooltip do preço justo, e é gerado na
+mesma passada de `scripts/gerar_preco_justo.py`. Ter dois lugares escrevendo o mesmo número —
+um a coluna, outro a tooltip — seria repetir o defeito que as seções 31.5 e 31.8 documentam.
+
+⚠️ **A inserção deslocou as colunas 16-20 para 17-21.** Deslocamento de índice já apagou a
+escrita de uma coluna em silêncio neste projeto (seção 31.4), então os consumidores foram
+atualizados junto e conferidos no navegador: `js/calculos.js` (16,17,19 → 17,18,20),
+`js/cotacoes.js` (17 → 18), `js/main.js` (19 → 20) e a guarda do sort em `js/radar.js`
+(a coluna Relatório, não ordenável, foi de 20 para 21).
