@@ -121,23 +121,33 @@ function calcularDerivadosRadar() {
     // Div./Ação proj (cell 9) e DY proj (cell 10) — ver atualizarDivDY() acima
     atualizarDivDY(row, cotacao);
 
-    // Preço Teto
-    calcularPrecoTeto(row, cotacao);
+    // Preço Justo
+    calcularPrecoJusto(row, cotacao);
 
     // Margem de segurança (.margem-cell), Retorno total (cell 18), IPCA+ (cell 19)
-    const precoTeto  = parseFloat(row.dataset.precoTeto) || 0;
+    const precoJusto = parseFloat(row.dataset.precoJusto) || 0;
     const margemCell = row.querySelector('.margem-cell');
-    if (precoTeto > 0 && margemCell) {
-      renderMargemRetorno(cells, margemCell, precoTeto, cotacao, dyProj);
+    if (precoJusto > 0 && margemCell) {
+      renderMargemRetorno(cells, margemCell, precoJusto, cotacao, dyProj);
     }
   });
 }
 
-// Preço Teto = (DPS + P_alvo) / (1 + IPCA + PREMIO_IPCA)
+// ⚠️ 13/09/2026 — O PREÇO-TETO SAIU DA PLANILHA. Decisão do usuário: "vou querer deixar
+// somente o preço justo e a margem de segurança para o preço justo, pra simplificar".
+// Antes havia DOIS números de valor na mesma linha — o justo (mediana dos métodos) e o teto
+// (piso da faixa, que embutia uma margem própria de 4% a 28% conforme a empresa). Dois
+// números para a mesma pergunta confundem mais do que informam, e a margem que o teto embutia
+// agora é escolha explícita de quem lê: a coluna mostra a margem contra o JUSTO e cada um
+// define o mínimo que aceita.
+// A função abaixo é o cálculo de fallback por múltiplo histórico (data-pl-hist) — está
+// dormente, nenhum ticker define esse atributo hoje, e passou a escrever precoJusto.
+//
+// Preço Justo (fallback) = (DPS + P_alvo) / (1 + IPCA + PREMIO_IPCA)
 // P_alvo = LPA × P/L Histórico; DPS = DY proj × cotação
 // P/L Histórico não é mais uma coluna visível — vem do atributo oculto data-pl-hist do <tr>
 // (ver comentário no topo de data/radar-rows.data.js).
-function calcularPrecoTeto(row, cotacaoOverride) {
+function calcularPrecoJusto(row, cotacaoOverride) {
   const cells   = row.querySelectorAll('td');
   const lpa     = parseFloat((cells[7]?.textContent||'').replace(/[^0-9,.]/g,'').replace(',','.')) || 0;
   const plHist  = parseFloat(row.dataset.plHist) || 0;
@@ -147,11 +157,11 @@ function calcularPrecoTeto(row, cotacaoOverride) {
   const pAlvo = lpa * plHist;             // preço-alvo por múltiplo histórico
   const dps   = dyProj * cotacao;         // dividendo projetado por ação
   const desc  = 1 + IPCA + PREMIO_IPCA;   // taxa de desconto exigida
-  const teto  = (dps + pAlvo) / desc;
-  row.dataset.precoTeto = teto.toFixed(2);
+  const justo = (dps + pAlvo) / desc;
+  row.dataset.precoJusto = justo.toFixed(2);
   if (cells[15]) {
     const tip = [
-      'PREÇO TETO — variáveis','',
+      'PREÇO JUSTO — variáveis','',
       'LPA proj.: ' + _fmtBR(lpa),
       'P/L Histórico: ' + _fmtNM(plHist),
       'DY proj.: ' + _fmtPC(dyProj),
@@ -161,12 +171,12 @@ function calcularPrecoTeto(row, cotacaoOverride) {
       'DPS = DY × Cotação = ' + _fmtBR(dps),
       'Desconto = 1 + IPCA ' + _fmtPC(IPCA) + ' + Prêmio ' + _fmtPC(PREMIO_IPCA) + ' = ' + _fmtNM(desc, 3),
       '──────────────',
-      'Teto = (DPS + P-alvo) ÷ Desconto',
-      '= (' + _fmtBR(dps) + ' + ' + _fmtBR(pAlvo) + ') ÷ ' + _fmtNM(desc, 3) + ' = ' + _fmtBR(teto)
+      'Justo = (DPS + P-alvo) ÷ Desconto',
+      '= (' + _fmtBR(dps) + ' + ' + _fmtBR(pAlvo) + ') ÷ ' + _fmtNM(desc, 3) + ' = ' + _fmtBR(justo)
     ].join('\n');
     cells[15].innerHTML = '';
     const val = document.createElement('span');
-    val.textContent = _fmtBR(teto);
+    val.textContent = _fmtBR(justo);
     cells[15].appendChild(val);
     cells[15].appendChild(document.createTextNode(' '));
     cells[15].appendChild(_varTipBtn(tip));
@@ -187,10 +197,10 @@ function _varTipBtn(tip){
 
 // Renderiza Margem (cell 20), Retorno Total (cell 21) e Retorno Real (cell 22)
 // com botões de tooltip explicando as variáveis de cada coluna.
-function renderMargemRetorno(cells, margemCell, precoTeto, cotacao, dyProj){
-  if (!(precoTeto > 0) || !cotacao) return;
-  const pct     = ((precoTeto - cotacao) / precoTeto) * 100;
-  const valoriz = ((precoTeto - cotacao) / cotacao) * 100;
+function renderMargemRetorno(cells, margemCell, precoJusto, cotacao, dyProj){
+  if (!(precoJusto > 0) || !cotacao) return;
+  const pct     = ((precoJusto - cotacao) / precoJusto) * 100;
+  const valoriz = ((precoJusto - cotacao) / cotacao) * 100;
   const ret     = valoriz + (dyProj * 100);
 
   // Margem de Segurança
@@ -198,13 +208,13 @@ function renderMargemRetorno(cells, margemCell, precoTeto, cotacao, dyProj){
     margemCell.innerHTML = margemTag(pct);
     const tipM = [
       'MARGEM DE SEGURANÇA — variáveis','',
-      'Preço Teto: ' + _fmtBR(precoTeto),
+      'Preço Justo: ' + _fmtBR(precoJusto),
       'Cotação: ' + _fmtBR(cotacao),
       '──────────────',
-      'Margem = (Teto − Cotação) ÷ Teto',
-      '= (' + _fmtBR(precoTeto) + ' − ' + _fmtBR(cotacao) + ') ÷ ' + _fmtBR(precoTeto),
+      'Margem = (Justo − Cotação) ÷ Justo',
+      '= (' + _fmtBR(precoJusto) + ' − ' + _fmtBR(cotacao) + ') ÷ ' + _fmtBR(precoJusto),
       '= ' + _fmtNM(pct) + '%',
-      (pct >= 0 ? 'Positivo → cotação abaixo do teto (oportunidade)' : 'Negativo → cotação acima do teto')
+      (pct >= 0 ? 'Positivo → cotação abaixo do justo' : 'Negativo → cotação acima do justo')
     ].join('\n');
     margemCell.appendChild(document.createTextNode(' '));
     margemCell.appendChild(_varTipBtn(tipM));
@@ -217,7 +227,7 @@ function renderMargemRetorno(cells, margemCell, precoTeto, cotacao, dyProj){
     v.textContent = (ret >= 0 ? '+' : '') + ret.toFixed(1) + '%';
     const tipR = [
       'RETORNO TOTAL — variáveis','',
-      'Preço Teto: ' + _fmtBR(precoTeto),
+      'Preço Justo: ' + _fmtBR(precoJusto),
       'Cotação: ' + _fmtBR(cotacao),
       'DY proj.: ' + _fmtPC(dyProj),
       '──────────────',
