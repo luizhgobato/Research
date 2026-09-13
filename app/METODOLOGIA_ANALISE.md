@@ -2434,3 +2434,28 @@ no repositório; se ela voltar, o lugar certo é **ordenar a tabela** por ela, n
 
 O filtro "✅ Passa no filtro" não depende disso: ele lê `row.dataset.decScore`, escrito por
 `atualizarDecisaoLinha()` a partir dos critérios — outro número com o mesmo apelido.
+
+### 31.16 O ⓘ sai, o tooltip fica (13/09/2026)
+
+> "Vamos retirar o símbolo de tooltip mas deixar a funcionalidade — quando eu passar o mouse
+> por cima do número ele vai mostrar a explicação."
+
+573 bolinhas ⓘ saíram da tela. Mudança só de CSS: os elementos `.col-tip` e `.teto-tip`
+**continuam no HTML**, porque são eles que carregam o `data-tip` e ancoram o balão — viram
+marcadores invisíveis e o gatilho do hover passa da bolinha de 13px para a **célula inteira**.
+Na prática a área sensível cresceu para a largura da coluna.
+
+Dois mecanismos diferentes, duas soluções:
+
+- **`.col-tip`** (balão em CSS puro, `::after`): vira largura zero com `font-size:0` e
+  `color:transparent`, mantendo `position:relative` para o balão continuar ancorado no fim do
+  número. Gatilho: `tbody td:hover > .col-tip::after` e `thead th:hover .col-tip::after`.
+- **`.teto-tip`** (popup `#cellTipPop` posicionado por JS): vira `position:absolute;inset:0` —
+  cobre a célula inteira, então o `mouseover` do `js/calculos.js` a encontra sem nenhuma
+  mudança no JavaScript.
+
+As regras de `overflow:visible` e `z-index` que existiam para o balão não ser cortado pela
+célula seguiam a bolinha (`.col-tip:hover`); passaram a seguir a célula (`td:has(> .col-tip):hover`).
+
+Conferido no navegador: 573 marcadores, **zero visíveis**, e os três caminhos de tooltip
+(célula do Radar, popup de Margem/Retorno e cabeçalho de coluna) abrindo no hover.
