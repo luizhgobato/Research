@@ -13,7 +13,7 @@
 //                        O 5º (margem de segurança) virou REFERÊNCIA em 06/09/2026 — ver bloco 3.
 //
 // POR QUE AS COLUNAS SÃO ACRESCENTADAS NO FIM E NÃO NO MEIO:
-// meia dúzia de arquivos indexam células por posição (cells[6] = LPA, cells[15] = cotação,
+// meia dúzia de arquivos indexam células por posição (cells[7] = LPA, cells[16] = cotação,
 // sortTable(12) = P/L…). Inserir coluna no meio deslocaria TODOS esses índices e quebraria
 // preço-teto, margem de segurança e ordenação de uma vez. Acrescentar no fim é aditivo:
 // nenhum índice existente muda. O ranking no topo da aba resolve a visibilidade.
@@ -399,7 +399,7 @@ function calcularCriterios(row) {
   // o Lucro normalizado, que são outra pergunta (onde a empresa está no ciclo). Agora que a
   // tabela tem mesmo as duas colunas — exercício fechado de 2025 e projeção de 2026 — ele lê
   // as duas certas.
-  const l25 = _decNumLucro(cells[4]), l26 = _decNumLucro(cells[5]);
+  const l25 = _decNumLucro(cells[4]), l26 = _decNumLucro(cells[6]);
   // Crescimento só é comparável com base positiva: sair de prejuízo para lucro dá um
   // percentual sem significado (base negativa), então nesse caso a nota não usa este eixo.
   if (l25 > 0 && l26 != null) bruto.cresc = (l26 - l25) / l25 * 100;

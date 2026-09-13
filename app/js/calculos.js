@@ -93,21 +93,21 @@ function _celTip(cell, valorHTML, tipFallback) {
 
 function atualizarDivDY(row, cotacao) {
   const cells = row.querySelectorAll('td');
-  if (!cotacao || !cells[8] || !cells[9]) return;
+  if (!cotacao || !cells[9] || !cells[10]) return;
   const payout = parseFloat(row.dataset.payout) || 0;
-  const lpa = parseFloat((cells[6]?.textContent || '').replace(/[^0-9,.-]/g, '').replace(',', '.')) || 0;
+  const lpa = parseFloat((cells[7]?.textContent || '').replace(/[^0-9,.-]/g, '').replace(',', '.')) || 0;
 
   if (payout > 0 && lpa > 0) {
     const dps = lpa * payout;
-    _celTip(cells[8], `R$ ${dps.toFixed(2).replace('.', ',')}`);
-    _celTip(cells[9], ((dps / cotacao) * 100).toFixed(2).replace('.', ',') + '%');
+    _celTip(cells[9], `R$ ${dps.toFixed(2).replace('.', ',')}`);
+    _celTip(cells[10], ((dps / cotacao) * 100).toFixed(2).replace('.', ',') + '%');
     row.dataset.dyProj = (dps / cotacao).toFixed(4);   // mantém o resto do app consistente
     return;
   }
   const dyProj = parseFloat(row.dataset.dyProj) || 0;  // rota antiga, para linha sem payout
   if (dyProj > 0) {
-    _celTip(cells[8], `R$ ${(dyProj * cotacao).toFixed(2).replace('.', ',')}`);
-    _celTip(cells[9], (dyProj * 100).toFixed(2).replace('.', ',') + '%');
+    _celTip(cells[9], `R$ ${(dyProj * cotacao).toFixed(2).replace('.', ',')}`);
+    _celTip(cells[10], (dyProj * 100).toFixed(2).replace('.', ',') + '%');
   }
 }
 
@@ -115,7 +115,7 @@ function calcularDerivadosRadar() {
   document.querySelectorAll('#tableBody tr[data-ticker]').forEach(row => {
     const cells = row.querySelectorAll('td');
     const dyProj  = parseFloat(row.dataset.dyProj) || 0;
-    const cotacao = parseFloat((cells[15]?.textContent||'').replace(/[^0-9,.]/g,'').replace(',','.')) || 0;
+    const cotacao = parseFloat((cells[16]?.textContent||'').replace(/[^0-9,.]/g,'').replace(',','.')) || 0;
     if (!cotacao) return;
 
     // Div./Ação proj (cell 9) e DY proj (cell 10) — ver atualizarDivDY() acima
@@ -149,9 +149,9 @@ function calcularDerivadosRadar() {
 // (ver comentário no topo de data/radar-rows.data.js).
 function calcularPrecoJusto(row, cotacaoOverride) {
   const cells   = row.querySelectorAll('td');
-  const lpa     = parseFloat((cells[6]?.textContent||'').replace(/[^0-9,.]/g,'').replace(',','.')) || 0;
+  const lpa     = parseFloat((cells[7]?.textContent||'').replace(/[^0-9,.]/g,'').replace(',','.')) || 0;
   const plHist  = parseFloat(row.dataset.plHist) || 0;
-  const cotacao = cotacaoOverride || parseFloat((cells[15]?.textContent||'').replace(/[^0-9,.]/g,'').replace(',','.')) || 0;
+  const cotacao = cotacaoOverride || parseFloat((cells[16]?.textContent||'').replace(/[^0-9,.]/g,'').replace(',','.')) || 0;
   const dyProj  = parseFloat(row.dataset.dyProj) || 0;
   if (!lpa || !plHist || !cotacao) return;
   const pAlvo = lpa * plHist;             // preço-alvo por múltiplo histórico
@@ -159,7 +159,7 @@ function calcularPrecoJusto(row, cotacaoOverride) {
   const desc  = 1 + IPCA + PREMIO_IPCA;   // taxa de desconto exigida
   const justo = (dps + pAlvo) / desc;
   row.dataset.precoJusto = justo.toFixed(2);
-  if (cells[14]) {
+  if (cells[15]) {
     const tip = [
       'PREÇO JUSTO — variáveis','',
       'LPA proj.: ' + _fmtBR(lpa),
@@ -174,12 +174,12 @@ function calcularPrecoJusto(row, cotacaoOverride) {
       'Justo = (DPS + P-alvo) ÷ Desconto',
       '= (' + _fmtBR(dps) + ' + ' + _fmtBR(pAlvo) + ') ÷ ' + _fmtNM(desc, 3) + ' = ' + _fmtBR(justo)
     ].join('\n');
-    cells[14].innerHTML = '';
+    cells[15].innerHTML = '';
     const val = document.createElement('span');
     val.textContent = _fmtBR(justo);
-    cells[14].appendChild(val);
-    cells[14].appendChild(document.createTextNode(' '));
-    cells[14].appendChild(_varTipBtn(tip));
+    cells[15].appendChild(val);
+    cells[15].appendChild(document.createTextNode(' '));
+    cells[15].appendChild(_varTipBtn(tip));
   }
 }
 
@@ -221,8 +221,8 @@ function renderMargemRetorno(cells, margemCell, precoJusto, cotacao, dyProj){
   }
 
   // Retorno Total
-  if (cells[17]) {
-    cells[17].innerHTML = '';
+  if (cells[18]) {
+    cells[18].innerHTML = '';
     const v = document.createElement('span');
     v.textContent = (ret >= 0 ? '+' : '') + ret.toFixed(1) + '%';
     const tipR = [
@@ -236,9 +236,9 @@ function renderMargemRetorno(cells, margemCell, precoJusto, cotacao, dyProj){
       '──────────────',
       'Retorno = Valorização + DY = ' + (ret >= 0 ? '+' : '') + _fmtNM(ret) + '%'
     ].join('\n');
-    cells[17].appendChild(v);
-    cells[17].appendChild(document.createTextNode(' '));
-    cells[17].appendChild(_varTipBtn(tipR));
+    cells[18].appendChild(v);
+    cells[18].appendChild(document.createTextNode(' '));
+    cells[18].appendChild(_varTipBtn(tipR));
   }
 }
 

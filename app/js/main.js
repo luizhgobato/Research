@@ -97,7 +97,7 @@ applyMobileColHide();
         const pct = ((precoJusto-preco)/precoJusto)*100;
         margemCell.innerHTML = margemTag(pct);
         const ret = ((precoJusto-preco)/preco)*100 + (dyProj*100);
-        if(cells[17]) cells[17].textContent = (ret>=0?'+':'')+ret.toFixed(1)+'%';
+        if(cells[18]) cells[18].textContent = (ret>=0?'+':'')+ret.toFixed(1)+'%';
       }
       if(typeof atualizarPLAtualLinha==='function') atualizarPLAtualLinha(r);
     });
