@@ -1836,3 +1836,124 @@ dívida estável ano a ano), mas alguns saltam — SBSP3 (TIR mediana 6,2%→11,
 (6,8%→5,2%, +R$ 0,7 bi). Nenhum é bug: é exatamente a distinção que FCFF vs FCFE deveria fazer
 — empresa alavancando aparece com caixa a mais para o acionista, empresa desalavancando com
 caixa a menos, e antes da correção nenhuma das duas aparecia.
+
+---
+
+## 29. O critério que ORDENA a fila é testado — e trocado (13/09/2026)
+
+Pergunta do usuário, e é a pergunta certa: *"preciso que este projeto me ajude a encontrar as
+empresas mais baratas e com maior potencial de retorno, mas não estou confiante que este
+modelo está me trazendo isso"*. Junto veio a delimitação que muda tudo: os segmentos que ele
+compra são **bancos, seguradoras, elétricas, telecom e saneamento** — pagadoras de dividendo,
+risco baixo. Não cíclica de commodity, não construtora.
+
+### O buraco: o critério em produção nunca tinha sido testado
+
+A seção 12 (`backtest_multiplos.py`) testou múltiplos e a MARGEM SOBRE O PREÇO-TETO. Mas o que
+ordenava a lista "Por onde começar" não era nenhum dos dois: era a **TIR real**. Ela entrou na
+seção 24 substituindo a Nota 0-100 — que saiu porque *"o backtest do projeto não validou"* — e
+nunca passou pelo mesmo teste que derrubou a antecessora. Um critério herdou o lugar de outro
+por ser melhor construído, não por ter medido melhor.
+
+E o backtest que existia misturava os 30 tickers num universo só. Um sinal que funciona na
+VALE3 e falha no ITUB3 aparece ali como "funciona" — o que não serve para quem só compra o
+lado defensivo da tabela.
+
+### `scripts/backtest_ranking.py`
+
+Script novo, com dois cortes que o anterior não fazia: separa por **grupo de motor** (o mesmo
+dicionário `MOTOR` de `motor_teto.py`, lido por `exec` do arquivo — não uma cópia que diverge)
+e testa a **TIR real**, não o preço-teto.
+
+A TIR aqui é PROXY, e a diferença importa: a TIR de produção é a mediana de três medidas
+(caixa/FCFE, dividendos/DDM, lucro). FCO, capex e dívida bruta não estão no HIST_SEED, então
+só a medida LUCRO é reconstruível ano a ano — `real(ey + g)`, com `g = ROE × retenção` capado
+em 15% e o mesmo Fisher do gerador. Como `real()` é monotônico em `(ey + g)`, ordenar por essa
+TIR é ordenar por `(ey + g)`, e o teste vira uma pergunta limpa: **somar `g` ao earnings yield
+melhora ou piora a ordenação?**
+
+### O resultado
+
+**Defensivos (FIN + UTIL) — 17 tickers, 76 observações, 5 transições anuais:**
+
+| Critério | n | BARATO | CARO | spread | ρ | t | anos certos |
+|---|---|---|---|---|---|---|---|
+| **L/P (earnings yield)** | 74 | 33,9% | 13,6% | **+20,3 p.p.** | +0,22 | +2,52 | **5 de 5** |
+| TIR real (proxy `ey+g`) | 73 | 29,1% | 17,8% | +11,4 p.p. | +0,16 | +1,04 | 3 de 5 |
+| Dividend yield | 76 | 22,9% | 18,8% | +4,1 p.p. | +0,09 | +0,69 | 4 de 5 |
+| `g` isolado | 73 | 28,2% | 19,9% | +8,3 p.p. | +0,09 | +0,64 | 2 de 5 |
+
+**Somar `g` ao earnings yield PIORA o spread em 8,9 p.p.** O componente que a TIR acrescenta ao
+L/P não tem sinal próprio nesses setores — dilui o que o L/P já entrega.
+
+**Controle (CICL, IND, SHOP, NAV) — 11 tickers, 49 observações:**
+
+| Critério | n | spread | ρ | t | anos certos |
+|---|---|---|---|---|---|
+| **Dividend yield** | 49 | **+19,5 p.p.** | +0,27 | +3,89 | **5 de 5** |
+| L/P | 46 | +8,0 p.p. | −0,01 | +1,05 | 3 de 5 |
+| `g` isolado | 44 | **−10,3 p.p.** | −0,18 | −1,37 | 2 de 5 |
+
+A régua que funciona **muda com o grupo**, e há razão econômica antes do número: banco,
+seguradora, elétrica, telecom e saneamento têm lucro estável e regulado — o lucro de hoje já é
+proxy razoável do lucro normal, e L/P mede valor direto. Na cíclica e na construtora o lucro do
+ano engana (pico de ciclo vira P/L baixo enganoso) e o **dividendo** é o sinal mais honesto: a
+empresa só distribui caixa que realmente tem, então é sinal revelado pela administração, não
+apurado por competência. O `g` é ruim nos dois grupos — neutro-ruidoso no defensivo, **negativo**
+no controle.
+
+### A mudança
+
+`js/decisao.js` passou a ordenar a fila pelo **yield validado do grupo da empresa**
+(`RANK_CRIT_POR_GRUPO`): L/P em FIN e UTIL, DY nos demais. Os dois critérios são yields na
+mesma unidade (% ao ano sobre o preço de hoje), então um eixo só ordena a fila inteira sem
+normalizar percentil — que num grupo de 2 elementos (SHOP) não significaria nada. Sem o dado da
+régua do grupo, cai na outra e o cartão declara qual usou ("L/P 9,0%" não se confunde com
+"DY 5,1%").
+
+A TIR real **continua na tabela**. Ela responde "quanto rende acima da NTN-B", que é pergunta
+diferente de "qual está mais barata" — só deixou de ordenar a fila, e a tooltip da coluna passou
+a dizer isso com os números acima.
+
+### ⚠️ O que este teste NÃO diz
+
+São 5 transições anuais, observações correlacionadas dentro do ano — o n efetivo para
+significância é o número de ANOS, não o de observações. Isto **não prova que L/P prediz
+retorno**. Prova que a TIR real, no período medido e nesses setores, ordenou pior que o insumo
+mais simples que ela usa por dentro. Ordenar pelo que errou menos é o mínimo defensável, e é
+diferente de ter critério validado. O item #1 do punch-list (300+ papéis, 10 anos) continua
+sendo a única coisa que mudaria a resposta de fundo.
+
+### Dois bugs achados no caminho
+
+**`seg` envelhecendo em silêncio.** `gerar_tir.py` gravava
+`seg=(velho or {}).get('seg') or MOTOR.get(t)` — preferia o campo do snapshot de 05/09, anterior
+à criação do grupo UTIL. Resultado: 14 tickers carregavam `seg:'IND'` e só 1 dizia `'UTIL'`,
+enquanto o `MOTOR` classificava 8 como UTIL. O campo preferia a fonte velha e envelhecia sem
+sintoma — a falha da seção 24, dentro do script escrito para consertá-la. Agora o `MOTOR` é a
+única fonte, e o ranking por grupo depende disso para funcionar.
+
+**Gerador não idempotente.** O mesmo script montava o cabeçalho com `cab = antigo[:...]` e depois
+`cab += <bloco de aviso>` — relia o cabeçalho já gerado e anexava o aviso de novo a cada rodada.
+O arquivo em produção carregava o mesmo bloco **nove vezes**. Gerador que produz saída diferente
+com a mesma entrada torna o diff do git inútil justamente onde ele é a única auditoria (ninguém
+revisa arquivo gerado linha a linha). O cabeçalho passou a ser escrito do zero; rodar duas vezes
+seguidas agora dá o mesmo md5.
+
+### VIVA3 e ASAI3 entram com lacuna declarada
+
+Entraram a pedido do usuário depois do screener do universo B3 inteiro (as duas passam em
+P/L ≤ 12x + ROE ≥ 15% + dív.líq/EBITDA ≤ 3x). **Não têm a mesma qualidade de série das outras
+30**, e os campos que faltam estão `null` em vez de estimados: a chave de API desta sessão não
+tem escopo para cotação histórica (`@quotes/post/eod`) nem para valuation ratios anuais — de
+onde sairiam `preco`, `pl`, `pvp` e `dy` de cada exercício.
+
+Sem preço histórico não há múltiplo histórico, e todo método do motor ancora em múltiplo da
+própria série. As duas entram em **`SEM_TETO`**, declaradas por nome, em vez de receber teto
+calculado sobre o único ano com cotação — que seria o erro do ROXO34 outra vez, agora sabendo.
+L/P, margem e alavancagem continuam calculados normalmente, e é o L/P que as ordena.
+
+Da VIVA3 a DRE consolidada de 2021-2025 veio completa e auditável. Da ASAI3 não: a API só
+devolveu 2019-2020, anteriores ao spin-off do GPA, com base de ações incomparável (LPA de
+R$5,80 em 2020 contra R$0,71 no LTM). Restaram margem líquida e dív.líq/EBITDA por exercício —
+e a margem caindo de **3,84% (2021) para 0,64% (2025)** é o dado mais importante dessa linha.

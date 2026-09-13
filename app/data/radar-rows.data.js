@@ -71,7 +71,51 @@
 // scripts/gerar_colunas.py passou a gerar essas colunas. Atributo que não protege mais nada
 // é pior que inútil: sugere a quem for auditar que existe um valor curado ali, e não existe.
 const RADAR_ROWS_HTML = `
-<tr data-ticker="ALOS3.SA" data-payout-fonte="realizado" data-veredicto="compra" data-segmento="Shoppings" data-empresa="Allos ALOS3" data-preco-teto="19.61" data-carteira="false" data-dy-proj="0.0884" data-dy-manual="true" data-report="true" data-report-date="15/08/2026" data-payout="0.6334" data-lpa-ltm="1.9680" data-lpa-manual="true" data-lpa-fonte="LPA LTM = lucro dos últimos 12 meses R$ 1,03 bi ÷ 523 mi papéis negociados (units resolvidas). Fonte: MCP Partnr (B3/CVM), TTM 2T26. Gerado por scripts/gerar_colunas.py.">
+<tr data-ticker="VIVA3.SA" data-veredicto="aguardar" data-segmento="Varejo de luxo" data-empresa="Vivara VIVA3" data-carteira="false" data-lpa-ltm="2.4803" data-lpa-fonte="LPA LTM = lucro dos últimos 12 meses R$ 586 mi ÷ 236 mi papéis. Fonte: MCP Partnr (B3/CVM), screener do universo B3 em 13/09/2026 (NET_INCOME e TOTAL_SHARES com fonte CVM citada na resposta).">
+    <td class="frozen-1 left"><span class="empresa-name">Vivara</span></td>
+    <td class="frozen-2"><span class="ticker-badge">VIVA3</span></td>
+    <td><span class="fund-seg">Varejo de luxo</span></td>
+    <td class="toggle-col sep gh-cart"></td>
+    <td><span class="muted">—</span></td>
+    <td><span class="muted">—</span></td>
+    <td class="cresc-lucro-cell"><span class="muted">—</span></td>
+    <td><span class="muted">—</span></td>
+    <td><span class="muted">—</span><span class="col-tip" data-tip="PAYOUT — sem dado&#10;&#10;O payout sai da identidade payout = DY × P/L, e nenhum dos dois existe por exercício para esta linha: a chave de API desta sessão não tem escopo de valuation ratios anuais. Sem payout não há Div./Ação nem DY projetado — as três células ficam vazias em vez de estimadas.">ⓘ</span></td>
+    <td><span class="muted">—</span></td>
+    <td><span class="muted">—</span></td>
+    <td class="sep"><span class="muted">—</span></td>
+    <td><span class="muted">—</span></td>
+    <td><span class="muted">—</span></td>
+    <td class="sep"><span class="muted">—</span></td>
+    <td><span class="muted">—</span><span class="col-tip" data-tip="PREÇO TETO — RECUSA DECLARADA&#10;&#10;Não há preço por exercício para esta linha: a chave de API do MCP Partnr desta sessão não tem escopo de cotação histórica nem de valuation ratios anuais. Sem preço histórico não existe P/L nem P/VP da própria série, e TODO método do motor (E/P histórico, EV/EBITDA meio-de-ciclo, P/VP-alvo, Gordon) ancora em múltiplo da própria série.&#10;&#10;A DRE de 2021-2025 está completa e auditável — o que falta é só o lado do PREÇO. Calcular o teto sobre o único ano com cotação seria repetir o erro do ROXO34 (seção 27), agora sabendo. Ver SEM_TETO em scripts/motor_teto.py.&#10;&#10;L/P, margem e alavancagem continuam calculados normalmente — é o L/P que ordena a fila desde 13/09/2026.">ⓘ</span></td>
+    <td class="cotacao-cell">R$ 22,33</td>
+    <td class="margem-cell"><span class="muted">—</span></td>
+    <td class="sep"><span class="muted">—</span></td>
+    <td class="sep report-cell"><span class="btn-ver-off">📄 Pendente</span></td>
+  </tr>
+  <tr data-ticker="ASAI3.SA" data-veredicto="aguardar" data-segmento="Atacarejo" data-empresa="Assaí ASAI3" data-carteira="false" data-lpa-ltm="0.7125" data-lpa-fonte="LPA LTM = lucro dos últimos 12 meses R$ 965 mi ÷ 1.354 mi papéis. Fonte: MCP Partnr (B3/CVM), screener do universo B3 em 13/09/2026 (NET_INCOME e TOTAL_SHARES com fonte CVM citada na resposta).">
+    <td class="frozen-1 left"><span class="empresa-name">Assaí</span></td>
+    <td class="frozen-2"><span class="ticker-badge">ASAI3</span></td>
+    <td><span class="fund-seg">Atacarejo</span></td>
+    <td class="toggle-col sep gh-cart"></td>
+    <td><span class="muted">—</span></td>
+    <td><span class="muted">—</span></td>
+    <td class="cresc-lucro-cell"><span class="muted">—</span></td>
+    <td><span class="muted">—</span></td>
+    <td><span class="muted">—</span><span class="col-tip" data-tip="PAYOUT — sem dado&#10;&#10;O payout sai da identidade payout = DY × P/L, e nenhum dos dois existe por exercício para esta linha: a chave de API desta sessão não tem escopo de valuation ratios anuais. Sem payout não há Div./Ação nem DY projetado — as três células ficam vazias em vez de estimadas.">ⓘ</span></td>
+    <td><span class="muted">—</span></td>
+    <td><span class="muted">—</span></td>
+    <td class="sep"><span class="muted">—</span></td>
+    <td><span class="muted">—</span></td>
+    <td><span class="muted">—</span></td>
+    <td class="sep"><span class="muted">—</span></td>
+    <td><span class="muted">—</span><span class="col-tip" data-tip="PREÇO TETO — RECUSA DECLARADA&#10;&#10;Mesma falta de preço histórico da VIVA3, e ainda menos série: a DRE anual recente não voltou da API (só 2019-2020, anteriores ao spin-off do GPA, com base de ações incomparável — LPA de R$5,80 em 2020 contra R$0,71 no LTM).&#10;&#10;Restam margem líquida e dív.líq/EBITDA por exercício. A margem líquida caindo de 3,84% (2021) para 0,64% (2025) é o dado mais importante desta linha e está na Base de Dados. Teto, não — ver SEM_TETO em scripts/motor_teto.py.">ⓘ</span></td>
+    <td class="cotacao-cell">R$ 9,82</td>
+    <td class="margem-cell"><span class="muted">—</span></td>
+    <td class="sep"><span class="muted">—</span></td>
+    <td class="sep report-cell"><span class="btn-ver-off">📄 Pendente</span></td>
+  </tr>
+  <tr data-ticker="ALOS3.SA" data-payout-fonte="realizado" data-veredicto="compra" data-segmento="Shoppings" data-empresa="Allos ALOS3" data-preco-teto="19.61" data-carteira="false" data-dy-proj="0.0884" data-dy-manual="true" data-report="true" data-report-date="15/08/2026" data-payout="0.6334" data-lpa-ltm="1.9680" data-lpa-manual="true" data-lpa-fonte="LPA LTM = lucro dos últimos 12 meses R$ 1,03 bi ÷ 523 mi papéis negociados (units resolvidas). Fonte: MCP Partnr (B3/CVM), TTM 2T26. Gerado por scripts/gerar_colunas.py.">
     <td class="frozen-1 left"><span class="empresa-name">Allos</span></td>
     <td class="frozen-2"><span class="ticker-badge">ALOS3</span></td>
     <td><span class="fund-seg">Shoppings</span></td>

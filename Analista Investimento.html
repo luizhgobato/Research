@@ -6791,7 +6791,51 @@ const BRAPI_TOKEN = '9BpaYC3MrtWYicZWEoWQeP';
 // scripts/gerar_colunas.py passou a gerar essas colunas. Atributo que não protege mais nada
 // é pior que inútil: sugere a quem for auditar que existe um valor curado ali, e não existe.
 const RADAR_ROWS_HTML = `
-<tr data-ticker="ALOS3.SA" data-payout-fonte="realizado" data-veredicto="compra" data-segmento="Shoppings" data-empresa="Allos ALOS3" data-preco-teto="19.61" data-carteira="false" data-dy-proj="0.0884" data-dy-manual="true" data-report="true" data-report-date="15/08/2026" data-payout="0.6334" data-lpa-ltm="1.9680" data-lpa-manual="true" data-lpa-fonte="LPA LTM = lucro dos últimos 12 meses R$ 1,03 bi ÷ 523 mi papéis negociados (units resolvidas). Fonte: MCP Partnr (B3/CVM), TTM 2T26. Gerado por scripts/gerar_colunas.py.">
+<tr data-ticker="VIVA3.SA" data-veredicto="aguardar" data-segmento="Varejo de luxo" data-empresa="Vivara VIVA3" data-carteira="false" data-lpa-ltm="2.4803" data-lpa-fonte="LPA LTM = lucro dos últimos 12 meses R$ 586 mi ÷ 236 mi papéis. Fonte: MCP Partnr (B3/CVM), screener do universo B3 em 13/09/2026 (NET_INCOME e TOTAL_SHARES com fonte CVM citada na resposta).">
+    <td class="frozen-1 left"><span class="empresa-name">Vivara</span></td>
+    <td class="frozen-2"><span class="ticker-badge">VIVA3</span></td>
+    <td><span class="fund-seg">Varejo de luxo</span></td>
+    <td class="toggle-col sep gh-cart"></td>
+    <td><span class="muted">—</span></td>
+    <td><span class="muted">—</span></td>
+    <td class="cresc-lucro-cell"><span class="muted">—</span></td>
+    <td><span class="muted">—</span></td>
+    <td><span class="muted">—</span><span class="col-tip" data-tip="PAYOUT — sem dado&#10;&#10;O payout sai da identidade payout = DY × P/L, e nenhum dos dois existe por exercício para esta linha: a chave de API desta sessão não tem escopo de valuation ratios anuais. Sem payout não há Div./Ação nem DY projetado — as três células ficam vazias em vez de estimadas.">ⓘ</span></td>
+    <td><span class="muted">—</span></td>
+    <td><span class="muted">—</span></td>
+    <td class="sep"><span class="muted">—</span></td>
+    <td><span class="muted">—</span></td>
+    <td><span class="muted">—</span></td>
+    <td class="sep"><span class="muted">—</span></td>
+    <td><span class="muted">—</span><span class="col-tip" data-tip="PREÇO TETO — RECUSA DECLARADA&#10;&#10;Não há preço por exercício para esta linha: a chave de API do MCP Partnr desta sessão não tem escopo de cotação histórica nem de valuation ratios anuais. Sem preço histórico não existe P/L nem P/VP da própria série, e TODO método do motor (E/P histórico, EV/EBITDA meio-de-ciclo, P/VP-alvo, Gordon) ancora em múltiplo da própria série.&#10;&#10;A DRE de 2021-2025 está completa e auditável — o que falta é só o lado do PREÇO. Calcular o teto sobre o único ano com cotação seria repetir o erro do ROXO34 (seção 27), agora sabendo. Ver SEM_TETO em scripts/motor_teto.py.&#10;&#10;L/P, margem e alavancagem continuam calculados normalmente — é o L/P que ordena a fila desde 13/09/2026.">ⓘ</span></td>
+    <td class="cotacao-cell">R$ 22,33</td>
+    <td class="margem-cell"><span class="muted">—</span></td>
+    <td class="sep"><span class="muted">—</span></td>
+    <td class="sep report-cell"><span class="btn-ver-off">📄 Pendente</span></td>
+  </tr>
+  <tr data-ticker="ASAI3.SA" data-veredicto="aguardar" data-segmento="Atacarejo" data-empresa="Assaí ASAI3" data-carteira="false" data-lpa-ltm="0.7125" data-lpa-fonte="LPA LTM = lucro dos últimos 12 meses R$ 965 mi ÷ 1.354 mi papéis. Fonte: MCP Partnr (B3/CVM), screener do universo B3 em 13/09/2026 (NET_INCOME e TOTAL_SHARES com fonte CVM citada na resposta).">
+    <td class="frozen-1 left"><span class="empresa-name">Assaí</span></td>
+    <td class="frozen-2"><span class="ticker-badge">ASAI3</span></td>
+    <td><span class="fund-seg">Atacarejo</span></td>
+    <td class="toggle-col sep gh-cart"></td>
+    <td><span class="muted">—</span></td>
+    <td><span class="muted">—</span></td>
+    <td class="cresc-lucro-cell"><span class="muted">—</span></td>
+    <td><span class="muted">—</span></td>
+    <td><span class="muted">—</span><span class="col-tip" data-tip="PAYOUT — sem dado&#10;&#10;O payout sai da identidade payout = DY × P/L, e nenhum dos dois existe por exercício para esta linha: a chave de API desta sessão não tem escopo de valuation ratios anuais. Sem payout não há Div./Ação nem DY projetado — as três células ficam vazias em vez de estimadas.">ⓘ</span></td>
+    <td><span class="muted">—</span></td>
+    <td><span class="muted">—</span></td>
+    <td class="sep"><span class="muted">—</span></td>
+    <td><span class="muted">—</span></td>
+    <td><span class="muted">—</span></td>
+    <td class="sep"><span class="muted">—</span></td>
+    <td><span class="muted">—</span><span class="col-tip" data-tip="PREÇO TETO — RECUSA DECLARADA&#10;&#10;Mesma falta de preço histórico da VIVA3, e ainda menos série: a DRE anual recente não voltou da API (só 2019-2020, anteriores ao spin-off do GPA, com base de ações incomparável — LPA de R$5,80 em 2020 contra R$0,71 no LTM).&#10;&#10;Restam margem líquida e dív.líq/EBITDA por exercício. A margem líquida caindo de 3,84% (2021) para 0,64% (2025) é o dado mais importante desta linha e está na Base de Dados. Teto, não — ver SEM_TETO em scripts/motor_teto.py.">ⓘ</span></td>
+    <td class="cotacao-cell">R$ 9,82</td>
+    <td class="margem-cell"><span class="muted">—</span></td>
+    <td class="sep"><span class="muted">—</span></td>
+    <td class="sep report-cell"><span class="btn-ver-off">📄 Pendente</span></td>
+  </tr>
+  <tr data-ticker="ALOS3.SA" data-payout-fonte="realizado" data-veredicto="compra" data-segmento="Shoppings" data-empresa="Allos ALOS3" data-preco-teto="19.61" data-carteira="false" data-dy-proj="0.0884" data-dy-manual="true" data-report="true" data-report-date="15/08/2026" data-payout="0.6334" data-lpa-ltm="1.9680" data-lpa-manual="true" data-lpa-fonte="LPA LTM = lucro dos últimos 12 meses R$ 1,03 bi ÷ 523 mi papéis negociados (units resolvidas). Fonte: MCP Partnr (B3/CVM), TTM 2T26. Gerado por scripts/gerar_colunas.py.">
     <td class="frozen-1 left"><span class="empresa-name">Allos</span></td>
     <td class="frozen-2"><span class="ticker-badge">ALOS3</span></td>
     <td><span class="fund-seg">Shoppings</span></td>
@@ -7714,11 +7758,39 @@ const HIST_SEED = {
     2022: { preco:88.88, receita:226508000000, custos:-124195000000, lucrobruto:102313000000, ebitda:106712000000, ebit:90326000000, imposto:-15185000000, lucrolin:96337000000, divbruta:66330000000, divliq:41299000000, mgBruta:45.17, mgEbitda:47.11, mgLiq:42.53, roe:50.81, roic:32.53, pl:3.31, pvp:1.64, dy:7.71, evEbitda:3.38, divPl:0.21, lpa:20.16, divEbitda:0.39 },
     2021: { preco:77.96, receita:293524000000, custos:-117267000000, lucrobruto:176257000000, ebitda:157714000000, ebit:141335000000, imposto:-25320000000, lucrolin:121343000000, divbruta:76909000000, divliq:10472000000, mgBruta:60.05, mgEbitda:53.73, mgLiq:41.34, roe:60.95, roic:57.27, pl:3.21, pvp:1.98, dy:18.08, evEbitda:2.55, divPl:0.05, lpa:23.64, divEbitda:0.07 },
   },
+  // ── ADICIONADAS EM 13/09/2026 — SÉRIE INCOMPLETA, LEIA A NOTA ─────────────────────────
+  // Entraram a pedido do usuário depois do screener do universo B3 inteiro (as duas passaram
+  // no filtro P/L ≤ 12x + ROE ≥ 15% + dív.líq/EBITDA ≤ 3x). NÃO têm a mesma qualidade de série
+  // das outras 30, e os campos que faltam estão gravados como `null` em vez de preenchidos
+  // por estimativa: a chave de API do MCP Partnr desta sessão não tem escopo para cotação
+  // histórica (`@quotes/post/eod`) nem para valuation ratios anuais, que é de onde sairiam
+  // `preco`, `pl`, `pvp` e `dy` de cada exercício. Sem preço histórico não há múltiplo
+  // histórico, e sem múltiplo histórico o motor de preço-teto não tem série para ancorar —
+  // por isso as duas entram em SEM_TETO (scripts/motor_teto.py), declarado por nome, e não
+  // com um teto inventado a partir de um ano só. Mesmo tratamento do ROXO34 (seção 27).
+  VIVA3: {
+    2026: { preco:22.33, receita:null, custos:null, lucrobruto:null, ebitda:null, ebit:null, imposto:null, lucrolin:585839057, divbruta:null, divliq:101672094, mgBruta:null, mgEbitda:null, mgLiq:null, roe:null, roic:null, pl:9.0, pvp:null, dy:null, evEbitda:null, divPl:null, lpa:2.4803, divEbitda:0.28 },
+    2025: { preco:null, receita:3026581564, custos:-921472483, lucrobruto:2105109081, ebitda:879157151, ebit:726321236, imposto:31703788, lucrolin:619502301, divbruta:null, divliq:null, mgBruta:69.55, mgEbitda:29.05, mgLiq:20.47, roe:null, roic:null, pl:null, pvp:null, dy:null, evEbitda:null, divPl:null, lpa:2.6228, divEbitda:0.15 },
+    2024: { preco:null, receita:2577113417, custos:-767087486, lucrobruto:1810025931, ebitda:838115320, ebit:683585305, imposto:27155805, lucrolin:653393946, divbruta:null, divliq:null, mgBruta:70.23, mgEbitda:32.52, mgLiq:25.35, roe:null, roic:null, pl:null, pvp:null, dy:null, evEbitda:null, divPl:null, lpa:2.7663, divEbitda:0.14 },
+    2023: { preco:null, receita:2186974709, custos:-670864007, lucrobruto:1516110702, ebitda:584731032, ebit:450646110, imposto:-31598050, lucrolin:369244553, divbruta:null, divliq:null, mgBruta:69.32, mgEbitda:26.74, mgLiq:16.88, roe:null, roic:null, pl:null, pvp:null, dy:null, evEbitda:null, divPl:null, lpa:1.5633, divEbitda:-0.06 },
+    2022: { preco:null, receita:1843735089, custos:-573527520, lucrobruto:1270207569, ebitda:490313487, ebit:376372328, imposto:29819817, lucrolin:360854417, divbruta:null, divliq:null, mgBruta:68.89, mgEbitda:26.59, mgLiq:19.57, roe:null, roic:null, pl:null, pvp:null, dy:null, evEbitda:null, divPl:null, lpa:1.5278, divEbitda:-0.18 },
+    2021: { preco:null, receita:1466386885, custos:-474909083, lucrobruto:991477802, ebitda:366516470, ebit:294686451, imposto:35313290, lucrolin:298490271, divbruta:null, divliq:null, mgBruta:67.61, mgEbitda:24.99, mgLiq:20.36, roe:null, roic:null, pl:null, pvp:null, dy:null, evEbitda:null, divPl:null, lpa:1.2637, divEbitda:-0.48 },
+  },
+  ASAI3: {
+    2026: { preco:9.82, receita:null, custos:null, lucrobruto:null, ebitda:6209000000, ebit:null, imposto:null, lucrolin:965000000, divbruta:null, divliq:11809000000, mgBruta:null, mgEbitda:null, mgLiq:null, roe:null, roic:null, pl:13.78, pvp:null, dy:null, evEbitda:null, divPl:null, lpa:0.7125, divEbitda:1.9 },
+    2025: { preco:null, receita:null, custos:null, lucrobruto:null, ebitda:null, ebit:null, imposto:null, lucrolin:null, divbruta:null, divliq:null, mgBruta:null, mgEbitda:null, mgLiq:0.64, roe:null, roic:null, pl:null, pvp:null, dy:null, evEbitda:null, divPl:null, lpa:null, divEbitda:1.94 },
+    2024: { preco:null, receita:null, custos:null, lucrobruto:null, ebitda:null, ebit:null, imposto:null, lucrolin:null, divbruta:null, divliq:null, mgBruta:null, mgEbitda:null, mgLiq:1.04, roe:null, roic:null, pl:null, pvp:null, dy:null, evEbitda:null, divPl:null, lpa:null, divEbitda:1.99 },
+    2023: { preco:null, receita:null, custos:null, lucrobruto:null, ebitda:null, ebit:null, imposto:null, lucrolin:null, divbruta:null, divliq:null, mgBruta:null, mgEbitda:null, mgLiq:1.07, roe:null, roic:null, pl:null, pvp:null, dy:null, evEbitda:null, divPl:null, lpa:null, divEbitda:2.04 },
+    2022: { preco:null, receita:null, custos:null, lucrobruto:null, ebitda:null, ebit:null, imposto:null, lucrolin:null, divbruta:null, divliq:null, mgBruta:null, mgEbitda:null, mgLiq:2.24, roe:null, roic:null, pl:null, pvp:null, dy:null, evEbitda:null, divPl:null, lpa:null, divEbitda:1.76 },
+    2021: { preco:null, receita:null, custos:null, lucrobruto:null, ebitda:null, ebit:null, imposto:null, lucrolin:null, divbruta:null, divliq:null, mgBruta:null, mgEbitda:null, mgLiq:3.84, roe:null, roic:null, pl:null, pvp:null, dy:null, evEbitda:null, divPl:null, lpa:null, divEbitda:1.68 },
+  },
 };
 
 // Nota de rodapé específica por ticker no histórico expansível da Base de Dados
 // (js/fundamentos.js → buildHistYearRows). Sem entrada aqui = nota genérica.
 const HIST_SEED_NOTES = {
+  VIVA3: '⚠️ ADICIONADA EM 13/09/2026, SÉRIE PARCIAL · Fonte: MCP Partnr (B3/CVM), DRE consolidada 2021-2025 + LTM do screener. NÃO tem preço, P/L, P/VP, DY nem ROE por exercício: a chave de API desta sessão não tem escopo de cotação histórica nem de valuation ratios anuais. Sem múltiplo histórico não há série para ancorar preço-teto — ver SEM_TETO em scripts/motor_teto.py. O que ESTÁ aqui (receita, lucro, EBITDA, margens, LPA) veio da DRE e é auditável linha a linha',
+  ASAI3: '⚠️ ADICIONADA EM 13/09/2026, SÉRIE MUITO PARCIAL · Fonte: MCP Partnr (B3/CVM). Só margem líquida e dív.líq/EBITDA por exercício (2021-2025) mais o LTM 2026 — a DRE anual recente não voltou da API (só 2019-2020, anteriores ao spin-off do GPA, que mudaram a base de ações e não são comparáveis: LPA de R$5,80 em 2020 contra R$0,71 no LTM). Margem líquida caindo de 3,84% (2021) para 0,64% (2025) é o dado mais importante desta linha e está preenchido. Sem preço-teto — ver SEM_TETO',
   VALE3: 'Fonte: MCP Partnr (B3/CVM) · lucro despenca de R$96,3bi (2022) para R$8,7bi no LTM 2026 — ciclo do minério mais provisões; o EBITDA caiu bem menos, olhe os dois',
   PETR4: 'Fonte: MCP Partnr (B3/CVM) · classe PN (mais líquida) · DY de 64,98% em 2022 é real: distribuição extraordinária daquele ano, NÃO é recorrente e não deve ser usada em projeção',
   SBSP3: '⚠️ Fonte: MCP Partnr (B3/CVM) · DESDOBRAMENTO 5:1 em 2026: preço cai de R$133,39 (2025) para R$26,19 e o LPA de R$12,00 para R$2,29. A série de preço e LPA NÃO é comparável entre 2025 e 2026 — múltiplos (P/L, P/VP) seguem válidos porque preço e lucro por ação foram divididos juntos',
@@ -7837,121 +7909,10 @@ const SETORIAL_NOTES = {
 </script>
 <script>
 // ══════════════════════════════════════════════════════════════════════════════════════════
-// TIR REAL — faixa de três medidas independentes   ·   GERADO por scripts/gerar_tir.py · 06/09/2026
+// TIR REAL — faixa de três medidas independentes   ·   GERADO por scripts/gerar_tir.py
 // ══════════════════════════════════════════════════════════════════════════════════════════
-// SUBSTITUI a "Nota 0-100". Motivo: o backtest sobre os dados deste projeto (130 obs.,
-// 2021-2026) não achou poder discriminante nos 5 critérios, e os eixos de qualidade (ROE,
-// alavancagem) PIORARAM o resultado. Ver METODOLOGIA_ANALISE.md seção 10.
+// ⚠️ ARQUIVO GERADO — não editar à mão. Rode `python3 scripts/gerar_tir.py`.
 //
-// A COLUNA MOSTRA A FAIXA (lo → hi), NÃO A MEDIANA. Isto é correção de um erro de desenho:
-// exibir só a mediana obrigava a cruzar com uma segunda coluna de convergência para não ler
-// errado — e um número que precisa de outro para não enganar está mal apresentado. A faixa
-// carrega as duas informações de uma vez: onde está o retorno E quanto as medidas discordam.
-//   BRSR6 "16,9%"  parece resposta.
-//   BRSR6 "10,2 → 23,5%"  mostra que não é: pode ser ótimo ou medíocre, vá investigar.
-//
-// As três medidas, todas em RETORNO REAL comparável com a NTN-B:
-//   cx   CAIXA        (FCO − capex) ÷ valor de mercado. Imune a lucro contábil. 11 de 25.
-//   div  DIVIDENDOS   DDM 2 estágios: 10 anos a g, depois perpetuidade a IPCA+2%.
-//                     DY futuro = lucro normalizado × payout MEDIANO de 5 anos.
-//   luc  LUCRO        lucro normalizado ÷ valor de mercado + g.
-//
-// ⚠️ FISHER: retorno real é DIVISÃO, não subtração — real = (1+nominal)/(1+IPCA) − 1.
-// A versão anterior subtraía, o que superestimava em ~0,8 p.p. na PETR4 e mais nos retornos
-// altos. Não mudava a ordem do ranking, mas era erro de método.
-//
-// `g` = MENOR entre CAGR 5a do lucro recorrente e ROE × retenção, limitado a 15%.
-// ⚠️ Financeiras NÃO têm CAGR de lucro recorrente na base (testado em ITUB e BBSE): nelas o g
-// vem só de ROE × retenção, e o teto de 15% ainda é premissa arbitrária.
-//
-// Patrimônio das financeiras vem do BALANÇO (CONTROLLING_SHAREHOLDERS_EQUITY), não de
-// valor de mercado ÷ P/VP — o P/VP do Partnr erra em units (BPAC11: 6,96x reportado contra
-// 2,70x real, porque divide preço da unit por valor patrimonial por ação).
-// ⚠️ REGERADO EM 06/09/2026. Este arquivo era um SNAPSHOT ESTÁTICO escrito à mão em
-// 05/09, antes das correções de payout daquele dia — e por isso ficou com premissas de
-// duas versões atrás sem que nada quebrasse. Doze empresas divergiam mais de 5 p.p. do
-// que o motor calcula (AXIA3 43%→93%, SBSP3 19%→50%, LEVE3 57%→86%). Um arquivo
-// estático não briga com o motor: ele envelhece em silêncio, que é o modo mais
-// perigoso da falha. Agora é gerado, e o payout vem de payout_final() — a mesma função
-// que alimenta o preço-teto e a coluna de payout do Radar.
-//
-// `cx` e `gCagr` são HERDADOS do snapshot: dependem de FCO, capex e lucro recorrente,
-// campos que não estão no HIST_SEED. Nenhum dos dois depende de payout, então a
-// correção não os afeta. O campo `fonte` diz de onde veio o payout de cada linha.
-// ⚠️ REGERADO EM 06/09/2026. Este arquivo era um SNAPSHOT ESTÁTICO escrito à mão em
-// 05/09, antes das correções de payout daquele dia — e por isso ficou com premissas de
-// duas versões atrás sem que nada quebrasse. Doze empresas divergiam mais de 5 p.p. do
-// que o motor calcula (AXIA3 43%→93%, SBSP3 19%→50%, LEVE3 57%→86%). Um arquivo
-// estático não briga com o motor: ele envelhece em silêncio, que é o modo mais
-// perigoso da falha. Agora é gerado, e o payout vem de payout_final() — a mesma função
-// que alimenta o preço-teto e a coluna de payout do Radar.
-//
-// `cx` e `gCagr` são HERDADOS do snapshot: dependem de FCO, capex e lucro recorrente,
-// campos que não estão no HIST_SEED. Nenhum dos dois depende de payout, então a
-// correção não os afeta. O campo `fonte` diz de onde veio o payout de cada linha.
-// ⚠️ REGERADO EM 06/09/2026. Este arquivo era um SNAPSHOT ESTÁTICO escrito à mão em
-// 05/09, antes das correções de payout daquele dia — e por isso ficou com premissas de
-// duas versões atrás sem que nada quebrasse. Doze empresas divergiam mais de 5 p.p. do
-// que o motor calcula (AXIA3 43%→93%, SBSP3 19%→50%, LEVE3 57%→86%). Um arquivo
-// estático não briga com o motor: ele envelhece em silêncio, que é o modo mais
-// perigoso da falha. Agora é gerado, e o payout vem de payout_final() — a mesma função
-// que alimenta o preço-teto e a coluna de payout do Radar.
-//
-// `cx` e `gCagr` são HERDADOS do snapshot: dependem de FCO, capex e lucro recorrente,
-// campos que não estão no HIST_SEED. Nenhum dos dois depende de payout, então a
-// correção não os afeta. O campo `fonte` diz de onde veio o payout de cada linha.
-// ⚠️ REGERADO EM 06/09/2026. Este arquivo era um SNAPSHOT ESTÁTICO escrito à mão em
-// 05/09, antes das correções de payout daquele dia — e por isso ficou com premissas de
-// duas versões atrás sem que nada quebrasse. Doze empresas divergiam mais de 5 p.p. do
-// que o motor calcula (AXIA3 43%→93%, SBSP3 19%→50%, LEVE3 57%→86%). Um arquivo
-// estático não briga com o motor: ele envelhece em silêncio, que é o modo mais
-// perigoso da falha. Agora é gerado, e o payout vem de payout_final() — a mesma função
-// que alimenta o preço-teto e a coluna de payout do Radar.
-//
-// `cx` e `gCagr` são HERDADOS do snapshot: dependem de FCO, capex e lucro recorrente,
-// campos que não estão no HIST_SEED. Nenhum dos dois depende de payout, então a
-// correção não os afeta. O campo `fonte` diz de onde veio o payout de cada linha.
-// ⚠️ REGERADO EM 06/09/2026. Este arquivo era um SNAPSHOT ESTÁTICO escrito à mão em
-// 05/09, antes das correções de payout daquele dia — e por isso ficou com premissas de
-// duas versões atrás sem que nada quebrasse. Doze empresas divergiam mais de 5 p.p. do
-// que o motor calcula (AXIA3 43%→93%, SBSP3 19%→50%, LEVE3 57%→86%). Um arquivo
-// estático não briga com o motor: ele envelhece em silêncio, que é o modo mais
-// perigoso da falha. Agora é gerado, e o payout vem de payout_final() — a mesma função
-// que alimenta o preço-teto e a coluna de payout do Radar.
-//
-// `cx` e `gCagr` são HERDADOS do snapshot: dependem de FCO, capex e lucro recorrente,
-// campos que não estão no HIST_SEED. Nenhum dos dois depende de payout, então a
-// correção não os afeta. O campo `fonte` diz de onde veio o payout de cada linha.
-// ⚠️ REGERADO EM 06/09/2026. Este arquivo era um SNAPSHOT ESTÁTICO escrito à mão em
-// 05/09, antes das correções de payout daquele dia — e por isso ficou com premissas de
-// duas versões atrás sem que nada quebrasse. Doze empresas divergiam mais de 5 p.p. do
-// que o motor calcula (AXIA3 43%→93%, SBSP3 19%→50%, LEVE3 57%→86%). Um arquivo
-// estático não briga com o motor: ele envelhece em silêncio, que é o modo mais
-// perigoso da falha. Agora é gerado, e o payout vem de payout_final() — a mesma função
-// que alimenta o preço-teto e a coluna de payout do Radar.
-//
-// `cx` e `gCagr` são HERDADOS do snapshot: dependem de FCO, capex e lucro recorrente,
-// campos que não estão no HIST_SEED. Nenhum dos dois depende de payout, então a
-// correção não os afeta. O campo `fonte` diz de onde veio o payout de cada linha.
-// ⚠️ REGERADO EM 06/09/2026, campos ao-vivo acrescentados 07/09/2026. Este arquivo era
-// um SNAPSHOT ESTÁTICO escrito à mão em 05/09, antes das correções de payout daquele
-// dia — e por isso ficou com premissas de duas versões atrás sem que nada quebrasse.
-// Doze empresas divergiam mais de 5 p.p. do que o motor calcula (AXIA3 43%→93%,
-// SBSP3 19%→50%, LEVE3 57%→86%). Um arquivo estático não briga com o motor: ele
-// envelhece em silêncio, que é o modo mais perigoso da falha. Agora é gerado, e o
-// payout vem de payout_final() — a mesma função que alimenta o preço-teto e a coluna
-// de payout do Radar.
-//
-// `cx` e `gCagr` são HERDADOS do snapshot: dependem de FCO, capex e lucro recorrente,
-// campos que não estão no HIST_SEED. Nenhum dos dois depende de payout, então a
-// correção não os afeta. O campo `fonte` diz de onde veio o payout de cada linha.
-//
-// ⚠️ `med/lo/hi/cx/div/luc` NESTE ARQUIVO SÃO CALCULADOS COM O PREÇO DO DATA-BASE
-// (`precoBase`), NÃO com a cotação ao vivo — igual ao preço-teto ANTES de recalcular
-// em cada atualização de página. Por isso `pap`, `d0` e `fcfe` também estão aqui: são
-// os insumos que não dependem de preço, e js/decisao.js usa `_tirAoVivo()` para
-// recompor cx/div/luc com a cotação do DOM a cada render — os três campos estáticos
-// ficam só como fallback caso a cotação da linha ainda não tenha carregado.
 // ⚠️ REGERADO EM 06/09/2026, campos ao-vivo acrescentados 07/09/2026. Este arquivo era
 // um SNAPSHOT ESTÁTICO escrito à mão em 05/09, antes das correções de payout daquele
 // dia — e por isso ficou com premissas de duas versões atrás sem que nada quebrasse.
@@ -7974,34 +7935,34 @@ const SETORIAL_NOTES = {
 const TIR_DATA_EM = '06/09/2026';
 const TIR_NTNB = 7.70;   // NTN-B 2035 (IPCA + %). Atualizar junto com os dados.
 const TIR_SEED = {
-  FIQE3:    { med: 19.19, lo:  8.48, hi: 33.33, cx: 33.33, div:  8.48, luc: 19.19, amp: 24.85, g: 11.27, gBruto:  11.27, gRoe: 11.27, gCagr: 25.57, payout: 34.3, lucroNorm:229282836, motor:'receita × margem líquida mediana', seg:'IND', fonte:'realizado', pap:363679167, d0:0.2164, fcfe:680831000, fcfeAjustada:true, precoBase:4.77 },
+  FIQE3:    { med: 19.19, lo:  8.48, hi: 33.33, cx: 33.33, div:  8.48, luc: 19.19, amp: 24.85, g: 11.27, gBruto:  11.27, gRoe: 11.27, gCagr: 25.57, payout: 34.3, lucroNorm:229282836, motor:'receita × margem líquida mediana', seg:'UTIL', fonte:'realizado', pap:363679167, d0:0.2164, fcfe:680831000, fcfeAjustada:true, precoBase:4.77 },
   BRSR6:    { med: 18.71, lo: 12.25, hi: 25.16, cx:  null, div: 12.25, luc: 25.16, amp: 12.91, g:  8.56, gBruto:   8.56, gRoe:  8.56, gCagr:  null, payout: 40.0, lucroNorm:1358314878, motor:'ROE mediano × patrimônio líquido', seg:'FIN', fonte:'piso', pap:408865310, d0:1.3289, fcfe:null, fcfeAjustada:false, precoBase:14.99 },
-  PETR4:    { med: 18.10, lo:  9.85, hi: 22.35, cx:  9.85, div: 18.10, luc: 22.35, amp: 12.50, g:  6.95, gBruto:   6.95, gRoe:  6.95, gCagr:  null, payout: 74.2, lucroNorm:129992841000, motor:'receita × margem líquida mediana', seg:'IND', fonte:'outra_base', pap:12966623476, d0:7.4405, fcfe:91894000000, fcfeAjustada:true, precoBase:48.13 },
+  PETR4:    { med: 18.10, lo:  9.85, hi: 22.35, cx:  9.85, div: 18.10, luc: 22.35, amp: 12.50, g:  6.95, gBruto:   6.95, gRoe:  6.95, gCagr:  null, payout: 74.2, lucroNorm:129992841000, motor:'receita × margem líquida mediana', seg:'CICL', fonte:'outra_base', pap:12966623476, d0:7.4405, fcfe:91894000000, fcfeAjustada:true, precoBase:48.13 },
   BBSE3:    { med: 17.62, lo: 14.85, hi: 20.39, cx:  null, div: 14.85, luc: 20.39, amp:  5.54, g: 15.00, gBruto:  23.12, gRoe: 23.12, gCagr:  null, payout: 70.8, lucroNorm:8693797041, motor:'ROE mediano × patrimônio líquido', seg:'FIN', fonte:'estatutario', pap:2000089283, d0:3.0758, fcfe:null, fcfeAjustada:false, precoBase:40.48 },
   BMEB4:    { med: 15.79, lo:  8.79, hi: 22.80, cx:  null, div:  8.79, luc: 22.80, amp: 14.01, g: 15.00, gBruto:  19.61, gRoe: 19.61, gCagr:  null, payout: 27.5, lucroNorm:841830215, motor:'ROE mediano × patrimônio líquido', seg:'FIN', fonte:'realizado', pap:104930497, d0:2.2074, fcfe:null, fcfeAjustada:false, precoBase:60.55 },
   PSSA3:    { med: 13.59, lo:  9.18, hi: 18.00, cx:  null, div:  9.18, luc: 18.00, amp:  8.81, g: 12.99, gBruto:  12.99, gRoe: 12.99, gCagr:  null, payout: 43.8, lucroNorm:3360915162, motor:'ROE mediano × patrimônio líquido', seg:'FIN', fonte:'realizado', pap:646537442, d0:2.2750, fcfe:null, fcfeAjustada:false, precoBase:50.74 },
-  ITSA4:    { med: 13.25, lo: 10.12, hi: 16.38, cx:  null, div: 10.12, luc: 16.38, amp:  6.26, g:  8.50, gBruto:   8.50, gRoe:  8.50, gCagr:  null, payout: 53.6, lucroNorm:19080998282, motor:'ROE mediano × patrimônio líquido', seg:'FIN', fonte:'realizado', pap:10690740741, d0:0.9570, fcfe:null, fcfeAjustada:false, precoBase:13.68 },
-  BRAP4:    { med: 12.92, lo: 10.45, hi: 15.39, cx:  null, div: 10.45, luc: 15.39, amp:  4.93, g:  2.85, gBruto:   2.85, gRoe:  2.85, gCagr:  null, payout: 60.2, lucroNorm:1594332571, motor:'ROE mediano × patrimônio líquido', seg:'FIN', fonte:'realizado', pap:393341325, d0:2.4411, fcfe:null, fcfeAjustada:false, precoBase:22.95 },
-  RANI3:    { med: 12.05, lo:  9.55, hi: 20.47, cx:  9.55, div: 12.05, luc: 20.47, amp: 10.92, g:  8.40, gBruto:   8.40, gRoe:  8.40, gCagr:  null, payout: 50.4, lucroNorm:316421836, motor:'receita × margem líquida mediana', seg:'IND', fonte:'realizado', pap:239712495, d0:0.6648, fcfe:261833000, fcfeAjustada:true, precoBase:7.58 },
+  ITSA4:    { med: 13.25, lo: 10.12, hi: 16.38, cx:  null, div: 10.12, luc: 16.38, amp:  6.26, g:  8.50, gBruto:   8.50, gRoe:  8.50, gCagr:  null, payout: 53.6, lucroNorm:19080998282, motor:'ROE mediano × patrimônio líquido', seg:'NAV', fonte:'realizado', pap:10690740741, d0:0.9570, fcfe:null, fcfeAjustada:false, precoBase:13.68 },
+  BRAP4:    { med: 12.92, lo: 10.45, hi: 15.39, cx:  null, div: 10.45, luc: 15.39, amp:  4.93, g:  2.85, gBruto:   2.85, gRoe:  2.85, gCagr:  null, payout: 60.2, lucroNorm:1594332571, motor:'ROE mediano × patrimônio líquido', seg:'NAV', fonte:'realizado', pap:393341325, d0:2.4411, fcfe:null, fcfeAjustada:false, precoBase:22.95 },
+  RANI3:    { med: 12.05, lo:  9.55, hi: 20.47, cx:  9.55, div: 12.05, luc: 20.47, amp: 10.92, g:  8.40, gBruto:   8.40, gRoe:  8.40, gCagr:  null, payout: 50.4, lucroNorm:316421836, motor:'receita × margem líquida mediana', seg:'CICL', fonte:'realizado', pap:239712495, d0:0.6648, fcfe:261833000, fcfeAjustada:true, precoBase:7.58 },
   LEVE3:    { med: 11.92, lo: 10.73, hi: 12.10, cx: 10.73, div: 11.92, luc: 12.10, amp:  1.38, g:  0.26, gBruto:   0.26, gRoe: 10.21, gCagr:  0.26, payout: 85.9, lucroNorm:741336000, motor:'lucro recorrente (campo Partnr)', seg:'IND', fonte:'realizado', pap:135523715, d0:4.6964, fcfe:689393000, fcfeAjustada:true, precoBase:32.52 },
-  KLBN11:   { med: 11.86, lo:  9.18, hi: 14.54, cx:  null, div:  9.18, luc: 14.54, amp:  5.36, g:  5.75, gBruto:   5.75, gRoe:  5.75, gCagr:  null, payout: 53.9, lucroNorm:3268773520, motor:'receita × margem líquida mediana', seg:'IND', fonte:'outra_base', pap:1214609111, d0:1.4504, fcfe:-1012710000, fcfeAjustada:true, precoBase:19.40 },
-  SBSP3:    { med: 11.64, lo:  6.25, hi: 13.61, cx: 13.61, div:  6.25, luc: 11.64, amp:  7.36, g: 10.32, gBruto:  10.32, gRoe: 10.32, gCagr:  null, payout: 50.0, lucroNorm:5783821556, motor:'receita × margem líquida mediana', seg:'IND', fonte:'teto', pap:3518545415, d0:0.8219, fcfe:17187887000, fcfeAjustada:true, precoBase:26.19 },
+  KLBN11:   { med: 11.86, lo:  9.18, hi: 14.54, cx:  null, div:  9.18, luc: 14.54, amp:  5.36, g:  5.75, gBruto:   5.75, gRoe:  5.75, gCagr:  null, payout: 53.9, lucroNorm:3268773520, motor:'receita × margem líquida mediana', seg:'CICL', fonte:'outra_base', pap:1214609111, d0:1.4504, fcfe:-1012710000, fcfeAjustada:true, precoBase:19.40 },
+  SBSP3:    { med: 11.64, lo:  6.25, hi: 13.61, cx: 13.61, div:  6.25, luc: 11.64, amp:  7.36, g: 10.32, gBruto:  10.32, gRoe: 10.32, gCagr:  null, payout: 50.0, lucroNorm:5783821556, motor:'receita × margem líquida mediana', seg:'UTIL', fonte:'teto', pap:3518545415, d0:0.8219, fcfe:17187887000, fcfeAjustada:true, precoBase:26.19 },
   ITUB3:    { med: 11.48, lo:  8.27, hi: 14.69, cx:  null, div:  8.27, luc: 14.69, amp:  6.42, g: 10.52, gBruto:  10.52, gRoe: 10.52, gCagr:  null, payout: 50.0, lucroNorm:39059965264, motor:'ROE mediano × patrimônio líquido', seg:'FIN', fonte:'estatutario', pap:9794124882, d0:1.9929, fcfe:null, fcfeAjustada:false, precoBase:43.07 },
   SANB11:   { med: 10.49, lo:  8.18, hi: 12.81, cx:  null, div:  8.18, luc: 12.81, amp:  4.62, g:  4.88, gBruto:   4.88, gRoe:  4.88, gCagr:  null, payout: 53.3, lucroNorm:14496584457, motor:'ROE mediano × patrimônio líquido (balanço)', seg:'FIN', fonte:'realizado', pap:3754909464, d0:2.0558, fcfe:null, fcfeAjustada:false, precoBase:29.85 },
-  VALE3:    { med: 10.41, lo:  2.44, hi: 13.81, cx:  2.44, div: 10.41, luc: 13.81, amp: 11.38, g:  1.88, gBruto:   1.88, gRoe:  1.88, gCagr:  null, payout: 66.4, lucroNorm:62027000000, motor:'lucro recorrente (campo Partnr)', seg:'IND', fonte:'outra_base', pap:4542316303, d0:9.0647, fcfe:25516000000, fcfeAjustada:true, precoBase:80.40 },
+  VALE3:    { med: 10.41, lo:  2.44, hi: 13.81, cx:  2.44, div: 10.41, luc: 13.81, amp: 11.38, g:  1.88, gBruto:   1.88, gRoe:  1.88, gCagr:  null, payout: 66.4, lucroNorm:62027000000, motor:'lucro recorrente (campo Partnr)', seg:'CICL', fonte:'outra_base', pap:4542316303, d0:9.0647, fcfe:25516000000, fcfeAjustada:true, precoBase:80.40 },
   BPAC11:   { med:  9.72, lo:  4.41, hi: 15.03, cx:  null, div:  4.41, luc: 15.03, amp: 10.62, g: 15.00, gBruto:  17.12, gRoe: 17.12, gCagr:  null, payout: 23.4, lucroNorm:11421058000, motor:'lucro recorrente (campo Partnr)', seg:'FIN', fonte:'realizado', pap:3847053872, d0:0.6952, fcfe:null, fcfeAjustada:false, precoBase:57.80 },
-  CPFE3:    { med:  8.48, lo:  8.36, hi:  9.96, cx:  8.48, div:  8.36, luc:  9.96, amp:  1.60, g:  3.12, gBruto:   3.12, gRoe:  8.22, gCagr:  3.12, payout: 68.6, lucroNorm:6048203710, motor:'receita × margem líquida mediana', seg:'IND', fonte:'piso', pap:1152183325, d0:3.5985, fcfe:6861067000, fcfeAjustada:true, precoBase:44.79 },
+  CPFE3:    { med:  8.48, lo:  8.36, hi:  9.96, cx:  8.48, div:  8.36, luc:  9.96, amp:  1.60, g:  3.12, gBruto:   3.12, gRoe:  8.22, gCagr:  3.12, payout: 68.6, lucroNorm:6048203710, motor:'receita × margem líquida mediana', seg:'UTIL', fonte:'piso', pap:1152183325, d0:3.5985, fcfe:6861067000, fcfeAjustada:true, precoBase:44.79 },
   CXSE3:    { med:  7.95, lo:  7.49, hi:  8.41, cx:  null, div:  7.49, luc:  8.41, amp:  0.92, g:  6.32, gBruto:   6.32, gRoe:  6.32, gCagr:  null, payout: 80.0, lucroNorm:4024087388, motor:'ROE mediano × patrimônio líquido', seg:'FIN', fonte:'realizado', pap:3005427994, d0:1.0708, fcfe:null, fcfeAjustada:false, precoBase:19.40 },
-  SAUD3:    { med:  7.93, lo:  5.39, hi: 10.48, cx:  null, div:  5.39, luc: 10.48, amp:  5.08, g:  9.86, gBruto:   9.86, gRoe:  9.86, gCagr:  null, payout: 46.9, lucroNorm:2358835563, motor:'receita × margem líquida mediana', seg:'IND', fonte:'pares', pap:2927105556, d0:0.3777, fcfe:null, fcfeAjustada:false, precoBase:14.60 },
+  SAUD3:    { med:  7.93, lo:  5.39, hi: 10.48, cx:  null, div:  5.39, luc: 10.48, amp:  5.08, g:  9.86, gBruto:   9.86, gRoe:  9.86, gCagr:  null, payout: 46.9, lucroNorm:2358835563, motor:'receita × margem líquida mediana', seg:'FIN', fonte:'pares', pap:2927105556, d0:0.3777, fcfe:null, fcfeAjustada:false, precoBase:14.60 },
   MULT3:    { med:  7.52, lo:  2.52, hi: 17.19, cx:  2.52, div:  7.52, luc: 17.19, amp: 14.67, g: 12.69, gBruto:  12.69, gRoe: 12.69, gCagr: 26.21, payout: 35.5, lucroNorm:1409011000, motor:'FFO (FCO − capex)', seg:'SHOP', fonte:'realizado', pap:519762016, d0:0.9633, fcfe:1027126000, fcfeAjustada:true, precoBase:27.95 },
-  TIMS3:    { med:  6.77, lo:  6.18, hi: 10.56, cx: 10.56, div:  6.77, luc:  6.18, amp:  4.38, g:  3.44, gBruto:   3.44, gRoe:  3.44, gCagr: 15.55, payout: 80.3, lucroNorm:3382496391, motor:'receita × margem líquida mediana', seg:'IND', fonte:'outra_base', pap:2422648586, d0:1.1214, fcfe:7013735000, fcfeAjustada:true, precoBase:18.71 },
+  TIMS3:    { med:  6.77, lo:  6.18, hi: 10.56, cx: 10.56, div:  6.77, luc:  6.18, amp:  4.38, g:  3.44, gBruto:   3.44, gRoe:  3.44, gCagr: 15.55, payout: 80.3, lucroNorm:3382496391, motor:'receita × margem líquida mediana', seg:'UTIL', fonte:'outra_base', pap:2422648586, d0:1.1214, fcfe:7013735000, fcfeAjustada:true, precoBase:18.71 },
   SHUL4:    { med:  6.70, lo:  2.42, hi: 10.98, cx:  null, div:  2.42, luc: 10.98, amp:  8.56, g:  0.00, gBruto:  -3.18, gRoe: 17.46, gCagr: -3.18, payout:  5.8, lucroNorm:252232383, motor:'receita × margem líquida mediana', seg:'IND', fonte:'realizado', pap:356271795, d0:0.0408, fcfe:-1080000, fcfeAjustada:true, precoBase:4.45 },
   ALOS3:    { med:  5.97, lo:  5.74, hi: 10.25, cx: 10.25, div:  5.74, luc:  5.97, amp:  4.50, g:  2.62, gBruto:   2.62, gRoe:  2.62, gCagr: 17.90, payout: 63.3, lucroNorm:1127358000, motor:'FFO (FCO − capex)', seg:'SHOP', fonte:'realizado', pap:523411472, d0:1.3642, fcfe:2119208000, fcfeAjustada:true, precoBase:26.74 },
   FLRY3:    { med:  5.26, lo:  4.07, hi:  7.64, cx:  7.64, div:  5.26, luc:  4.07, amp:  3.57, g:  2.80, gBruto:   2.80, gRoe:  2.80, gCagr: 27.52, payout: 75.0, lucroNorm:632977056, motor:'receita × margem líquida mediana', seg:'IND', fonte:'realizado', pap:546963982, d0:0.8680, fcfe:1334861000, fcfeAjustada:true, precoBase:19.65 },
-  CLSC4:    { med:  5.20, lo:  4.37, hi:  9.17, cx:  5.20, div:  4.37, luc:  9.17, amp:  4.80, g:  2.75, gBruto:   2.75, gRoe: 14.10, gCagr:  2.75, payout: 29.3, lucroNorm:677687000, motor:'lucro recorrente (campo Partnr)', seg:'IND', fonte:'realizado', pap:38574593, d0:5.1394, fcfe:594033000, fcfeAjustada:true, precoBase:156.00 },
+  CLSC4:    { med:  5.20, lo:  4.37, hi:  9.17, cx:  5.20, div:  4.37, luc:  9.17, amp:  4.80, g:  2.75, gBruto:   2.75, gRoe: 14.10, gCagr:  2.75, payout: 29.3, lucroNorm:677687000, motor:'lucro recorrente (campo Partnr)', seg:'UTIL', fonte:'realizado', pap:38574593, d0:5.1394, fcfe:594033000, fcfeAjustada:true, precoBase:156.00 },
   PASS3:    { med:  4.73, lo:  4.57, hi: 15.72, cx: 15.72, div:  4.73, luc:  4.57, amp: 11.15, g:  0.00, gBruto: -16.35, gRoe:  9.44, gCagr:-16.35, payout: 51.4, lucroNorm:1512254377, motor:'receita × margem líquida mediana', seg:'UTIL', fonte:'pares', pap:714288216, d0:1.0891, fcfe:3425021000, fcfeAjustada:true, precoBase:22.99 },
   IRBR3:    { med:  4.27, lo:  3.95, hi:  4.60, cx:  null, div:  3.95, luc:  4.60, amp:  0.65, g:  3.97, gBruto:   3.97, gRoe:  3.97, gCagr:  null, payout: 46.9, lucroNorm:244749476, motor:'ROE mediano × patrimônio líquido', seg:'FIN', fonte:'pares', pap:81832653, d0:1.4017, fcfe:null, fcfeAjustada:false, precoBase:56.78 },
-  AXIA3:    { med:  0.81, lo:  0.29, hi:  4.30, cx:  0.81, div:  4.30, luc:  0.29, amp:  4.01, g:  0.58, gBruto:   0.58, gRoe:  0.58, gCagr:  9.96, payout: 92.7, lucroNorm:6769932213, motor:'receita × margem líquida mediana', seg:'IND', fonte:'realizado', pap:2928410780, d0:2.1439, fcfe:8594080000, fcfeAjustada:true, precoBase:55.52 },
+  AXIA3:    { med:  0.81, lo:  0.29, hi:  4.30, cx:  0.81, div:  4.30, luc:  0.29, amp:  4.01, g:  0.58, gBruto:   0.58, gRoe:  0.58, gCagr:  9.96, payout: 92.7, lucroNorm:6769932213, motor:'receita × margem líquida mediana', seg:'UTIL', fonte:'realizado', pap:2928410780, d0:2.1439, fcfe:8594080000, fcfeAjustada:true, precoBase:55.52 },
 };
 </script>
 <script>
@@ -11637,6 +11598,46 @@ const _TIR_IPCA = 0.0444;                 // igual a IPCA em scripts/motor_teto.
 const _TIR_GT = _TIR_IPCA + 0.02;         // perpetuidade: IPCA + 2%, igual ao gerador
 const _TIR_ANOS_G1 = 10;
 
+// ── CRITÉRIO DE ORDENAÇÃO, POR GRUPO DE MOTOR (13/09/2026) ───────────────────────────────
+// Até 13/09/2026 a lista "Por onde começar" era ordenada pela TIR real — critério que NUNCA
+// tinha sido testado contra retorno futuro. `scripts/backtest_ranking.py` testou, e o
+// resultado derrubou a escolha:
+//
+//   DEFENSIVOS (FIN + UTIL — bancos, seguradoras, elétricas, telecom, saneamento)
+//     L/P puro                 spread barato−caro +20,3 p.p. · acertou 5 de 5 anos · t +2,52
+//     TIR real (proxy ey+g)    spread             +11,4 p.p. · acertou 3 de 5 anos · t +1,04
+//     `g` isolado              spread              +8,3 p.p. · acertou 2 de 5 anos · t +0,64
+//   → somar `g` ao earnings yield PIORA o spread em 8,9 p.p. O componente que a TIR acrescenta
+//     ao L/P não tem sinal próprio nesses setores; ele dilui o sinal que o L/P já entrega.
+//
+//   CONTROLE (CICL, IND, SHOP, NAV — cíclicas, indústria, shoppings, holdings)
+//     Dividend yield           spread             +19,5 p.p. · acertou 5 de 5 anos · t +3,89
+//     L/P puro                 spread              +8,0 p.p. · acertou 3 de 5 anos · t +1,05
+//     `g` isolado              spread             −10,3 p.p. · acertou 2 de 5 anos · t −1,37
+//
+// A régua que funciona MUDA com o grupo, e há razão econômica para isso — não é só o número:
+// banco, seguradora, elétrica, telecom e saneamento têm lucro estável e regulado, então o
+// lucro de hoje já é um proxy razoável do lucro normal, e L/P mede valor direto. Na cíclica e
+// na construtora o lucro do ano engana (pico de ciclo vira P/L baixo enganoso), e o DIVIDENDO
+// é o sinal mais honesto: a empresa só distribui o caixa que realmente tem, então o dividendo
+// é revelado pela administração, não apurado por competência.
+//
+// ⚠️ 5 transições anuais, observações correlacionadas dentro do ano. O n efetivo para
+// significância é o número de ANOS, não o de observações. Isto NÃO prova que L/P prediz
+// retorno; prova que a TIR real, no período medido e nestes setores, ordenou PIOR que o
+// insumo mais simples que ela usa por dentro. Ordenar pelo que errou menos é o mínimo
+// defensável — não é a mesma coisa que ter um critério validado.
+//
+// A TIR real continua na tabela, com a faixa das três medidas: ela responde "quanto rende
+// acima da NTN-B", que é uma pergunta diferente de "qual está mais barata". Ela só deixou de
+// ORDENAR a fila.
+const RANK_CRIT_POR_GRUPO = { FIN: 'ey', UTIL: 'ey' };   // demais grupos → 'dy'
+const RANK_CRIT_PADRAO = 'dy';
+
+function _rankCriterio(seg) {
+  return RANK_CRIT_POR_GRUPO[seg] || RANK_CRIT_PADRAO;
+}
+
 function _tirReal(nom) {
   return ((1 + nom) / (1 + _TIR_IPCA) - 1) * 100;
 }
@@ -11775,7 +11776,18 @@ function calcularCriterios(row) {
   const criterios = [];
   // Valores crus de cada teste, guardados para a NOTA (0-100). Os critérios respondem
   // "passa ou não"; a nota precisa de "por quanto" — o mesmo dado, sem o corte binário.
-  const bruto = { premio: null, margem: null, roe: null, alav: null, cresc: null };
+  const bruto = { premio: null, margem: null, roe: null, alav: null, cresc: null, dyLtm: null };
+
+  // DY REALIZADO, recalculado com a cotação ao vivo. É o insumo do ranking dos grupos não
+  // defensivos (ver RANK_CRIT_POR_GRUPO) e precisa ser o MESMO conceito que o backtest mediu:
+  // `dy` do HIST_SEED, que é dividendo pago ÷ preço do fechamento daquele exercício — provento
+  // que a empresa JÁ distribuiu, não o DY projetado da coluna 10 (que sai do lucro normalizado
+  // e é estimativa). Como o `dy` da base está preso ao preço do data-base, reconstituímos o
+  // dividendo por ação em reais e dividimos pela cotação de agora — mesmo padrão de
+  // _tirAoVivo() e calcularPrecoTeto(): nada que dependa de preço fica travado no dia da carga.
+  if (seed && seed.dy != null && seed.preco > 0 && cot > 0) {
+    bruto.dyLtm = ((seed.dy / 100) * seed.preco) / cot * 100;
+  }
 
   // 1 · Earnings yield (L/P) ≥ Selic ────────────────────────────────────────────────────
   // L/P = LPA LTM ÷ cotação ao vivo. NÃO usa o LPA projetado da coluna 7: o teste é sobre o
@@ -11958,6 +11970,28 @@ function atualizarDecisaoLinha(row) {
   // veredictoDerivado() — desde 06/09/2026 nenhuma opinião solta sobrevive na tabela.
   row.dataset.veredicto = veredictoDerivado(row, r, T);
   row.dataset.decTir = T && T.med != null ? T.med.toFixed(2) : '';
+
+  // ── YIELD DE RANKING — a régua validada para o grupo desta empresa ──────────────────────
+  // Ver RANK_CRIT_POR_GRUPO no topo do arquivo. Os dois critérios são YIELDS na mesma unidade
+  // (% ao ano sobre o preço de hoje), então ordenar a fila inteira por um eixo só é legítimo
+  // mesmo trocando a régua por grupo — não é preciso normalizar percentil, que com grupo de 2
+  // elementos (SHOP) não significaria nada.
+  // Sem grupo conhecido (linha nova, ainda sem TIR gerada) cai no padrão 'dy'.
+  const _ey = r.ey != null && isFinite(r.ey) ? r.ey * 100 : null;
+  const _dy = r.bruto.dyLtm;
+  let rankCrit = _rankCriterio(T && T.seg);
+  let rankY = rankCrit === 'ey' ? _ey : _dy;
+  // FALLBACK: se a régua do grupo não tem dado nesta linha, usa a outra em vez de sumir da
+  // fila. Linha nova entra com série incompleta (VIVA3 e ASAI3 não têm DY por exercício
+  // porque a API não serviu valuation ratios anuais) e some da fila justamente enquanto é a
+  // que mais precisa de olho. O cartão mostra qual régua foi usada — "L/P 9,0%" e "DY 5,1%"
+  // não se confundem —, então trocar sem avisar não acontece.
+  if (rankY == null) {
+    const alt = rankCrit === 'ey' ? _dy : _ey;
+    if (alt != null) { rankY = alt; rankCrit = rankCrit === 'ey' ? 'dy' : 'ey'; }
+  }
+  row.dataset.decRankY = rankY != null ? rankY.toFixed(2) : '';
+  row.dataset.decRankCrit = rankCrit;
   // Coluna 23 · crescimento
   const cG = cells[DEC_COL_G];
   if (cG) {
@@ -12037,7 +12071,7 @@ function initColunasDecisao() {
     head.insertAdjacentHTML('beforeend', `
       <th data-col="${DEC_COL_PREMIO}" class="sep gh-ret sortable" onclick="sortTable(${DEC_COL_PREMIO})"><div class="th-inner">Prêmio Selic<span class="sort-arrow"></span><span class="col-tag proj">decisão</span></div><span class="col-tip" data-tip="Fonte: Calculado&#10;Earnings yield (LPA LTM ÷ cotação) − Selic ${(SELIC * 100).toFixed(2).replace('.', ',')}%&#10;Positivo = o lucro atual da empresa, ao preço de hoje, rende mais que a renda fixa">ⓘ</span></th>
       <th data-col="${DEC_COL_SCORE}" class="gh-ret sortable" onclick="sortTable(${DEC_COL_SCORE})"><div class="th-inner">Critérios<span class="sort-arrow"></span><span class="col-tag proj">decisão</span></div><span class="col-tip" data-tip="Fonte: Calculado&#10;Quantos dos 4 testes de qualidade+preço a empresa passa (METODOLOGIA_ANALISE.md, seção 9)&#10;&#10;⚠️ A margem de segurança contra o preço-teto SAIU da pontuação em 06/09/2026 e aparece como 🔵 referência: o teto oscila até 23% em um dia por mudança de premissa e nunca foi validado contra retorno futuro.&#10;&#10;Passe o mouse no ⓘ de cada linha para ver critério a critério">ⓘ</span></th>
-      <th data-col="${DEC_COL_TIR}" class="gh-ret sortable" onclick="sortTable(${DEC_COL_TIR})"><div class="th-inner">TIR real<span class="sort-arrow"></span><span class="col-tag proj">decisão</span></div><span class="col-tip" data-tip="Fonte: Análise própria sobre MCP Partnr&#10;FAIXA de retorno anual REAL (acima do IPCA) das três medidas: caixa (FCFE), dividendos (DDM) e lucro normalizado&#10;&#10;Barra: NTN-B 2035 = IPCA + ${TIR_NTNB.toFixed(2).replace('.', ',')}%&#10;VERDE = faixa inteira acima da barra&#10;ÂMBAR = a faixa cruza a barra: depende de qual medida acertar&#10;VERMELHO = faixa inteira abaixo&#10;&#10;A largura da faixa É a informação: estreita = as três réguas concordam; larga = a leitura depende de qual você acredita&#10;Substituiu a Nota 0-100, que o backtest do projeto não validou&#10;Caixa/dividendos/lucro recalculam com a cotação ao vivo a cada atualização (motor de ${TIR_DATA_EM}; g/payout/lucro normalizado fixos até a próxima regeração)">ⓘ</span></th>
+      <th data-col="${DEC_COL_TIR}" class="gh-ret sortable" onclick="sortTable(${DEC_COL_TIR})"><div class="th-inner">TIR real<span class="sort-arrow"></span><span class="col-tag proj">decisão</span></div><span class="col-tip" data-tip="Fonte: Análise própria sobre MCP Partnr&#10;FAIXA de retorno anual REAL (acima do IPCA) das três medidas: caixa (FCFE), dividendos (DDM) e lucro normalizado&#10;&#10;Barra: NTN-B 2035 = IPCA + ${TIR_NTNB.toFixed(2).replace('.', ',')}%&#10;VERDE = faixa inteira acima da barra&#10;ÂMBAR = a faixa cruza a barra: depende de qual medida acertar&#10;VERMELHO = faixa inteira abaixo&#10;&#10;A largura da faixa É a informação: estreita = as três réguas concordam; larga = a leitura depende de qual você acredita&#10;Substituiu a Nota 0-100, que o backtest do projeto não validou&#10;&#10;⚠️ DEIXOU DE ORDENAR A FILA em 13/09/2026. Quando foi finalmente testada contra retorno futuro (scripts/backtest_ranking.py), ordenou pior que o L/P puro nos setores defensivos: spread barato−caro de +11,4 p.p. acertando 3 de 5 anos, contra +20,3 p.p. e 5 de 5 do L/P. O componente que ela acrescenta ao earnings yield (o crescimento g) não teve sinal próprio — somá-lo PIOROU o spread em 8,9 p.p. A TIR continua aqui porque responde a outra pergunta: quanto rende acima da NTN-B, não qual está mais barata&#10;Caixa/dividendos/lucro recalculam com a cotação ao vivo a cada atualização (motor de ${TIR_DATA_EM}; g/payout/lucro normalizado fixos até a próxima regeração)">ⓘ</span></th>
       <th data-col="${DEC_COL_G}" class="gh-ret sortable" onclick="sortTable(${DEC_COL_G})"><div class="th-inner">Crescimento<span class="sort-arrow"></span><span class="col-tag proj">decisão</span></div><span class="col-tip" data-tip="Fonte: Análise própria sobre MCP Partnr&#10;g = crescimento anual usado na TIR real&#10;&#10;É o MENOR entre:&#10;· ROE × retenção — quanto a empresa cresce com o lucro que NÃO distribui&#10;· crescimento do lucro recorrente, por REGRESSÃO LOG sobre a série (não CAGR de pontas: o CAGR usa só 2 pontos e a CLSC4 saía com −0,7% num período em que a receita subiu 10% e o lucro contábil 57%)&#10;&#10;Piso 0% e teto 15%. Quando o valor bruto difere, ele aparece entre parênteses — é aí que está a informação que o corte esconde:&#10;· BBSE3 mostra 15% e o dado diz 23,1%&#10;· PASS3 mostra 0% e o dado diz −16,4% (encolhendo)&#10;· SHUL4 mostra 0% e o dado diz −3,2% (estagnada)&#10;&#10;⚠️ São 5 pontos de série. É estimativa, não medida.">ⓘ</span></th>`);
   }
 
@@ -12066,21 +12100,31 @@ function renderRankingDecisao() {
     ratio: parseFloat(row.dataset.decScore) || 0,
     tir: row.dataset.decTir === '' ? null : parseFloat(row.dataset.decTir),
     amp: row.dataset.decAmp === '' ? null : parseFloat(row.dataset.decAmp),
-    lo: row.dataset.decLo === '' ? null : parseFloat(row.dataset.decLo)
+    lo: row.dataset.decLo === '' ? null : parseFloat(row.dataset.decLo),
+    rankY: row.dataset.decRankY === '' ? null : parseFloat(row.dataset.decRankY),
+    rankCrit: row.dataset.decRankCrit || RANK_CRIT_PADRAO
   })).filter(l => l.total > 0);
 
-  // Ordenação: a TIR real manda. É a única medida da fila que está na MESMA UNIDADE da
-  // alternativa sem risco (retorno real anual), então ordenar por ela responde direto
-  // "onde meu dinheiro rende mais que a NTN-B". Quem não tem TIR calculada cai para o fim
-  // — não por ser ruim, mas porque não dá para comparar o que não foi medido.
-  // Desempate: convergência (amplitude menor primeiro — leitura mais confiável), depois
-  // critérios e prêmio Selic, que continuam valendo como triagem.
+  // Ordenação: o YIELD VALIDADO PARA O GRUPO da empresa (L/P nas defensivas, DY nas demais —
+  // ver RANK_CRIT_POR_GRUPO no topo do arquivo e scripts/backtest_ranking.py).
+  //
+  // ⚠️ ATÉ 13/09/2026 QUEM ORDENAVA ERA A TIR REAL, com o argumento de que "é a única medida
+  // na mesma unidade da alternativa sem risco". O argumento continua verdadeiro e continua
+  // irrelevante para ESTA pergunta: estar na unidade certa não é o mesmo que ordenar certo, e
+  // quando a TIR foi finalmente testada ela ordenou pior que o L/P puro nos setores que o
+  // usuário compra (spread +11,4 p.p. contra +20,4 p.p., acertando 3 de 5 anos contra 5 de 5).
+  // A TIR responde "quanto rende acima da NTN-B"; a fila pergunta "qual está mais barata".
+  // São perguntas diferentes, e a coluna da TIR continua respondendo a dela.
+  //
+  // Quem não tem yield calculável cai para o fim — não por ser ruim, mas porque não dá para
+  // comparar o que não foi medido. Desempate: critérios de qualidade, depois convergência das
+  // medidas da TIR (amplitude menor = leitura mais confiável), depois a própria TIR.
   linhas.sort((a, b) =>
-    ((b.tir != null) - (a.tir != null)) ||
-    ((b.tir ?? -99) - (a.tir ?? -99)) ||
-    ((a.amp ?? 99) - (b.amp ?? 99)) ||
+    ((b.rankY != null) - (a.rankY != null)) ||
+    ((b.rankY ?? -99) - (a.rankY ?? -99)) ||
     (b.ratio - a.ratio) ||
-    ((b.premio ?? -999) - (a.premio ?? -999)));
+    ((a.amp ?? 99) - (b.amp ?? 99)) ||
+    ((b.tir ?? -99) - (a.tir ?? -99)));
 
   const top = linhas.slice(0, 8);
   const comPremio = linhas.filter(l => l.premio != null && l.premio >= 0).length;
@@ -12090,23 +12134,26 @@ function renderRankingDecisao() {
   wrap.innerHTML = `
     <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:baseline;margin-bottom:8px;">
       <strong style="font-size:13px;">🎯 Por onde começar</strong>
-      <span style="font-size:11px;color:#666;">ordenado pela TIR real · barra: NTN-B ${TIR_NTNB.toFixed(2).replace('.', ',')}% · "pior caso" = a menor das três medidas</span>
+      <span style="font-size:11px;color:#666;">ordenado pelo yield validado por grupo · <b>L/P</b> em bancos, seguros, elétricas, telecom e saneamento · <b>DY</b> nos demais</span>
     </div>
     <div style="display:flex;flex-wrap:wrap;gap:6px;">
       ${top.map((l, i) => `
         <div style="border:1px solid #e3e3e3;border-radius:8px;padding:6px 10px;background:#fff;min-width:132px;">
           <div style="font-size:10px;color:#999;">${i + 1}º · ${l.seg}</div>
           <div style="font-weight:600;font-size:12px;">${l.ticker}</div>
-          <div style="font-size:13px;color:${_decCorTir(l.tir)};font-weight:700;">${l.tir == null ? 'TIR —' : 'TIR ' + l.tir.toFixed(1).replace('.', ',') + '%'}</div>
-          <div style="font-size:10.5px;color:${l.lo != null && l.lo >= TIR_NTNB ? '#0a5c35' : '#888'};">${l.lo == null ? 'medida única' : 'pior caso ' + l.lo.toFixed(1).replace('.', ',') + '%'}</div>
+          <div style="font-size:13px;color:#0a5c35;font-weight:700;">${l.rankY == null ? '—' : (l.rankCrit === 'ey' ? 'L/P ' : 'DY ') + l.rankY.toFixed(1).replace('.', ',') + '%'}</div>
+          <div style="font-size:10.5px;color:${l.tir != null && l.tir >= TIR_NTNB ? '#0a5c35' : '#888'};">${l.tir == null ? 'TIR —' : 'TIR ' + l.tir.toFixed(1).replace('.', ',') + '%'}</div>
           <div style="font-size:10.5px;color:#888;">${l.passa}/${l.total} critérios</div>
         </div>`).join('')}
     </div>
     <div style="font-size:11px;color:#666;margin-top:8px;line-height:1.6;">
-      <strong>${batemNtnb}</strong> de <strong>${comTir}</strong> ativos com TIR calculada superam a NTN-B (IPCA + ${TIR_NTNB.toFixed(2).replace('.', ',')}%).
-      A coluna mostra a <b>faixa</b> das três medidas, não um número só — faixa estreita significa que caixa, dividendo e lucro contam a mesma história;
-      faixa larga avisa que a leitura depende de qual régua você acredita. <b>Faixa inteira acima da barra</b> é o sinal mais forte que esta tabela produz.
-      Ranking alto não é ordem de compra: é a fila para ler o relatório.
+      A fila é ordenada pela régua que <b>funcionou no teste histórico daquele grupo</b> (<code>scripts/backtest_ranking.py</code>):
+      nas defensivas o <b>L/P</b> separou barato de caro com spread de +20,3 p.p. acertando 5 de 5 anos, enquanto a TIR real ficou em +11,4 p.p. e 3 de 5;
+      nas cíclicas e construtoras quem separou foi o <b>DY</b> (+19,5 p.p., 5 de 5). <b>São 5 anos de amostra — isso não prova que a régua prediz retorno,
+      só que a anterior errou mais.</b>
+      <br>
+      <strong>${batemNtnb}</strong> de <strong>${comTir}</strong> ativos com TIR calculada superam a NTN-B (IPCA + ${TIR_NTNB.toFixed(2).replace('.', ',')}%) — a TIR continua na tabela
+      respondendo "quanto rende acima da renda fixa", que é pergunta diferente de "qual está mais barata". Ranking alto não é ordem de compra: é a fila para ler o relatório.
     </div>`;
 }
 

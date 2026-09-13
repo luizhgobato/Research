@@ -982,6 +982,26 @@ SEM_TETO = {
                'validação cruzada aparente, não real: os três concordariam porque vêm da mesma '
                'fonte única. Sem segunda fonte independente, não há preço-teto defensável. '
                'Payout, TIR real e as demais colunas continuam calculados normalmente.'),
+    # ── Adicionadas em 13/09/2026 ────────────────────────────────────────────────────────
+    # Caso DIFERENTE do ROXO34 e pelo mesmo motivo de fundo: falta de dado, não falha de
+    # motor. Aqui não é a empresa que está fora da cobertura — é a CHAVE DE API desta sessão
+    # que não tem escopo para cotação histórica (@quotes/post/eod) nem para valuation ratios
+    # anuais. Sem preço por exercício não existe P/L nem P/VP histórico, e todo método do
+    # motor (E/P histórico, EV/EBITDA meio-de-ciclo, P/VP-alvo, Gordon) ancora em múltiplo da
+    # própria série. Rodar qualquer um deles sobre o único ano com preço seria o erro do
+    # ROXO34 outra vez, agora sabendo. Sai "—" com o motivo na tooltip; L/P, DY, margem e
+    # alavancagem continuam calculados normalmente — é o que ordena a fila desde 13/09/2026.
+    'VIVA3': ('Série sem preço histórico: a chave de API do MCP Partnr desta sessão não tem '
+              'escopo de cotação histórica nem de valuation ratios anuais, então não há P/L '
+              'nem P/VP por exercício para ancorar múltiplo da própria série. A DRE de '
+              '2021-2025 está completa e auditável (receita, lucro, EBITDA, margens, LPA) — '
+              'o que falta é só o lado do PREÇO. Assim que a série de cotação entrar, esta '
+              'linha sai do SEM_TETO sem mudar mais nada.'),
+    'ASAI3': ('Mesma falta de preço histórico da VIVA3, e ainda menos série: a DRE anual '
+              'recente não voltou da API (só 2019-2020, anteriores ao spin-off do GPA, com '
+              'base de ações incomparável — LPA de R$5,80 em 2020 contra R$0,71 no LTM). '
+              'Restam margem líquida e dív.líq/EBITDA por exercício. A margem caindo de '
+              '3,84% (2021) para 0,64% (2025) é informação real e está na tabela; teto, não.'),
 }
 
 def calcular(t, A):

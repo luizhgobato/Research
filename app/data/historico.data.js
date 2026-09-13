@@ -257,11 +257,39 @@ const HIST_SEED = {
     2022: { preco:88.88, receita:226508000000, custos:-124195000000, lucrobruto:102313000000, ebitda:106712000000, ebit:90326000000, imposto:-15185000000, lucrolin:96337000000, divbruta:66330000000, divliq:41299000000, mgBruta:45.17, mgEbitda:47.11, mgLiq:42.53, roe:50.81, roic:32.53, pl:3.31, pvp:1.64, dy:7.71, evEbitda:3.38, divPl:0.21, lpa:20.16, divEbitda:0.39 },
     2021: { preco:77.96, receita:293524000000, custos:-117267000000, lucrobruto:176257000000, ebitda:157714000000, ebit:141335000000, imposto:-25320000000, lucrolin:121343000000, divbruta:76909000000, divliq:10472000000, mgBruta:60.05, mgEbitda:53.73, mgLiq:41.34, roe:60.95, roic:57.27, pl:3.21, pvp:1.98, dy:18.08, evEbitda:2.55, divPl:0.05, lpa:23.64, divEbitda:0.07 },
   },
+  // ── ADICIONADAS EM 13/09/2026 — SÉRIE INCOMPLETA, LEIA A NOTA ─────────────────────────
+  // Entraram a pedido do usuário depois do screener do universo B3 inteiro (as duas passaram
+  // no filtro P/L ≤ 12x + ROE ≥ 15% + dív.líq/EBITDA ≤ 3x). NÃO têm a mesma qualidade de série
+  // das outras 30, e os campos que faltam estão gravados como `null` em vez de preenchidos
+  // por estimativa: a chave de API do MCP Partnr desta sessão não tem escopo para cotação
+  // histórica (`@quotes/post/eod`) nem para valuation ratios anuais, que é de onde sairiam
+  // `preco`, `pl`, `pvp` e `dy` de cada exercício. Sem preço histórico não há múltiplo
+  // histórico, e sem múltiplo histórico o motor de preço-teto não tem série para ancorar —
+  // por isso as duas entram em SEM_TETO (scripts/motor_teto.py), declarado por nome, e não
+  // com um teto inventado a partir de um ano só. Mesmo tratamento do ROXO34 (seção 27).
+  VIVA3: {
+    2026: { preco:22.33, receita:null, custos:null, lucrobruto:null, ebitda:null, ebit:null, imposto:null, lucrolin:585839057, divbruta:null, divliq:101672094, mgBruta:null, mgEbitda:null, mgLiq:null, roe:null, roic:null, pl:9.0, pvp:null, dy:null, evEbitda:null, divPl:null, lpa:2.4803, divEbitda:0.28 },
+    2025: { preco:null, receita:3026581564, custos:-921472483, lucrobruto:2105109081, ebitda:879157151, ebit:726321236, imposto:31703788, lucrolin:619502301, divbruta:null, divliq:null, mgBruta:69.55, mgEbitda:29.05, mgLiq:20.47, roe:null, roic:null, pl:null, pvp:null, dy:null, evEbitda:null, divPl:null, lpa:2.6228, divEbitda:0.15 },
+    2024: { preco:null, receita:2577113417, custos:-767087486, lucrobruto:1810025931, ebitda:838115320, ebit:683585305, imposto:27155805, lucrolin:653393946, divbruta:null, divliq:null, mgBruta:70.23, mgEbitda:32.52, mgLiq:25.35, roe:null, roic:null, pl:null, pvp:null, dy:null, evEbitda:null, divPl:null, lpa:2.7663, divEbitda:0.14 },
+    2023: { preco:null, receita:2186974709, custos:-670864007, lucrobruto:1516110702, ebitda:584731032, ebit:450646110, imposto:-31598050, lucrolin:369244553, divbruta:null, divliq:null, mgBruta:69.32, mgEbitda:26.74, mgLiq:16.88, roe:null, roic:null, pl:null, pvp:null, dy:null, evEbitda:null, divPl:null, lpa:1.5633, divEbitda:-0.06 },
+    2022: { preco:null, receita:1843735089, custos:-573527520, lucrobruto:1270207569, ebitda:490313487, ebit:376372328, imposto:29819817, lucrolin:360854417, divbruta:null, divliq:null, mgBruta:68.89, mgEbitda:26.59, mgLiq:19.57, roe:null, roic:null, pl:null, pvp:null, dy:null, evEbitda:null, divPl:null, lpa:1.5278, divEbitda:-0.18 },
+    2021: { preco:null, receita:1466386885, custos:-474909083, lucrobruto:991477802, ebitda:366516470, ebit:294686451, imposto:35313290, lucrolin:298490271, divbruta:null, divliq:null, mgBruta:67.61, mgEbitda:24.99, mgLiq:20.36, roe:null, roic:null, pl:null, pvp:null, dy:null, evEbitda:null, divPl:null, lpa:1.2637, divEbitda:-0.48 },
+  },
+  ASAI3: {
+    2026: { preco:9.82, receita:null, custos:null, lucrobruto:null, ebitda:6209000000, ebit:null, imposto:null, lucrolin:965000000, divbruta:null, divliq:11809000000, mgBruta:null, mgEbitda:null, mgLiq:null, roe:null, roic:null, pl:13.78, pvp:null, dy:null, evEbitda:null, divPl:null, lpa:0.7125, divEbitda:1.9 },
+    2025: { preco:null, receita:null, custos:null, lucrobruto:null, ebitda:null, ebit:null, imposto:null, lucrolin:null, divbruta:null, divliq:null, mgBruta:null, mgEbitda:null, mgLiq:0.64, roe:null, roic:null, pl:null, pvp:null, dy:null, evEbitda:null, divPl:null, lpa:null, divEbitda:1.94 },
+    2024: { preco:null, receita:null, custos:null, lucrobruto:null, ebitda:null, ebit:null, imposto:null, lucrolin:null, divbruta:null, divliq:null, mgBruta:null, mgEbitda:null, mgLiq:1.04, roe:null, roic:null, pl:null, pvp:null, dy:null, evEbitda:null, divPl:null, lpa:null, divEbitda:1.99 },
+    2023: { preco:null, receita:null, custos:null, lucrobruto:null, ebitda:null, ebit:null, imposto:null, lucrolin:null, divbruta:null, divliq:null, mgBruta:null, mgEbitda:null, mgLiq:1.07, roe:null, roic:null, pl:null, pvp:null, dy:null, evEbitda:null, divPl:null, lpa:null, divEbitda:2.04 },
+    2022: { preco:null, receita:null, custos:null, lucrobruto:null, ebitda:null, ebit:null, imposto:null, lucrolin:null, divbruta:null, divliq:null, mgBruta:null, mgEbitda:null, mgLiq:2.24, roe:null, roic:null, pl:null, pvp:null, dy:null, evEbitda:null, divPl:null, lpa:null, divEbitda:1.76 },
+    2021: { preco:null, receita:null, custos:null, lucrobruto:null, ebitda:null, ebit:null, imposto:null, lucrolin:null, divbruta:null, divliq:null, mgBruta:null, mgEbitda:null, mgLiq:3.84, roe:null, roic:null, pl:null, pvp:null, dy:null, evEbitda:null, divPl:null, lpa:null, divEbitda:1.68 },
+  },
 };
 
 // Nota de rodapé específica por ticker no histórico expansível da Base de Dados
 // (js/fundamentos.js → buildHistYearRows). Sem entrada aqui = nota genérica.
 const HIST_SEED_NOTES = {
+  VIVA3: '⚠️ ADICIONADA EM 13/09/2026, SÉRIE PARCIAL · Fonte: MCP Partnr (B3/CVM), DRE consolidada 2021-2025 + LTM do screener. NÃO tem preço, P/L, P/VP, DY nem ROE por exercício: a chave de API desta sessão não tem escopo de cotação histórica nem de valuation ratios anuais. Sem múltiplo histórico não há série para ancorar preço-teto — ver SEM_TETO em scripts/motor_teto.py. O que ESTÁ aqui (receita, lucro, EBITDA, margens, LPA) veio da DRE e é auditável linha a linha',
+  ASAI3: '⚠️ ADICIONADA EM 13/09/2026, SÉRIE MUITO PARCIAL · Fonte: MCP Partnr (B3/CVM). Só margem líquida e dív.líq/EBITDA por exercício (2021-2025) mais o LTM 2026 — a DRE anual recente não voltou da API (só 2019-2020, anteriores ao spin-off do GPA, que mudaram a base de ações e não são comparáveis: LPA de R$5,80 em 2020 contra R$0,71 no LTM). Margem líquida caindo de 3,84% (2021) para 0,64% (2025) é o dado mais importante desta linha e está preenchido. Sem preço-teto — ver SEM_TETO',
   VALE3: 'Fonte: MCP Partnr (B3/CVM) · lucro despenca de R$96,3bi (2022) para R$8,7bi no LTM 2026 — ciclo do minério mais provisões; o EBITDA caiu bem menos, olhe os dois',
   PETR4: 'Fonte: MCP Partnr (B3/CVM) · classe PN (mais líquida) · DY de 64,98% em 2022 é real: distribuição extraordinária daquele ano, NÃO é recorrente e não deve ser usada em projeção',
   SBSP3: '⚠️ Fonte: MCP Partnr (B3/CVM) · DESDOBRAMENTO 5:1 em 2026: preço cai de R$133,39 (2025) para R$26,19 e o LPA de R$12,00 para R$2,29. A série de preço e LPA NÃO é comparável entre 2025 e 2026 — múltiplos (P/L, P/VP) seguem válidos porque preço e lucro por ação foram divididos juntos',

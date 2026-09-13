@@ -262,7 +262,13 @@ def calcular(t, A, velho):
                 gRoe=(g_roe * 100 if g_roe is not None else None),
                 gCagr=(g_cagr * 100 if g_cagr is not None else None),
                 payout=po * 100, lucroNorm=ln, motor=motor,
-                seg=(velho or {}).get('seg') or M['MOTOR'].get(t, 'IND'),
+                # ⚠️ ATÉ 13/09/2026 esta linha era `(velho or {}).get('seg') or MOTOR.get(t)`,
+                # e o `velho` vinha do snapshot de 05/09 — anterior à criação do grupo UTIL.
+                # Resultado: 14 tickers carregavam seg:'IND' e só 1 dizia 'UTIL', enquanto o
+                # MOTOR de motor_teto.py classificava 8 como UTIL. O campo preferia a fonte
+                # velha e envelhecia em silêncio, que é exatamente a falha da seção 24 — só
+                # que dentro do script escrito para consertá-la. O MOTOR é a única fonte.
+                seg=M['MOTOR'].get(t, 'IND'),
                 fonte=pf[0], pap=pap, d0=d0, fcfe=fcfe_val, fcfeAjustada=fcfe_ajustada,
                 precoBase=preco)
 
@@ -288,8 +294,18 @@ if __name__ == '__main__':
             f"fcfe:{n(r['fcfe'], 0)}, fcfeAjustada:{'true' if r['fcfeAjustada'] else 'false'}, "
             f"precoBase:{r['precoBase']:.2f} }},")
 
-    cab = antigo[:antigo.index('const TIR_DATA_EM')]
-    cab = cab.replace('snapshot 05/09/2026', 'GERADO por scripts/gerar_tir.py · 07/09/2026')
+    # ⚠️ NÃO derivar o cabeçalho do arquivo antigo. Até 13/09/2026 esta parte fazia
+    # `cab = antigo[:...]` e depois `cab += <bloco de aviso>` — ou seja, relia o cabeçalho já
+    # gerado e ANEXAVA o aviso de novo. Cada execução acrescentava mais uma cópia: o arquivo
+    # em produção chegou a carregar o mesmo bloco NOVE vezes. Um gerador que não é idempotente
+    # produz saída diferente a cada rodada com a mesma entrada, e isso torna o diff do git
+    # inútil justamente onde ele é a única auditoria (o arquivo é gerado, ninguém o revisa
+    # linha a linha). O cabeçalho agora é escrito do zero, sempre igual.
+    cab = ("// ══════════════════════════════════════════════════════════════════════════════════════════\n"
+           "// TIR REAL — faixa de três medidas independentes   ·   GERADO por scripts/gerar_tir.py\n"
+           "// ══════════════════════════════════════════════════════════════════════════════════════════\n"
+           "// ⚠️ ARQUIVO GERADO — não editar à mão. Rode `python3 scripts/gerar_tir.py`.\n"
+           "//\n")
     cab += ("// ⚠️ REGERADO EM 06/09/2026, campos ao-vivo acrescentados 07/09/2026. Este arquivo era\n"
             "// um SNAPSHOT ESTÁTICO escrito à mão em 05/09, antes das correções de payout daquele\n"
             "// dia — e por isso ficou com premissas de duas versões atrás sem que nada quebrasse.\n"
