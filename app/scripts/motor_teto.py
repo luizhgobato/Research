@@ -720,7 +720,7 @@ def teto_ev(t, A, ciclico):
     justo = (alvo*ebitda - (c.get('divliq') or 0)) / pap
     conv = 3 if len(mult) >= 5 else 2
     base = 'EBITDA médio de %d anos (R$ %.1f bi)' % (len(eb), ebitda/1e9) if ciclico else 'EBITDA LTM (R$ %.1f bi)' % (ebitda/1e9)
-    return dict(justo=justo, conv=conv,
+    return dict(justo=justo, conv=conv, chave='EV/EBITDA',
         motor=f'EV/EBITDA {alvo:.2f}x sobre {base}',
         nota=f'Múltiplo-alvo {alvo:.2f}x = {nota_alvo} do próprio histórico ({len(mult)} anos: {min(mult):.1f}x a {max(mult):.1f}x), não de pares. '
              f'EV justo − dívida líquida R$ {(c.get("divliq") or 0)/1e9:.1f} bi ÷ {pap/1e6:.0f} mi papéis.')
@@ -1050,7 +1050,7 @@ def teto_nav(t, A, H, justo_pai):
     alvo, nota_alvo = mediana_com_tendencia(raz, limiar_rel=0.10)
     disp = (max(raz) - min(raz)) / max(raz)
     conv = 2 if disp < 0.30 else 1          # teto de ★★☆: ver limite honesto acima
-    return dict(justo=alvo*justo_pai, conv=conv,
+    return dict(justo=alvo*justo_pai, conv=conv, chave='Paridade',
         motor=f'Paridade com {pai}: {alvo:.3f}× o preço justo de {pai} (R$ {justo_pai:.2f})',
         nota=(f'Razão preço {t} ÷ preço {pai} = {nota_alvo} de {len(raz)} anos '
               f'({min(raz):.3f} a {max(raz):.3f}, dispersão {disp*100:.0f}%). É o desconto de '
@@ -1359,7 +1359,19 @@ def _calcular_bruto(t, A, H=None):
         nota_verif = (f' || VERIFICAÇÃO (fora do voto) — EV/EBITDA daria R$ {vj:.2f}, '
                       + ('DENTRO da faixa: os métodos concordam. ' if dentro else
                          f'FORA da faixa: o múltiplo de EBITDA conta outra história, olhe a empresa. '))
+    # A ARITMÉTICA DE CADA MÉTODO, guardada campo a campo. Até 13/09/2026 só sobrevivia a
+    # string `motor` composta ("P/FFO R$ 26.74 · EV/Receita R$ 32.60"), que diz o RESULTADO de
+    # cada método e não a CONTA. O usuário: "no preço justo o tooltip deve ter o racional pra
+    # chegar no valor, somente isso — e o racional é quanto a empresa deveria valer baseada em
+    # algum critério, e esse critério deve estar lá". Sem esta lista a tooltip não tinha como
+    # mostrar "múltiplo × fundamento = preço" e acabava despejando a metodologia inteira.
+    detalhe = [dict(chave=x.get('chave') or '—', justo=round(x['justo'], 2),
+                    conta=x.get('motor', ''),
+                    faixa=([round(v, 2) for v in x['faixa']]
+                           if (x.get('faixa') and x['faixa'][0] and x['faixa'][1]) else None))
+               for x in sorted(metodos, key=lambda z: z['justo'])]
     return dict(justo=justo, faixa=(faixa_lo, faixa_hi), largura=largura, nMetodos=len(vals),
+        metodos=detalhe,
         motor=f'Faixa de {len(vals)} métodos: R$ {faixa_lo:.2f} a R$ {faixa_hi:.2f} · {lista}',
         nota=(f'FAIXA DE VALOR de {len(vals)} método(s), largura {largura*100:.0f}%. '
               f'O limite INFERIOR (R$ {faixa_lo:.2f}) é o teto de compra: abaixo dele a ação está '
