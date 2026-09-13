@@ -775,8 +775,10 @@ def teto_ev(t, A, ciclico):
     return dict(justo=justo, conv=conv, chave='EV/EBITDA', faixa=fx,
         conta=(f'{base} × EV/EBITDA {alvo:.2f}x − dívida líquida R$ {dl/1e9:.1f} bi, '
                f'÷ {papeis_txt(pap)}'),
-        origem_mult=(f'{nota_alvo.lower()} do próprio histórico, {len(mult)} anos '
-                     f'({min(mult):.1f}x a {max(mult):.1f}x)'),
+        origem_mult=(f'o EV/EBITDA mediano da própria empresa ao longo de {len(mult)} anos '
+                     f'({alvo:.2f}x; a série foi de {min(mult):.1f}x a {max(mult):.1f}x)'
+                     + (' — em cíclica a janela cobre pico e fundo do ciclo de propósito'
+                        if ciclico else '')),
         motor=f'EV/EBITDA {alvo:.2f}x sobre {base}',
         nota=f'Múltiplo-alvo {alvo:.2f}x = {nota_alvo} do próprio histórico ({len(mult)} anos: {min(mult):.1f}x a {max(mult):.1f}x), não de pares. '
              f'Faixa {p25:.2f}x a {p75:.2f}x ({nota_fx}). '
@@ -966,7 +968,8 @@ def teto_ep(t, A, pl_setor=None, com_pares=True):
     # papéis é ancorada com a regra de ±25% e nem sempre cai no divisor que a fonte usou.
     # Partindo do lucro, a identidade fecha por construção.
     alvo0 = alvo
-    alvo, nota_pares, origem_mult = (alvo_com_pares(t, 'E/P', alvo) if com_pares else (alvo, '', f'mediana da própria série ({alvo:.2f}x)'))
+    alvo, nota_pares, origem_mult = (alvo_com_pares(t, 'E/P', alvo, len(pls)) if com_pares
+                                      else (alvo, '', f'o E/P mediano da própria empresa ({alvo:.2f}x)'))
     if faixa_mult:
         faixa_mult = recentrar(faixa_mult[0], mediana_propria, faixa_mult[1], alvo)
     l25 = (A.get(2025) or {}).get('lucrolin')
@@ -1056,7 +1059,8 @@ def teto_pvp(t, A, com_pares=True):
     v = vpa(t, A)
     if not v or v <= 0: return None
     alvo0 = alvo
-    alvo, nota_pares, origem_mult = (alvo_com_pares(t, 'P/VP', alvo) if com_pares else (alvo, '', f'mediana da própria série ({alvo:.2f}x)'))
+    alvo, nota_pares, origem_mult = (alvo_com_pares(t, 'P/VP', alvo, len(pv)) if com_pares
+                                      else (alvo, '', f'o P/VP mediano da própria empresa ({alvo:.2f}x)'))
     p25, p75 = recentrar(p25, alvo0, p75, alvo)
     return dict(justo=alvo*v, conv=2, chave='P/VP', alvo=alvo0, faixa=(p25*v, p75*v),
         conta=f'VPA R$ {v:.2f} × P/VP {alvo:.2f}x', origem_mult=origem_mult,
@@ -1084,7 +1088,8 @@ def teto_ev_receita(t, A, com_pares=True):
     def _justo(mult):
         return (mult*c['receita'] - dl) / pap
     alvo0 = alvo
-    alvo, nota_pares, origem_mult = (alvo_com_pares(t, 'EV/Receita', alvo) if com_pares else (alvo, '', f'mediana da própria série ({alvo:.2f}x)'))
+    alvo, nota_pares, origem_mult = (alvo_com_pares(t, 'EV/Receita', alvo, len(r)) if com_pares
+                                      else (alvo, '', f'o EV/Receita mediano da própria empresa ({alvo:.2f}x)'))
     p25, p75 = recentrar(p25, alvo0, p75, alvo)
     justo = _justo(alvo)
     if justo <= 0: return None
@@ -1157,7 +1162,8 @@ def teto_ffo(t, A, com_pares=True):
         return None
     p25, alvo, p75, nfx = faixa_com_tendencia(pfs, limiar_rel=0.15)
     alvo0 = alvo
-    alvo, nota_pares, origem_mult = (alvo_com_pares(t, 'P/FFO', alvo) if com_pares else (alvo, '', f'mediana da própria série ({alvo:.2f}x)'))
+    alvo, nota_pares, origem_mult = (alvo_com_pares(t, 'P/FFO', alvo, len(pfs)) if com_pares
+                                      else (alvo, '', f'o P/FFO mediano da própria empresa ({alvo:.2f}x)'))
     p25, p75 = recentrar(p25, alvo0, p75, alvo)
     atual0 = atual
     atual, g, fonte_g = projetar(t, A, atual0, H_GLOBAL)   # mesmo motivo do E/P
@@ -1225,8 +1231,8 @@ def teto_setorial(t, A, H, campo=None):
         fx = None
     return dict(justo=justo, conv=1, chave='Pares', faixa=fx,
         motor=desc, conta=conta,
-        origem_mult=(f'mediana dos {len(pares)} pares do grupo {m} — a própria empresa não '
-                     f'tem série utilizável'),
+        origem_mult=(f'o múltiplo mediano dos {len(pares)} pares do grupo {m} ({alvo:.2f}x) — '
+                     f'a própria empresa não tem série utilizável'),
         nota=(f'⚠️ ÚLTIMO RECURSO — a própria empresa não tem série utilizável (quebra recente '
               f'ou histórico curto demais), então o múltiplo vem dos {len(pares)} pares do grupo '
               f'{m} com pelo menos 4 anos limpos (faixa {lo_m:.2f}x a {hi_m:.2f}x = desacordo '
@@ -1280,7 +1286,7 @@ def teto_nav(t, A, H, justo_pai):
     return dict(justo=alvo*justo_pai, conv=conv, chave='Paridade',
         faixa=((p25*justo_pai, p75*justo_pai) if p75 > p25 else None),
         conta=f'preço justo de {pai} R$ {justo_pai:.2f} × paridade {alvo:.3f}',
-        origem_mult=(f'razão entre o preço de {t} e o de {pai} ao longo de {len(raz)} anos '
+        origem_mult=(f'a razão entre o preço de {t} e o de {pai} ao longo de {len(raz)} anos '
                      f'({alvo:.3f}) — o desconto de holding que o mercado pratica'),
         motor=f'Paridade com {pai}: {alvo:.3f}× o preço justo de {pai} (R$ {justo_pai:.2f})',
         nota=(f'Razão preço {t} ÷ preço {pai} = {nota_alvo} de {len(raz)} anos '
@@ -1582,7 +1588,7 @@ def _calcular_bruto(t, A, H=None):
                      origemMult=principal.get('origem_mult', ''),
                      faixa=[round(faixa_lo, 2), round(faixa_hi, 2)])]
                + [dict(chave=x.get('chave') or '—', justo=round(x['justo'], 2),
-                       papel='verificação', conta=x.get('motor', ''),
+                       papel='verificação', conta=x.get('conta') or x.get('motor', ''),
                        faixa=([round(v, 2) for v in x['faixa']]
                               if (x.get('faixa') and x['faixa'][0] and x['faixa'][1]) else None))
                   for x in sorted(verif, key=lambda z: z['justo'])])
@@ -1680,7 +1686,7 @@ def multiplos_pares(H):
 # volta calado.
 PARES_SEM = {'P/VP'}
 
-def alvo_com_pares(t, chave, alvo_proprio):
+def alvo_com_pares(t, chave, alvo_proprio, n_anos=None):
     """Média entre o múltiplo da empresa e a mediana dos pares. (alvo, nota, origem).
 
     `origem` é uma frase em português dizendo DE ONDE o múltiplo saiu, escrita para a tooltip
@@ -1688,19 +1694,26 @@ def alvo_com_pares(t, chave, alvo_proprio):
     nada mais. Nasceu separada de `nota` porque `nota` é prosa do motor, cheia de ressalva, e
     a tooltip precisa de uma linha só.
     """
+    # ⚠️ A frase de `origem` fala em MÚLTIPLO MEDIANO DOS ANOS, nunca em "mediana" solta.
+    # O usuário leu "mediana da própria série" e entendeu mediana DE MÉTODOS — que é
+    # exatamente o que esta mudança de arquitetura veio eliminar. Como a palavra carrega o
+    # mal-entendido, a frase diz o que está sendo medido: o múltiplo, ao longo de N anos.
     g = MOTOR.get(t)
+    janela = f' ao longo de {n_anos} anos' if n_anos else ''
+    # `chave` é o nome INTERNO do método; 'E/P' é o inverso do múltiplo que a conta exibe.
+    # Escrever "E/P mediano de 10,00x" ao lado de "× P/L 9,39x" faz o leitor conferir duas vezes.
+    nome = {'E/P': 'P/L'}.get(chave, chave)
+    proprio = f'o {nome} mediano da própria empresa{janela} ({alvo_proprio:.2f}x)'
     if chave in PARES_SEM:
-        return alvo_proprio, '', f'mediana da própria série ({alvo_proprio:.2f}x)'
+        return alvo_proprio, '', proprio
     pares = [v for (o, v) in MULT_PARES.get((g, chave), []) if o != t]
     if len(pares) < MIN_PARES:
         return (alvo_proprio, f'{alvo_proprio:.2f}x próprio (sem {MIN_PARES} pares no grupo {g})',
-                f'mediana da própria série ({alvo_proprio:.2f}x) — o grupo {g} não tem '
-                f'{MIN_PARES} pares para comparar')
+                f'{proprio} — o grupo {g} não tem {MIN_PARES} pares para comparar')
     mp = st.median(pares)
     a = (alvo_proprio + mp) / 2
     return a, (f'{a:.2f}x = média entre {alvo_proprio:.2f}x próprio e {mp:.2f}x dos {len(pares)} pares {g}'), \
-           (f'média entre {alvo_proprio:.2f}x da própria série e {mp:.2f}x dos {len(pares)} '
-            f'pares do grupo {g}')
+           (f'a média entre {proprio} e o dos {len(pares)} pares do grupo {g} ({mp:.2f}x)')
 
 if __name__ == '__main__':
     H = carregar(); out = {}
