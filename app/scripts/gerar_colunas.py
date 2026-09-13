@@ -280,6 +280,16 @@ def gerar():
         # ── Coluna 5 · LUCRO PROJETADO 2026 ─────────────────────────────────────────────
         origem, bruto = origem_g, g_bruto
         cortado = (g is not None and bruto is not None and abs(bruto - g) > 0.05)
+        cells[5] = cel(dinheiro(proj) or VAZIO,
+            (f'LUCRO PROJETADO 2026 — {dinheiro(proj)}&#10;&#10;'
+             f'Lucro 2025 {dinheiro(l25)} × (1 {"+" if g >= 0 else "−"} {br(abs(g),1)}%)&#10;&#10;'
+             f'A taxa e a origem dela estão na coluna ao lado.'
+             if proj else
+             'LUCRO PROJETADO 2026 — não calculável&#10;&#10;'
+             + ('Sem taxa de crescimento utilizável na base.' if (l25 and l25 > 0) else
+                'Lucro de 2025 ausente ou negativo — sem base positiva não há percentual com '
+                'significado.')))
+
         # ── Coluna 6 · TAXA DE CRESCIMENTO 2025 → 2026 ──────────────────────────────────
         # Pedido do usuário. Ela já existia embutida na projeção, mas só aparecia na tooltip —
         # e é o único número que separa a coluna de 2025 da de 2026. Exposta, a linha inteira
@@ -289,42 +299,17 @@ def gerar():
              f'{"+" if g >= 0 else ""}{br(g,1)}%</span>'
              + (f' <span style="color:#b45309;font-size:11px;">({"+" if bruto >= 0 else ""}'
                 f'{br(bruto,1)}%)</span>' if cortado else '')) if g is not None else VAZIO,
-            (f'CRESCIMENTO APLICADO = {br(g,1)}%&#10;&#10;{origem.rstrip(".")}.&#10;'
+            (f'CRESCIMENTO 25→26 — {br(g,1)}%&#10;&#10;{origem.rstrip(".")}.'
+             + (f'&#10;&#10;Valor bruto {br(bruto,1)}%, limitado a ±{br(CRESC_CAP,0)}%.'
+                if cortado else '')
              if g is not None else
-             'SEM TAXA DE CRESCIMENTO&#10;&#10;A empresa não tem série de lucro recorrente nem '
-             'ROE utilizável na base.&#10;')
-            + (f'&#10;⚠️ VALOR BRUTO {br(bruto,1)}% — o número entre parênteses. Limitado a '
-               f'±{br(CRESC_CAP,0)}% porque projetar mais que isso em um ano, a partir de série '
-               f'de 5 pontos, é chute com casa decimal.&#10;' if cortado else '')
-            + '&#10;É esta taxa que leva a coluna Lucro 2025 à coluna Lucro Projetado 2026.&#10;'
-            + ('⚠️ TAXA DECLARADA, não estimada pelo motor — a procedência está acima.&#10;'
-               if t in CRESCIMENTO_DECLARADO else base))
-
-        cells[5] = cel(dinheiro(proj) or VAZIO,
-            (f'LUCRO PROJETADO 2026 = lucro 2025 R$ {br((l25 or 0)/1e9)} bi × (1 + {br(g)}%)'
-             if proj else 'LUCRO PROJETADO 2026 — não calculável')
-            + '&#10;&#10;'
-            + (f'Taxa: {origem}.&#10;' if origem else
-               'Sem taxa de crescimento: a empresa não tem série de lucro recorrente nem ROE '
-               'utilizável na base.&#10;')
-            + (f'⚠️ VALOR BRUTO {br(bruto)}% — limitado a ±{br(CRESC_CAP,0)}%. Projetar mais que '
-               f'isso em um ano a partir de série curta é chute com casa decimal.&#10;' if cortado else '')
-            + (('' if l25 and l25 > 0 else
-                'Lucro de 2025 ausente ou negativo: sem base positiva não existe percentual de '
-                'crescimento com significado.&#10;'))
-            + '&#10;⚠️ É PROJEÇÃO, não medida. Não entra no preço justo nem no ranking: o backtest '
-              '(scripts/backtest_ranking.py) mostrou que somar crescimento ao earnings yield '
-              'PIOROU o poder de ordenar em 8,9 p.p. Está aqui para leitura.&#10;' + base)
+             'SEM TAXA DE CRESCIMENTO&#10;&#10;Nem lucro recorrente nem ROE utilizável na base.'))
 
         cells[7] = cel(f'R$ {br(lpa)}' if lpa else VAZIO,
-            (f'LUCRO POR AÇÃO = lucro projetado 2026 R$ {br(proj/1e9)} bi ÷ {pap/1e6:.0f} mi papéis'
-             if lpa else 'LUCRO POR AÇÃO — sem lucro projetado 2026')
-            + '&#10;&#10;Papéis NEGOCIADOS: a contagem é derivada de lucro ÷ LPA da própria base, '
-              'ancorada no ano mais recente e usando só os anos cuja contagem fica a ±25% dele — '
-              'assim um desdobramento não mistura bases (a SBSP3 fez 5:1 e a contagem foi de '
-              '705 mi para 3.519 mi) nem um ano de lucro perto de zero explode a divisão.&#10;'
-              'Units já resolvidas (KLBN11 ÷5, SANB11 ÷2, BPAC11 ÷3): o número é POR PAPEL '
-              'negociado, na mesma base do preço e do dividendo.&#10;' + base)
+            (f'LUCRO POR AÇÃO — R$ {br(lpa)}&#10;&#10;'
+             f'Lucro projetado 2026 {dinheiro(proj)} ÷ {pap/1e6:.0f} mi papéis&#10;&#10;'
+             f'Papéis negociados, units já resolvidas — mesma base do preço e do dividendo.'
+             if lpa else 'LUCRO POR AÇÃO — sem lucro projetado 2026'))
 
         rot = {'piso': 'piso da política', 'teto': 'teto da política',
                'estatutario': 'realizado (a política é só o mínimo legal)',
@@ -369,22 +354,28 @@ def gerar():
               'Fonte: MCP Partnr (B3/CVM), analise/dy_historico.json.')
 
         med10, usados = dy_mediana(t)
+        # A tooltip mostra a SÉRIE que gera a mediana — é esse o racional. A versão anterior
+        # explicava por que mediana e não média, avisava sobre zeros e sobre troca de empresa:
+        # 600 caracteres de metodologia numa célula. Vendo os dez anos enfileirados, o leitor
+        # confere a conta sozinho e enxerga o ano fora da curva sem ninguém apontar.
+        if med10:
+            anos = sorted(usados)
+            linhas = []
+            for k in range(0, len(anos), 5):
+                linhas.append(' · '.join(f'{y} {br(usados[y],1)}%' for y in anos[k:k+5]))
+            faltando = [y for y in range(max(anos) - 9, max(anos) + 1) if y not in usados]
+            tip = (f'DY MEDIANO DE 10 ANOS — {br(med10,2)}%&#10;&#10;'
+                   + '&#10;'.join(linhas)
+                   + f'&#10;&#10;Mediana de {len(anos)} exercícios'
+                   + (f' · {len(faltando)} sem dado ({", ".join(str(y) for y in faltando)})'
+                      if faltando else '')
+                   + f' · média {br(sum(usados.values())/len(usados),2)}%')
+        else:
+            tip = ('DY MEDIANO DE 10 ANOS — não calculável&#10;&#10;'
+                   'Menos de 3 exercícios com dado na janela de 10 anos.')
         cells[12] = cel(
             (f'<span style="{"color:#059669;font-weight:600" if med10 >= 8 else ("" if med10 >= 4 else "color:#dc2626")}">'
-             f'{br(med10,2)}%</span>') if med10 else VAZIO,
-            (f'DY MEDIANO DE 10 ANOS = {br(med10,2)}%&#10;&#10;'
-             f'{len(usados)} exercícios com dado, de {min(usados)} a {max(usados)}.&#10;'
-             f'Faixa: {br(min(usados.values()),2)}% a {br(max(usados.values()),2)}%.&#10;'
-             f'Média dos mesmos anos: {br(sum(usados.values())/len(usados),2)}%.&#10;&#10;'
-             'MEDIANA e não média: a PETR4 pagou 65% em 2022 e a BRAP4 47,9% em 2021 — '
-             'extraordinários que levam a média da PETR4 a 16,4% contra 10,6% da mediana. '
-             'A mediana descreve o ano típico.&#10;'
-             if med10 else
-             'DY MEDIANO DE 10 ANOS — não calculável&#10;&#10;Menos de 3 exercícios com dado '
-             'utilizável na janela. Empresa recém-listada ou sem histórico de proventos na base.&#10;')
-            + '&#10;⚠️ Anos com yield zero saem da conta: zero na base significa dado ausente.&#10;'
-              '⚠️ 10 anos podem abranger mais de uma empresa — a ALOS3 era Aliansce até 2023.&#10;'
-              'Fonte: MCP Partnr (B3/CVM), analise/dy_historico.json.')
+             f'{br(med10,2)}%</span>') if med10 else VAZIO, tip)
 
         i = h.index(f'{t}.SA"'); m = h.find('<tr', i); end = m if m > 0 else len(h)
         blk = h[i:end]
