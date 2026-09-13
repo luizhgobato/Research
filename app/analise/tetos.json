@@ -75,15 +75,15 @@
   "seg": -25.252525252525267
  },
  "BMEB4": {
-  "justo": 59.4197,
+  "justo": 67.44015123726345,
   "faixa": [
    56.67025000000001,
    86.4622270742358
   ],
   "largura": 0.345,
   "nMetodos": 2,
-  "motor": "Faixa de 2 métodos: R$ 56.67 a R$ 86.46 · E/P R$ 58.29 · P/VP R$ 60.55",
-  "nota": "FAIXA DE VALOR de 2 método(s), largura 34%. O limite INFERIOR (R$ 56.67) é o teto de compra: abaixo dele a ação está barata por todas as réguas, não só pela mais generosa. A LARGURA é a incerteza — faixa estreita significa que o mercado precificou este negócio de forma reconhecível ano após ano; faixa larga avisa que o múltiplo oscilou muito e o número do meio não merece confiança. Substituiu a convicção em estrelas em 13/09/2026, que o backtest mostrou não medir confiança (teto ★★★ rendeu 18,3% e ★ rendeu 18,9%). P/L: faixa 8.2x–12.0x (mediana 8.5x) · TENDÊNCIA +5.0 entre as metades → faixa só dos 3 anos recentes, série de 6 anos (5.2x a 15.4x). || P/VP-alvo = TENDÊNCIA +1.9 entre as metades da série → mediana só dos 3 anos recentes de 6 anos (0.77x a 4.25x), corrigido para units. Não depende de lucro — é o método que sobrevive a prejuízo e a lucro contábil distorcido. ⚠️ Ignora rentabilidade: patrimônio grande com ROE ruim vale menos que isto sugere.",
+  "motor": "Faixa de 2 métodos: R$ 56.67 a R$ 86.46 · E/P R$ 58.29 · P/VP R$ 76.59",
+  "nota": "FAIXA DE VALOR de 2 método(s), largura 34%. O limite INFERIOR (R$ 56.67) é o teto de compra: abaixo dele a ação está barata por todas as réguas, não só pela mais generosa. A LARGURA é a incerteza — faixa estreita significa que o mercado precificou este negócio de forma reconhecível ano após ano; faixa larga avisa que o múltiplo oscilou muito e o número do meio não merece confiança. Substituiu a convicção em estrelas em 13/09/2026, que o backtest mostrou não medir confiança (teto ★★★ rendeu 18,3% e ★ rendeu 18,9%). P/L: faixa 8.2x–12.0x (mediana 8.5x) · TENDÊNCIA +5.0 entre as metades → faixa só dos 3 anos recentes, série de 6 anos (5.2x a 15.4x). || P/VP-alvo = TENDÊNCIA +1.9 entre as metades da série → média dos 3 anos recentes de 6 anos (0.77x a 4.25x), corrigido para units. Não depende de lucro — é o método que sobrevive a prejuízo e a lucro contábil distorcido. ⚠️ Ignora rentabilidade: patrimônio grande com ROE ruim vale menos que isto sugere.",
   "teto": 56.67,
   "faixaLo": 56.67,
   "faixaHi": 86.46,
@@ -108,15 +108,15 @@
   "seg": null
  },
  "BRAP4": {
-  "justo": 22.468204368696462,
+  "justo": 21.316317989820043,
   "faixa": [
    19.686467889908258,
    24.108027522935778
   ],
   "largura": 0.183,
   "nMetodos": 2,
-  "motor": "Faixa de 2 métodos: R$ 19.69 a R$ 24.11 · Paridade com VALE3 R$ 21.99 · P/VP R$ 22.95",
-  "nota": "FAIXA DE VALOR de 2 método(s), largura 18%. O limite INFERIOR (R$ 19.69) é o teto de compra: abaixo dele a ação está barata por todas as réguas, não só pela mais generosa. A LARGURA é a incerteza — faixa estreita significa que o mercado precificou este negócio de forma reconhecível ano após ano; faixa larga avisa que o múltiplo oscilou muito e o número do meio não merece confiança. Substituiu a convicção em estrelas em 13/09/2026, que o backtest mostrou não medir confiança (teto ★★★ rendeu 18,3% e ★ rendeu 18,9%). Razão preço BRAP4 ÷ preço VALE3 = TENDÊNCIA -0.0 entre as metades da série → mediana só dos 3 anos recentes de 6 anos (0.277 a 0.334, dispersão 17%). É o desconto de holding medido pelo próprio mercado, não um NAV estimado por mim. ⚠️ NÃO enxerga os demais ativos da holding nem a dívida dela, e não sabe dizer se o par inteiro está caro: se o motor errar em VALE3, erra aqui junto. Convicção limitada a ★★☆ por isso. || P/VP-alvo = TENDÊNCIA -0.2 entre as metades da série → mediana só dos 3 anos recentes de 6 anos (0.78x a 1.39x), corrigido para units. Não depende de lucro — é o método que sobrevive a prejuízo e a lucro contábil distorcido. ⚠️ Ignora rentabilidade: patrimônio grande com ROE ruim vale menos que isto sugere.",
+  "motor": "Faixa de 2 métodos: R$ 19.69 a R$ 24.11 · Paridade com VALE3 R$ 21.09 · P/VP R$ 21.55",
+  "nota": "FAIXA DE VALOR de 2 método(s), largura 18%. O limite INFERIOR (R$ 19.69) é o teto de compra: abaixo dele a ação está barata por todas as réguas, não só pela mais generosa. A LARGURA é a incerteza — faixa estreita significa que o mercado precificou este negócio de forma reconhecível ano após ano; faixa larga avisa que o múltiplo oscilou muito e o número do meio não merece confiança. Substituiu a convicção em estrelas em 13/09/2026, que o backtest mostrou não medir confiança (teto ★★★ rendeu 18,3% e ★ rendeu 18,9%). Razão preço BRAP4 ÷ preço VALE3 = TENDÊNCIA -0.0 entre as metades da série → média dos 3 anos recentes de 6 anos (0.277 a 0.334, dispersão 17%). É o desconto de holding medido pelo próprio mercado, não um NAV estimado por mim. ⚠️ NÃO enxerga os demais ativos da holding nem a dívida dela, e não sabe dizer se o par inteiro está caro: se o motor errar em VALE3, erra aqui junto. Convicção limitada a ★★☆ por isso. || P/VP-alvo = TENDÊNCIA -0.2 entre as metades da série → média dos 3 anos recentes de 6 anos (0.78x a 1.39x), corrigido para units. Não depende de lucro — é o método que sobrevive a prejuízo e a lucro contábil distorcido. ⚠️ Ignora rentabilidade: patrimônio grande com ROE ruim vale menos que isto sugere.",
   "teto": 19.69,
   "faixaLo": 19.69,
   "faixaHi": 24.11,
@@ -140,15 +140,15 @@
   "seg": -2.1276595744680864
  },
  "CLSC4": {
-  "justo": 138.5091813936572,
+  "justo": 132.0558,
   "faixa": [
    99.86098669955015,
    159.9
   ],
   "largura": 0.375,
   "nMetodos": 3,
-  "motor": "Faixa de 3 métodos: R$ 99.86 a R$ 159.90 · E/P R$ 132.06 · EV/Receita R$ 138.51 · P/VP R$ 156.00",
-  "nota": "FAIXA DE VALOR de 3 método(s), largura 38%. O limite INFERIOR (R$ 99.86) é o teto de compra: abaixo dele a ação está barata por todas as réguas, não só pela mais generosa. A LARGURA é a incerteza — faixa estreita significa que o mercado precificou este negócio de forma reconhecível ano após ano; faixa larga avisa que o múltiplo oscilou muito e o número do meio não merece confiança. Substituiu a convicção em estrelas em 13/09/2026, que o backtest mostrou não medir confiança (teto ★★★ rendeu 18,3% e ★ rendeu 18,9%). P/L: faixa 5.1x–6.3x (mediana 5.8x) · TENDÊNCIA +1.7 entre as metades → faixa só dos 3 anos recentes, série de 6 anos (3.6x a 6.8x). || P/VP-alvo = TENDÊNCIA +0.3 entre as metades da série → mediana só dos 3 anos recentes de 6 anos (0.67x a 1.26x), corrigido para units. Não depende de lucro — é o método que sobrevive a prejuízo e a lucro contábil distorcido. ⚠️ Ignora rentabilidade: patrimônio grande com ROE ruim vale menos que isto sugere. || EV/Receita-alvo = TENDÊNCIA +0.4 entre as metades da série → mediana só dos 3 anos recentes de 6 anos (0.29x a 0.86x). Não depende de lucro nem de EBITDA — sobrevive a margem colapsando e a EBITDA volátil. EV justo − dívida líquida R$ 5.2 bi ÷ 39 mi papéis. ⚠️ Ignora margem: receita alta com prejuízo não vale o que isto sugere.",
+  "motor": "Faixa de 3 métodos: R$ 99.86 a R$ 159.90 · EV/Receita R$ 114.71 · E/P R$ 132.06 · P/VP R$ 143.87",
+  "nota": "FAIXA DE VALOR de 3 método(s), largura 38%. O limite INFERIOR (R$ 99.86) é o teto de compra: abaixo dele a ação está barata por todas as réguas, não só pela mais generosa. A LARGURA é a incerteza — faixa estreita significa que o mercado precificou este negócio de forma reconhecível ano após ano; faixa larga avisa que o múltiplo oscilou muito e o número do meio não merece confiança. Substituiu a convicção em estrelas em 13/09/2026, que o backtest mostrou não medir confiança (teto ★★★ rendeu 18,3% e ★ rendeu 18,9%). P/L: faixa 5.1x–6.3x (mediana 5.8x) · TENDÊNCIA +1.7 entre as metades → faixa só dos 3 anos recentes, série de 6 anos (3.6x a 6.8x). || P/VP-alvo = TENDÊNCIA +0.3 entre as metades da série → média dos 3 anos recentes de 6 anos (0.67x a 1.26x), corrigido para units. Não depende de lucro — é o método que sobrevive a prejuízo e a lucro contábil distorcido. ⚠️ Ignora rentabilidade: patrimônio grande com ROE ruim vale menos que isto sugere. || EV/Receita-alvo = TENDÊNCIA +0.4 entre as metades da série → média dos 3 anos recentes de 6 anos (0.29x a 0.86x). Não depende de lucro nem de EBITDA — sobrevive a margem colapsando e a EBITDA volátil. EV justo − dívida líquida R$ 5.2 bi ÷ 39 mi papéis. ⚠️ Ignora margem: receita alta com prejuízo não vale o que isto sugere.",
   "teto": 99.86,
   "faixaLo": 99.86,
   "faixaHi": 159.9,
@@ -163,8 +163,8 @@
   ],
   "largura": 0.089,
   "nMetodos": 4,
-  "motor": "Faixa de 4 métodos: R$ 42.99 a R$ 47.17 · P/VP R$ 43.97 · E/P R$ 44.83 · EV/EBITDA 5.80x R$ 44.85 · EV/Receita R$ 46.39",
-  "nota": "FAIXA DE VALOR de 4 método(s), largura 9%. O limite INFERIOR (R$ 42.99) é o teto de compra: abaixo dele a ação está barata por todas as réguas, não só pela mais generosa. A LARGURA é a incerteza — faixa estreita significa que o mercado precificou este negócio de forma reconhecível ano após ano; faixa larga avisa que o múltiplo oscilou muito e o número do meio não merece confiança. Substituiu a convicção em estrelas em 13/09/2026, que o backtest mostrou não medir confiança (teto ★★★ rendeu 18,3% e ★ rendeu 18,9%). P/L: faixa 8.1x–8.6x (mediana 8.2x) · TENDÊNCIA +1.2 entre as metades → faixa só dos 3 anos recentes, série de 6 anos (6.8x a 9.1x). || P/VP-alvo = série estável (+0.1 entre as metades) → mediana dos 6 anos de 6 anos (1.88x a 2.29x), corrigido para units. Não depende de lucro — é o método que sobrevive a prejuízo e a lucro contábil distorcido. ⚠️ Ignora rentabilidade: patrimônio grande com ROE ruim vale menos que isto sugere. || EV/Receita-alvo = TENDÊNCIA +0.3 entre as metades da série → mediana só dos 3 anos recentes de 6 anos (1.48x a 1.78x). Não depende de lucro nem de EBITDA — sobrevive a margem colapsando e a EBITDA volátil. EV justo − dívida líquida R$ 27.6 bi ÷ 1152 mi papéis. ⚠️ Ignora margem: receita alta com prejuízo não vale o que isto sugere. || Múltiplo-alvo 5.80x = série estável (+0.5 entre as metades) → mediana dos 6 anos do próprio histórico (6 anos: 4.8x a 6.6x), não de pares. EV justo − dívida líquida R$ 27.6 bi ÷ 1152 mi papéis.",
+  "motor": "Faixa de 4 métodos: R$ 42.99 a R$ 47.17 · P/VP R$ 43.97 · E/P R$ 44.83 · EV/EBITDA 5.80x R$ 44.85 · EV/Receita R$ 45.46",
+  "nota": "FAIXA DE VALOR de 4 método(s), largura 9%. O limite INFERIOR (R$ 42.99) é o teto de compra: abaixo dele a ação está barata por todas as réguas, não só pela mais generosa. A LARGURA é a incerteza — faixa estreita significa que o mercado precificou este negócio de forma reconhecível ano após ano; faixa larga avisa que o múltiplo oscilou muito e o número do meio não merece confiança. Substituiu a convicção em estrelas em 13/09/2026, que o backtest mostrou não medir confiança (teto ★★★ rendeu 18,3% e ★ rendeu 18,9%). P/L: faixa 8.1x–8.6x (mediana 8.2x) · TENDÊNCIA +1.2 entre as metades → faixa só dos 3 anos recentes, série de 6 anos (6.8x a 9.1x). || P/VP-alvo = série estável (+0.1 entre as metades) → mediana dos 6 anos de 6 anos (1.88x a 2.29x), corrigido para units. Não depende de lucro — é o método que sobrevive a prejuízo e a lucro contábil distorcido. ⚠️ Ignora rentabilidade: patrimônio grande com ROE ruim vale menos que isto sugere. || EV/Receita-alvo = TENDÊNCIA +0.3 entre as metades da série → média dos 3 anos recentes de 6 anos (1.48x a 1.78x). Não depende de lucro nem de EBITDA — sobrevive a margem colapsando e a EBITDA volátil. EV justo − dívida líquida R$ 27.6 bi ÷ 1152 mi papéis. ⚠️ Ignora margem: receita alta com prejuízo não vale o que isto sugere. || Múltiplo-alvo 5.80x = série estável (+0.5 entre as metades) → mediana dos 6 anos do próprio histórico (6 anos: 4.8x a 6.6x), não de pares. EV justo − dívida líquida R$ 27.6 bi ÷ 1152 mi papéis.",
   "teto": 42.99,
   "faixaLo": 42.99,
   "faixaHi": 47.17,
@@ -172,15 +172,15 @@
   "seg": -4.181600955794525
  },
  "CXSE3": {
-  "justo": 17.295242857142856,
+  "justo": 17.364528571428572,
   "faixa": [
    16.07428571428571,
    18.976925
   ],
   "largura": 0.153,
   "nMetodos": 2,
-  "motor": "Faixa de 2 métodos: R$ 16.07 a R$ 18.98 · P/VP R$ 17.04 · E/P R$ 17.55",
-  "nota": "FAIXA DE VALOR de 2 método(s), largura 15%. O limite INFERIOR (R$ 16.07) é o teto de compra: abaixo dele a ação está barata por todas as réguas, não só pela mais generosa. A LARGURA é a incerteza — faixa estreita significa que o mercado precificou este negócio de forma reconhecível ano após ano; faixa larga avisa que o múltiplo oscilou muito e o número do meio não merece confiança. Substituiu a convicção em estrelas em 13/09/2026, que o backtest mostrou não medir confiança (teto ★★★ rendeu 18,3% e ★ rendeu 18,9%). P/L: faixa 11.1x–12.6x (mediana 11.6x) · percentis de 6 anos, série de 6 anos (9.8x a 13.9x). || P/VP-alvo = TENDÊNCIA +1.2 entre as metades da série → mediana só dos 3 anos recentes de 6 anos (2.13x a 4.20x), corrigido para units. Não depende de lucro — é o método que sobrevive a prejuízo e a lucro contábil distorcido. ⚠️ Ignora rentabilidade: patrimônio grande com ROE ruim vale menos que isto sugere.",
+  "motor": "Faixa de 2 métodos: R$ 16.07 a R$ 18.98 · P/VP R$ 17.18 · E/P R$ 17.55",
+  "nota": "FAIXA DE VALOR de 2 método(s), largura 15%. O limite INFERIOR (R$ 16.07) é o teto de compra: abaixo dele a ação está barata por todas as réguas, não só pela mais generosa. A LARGURA é a incerteza — faixa estreita significa que o mercado precificou este negócio de forma reconhecível ano após ano; faixa larga avisa que o múltiplo oscilou muito e o número do meio não merece confiança. Substituiu a convicção em estrelas em 13/09/2026, que o backtest mostrou não medir confiança (teto ★★★ rendeu 18,3% e ★ rendeu 18,9%). P/L: faixa 11.1x–12.6x (mediana 11.6x) · percentis de 6 anos, série de 6 anos (9.8x a 13.9x). || P/VP-alvo = TENDÊNCIA +1.2 entre as metades da série → média dos 3 anos recentes de 6 anos (2.13x a 4.20x), corrigido para units. Não depende de lucro — é o método que sobrevive a prejuízo e a lucro contábil distorcido. ⚠️ Ignora rentabilidade: patrimônio grande com ROE ruim vale menos que isto sugere.",
   "teto": 16.07,
   "faixaLo": 16.07,
   "faixaHi": 18.98,
@@ -188,15 +188,15 @@
   "seg": -20.689655172413808
  },
  "FIQE3": {
-  "justo": 5.0008,
+  "justo": 5.279615384615385,
   "faixa": [
    4.265480769230769,
    6.635509024136076
   ],
   "largura": 0.357,
   "nMetodos": 3,
-  "motor": "Faixa de 3 métodos: R$ 4.27 a R$ 6.64 · P/VP R$ 4.77 · E/P R$ 5.00 · EV/Receita R$ 5.24",
-  "nota": "FAIXA DE VALOR de 3 método(s), largura 36%. O limite INFERIOR (R$ 4.27) é o teto de compra: abaixo dele a ação está barata por todas as réguas, não só pela mais generosa. A LARGURA é a incerteza — faixa estreita significa que o mercado precificou este negócio de forma reconhecível ano após ano; faixa larga avisa que o múltiplo oscilou muito e o número do meio não merece confiança. Substituiu a convicção em estrelas em 13/09/2026, que o backtest mostrou não medir confiança (teto ★★★ rendeu 18,3% e ★ rendeu 18,9%). P/L: faixa 8.4x–9.5x (mediana 8.9x) · percentis de 5 anos, série de 5 anos (8.4x a 12.7x), restrito a partir de 2022 por QUEBRA DE SÉRIE. || P/VP-alvo = TENDÊNCIA +0.5 entre as metades da série → mediana só dos 3 anos recentes de 5 anos (1.18x a 2.39x), corrigido para units. Não depende de lucro — é o método que sobrevive a prejuízo e a lucro contábil distorcido. ⚠️ Ignora rentabilidade: patrimônio grande com ROE ruim vale menos que isto sugere. Restrito a partir de 2022 por quebra de série. || EV/Receita-alvo = TENDÊNCIA +0.3 entre as metades da série → mediana só dos 3 anos recentes de 5 anos (1.53x a 2.52x). Não depende de lucro nem de EBITDA — sobrevive a margem colapsando e a EBITDA volátil. EV justo − dívida líquida R$ 0.4 bi ÷ 364 mi papéis. ⚠️ Ignora margem: receita alta com prejuízo não vale o que isto sugere. Restrito a partir de 2022 por quebra de série.",
+  "motor": "Faixa de 3 métodos: R$ 4.27 a R$ 6.64 · E/P R$ 5.00 · P/VP R$ 5.28 · EV/Receita R$ 5.92",
+  "nota": "FAIXA DE VALOR de 3 método(s), largura 36%. O limite INFERIOR (R$ 4.27) é o teto de compra: abaixo dele a ação está barata por todas as réguas, não só pela mais generosa. A LARGURA é a incerteza — faixa estreita significa que o mercado precificou este negócio de forma reconhecível ano após ano; faixa larga avisa que o múltiplo oscilou muito e o número do meio não merece confiança. Substituiu a convicção em estrelas em 13/09/2026, que o backtest mostrou não medir confiança (teto ★★★ rendeu 18,3% e ★ rendeu 18,9%). P/L: faixa 8.4x–9.5x (mediana 8.9x) · percentis de 5 anos, série de 5 anos (8.4x a 12.7x), restrito a partir de 2022 por QUEBRA DE SÉRIE. || P/VP-alvo = TENDÊNCIA +0.5 entre as metades da série → média dos 3 anos recentes de 5 anos (1.18x a 2.39x), corrigido para units. Não depende de lucro — é o método que sobrevive a prejuízo e a lucro contábil distorcido. ⚠️ Ignora rentabilidade: patrimônio grande com ROE ruim vale menos que isto sugere. Restrito a partir de 2022 por quebra de série. || EV/Receita-alvo = TENDÊNCIA +0.3 entre as metades da série → média dos 3 anos recentes de 5 anos (1.53x a 2.52x). Não depende de lucro nem de EBITDA — sobrevive a margem colapsando e a EBITDA volátil. EV justo − dívida líquida R$ 0.4 bi ÷ 364 mi papéis. ⚠️ Ignora margem: receita alta com prejuízo não vale o que isto sugere. Restrito a partir de 2022 por quebra de série.",
   "teto": 4.27,
   "faixaLo": 4.27,
   "faixaHi": 6.64,
@@ -220,15 +220,15 @@
   "seg": -22.42225859247138
  },
  "IRBR3": {
-  "justo": 39.5271511627907,
+  "justo": 38.75687984496124,
   "faixa": [
    24.255,
    55.789651162790705
   ],
   "largura": 0.565,
   "nMetodos": 2,
-  "motor": "Faixa de 2 métodos: R$ 24.25 a R$ 55.79 · E/P R$ 24.25 · P/VP R$ 54.80",
-  "nota": "⛔ SEM TETO DE COMPRA — os métodos discordam 57% entre si (faixa de R$ 24.25 a R$ 55.79). A faixa continua na tabela porque descreve a empresa, mas não vira preço de compra: o limite inferior de uma faixa larga é a saída do método mais pessimista, não uma estimativa conservadora de valor. Dar um número aqui seria emprestar precisão a um desacordo. Mesmo princípio do SEM_TETO declarado. || FAIXA DE VALOR de 2 método(s), largura 57%. O limite INFERIOR (R$ 24.25) é o teto de compra: abaixo dele a ação está barata por todas as réguas, não só pela mais generosa. A LARGURA é a incerteza — faixa estreita significa que o mercado precificou este negócio de forma reconhecível ano após ano; faixa larga avisa que o múltiplo oscilou muito e o número do meio não merece confiança. Substituiu a convicção em estrelas em 13/09/2026, que o backtest mostrou não medir confiança (teto ★★★ rendeu 18,3% e ★ rendeu 18,9%). P/L: faixa 8.2x–8.2x (mediana 8.2x) · série curta — sem faixa, ponto único, série de 3 anos (8.2x a 19.1x), restrito a partir de 2022 por QUEBRA DE SÉRIE. || P/VP-alvo = TENDÊNCIA +0.1 entre as metades da série → mediana só dos 3 anos recentes de 5 anos (0.52x a 0.87x), corrigido para units. Não depende de lucro — é o método que sobrevive a prejuízo e a lucro contábil distorcido. ⚠️ Ignora rentabilidade: patrimônio grande com ROE ruim vale menos que isto sugere. Restrito a partir de 2022 por quebra de série.",
+  "motor": "Faixa de 2 métodos: R$ 24.25 a R$ 55.79 · E/P R$ 24.25 · P/VP R$ 53.26",
+  "nota": "⛔ SEM TETO DE COMPRA — os métodos discordam 57% entre si (faixa de R$ 24.25 a R$ 55.79). A faixa continua na tabela porque descreve a empresa, mas não vira preço de compra: o limite inferior de uma faixa larga é a saída do método mais pessimista, não uma estimativa conservadora de valor. Dar um número aqui seria emprestar precisão a um desacordo. Mesmo princípio do SEM_TETO declarado. || FAIXA DE VALOR de 2 método(s), largura 57%. O limite INFERIOR (R$ 24.25) é o teto de compra: abaixo dele a ação está barata por todas as réguas, não só pela mais generosa. A LARGURA é a incerteza — faixa estreita significa que o mercado precificou este negócio de forma reconhecível ano após ano; faixa larga avisa que o múltiplo oscilou muito e o número do meio não merece confiança. Substituiu a convicção em estrelas em 13/09/2026, que o backtest mostrou não medir confiança (teto ★★★ rendeu 18,3% e ★ rendeu 18,9%). P/L: faixa 8.2x–8.2x (mediana 8.2x) · série curta — sem faixa, ponto único, série de 3 anos (8.2x a 19.1x), restrito a partir de 2022 por QUEBRA DE SÉRIE. || P/VP-alvo = TENDÊNCIA +0.1 entre as metades da série → média dos 3 anos recentes de 5 anos (0.52x a 0.87x), corrigido para units. Não depende de lucro — é o método que sobrevive a prejuízo e a lucro contábil distorcido. ⚠️ Ignora rentabilidade: patrimônio grande com ROE ruim vale menos que isto sugere. Restrito a partir de 2022 por quebra de série.",
   "teto_suprimido": true,
   "teto": null,
   "faixaLo": 24.25,
@@ -237,15 +237,15 @@
   "seg": null
  },
  "ITSA4": {
-  "justo": 13.668936520878585,
+  "justo": 13.154523390344941,
   "faixa": [
    12.656326530612244,
    14.238367346938775
   ],
   "largura": 0.111,
   "nMetodos": 2,
-  "motor": "Faixa de 2 métodos: R$ 12.66 a R$ 14.24 · Paridade com ITUB3 R$ 13.66 · P/VP R$ 13.68",
-  "nota": "FAIXA DE VALOR de 2 método(s), largura 11%. O limite INFERIOR (R$ 12.66) é o teto de compra: abaixo dele a ação está barata por todas as réguas, não só pela mais generosa. A LARGURA é a incerteza — faixa estreita significa que o mercado precificou este negócio de forma reconhecível ano após ano; faixa larga avisa que o múltiplo oscilou muito e o número do meio não merece confiança. Substituiu a convicção em estrelas em 13/09/2026, que o backtest mostrou não medir confiança (teto ★★★ rendeu 18,3% e ★ rendeu 18,9%). Razão preço ITSA4 ÷ preço ITUB3 = TENDÊNCIA -0.1 entre as metades da série → mediana só dos 3 anos recentes de 6 anos (0.318 a 0.468, dispersão 32%). É o desconto de holding medido pelo próprio mercado, não um NAV estimado por mim. ⚠️ NÃO enxerga os demais ativos da holding nem a dívida dela, e não sabe dizer se o par inteiro está caro: se o motor errar em ITUB3, erra aqui junto. Convicção limitada a ★★☆ por isso. || P/VP-alvo = TENDÊNCIA +0.3 entre as metades da série → mediana só dos 3 anos recentes de 6 anos (1.14x a 1.59x), corrigido para units. Não depende de lucro — é o método que sobrevive a prejuízo e a lucro contábil distorcido. ⚠️ Ignora rentabilidade: patrimônio grande com ROE ruim vale menos que isto sugere.",
+  "motor": "Faixa de 2 métodos: R$ 12.66 a R$ 14.24 · Paridade com ITUB3 R$ 12.94 · P/VP R$ 13.37",
+  "nota": "FAIXA DE VALOR de 2 método(s), largura 11%. O limite INFERIOR (R$ 12.66) é o teto de compra: abaixo dele a ação está barata por todas as réguas, não só pela mais generosa. A LARGURA é a incerteza — faixa estreita significa que o mercado precificou este negócio de forma reconhecível ano após ano; faixa larga avisa que o múltiplo oscilou muito e o número do meio não merece confiança. Substituiu a convicção em estrelas em 13/09/2026, que o backtest mostrou não medir confiança (teto ★★★ rendeu 18,3% e ★ rendeu 18,9%). Razão preço ITSA4 ÷ preço ITUB3 = TENDÊNCIA -0.1 entre as metades da série → média dos 3 anos recentes de 6 anos (0.318 a 0.468, dispersão 32%). É o desconto de holding medido pelo próprio mercado, não um NAV estimado por mim. ⚠️ NÃO enxerga os demais ativos da holding nem a dívida dela, e não sabe dizer se o par inteiro está caro: se o motor errar em ITUB3, erra aqui junto. Convicção limitada a ★★☆ por isso. || P/VP-alvo = TENDÊNCIA +0.3 entre as metades da série → média dos 3 anos recentes de 6 anos (1.14x a 1.59x), corrigido para units. Não depende de lucro — é o método que sobrevive a prejuízo e a lucro contábil distorcido. ⚠️ Ignora rentabilidade: patrimônio grande com ROE ruim vale menos que isto sugere.",
   "teto": 12.66,
   "faixaLo": 12.66,
   "faixaHi": 14.24,
@@ -253,15 +253,15 @@
   "seg": -8.088235294117654
  },
  "ITUB3": {
-  "justo": 42.50545248868778,
+  "justo": 40.134328808446455,
   "faixa": [
    33.617986425339375,
    44.56575
   ],
   "largura": 0.246,
   "nMetodos": 2,
-  "motor": "Faixa de 2 métodos: R$ 33.62 a R$ 44.57 · P/VP R$ 41.51 · E/P R$ 43.50",
-  "nota": "FAIXA DE VALOR de 2 método(s), largura 25%. O limite INFERIOR (R$ 33.62) é o teto de compra: abaixo dele a ação está barata por todas as réguas, não só pela mais generosa. A LARGURA é a incerteza — faixa estreita significa que o mercado precificou este negócio de forma reconhecível ano após ano; faixa larga avisa que o múltiplo oscilou muito e o número do meio não merece confiança. Substituiu a convicção em estrelas em 13/09/2026, que o backtest mostrou não medir confiança (teto ★★★ rendeu 18,3% e ★ rendeu 18,9%). P/L: faixa 8.5x–10.2x (mediana 10.0x) · TENDÊNCIA +1.6 entre as metades → faixa só dos 3 anos recentes, série de 6 anos (6.9x a 10.5x). || P/VP-alvo = TENDÊNCIA +0.6 entre as metades da série → mediana só dos 3 anos recentes de 6 anos (1.19x a 2.21x), corrigido para units. Não depende de lucro — é o método que sobrevive a prejuízo e a lucro contábil distorcido. ⚠️ Ignora rentabilidade: patrimônio grande com ROE ruim vale menos que isto sugere.",
+  "motor": "Faixa de 2 métodos: R$ 33.62 a R$ 44.57 · P/VP R$ 36.77 · E/P R$ 43.50",
+  "nota": "FAIXA DE VALOR de 2 método(s), largura 25%. O limite INFERIOR (R$ 33.62) é o teto de compra: abaixo dele a ação está barata por todas as réguas, não só pela mais generosa. A LARGURA é a incerteza — faixa estreita significa que o mercado precificou este negócio de forma reconhecível ano após ano; faixa larga avisa que o múltiplo oscilou muito e o número do meio não merece confiança. Substituiu a convicção em estrelas em 13/09/2026, que o backtest mostrou não medir confiança (teto ★★★ rendeu 18,3% e ★ rendeu 18,9%). P/L: faixa 8.5x–10.2x (mediana 10.0x) · TENDÊNCIA +1.6 entre as metades → faixa só dos 3 anos recentes, série de 6 anos (6.9x a 10.5x). || P/VP-alvo = TENDÊNCIA +0.6 entre as metades da série → média dos 3 anos recentes de 6 anos (1.19x a 2.21x), corrigido para units. Não depende de lucro — é o método que sobrevive a prejuízo e a lucro contábil distorcido. ⚠️ Ignora rentabilidade: patrimônio grande com ROE ruim vale menos que isto sugere.",
   "teto": 33.62,
   "faixaLo": 33.62,
   "faixaHi": 44.57,
@@ -269,15 +269,15 @@
   "seg": -28.11594202898548
  },
  "KLBN11": {
-  "justo": 20.170247531396022,
+  "justo": 22.384415230115472,
   "faixa": [
    19.44415774151489,
    27.51632653061225
   ],
   "largura": 0.293,
   "nMetodos": 3,
-  "motor": "Faixa de 3 métodos: R$ 19.44 a R$ 27.52 · P/VP R$ 19.80 · EV/EBITDA 5.73x R$ 20.17 · EV/Receita R$ 22.38",
-  "nota": "FAIXA DE VALOR de 3 método(s), largura 29%. O limite INFERIOR (R$ 19.44) é o teto de compra: abaixo dele a ação está barata por todas as réguas, não só pela mais generosa. A LARGURA é a incerteza — faixa estreita significa que o mercado precificou este negócio de forma reconhecível ano após ano; faixa larga avisa que o múltiplo oscilou muito e o número do meio não merece confiança. Substituiu a convicção em estrelas em 13/09/2026, que o backtest mostrou não medir confiança (teto ★★★ rendeu 18,3% e ★ rendeu 18,9%). Múltiplo-alvo 5.73x = MEDIANA da série inteira (cíclica cobre pico e fundo) do próprio histórico (6 anos: 4.5x a 6.6x), não de pares. EV justo − dívida líquida R$ 24.8 bi ÷ 1215 mi papéis. || P/VP-alvo = TENDÊNCIA -0.1 entre as metades da série → mediana só dos 3 anos recentes de 6 anos (0.29x a 0.64x), corrigido para units. Não depende de lucro — é o método que sobrevive a prejuízo e a lucro contábil distorcido. ⚠️ Ignora rentabilidade: patrimônio grande com ROE ruim vale menos que isto sugere. || EV/Receita-alvo = série estável (+0.0 entre as metades) → mediana dos 6 anos de 6 anos (2.21x a 2.86x). Não depende de lucro nem de EBITDA — sobrevive a margem colapsando e a EBITDA volátil. EV justo − dívida líquida R$ 24.8 bi ÷ 1215 mi papéis. ⚠️ Ignora margem: receita alta com prejuízo não vale o que isto sugere. || VERIFICAÇÃO (fora do voto) — EV/EBITDA daria R$ 20.17, DENTRO da faixa: os métodos concordam. ",
+  "motor": "Faixa de 3 métodos: R$ 19.44 a R$ 27.52 · EV/EBITDA 5.73x R$ 20.17 · EV/Receita R$ 22.38 · P/VP R$ 24.81",
+  "nota": "FAIXA DE VALOR de 3 método(s), largura 29%. O limite INFERIOR (R$ 19.44) é o teto de compra: abaixo dele a ação está barata por todas as réguas, não só pela mais generosa. A LARGURA é a incerteza — faixa estreita significa que o mercado precificou este negócio de forma reconhecível ano após ano; faixa larga avisa que o múltiplo oscilou muito e o número do meio não merece confiança. Substituiu a convicção em estrelas em 13/09/2026, que o backtest mostrou não medir confiança (teto ★★★ rendeu 18,3% e ★ rendeu 18,9%). Múltiplo-alvo 5.73x = MEDIANA da série inteira (cíclica cobre pico e fundo) do próprio histórico (6 anos: 4.5x a 6.6x), não de pares. EV justo − dívida líquida R$ 24.8 bi ÷ 1215 mi papéis. || P/VP-alvo = TENDÊNCIA -0.1 entre as metades da série → média dos 3 anos recentes de 6 anos (0.29x a 0.64x), corrigido para units. Não depende de lucro — é o método que sobrevive a prejuízo e a lucro contábil distorcido. ⚠️ Ignora rentabilidade: patrimônio grande com ROE ruim vale menos que isto sugere. || EV/Receita-alvo = série estável (+0.0 entre as metades) → mediana dos 6 anos de 6 anos (2.21x a 2.86x). Não depende de lucro nem de EBITDA — sobrevive a margem colapsando e a EBITDA volátil. EV justo − dívida líquida R$ 24.8 bi ÷ 1215 mi papéis. ⚠️ Ignora margem: receita alta com prejuízo não vale o que isto sugere. || VERIFICAÇÃO (fora do voto) — EV/EBITDA daria R$ 20.17, DENTRO da faixa: os métodos concordam. ",
   "teto": 19.44,
   "faixaLo": 19.44,
   "faixaHi": 27.52,
@@ -285,15 +285,15 @@
   "seg": 0.22710030489317706
  },
  "LEVE3": {
-  "justo": 37.165714285714294,
+  "justo": 36.09362637362638,
   "faixa": [
    29.988826695863274,
    38.7556
   ],
   "largura": 0.226,
   "nMetodos": 3,
-  "motor": "Faixa de 3 métodos: R$ 29.99 a R$ 38.76 · EV/Receita R$ 32.99 · P/VP R$ 37.17 · E/P R$ 38.09",
-  "nota": "FAIXA DE VALOR de 3 método(s), largura 23%. O limite INFERIOR (R$ 29.99) é o teto de compra: abaixo dele a ação está barata por todas as réguas, não só pela mais generosa. A LARGURA é a incerteza — faixa estreita significa que o mercado precificou este negócio de forma reconhecível ano após ano; faixa larga avisa que o múltiplo oscilou muito e o número do meio não merece confiança. Substituiu a convicção em estrelas em 13/09/2026, que o backtest mostrou não medir confiança (teto ★★★ rendeu 18,3% e ★ rendeu 18,9%). P/L: faixa 6.9x–7.5x (mediana 7.4x) · TENDÊNCIA +1.0 entre as metades → faixa só dos 3 anos recentes, série de 6 anos (5.5x a 7.7x). || P/VP-alvo = TENDÊNCIA +2.0 entre as metades da série → mediana só dos 3 anos recentes de 6 anos (1.83x a 5.40x), corrigido para units. Não depende de lucro — é o método que sobrevive a prejuízo e a lucro contábil distorcido. ⚠️ Ignora rentabilidade: patrimônio grande com ROE ruim vale menos que isto sugere. || EV/Receita-alvo = série estável (+0.1 entre as metades) → mediana dos 6 anos de 6 anos (0.84x a 1.15x). Não depende de lucro nem de EBITDA — sobrevive a margem colapsando e a EBITDA volátil. EV justo − dívida líquida R$ 1.1 bi ÷ 136 mi papéis. ⚠️ Ignora margem: receita alta com prejuízo não vale o que isto sugere. || VERIFICAÇÃO (fora do voto) — EV/EBITDA daria R$ 31.65, DENTRO da faixa: os métodos concordam. ",
+  "motor": "Faixa de 3 métodos: R$ 29.99 a R$ 38.76 · EV/Receita R$ 32.99 · P/VP R$ 36.09 · E/P R$ 38.09",
+  "nota": "FAIXA DE VALOR de 3 método(s), largura 23%. O limite INFERIOR (R$ 29.99) é o teto de compra: abaixo dele a ação está barata por todas as réguas, não só pela mais generosa. A LARGURA é a incerteza — faixa estreita significa que o mercado precificou este negócio de forma reconhecível ano após ano; faixa larga avisa que o múltiplo oscilou muito e o número do meio não merece confiança. Substituiu a convicção em estrelas em 13/09/2026, que o backtest mostrou não medir confiança (teto ★★★ rendeu 18,3% e ★ rendeu 18,9%). P/L: faixa 6.9x–7.5x (mediana 7.4x) · TENDÊNCIA +1.0 entre as metades → faixa só dos 3 anos recentes, série de 6 anos (5.5x a 7.7x). || P/VP-alvo = TENDÊNCIA +2.0 entre as metades da série → média dos 3 anos recentes de 6 anos (1.83x a 5.40x), corrigido para units. Não depende de lucro — é o método que sobrevive a prejuízo e a lucro contábil distorcido. ⚠️ Ignora rentabilidade: patrimônio grande com ROE ruim vale menos que isto sugere. || EV/Receita-alvo = série estável (+0.1 entre as metades) → mediana dos 6 anos de 6 anos (0.84x a 1.15x). Não depende de lucro nem de EBITDA — sobrevive a margem colapsando e a EBITDA volátil. EV justo − dívida líquida R$ 1.1 bi ÷ 136 mi papéis. ⚠️ Ignora margem: receita alta com prejuízo não vale o que isto sugere. || VERIFICAÇÃO (fora do voto) — EV/EBITDA daria R$ 31.65, DENTRO da faixa: os métodos concordam. ",
   "teto": 29.99,
   "faixaLo": 29.99,
   "faixaHi": 38.76,
@@ -301,15 +301,15 @@
   "seg": -8.440387914495783
  },
  "MULT3": {
-  "justo": 31.257084415049665,
+  "justo": 31.067393443511783,
   "faixa": [
    24.947481745833905,
    37.34759023153359
   ],
   "largura": 0.332,
   "nMetodos": 2,
-  "motor": "Faixa de 2 métodos: R$ 24.95 a R$ 37.35 · P/FFO R$ 27.95 · EV/Receita R$ 34.56",
-  "nota": "FAIXA DE VALOR de 2 método(s), largura 33%. O limite INFERIOR (R$ 24.95) é o teto de compra: abaixo dele a ação está barata por todas as réguas, não só pela mais generosa. A LARGURA é a incerteza — faixa estreita significa que o mercado precificou este negócio de forma reconhecível ano após ano; faixa larga avisa que o múltiplo oscilou muito e o número do meio não merece confiança. Substituiu a convicção em estrelas em 13/09/2026, que o backtest mostrou não medir confiança (teto ★★★ rendeu 18,3% e ★ rendeu 18,9%). P/FFO-alvo = TENDÊNCIA -4.8 entre as metades → faixa só dos 3 anos recentes, série de 5 anos (7.4x a 14.6x). FFO = lucro líquido + depreciação — devolve a despesa que não sai caixa e que a contabilidade cobra do imóvel como se ele se desgastasse. ⚠️ PROXY: o FFO oficial também exclui ganho de venda de ativo e ajuste a valor justo, que a base não separa. ⚠️ NÃO comparar com o P/FFO de outra operadora: quem usa valor justo quase não deprecia e o mesmo cálculo mede outra coisa. Restrito a partir de 2022 por quebra de série. || EV/Receita-alvo = TENDÊNCIA -2.0 entre as metades da série → mediana só dos 3 anos recentes de 5 anos (5.96x a 9.39x). Não depende de lucro nem de EBITDA — sobrevive a margem colapsando e a EBITDA volátil. EV justo − dívida líquida R$ 4.6 bi ÷ 520 mi papéis. ⚠️ Ignora margem: receita alta com prejuízo não vale o que isto sugere. Restrito a partir de 2022 por quebra de série.",
+  "motor": "Faixa de 2 métodos: R$ 24.95 a R$ 37.35 · P/FFO R$ 27.95 · EV/Receita R$ 34.18",
+  "nota": "FAIXA DE VALOR de 2 método(s), largura 33%. O limite INFERIOR (R$ 24.95) é o teto de compra: abaixo dele a ação está barata por todas as réguas, não só pela mais generosa. A LARGURA é a incerteza — faixa estreita significa que o mercado precificou este negócio de forma reconhecível ano após ano; faixa larga avisa que o múltiplo oscilou muito e o número do meio não merece confiança. Substituiu a convicção em estrelas em 13/09/2026, que o backtest mostrou não medir confiança (teto ★★★ rendeu 18,3% e ★ rendeu 18,9%). P/FFO-alvo = TENDÊNCIA -4.8 entre as metades → faixa só dos 3 anos recentes, série de 5 anos (7.4x a 14.6x). FFO = lucro líquido + depreciação — devolve a despesa que não sai caixa e que a contabilidade cobra do imóvel como se ele se desgastasse. ⚠️ PROXY: o FFO oficial também exclui ganho de venda de ativo e ajuste a valor justo, que a base não separa. ⚠️ NÃO comparar com o P/FFO de outra operadora: quem usa valor justo quase não deprecia e o mesmo cálculo mede outra coisa. Restrito a partir de 2022 por quebra de série. || EV/Receita-alvo = TENDÊNCIA -2.0 entre as metades da série → média dos 3 anos recentes de 5 anos (5.96x a 9.39x). Não depende de lucro nem de EBITDA — sobrevive a margem colapsando e a EBITDA volátil. EV justo − dívida líquida R$ 4.6 bi ÷ 520 mi papéis. ⚠️ Ignora margem: receita alta com prejuízo não vale o que isto sugere. Restrito a partir de 2022 por quebra de série.",
   "teto": 24.95,
   "faixaLo": 24.95,
   "faixaHi": 37.35,
@@ -341,8 +341,8 @@
   ],
   "largura": 0.236,
   "nMetodos": 3,
-  "motor": "Faixa de 3 métodos: R$ 42.94 a R$ 56.22 · EV/EBITDA 3.21x R$ 42.94 · P/VP R$ 47.09 · EV/Receita R$ 47.55",
-  "nota": "FAIXA DE VALOR de 3 método(s), largura 24%. O limite INFERIOR (R$ 42.94) é o teto de compra: abaixo dele a ação está barata por todas as réguas, não só pela mais generosa. A LARGURA é a incerteza — faixa estreita significa que o mercado precificou este negócio de forma reconhecível ano após ano; faixa larga avisa que o múltiplo oscilou muito e o número do meio não merece confiança. Substituiu a convicção em estrelas em 13/09/2026, que o backtest mostrou não medir confiança (teto ★★★ rendeu 18,3% e ★ rendeu 18,9%). Múltiplo-alvo 3.21x = MEDIANA da série inteira (cíclica cobre pico e fundo) do próprio histórico (6 anos: 1.6x a 4.3x), não de pares. EV justo − dívida líquida R$ 312.8 bi ÷ 12967 mi papéis. || P/VP-alvo = série estável (+0.1 entre as metades) → mediana dos 6 anos de 6 anos (0.91x a 1.43x), corrigido para units. Não depende de lucro — é o método que sobrevive a prejuízo e a lucro contábil distorcido. ⚠️ Ignora rentabilidade: patrimônio grande com ROE ruim vale menos que isto sugere. || EV/Receita-alvo = TENDÊNCIA +0.4 entre as metades da série → mediana só dos 3 anos recentes de 6 anos (0.92x a 1.97x). Não depende de lucro nem de EBITDA — sobrevive a margem colapsando e a EBITDA volátil. EV justo − dívida líquida R$ 312.8 bi ÷ 12967 mi papéis. ⚠️ Ignora margem: receita alta com prejuízo não vale o que isto sugere. || VERIFICAÇÃO (fora do voto) — EV/EBITDA daria R$ 42.94, DENTRO da faixa: os métodos concordam. ",
+  "motor": "Faixa de 3 métodos: R$ 42.94 a R$ 56.22 · EV/EBITDA 3.21x R$ 42.94 · P/VP R$ 47.09 · EV/Receita R$ 49.95",
+  "nota": "FAIXA DE VALOR de 3 método(s), largura 24%. O limite INFERIOR (R$ 42.94) é o teto de compra: abaixo dele a ação está barata por todas as réguas, não só pela mais generosa. A LARGURA é a incerteza — faixa estreita significa que o mercado precificou este negócio de forma reconhecível ano após ano; faixa larga avisa que o múltiplo oscilou muito e o número do meio não merece confiança. Substituiu a convicção em estrelas em 13/09/2026, que o backtest mostrou não medir confiança (teto ★★★ rendeu 18,3% e ★ rendeu 18,9%). Múltiplo-alvo 3.21x = MEDIANA da série inteira (cíclica cobre pico e fundo) do próprio histórico (6 anos: 1.6x a 4.3x), não de pares. EV justo − dívida líquida R$ 312.8 bi ÷ 12967 mi papéis. || P/VP-alvo = série estável (+0.1 entre as metades) → mediana dos 6 anos de 6 anos (0.91x a 1.43x), corrigido para units. Não depende de lucro — é o método que sobrevive a prejuízo e a lucro contábil distorcido. ⚠️ Ignora rentabilidade: patrimônio grande com ROE ruim vale menos que isto sugere. || EV/Receita-alvo = TENDÊNCIA +0.4 entre as metades da série → média dos 3 anos recentes de 6 anos (0.92x a 1.97x). Não depende de lucro nem de EBITDA — sobrevive a margem colapsando e a EBITDA volátil. EV justo − dívida líquida R$ 312.8 bi ÷ 12967 mi papéis. ⚠️ Ignora margem: receita alta com prejuízo não vale o que isto sugere. || VERIFICAÇÃO (fora do voto) — EV/EBITDA daria R$ 42.94, DENTRO da faixa: os métodos concordam. ",
   "teto": 42.94,
   "faixaLo": 42.94,
   "faixaHi": 56.22,
@@ -350,15 +350,15 @@
   "seg": -12.075763079780911
  },
  "PSSA3": {
-  "justo": 52.471967948717946,
+  "justo": 52.51533547008547,
   "faixa": [
    48.573125,
    59.728125
   ],
   "largura": 0.187,
   "nMetodos": 2,
-  "motor": "Faixa de 2 métodos: R$ 48.57 a R$ 59.73 · E/P R$ 52.38 · P/VP R$ 52.56",
-  "nota": "FAIXA DE VALOR de 2 método(s), largura 19%. O limite INFERIOR (R$ 48.57) é o teto de compra: abaixo dele a ação está barata por todas as réguas, não só pela mais generosa. A LARGURA é a incerteza — faixa estreita significa que o mercado precificou este negócio de forma reconhecível ano após ano; faixa larga avisa que o múltiplo oscilou muito e o número do meio não merece confiança. Substituiu a convicção em estrelas em 13/09/2026, que o backtest mostrou não medir confiança (teto ★★★ rendeu 18,3% e ★ rendeu 18,9%). P/L: faixa 8.4x–10.4x (mediana 9.1x) · percentis de 6 anos, série de 6 anos (8.0x a 13.4x). || P/VP-alvo = TENDÊNCIA +0.6 entre as metades da série → mediana só dos 3 anos recentes de 6 anos (1.39x a 2.10x), corrigido para units. Não depende de lucro — é o método que sobrevive a prejuízo e a lucro contábil distorcido. ⚠️ Ignora rentabilidade: patrimônio grande com ROE ruim vale menos que isto sugere.",
+  "motor": "Faixa de 2 métodos: R$ 48.57 a R$ 59.73 · E/P R$ 52.38 · P/VP R$ 52.65",
+  "nota": "FAIXA DE VALOR de 2 método(s), largura 19%. O limite INFERIOR (R$ 48.57) é o teto de compra: abaixo dele a ação está barata por todas as réguas, não só pela mais generosa. A LARGURA é a incerteza — faixa estreita significa que o mercado precificou este negócio de forma reconhecível ano após ano; faixa larga avisa que o múltiplo oscilou muito e o número do meio não merece confiança. Substituiu a convicção em estrelas em 13/09/2026, que o backtest mostrou não medir confiança (teto ★★★ rendeu 18,3% e ★ rendeu 18,9%). P/L: faixa 8.4x–10.4x (mediana 9.1x) · percentis de 6 anos, série de 6 anos (8.0x a 13.4x). || P/VP-alvo = TENDÊNCIA +0.6 entre as metades da série → média dos 3 anos recentes de 6 anos (1.39x a 2.10x), corrigido para units. Não depende de lucro — é o método que sobrevive a prejuízo e a lucro contábil distorcido. ⚠️ Ignora rentabilidade: patrimônio grande com ROE ruim vale menos que isto sugere.",
   "teto": 48.57,
   "faixaLo": 48.57,
   "faixaHi": 59.73,
@@ -373,8 +373,8 @@
   ],
   "largura": 0.136,
   "nMetodos": 3,
-  "motor": "Faixa de 3 métodos: R$ 7.70 a R$ 8.92 · P/VP R$ 7.82 · EV/EBITDA 5.04x R$ 8.06 · EV/Receita R$ 8.51",
-  "nota": "FAIXA DE VALOR de 3 método(s), largura 14%. O limite INFERIOR (R$ 7.70) é o teto de compra: abaixo dele a ação está barata por todas as réguas, não só pela mais generosa. A LARGURA é a incerteza — faixa estreita significa que o mercado precificou este negócio de forma reconhecível ano após ano; faixa larga avisa que o múltiplo oscilou muito e o número do meio não merece confiança. Substituiu a convicção em estrelas em 13/09/2026, que o backtest mostrou não medir confiança (teto ★★★ rendeu 18,3% e ★ rendeu 18,9%). Múltiplo-alvo 5.04x = MEDIANA da série inteira (cíclica cobre pico e fundo) do próprio histórico (6 anos: 4.8x a 5.9x), não de pares. EV justo − dívida líquida R$ 1.1 bi ÷ 240 mi papéis. || P/VP-alvo = TENDÊNCIA -0.5 entre as metades da série → mediana só dos 3 anos recentes de 6 anos (1.24x a 1.90x), corrigido para units. Não depende de lucro — é o método que sobrevive a prejuízo e a lucro contábil distorcido. ⚠️ Ignora rentabilidade: patrimônio grande com ROE ruim vale menos que isto sugere. || EV/Receita-alvo = série estável (-0.1 entre as metades) → mediana dos 6 anos de 6 anos (1.63x a 2.13x). Não depende de lucro nem de EBITDA — sobrevive a margem colapsando e a EBITDA volátil. EV justo − dívida líquida R$ 1.1 bi ÷ 240 mi papéis. ⚠️ Ignora margem: receita alta com prejuízo não vale o que isto sugere. || VERIFICAÇÃO (fora do voto) — EV/EBITDA daria R$ 8.06, DENTRO da faixa: os métodos concordam. ",
+  "motor": "Faixa de 3 métodos: R$ 7.70 a R$ 8.92 · P/VP R$ 7.87 · EV/EBITDA 5.04x R$ 8.06 · EV/Receita R$ 8.51",
+  "nota": "FAIXA DE VALOR de 3 método(s), largura 14%. O limite INFERIOR (R$ 7.70) é o teto de compra: abaixo dele a ação está barata por todas as réguas, não só pela mais generosa. A LARGURA é a incerteza — faixa estreita significa que o mercado precificou este negócio de forma reconhecível ano após ano; faixa larga avisa que o múltiplo oscilou muito e o número do meio não merece confiança. Substituiu a convicção em estrelas em 13/09/2026, que o backtest mostrou não medir confiança (teto ★★★ rendeu 18,3% e ★ rendeu 18,9%). Múltiplo-alvo 5.04x = MEDIANA da série inteira (cíclica cobre pico e fundo) do próprio histórico (6 anos: 4.8x a 5.9x), não de pares. EV justo − dívida líquida R$ 1.1 bi ÷ 240 mi papéis. || P/VP-alvo = TENDÊNCIA -0.5 entre as metades da série → média dos 3 anos recentes de 6 anos (1.24x a 1.90x), corrigido para units. Não depende de lucro — é o método que sobrevive a prejuízo e a lucro contábil distorcido. ⚠️ Ignora rentabilidade: patrimônio grande com ROE ruim vale menos que isto sugere. || EV/Receita-alvo = série estável (-0.1 entre as metades) → mediana dos 6 anos de 6 anos (1.63x a 2.13x). Não depende de lucro nem de EBITDA — sobrevive a margem colapsando e a EBITDA volátil. EV justo − dívida líquida R$ 1.1 bi ÷ 240 mi papéis. ⚠️ Ignora margem: receita alta com prejuízo não vale o que isto sugere. || VERIFICAÇÃO (fora do voto) — EV/EBITDA daria R$ 8.06, DENTRO da faixa: os métodos concordam. ",
   "teto": 7.7,
   "faixaLo": 7.7,
   "faixaHi": 8.92,
@@ -391,15 +391,15 @@
   "cot": 12.4
  },
  "SANB11": {
-  "justo": 45.067945,
+  "justo": 45.18110166666666,
   "faixa": [
    29.533890000000003,
    64.5971
   ],
   "largura": 0.543,
   "nMetodos": 2,
-  "motor": "Faixa de 2 métodos: R$ 29.53 a R$ 64.60 · P/VP R$ 29.53 · E/P R$ 60.60",
-  "nota": "⛔ SEM TETO DE COMPRA — os métodos discordam 54% entre si (faixa de R$ 29.53 a R$ 64.60). A faixa continua na tabela porque descreve a empresa, mas não vira preço de compra: o limite inferior de uma faixa larga é a saída do método mais pessimista, não uma estimativa conservadora de valor. Dar um número aqui seria emprestar precisão a um desacordo. Mesmo princípio do SEM_TETO declarado. || FAIXA DE VALOR de 2 método(s), largura 54%. O limite INFERIOR (R$ 29.53) é o teto de compra: abaixo dele a ação está barata por todas as réguas, não só pela mais generosa. A LARGURA é a incerteza — faixa estreita significa que o mercado precificou este negócio de forma reconhecível ano após ano; faixa larga avisa que o múltiplo oscilou muito e o número do meio não merece confiança. Substituiu a convicção em estrelas em 13/09/2026, que o backtest mostrou não medir confiança (teto ★★★ rendeu 18,3% e ★ rendeu 18,9%). P/L: faixa 13.5x–16.7x (mediana 15.7x) · percentis de 6 anos, série de 6 anos (11.0x a 20.3x). || P/VP-alvo = TENDÊNCIA -0.2 entre as metades da série → mediana só dos 3 anos recentes de 6 anos (0.87x a 1.24x), corrigido para units. Não depende de lucro — é o método que sobrevive a prejuízo e a lucro contábil distorcido. ⚠️ Ignora rentabilidade: patrimônio grande com ROE ruim vale menos que isto sugere.",
+  "motor": "Faixa de 2 métodos: R$ 29.53 a R$ 64.60 · P/VP R$ 29.76 · E/P R$ 60.60",
+  "nota": "⛔ SEM TETO DE COMPRA — os métodos discordam 54% entre si (faixa de R$ 29.53 a R$ 64.60). A faixa continua na tabela porque descreve a empresa, mas não vira preço de compra: o limite inferior de uma faixa larga é a saída do método mais pessimista, não uma estimativa conservadora de valor. Dar um número aqui seria emprestar precisão a um desacordo. Mesmo princípio do SEM_TETO declarado. || FAIXA DE VALOR de 2 método(s), largura 54%. O limite INFERIOR (R$ 29.53) é o teto de compra: abaixo dele a ação está barata por todas as réguas, não só pela mais generosa. A LARGURA é a incerteza — faixa estreita significa que o mercado precificou este negócio de forma reconhecível ano após ano; faixa larga avisa que o múltiplo oscilou muito e o número do meio não merece confiança. Substituiu a convicção em estrelas em 13/09/2026, que o backtest mostrou não medir confiança (teto ★★★ rendeu 18,3% e ★ rendeu 18,9%). P/L: faixa 13.5x–16.7x (mediana 15.7x) · percentis de 6 anos, série de 6 anos (11.0x a 20.3x). || P/VP-alvo = TENDÊNCIA -0.2 entre as metades da série → média dos 3 anos recentes de 6 anos (0.87x a 1.24x), corrigido para units. Não depende de lucro — é o método que sobrevive a prejuízo e a lucro contábil distorcido. ⚠️ Ignora rentabilidade: patrimônio grande com ROE ruim vale menos que isto sugere.",
   "teto_suprimido": true,
   "teto": null,
   "faixaLo": 29.53,
@@ -457,15 +457,15 @@
   "seg": 1.7848203729220424
  },
  "TIMS3": {
-  "justo": 21.339943330694638,
+  "justo": 21.802050719556544,
   "faixa": [
    18.49617142857143,
    26.245
   ],
   "largura": 0.295,
   "nMetodos": 4,
-  "motor": "Faixa de 4 métodos: R$ 18.50 a R$ 26.25 · P/VP R$ 18.71 · EV/Receita R$ 20.85 · EV/EBITDA 3.71x R$ 21.83 · E/P R$ 25.85",
-  "nota": "FAIXA DE VALOR de 4 método(s), largura 30%. O limite INFERIOR (R$ 18.50) é o teto de compra: abaixo dele a ação está barata por todas as réguas, não só pela mais generosa. A LARGURA é a incerteza — faixa estreita significa que o mercado precificou este negócio de forma reconhecível ano após ano; faixa larga avisa que o múltiplo oscilou muito e o número do meio não merece confiança. Substituiu a convicção em estrelas em 13/09/2026, que o backtest mostrou não medir confiança (teto ★★★ rendeu 18,3% e ★ rendeu 18,9%). P/L: faixa 12.2x–14.5x (mediana 14.3x) · TENDÊNCIA -2.7 entre as metades → faixa só dos 3 anos recentes, série de 6 anos (10.1x a 20.3x). || P/VP-alvo = TENDÊNCIA +0.6 entre as metades da série → mediana só dos 3 anos recentes de 6 anos (1.31x a 2.65x), corrigido para units. Não depende de lucro — é o método que sobrevive a prejuízo e a lucro contábil distorcido. ⚠️ Ignora rentabilidade: patrimônio grande com ROE ruim vale menos que isto sugere. || EV/Receita-alvo = série estável (+0.1 entre as metades) → mediana dos 6 anos de 6 anos (1.59x a 2.35x). Não depende de lucro nem de EBITDA — sobrevive a margem colapsando e a EBITDA volátil. EV justo − dívida líquida R$ -1.9 bi ÷ 2423 mi papéis. ⚠️ Ignora margem: receita alta com prejuízo não vale o que isto sugere. || Múltiplo-alvo 3.71x = série estável (+0.1 entre as metades) → mediana dos 6 anos do próprio histórico (6 anos: 3.2x a 4.7x), não de pares. EV justo − dívida líquida R$ -1.9 bi ÷ 2423 mi papéis.",
+  "motor": "Faixa de 4 métodos: R$ 18.50 a R$ 26.25 · EV/Receita R$ 20.85 · P/VP R$ 21.77 · EV/EBITDA 3.71x R$ 21.83 · E/P R$ 25.85",
+  "nota": "FAIXA DE VALOR de 4 método(s), largura 30%. O limite INFERIOR (R$ 18.50) é o teto de compra: abaixo dele a ação está barata por todas as réguas, não só pela mais generosa. A LARGURA é a incerteza — faixa estreita significa que o mercado precificou este negócio de forma reconhecível ano após ano; faixa larga avisa que o múltiplo oscilou muito e o número do meio não merece confiança. Substituiu a convicção em estrelas em 13/09/2026, que o backtest mostrou não medir confiança (teto ★★★ rendeu 18,3% e ★ rendeu 18,9%). P/L: faixa 12.2x–14.5x (mediana 14.3x) · TENDÊNCIA -2.7 entre as metades → faixa só dos 3 anos recentes, série de 6 anos (10.1x a 20.3x). || P/VP-alvo = TENDÊNCIA +0.6 entre as metades da série → média dos 3 anos recentes de 6 anos (1.31x a 2.65x), corrigido para units. Não depende de lucro — é o método que sobrevive a prejuízo e a lucro contábil distorcido. ⚠️ Ignora rentabilidade: patrimônio grande com ROE ruim vale menos que isto sugere. || EV/Receita-alvo = série estável (+0.1 entre as metades) → mediana dos 6 anos de 6 anos (1.59x a 2.35x). Não depende de lucro nem de EBITDA — sobrevive a margem colapsando e a EBITDA volátil. EV justo − dívida líquida R$ -1.9 bi ÷ 2423 mi papéis. ⚠️ Ignora margem: receita alta com prejuízo não vale o que isto sugere. || Múltiplo-alvo 3.71x = série estável (+0.1 entre as metades) → mediana dos 6 anos do próprio histórico (6 anos: 3.2x a 4.7x), não de pares. EV justo − dívida líquida R$ -1.9 bi ÷ 2423 mi papéis.",
   "teto": 18.5,
   "faixaLo": 18.5,
   "faixaHi": 26.25,
@@ -473,15 +473,15 @@
   "seg": -1.15606936416185
  },
  "VALE3": {
-  "justo": 77.02428158982096,
+  "justo": 73.05301646236816,
   "faixa": [
    66.74513172785828,
    89.11387283236995
   ],
   "largura": 0.251,
   "nMetodos": 3,
-  "motor": "Faixa de 3 métodos: R$ 66.75 a R$ 89.11 · EV/EBITDA 4.30x R$ 66.75 · EV/Receita R$ 77.02 · P/VP R$ 78.31",
-  "nota": "FAIXA DE VALOR de 3 método(s), largura 25%. O limite INFERIOR (R$ 66.75) é o teto de compra: abaixo dele a ação está barata por todas as réguas, não só pela mais generosa. A LARGURA é a incerteza — faixa estreita significa que o mercado precificou este negócio de forma reconhecível ano após ano; faixa larga avisa que o múltiplo oscilou muito e o número do meio não merece confiança. Substituiu a convicção em estrelas em 13/09/2026, que o backtest mostrou não medir confiança (teto ★★★ rendeu 18,3% e ★ rendeu 18,9%). Múltiplo-alvo 4.30x = MEDIANA da série inteira (cíclica cobre pico e fundo) do próprio histórico (6 anos: 2.5x a 8.9x), não de pares. EV justo − dívida líquida R$ 68.2 bi ÷ 4542 mi papéis. || P/VP-alvo = série estável (-0.1 entre as metades) → mediana dos 6 anos de 6 anos (1.17x a 1.98x), corrigido para units. Não depende de lucro — é o método que sobrevive a prejuízo e a lucro contábil distorcido. ⚠️ Ignora rentabilidade: patrimônio grande com ROE ruim vale menos que isto sugere. || EV/Receita-alvo = TENDÊNCIA +0.3 entre as metades da série → mediana só dos 3 anos recentes de 6 anos (1.37x a 2.05x). Não depende de lucro nem de EBITDA — sobrevive a margem colapsando e a EBITDA volátil. EV justo − dívida líquida R$ 68.2 bi ÷ 4542 mi papéis. ⚠️ Ignora margem: receita alta com prejuízo não vale o que isto sugere. || VERIFICAÇÃO (fora do voto) — EV/EBITDA daria R$ 66.75, DENTRO da faixa: os métodos concordam. ",
+  "motor": "Faixa de 3 métodos: R$ 66.75 a R$ 89.11 · EV/EBITDA 4.30x R$ 66.75 · EV/Receita R$ 73.05 · P/VP R$ 78.31",
+  "nota": "FAIXA DE VALOR de 3 método(s), largura 25%. O limite INFERIOR (R$ 66.75) é o teto de compra: abaixo dele a ação está barata por todas as réguas, não só pela mais generosa. A LARGURA é a incerteza — faixa estreita significa que o mercado precificou este negócio de forma reconhecível ano após ano; faixa larga avisa que o múltiplo oscilou muito e o número do meio não merece confiança. Substituiu a convicção em estrelas em 13/09/2026, que o backtest mostrou não medir confiança (teto ★★★ rendeu 18,3% e ★ rendeu 18,9%). Múltiplo-alvo 4.30x = MEDIANA da série inteira (cíclica cobre pico e fundo) do próprio histórico (6 anos: 2.5x a 8.9x), não de pares. EV justo − dívida líquida R$ 68.2 bi ÷ 4542 mi papéis. || P/VP-alvo = série estável (-0.1 entre as metades) → mediana dos 6 anos de 6 anos (1.17x a 1.98x), corrigido para units. Não depende de lucro — é o método que sobrevive a prejuízo e a lucro contábil distorcido. ⚠️ Ignora rentabilidade: patrimônio grande com ROE ruim vale menos que isto sugere. || EV/Receita-alvo = TENDÊNCIA +0.3 entre as metades da série → média dos 3 anos recentes de 6 anos (1.37x a 2.05x). Não depende de lucro nem de EBITDA — sobrevive a margem colapsando e a EBITDA volátil. EV justo − dívida líquida R$ 68.2 bi ÷ 4542 mi papéis. ⚠️ Ignora margem: receita alta com prejuízo não vale o que isto sugere. || VERIFICAÇÃO (fora do voto) — EV/EBITDA daria R$ 66.75, DENTRO da faixa: os métodos concordam. ",
   "teto": 66.75,
   "faixaLo": 66.75,
   "faixaHi": 89.11,

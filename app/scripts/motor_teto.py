@@ -306,7 +306,18 @@ def mediana_com_tendencia(vals, limiar_rel=0.12, limiar_abs=None):
     d = st.mean(novo) - st.mean(velho)
     lim = limiar_abs if limiar_abs is not None else abs(st.mean(velho))*limiar_rel
     if abs(d) > lim:
-        return st.median(novo), f'TENDÊNCIA {d:+.1f} entre as metades da série → mediana só dos {len(novo)} anos recentes'
+        # ⚠️ MÉDIA, não mediana, quando a janela recente é curta. Achado pelo usuário em
+        # 13/09/2026: "o lucro normalizado está quase igual ao de 2025 em todos". Estava — 12
+        # de 27. Com 6 anos de série a metade recente tem 3 pontos, e a MEDIANA DE 3 é só
+        # "escolher um deles"; numa série que subiu e estabilizou, o do meio é quase sempre o
+        # ano corrente, e aí o normalizado vira o próprio lucro do ano. ITUB3, TIMS3, BRSR6 e
+        # BMEB4 caíam todos nisso.
+        # A mediana existe para proteger de outlier — com 3 pontos não há o que proteger, ela
+        # só descarta 2 de 3 observações e devolve um dado cru. A média usa as três. A partir
+        # de 5 pontos a proteção volta a valer mais que a informação descartada.
+        est = st.median(novo) if len(novo) >= 5 else st.mean(novo)
+        como = 'mediana' if len(novo) >= 5 else 'média'
+        return est, f'TENDÊNCIA {d:+.1f} entre as metades da série → {como} dos {len(novo)} anos recentes'
     return st.median(vals), f'série estável ({d:+.1f} entre as metades) → mediana dos {len(vals)} anos'
 
 def faixa_com_tendencia(vals, limiar_rel=0.12, limiar_abs=None):
