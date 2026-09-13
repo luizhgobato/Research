@@ -52,7 +52,7 @@ function semCell(val, ruleKey, digits=1, suffix='') {
 // Adiciona classes CSS às células "reais" do Radar (DY, P/L, ROE, Dív/EBITDA)
 // para poder atualizá-las com dados do fundamentus sem depender de índice de coluna.
 function initRadarRealCells() {
-  const COL = { dyReal:11, plAtual:12, roe:13, divEbitda:14 };
+  const COL = { dyReal:12, plAtual:13, roe:14, divEbitda:15 };  // +1 desde a coluna Lucro 2025 (13/09/2026)
   document.querySelectorAll('#tableBody tr[data-ticker]').forEach(row => {
     const cells = row.querySelectorAll('td');
     cells[COL.dyReal]?.classList.add('radar-dy-real');
@@ -159,7 +159,7 @@ function atualizarCelulasRadarFund(ticker, d) {
         '<span class="col-tip" data-tip="NÃO SE APLICA a instituição financeira.&#10;&#10;Em banco e seguradora o passivo é a MATÉRIA-PRIMA do negócio, não alavancagem: captar barato e emprestar caro é a operação. Dívida líquida/EBITDA não descreve risco aqui, e a base nem publica EBITDA para essas empresas.&#10;&#10;Por isso este critério sai do DENOMINADOR do score em vez de contar como reprovação — a empresa é avaliada em 3 critérios, não 4.">ⓘ</span>';
     }
   }
-  // Sincroniza LPA (cells[7]) e data-dy-proj com dados reais da API/HIST_SEED
+  // Sincroniza LPA (cells[8]) e data-dy-proj com dados reais da API/HIST_SEED
   // Garante que Preço Teto use sempre LPA e DY reais (LTM)
   const radarCells = radarRow.querySelectorAll('td');
   // data-lpa-manual="true": a coluna 7 é "LPA proj.", e quando a análise publicou um LPA
