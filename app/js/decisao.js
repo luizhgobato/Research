@@ -22,7 +22,6 @@
 // earnings yield depende da cotação, então tudo é recalculado a cada atualização de preço.
 // Nada aqui é hardcodado.
 
-const DEC_COL_PREMIO = 20, DEC_COL_SCORE = 21, DEC_COL_TIR = 22, DEC_COL_G = 23;
 
 // ── COLUNA 23 · CRESCIMENTO (g) — 07/09/2026 ──────────────────────────────────────────────
 // O `g` já existia e movia a TIR inteira, mas só aparecia dentro de uma tooltip. Ele é a
@@ -258,21 +257,18 @@ function _decCotacao(row) {
 // calculada hoje.
 //
 // Agora ele deriva de três coisas que a própria tabela já calcula:
-//   🟢 COMPRA    margem ≥ MARGEM_MIN_COMPRA  E  piso da TIR real ≥ NTN-B  E  passa em tudo
-//   🟡 AGUARDAR  a faixa da TIR cruza a NTN-B, ou passa nos critérios sem margem suficiente
+//   🟢 COMPRA    margem ≥ 0  E  piso da TIR real ≥ NTN-B  E  passa em todos os critérios
+//   🟡 AGUARDAR  a faixa da TIR cruza a NTN-B, ou passa nos critérios sem margem
 //   🔴 ACIMA     faixa inteira da TIR abaixo da NTN-B, ou reprova em critério
 //
 // É deliberadamente EXIGENTE no verde: as três condições juntas. Um número que autoriza
 // compra tem que ser difícil de acender.
-// ⚠️ 13/09/2026 — A MARGEM MÍNIMA PASSOU A SER EXPLÍCITA. O preço-teto saiu da planilha
-// (decisão do usuário: um número de valor por linha, não dois), e com ele saiu a margem que
-// ele embutia sem dizer: o teto era o piso da faixa, e a distância dele até o justo variava
-// de 4% (KLBN11) a 28% (CLSC4) conforme o múltiplo da empresa tivesse oscilado mais ou menos.
-// Exigir `margem ≥ 0` contra o JUSTO seria afrouxar o verde — o justo é maior que o teto era,
-// então a mesma cotação passa a mostrar margem maior. Este número devolve a exigência, agora
-// como uma linha que se lê, igual para todas as empresas e fácil de mudar.
-const MARGEM_MIN_COMPRA = 0.15;
-
+// A margem mínima chegou a ser uma constante de 15% aqui, por algumas horas em 13/09/2026,
+// para repor a exigência que o preço-teto embutia. O usuário recusou, e com razão: um desconto
+// fixo trata igual empresas que não são iguais — o teto pedia 4% da KLBN11 e 28% da CLSC4
+// justamente porque o múltiplo de uma oscila muito menos que o da outra. Um número único não
+// sabe disso, e inventaria uma precisão que ninguém mediu. Volta a exigir apenas margem
+// positiva: a cotação abaixo do valor justo. Quanto de folga cada um quer é leitura da coluna.
 function veredictoDerivado(row, r, T) {
   const justo = parseFloat(row.dataset.precoJusto);
   const cot = _decCotacao(row);
@@ -285,7 +281,7 @@ function veredictoDerivado(row, r, T) {
   // 23 de 30 caíam em "aguardar" — uma classificação que não classifica nada, porque `hi` é
   // sempre a medida mais otimista das três. A mediana é o consenso, e separa 18 de 12.
   const med = T && T.med != null ? T.med : null;
-  if (mg != null && mg >= MARGEM_MIN_COMPRA && med != null && med >= TIR_NTNB && passaTudo) return 'compra';
+  if (mg != null && mg >= 0 && med != null && med >= TIR_NTNB && passaTudo) return 'compra';
   if (med != null && med >= TIR_NTNB) return 'aguardar';
   return 'acima';
 }
@@ -466,27 +462,6 @@ function atualizarDecisaoLinha(row) {
   row.dataset.decTotal = r.total;
   row.dataset.decPremio = r.premio != null ? r.premio.toFixed(2) : '';
 
-  const cells = row.querySelectorAll('td');
-  const cPrem = cells[DEC_COL_PREMIO], cScore = cells[DEC_COL_SCORE];
-  const cTir = cells[DEC_COL_TIR];
-
-  if (cPrem) {
-    const tip = r.ey != null
-      ? `Earnings yield (L/P) = LPA LTM R$ ${r.lpaUso.toFixed(2).replace('.', ',')} ÷ cotação = ${(r.ey * 100).toFixed(1).replace('.', ',')}%.&#10;LPA obtido de: ${r.lpaFonte}.&#10;Selic ${(SELIC * 100).toFixed(2).replace('.', ',')}% (Copom ${SELIC_DATA}).&#10;Prêmio = L/P − Selic. Positivo significa que o lucro que a empresa já gera, ao preço de hoje, rende mais que a renda fixa — antes de qualquer crescimento.`
-      : 'Sem LPA LTM confiável nesta linha (a base não traz P/L e a linha não tem data-lpa-ltm): o prêmio não pode ser calculado sem inventar lucro.';
-    cPrem.innerHTML = r.premio == null
-      ? `<span style="color:#9ca3af;">—</span><span class="col-tip" data-tip="${tip}">ⓘ</span>`
-      : `<span style="color:${_decCorPremio(r.premio)};font-weight:600;">${r.premio >= 0 ? '+' : ''}${r.premio.toFixed(1).replace('.', ',')} p.p.</span><span class="col-tip" data-tip="${tip}">ⓘ</span>`;
-  }
-
-  if (cScore) {
-    const lista = r.criterios.map(c =>
-      `${c.ref ? '🔵' : (c.na ? '⚪' : (c.ok ? '🟢' : '🔴'))} ${c.texto}`).join('&#10;');
-    const tip = `${lista}&#10;&#10;⚪ = critério não se aplica ou falta dado — sai do denominador em vez de contar como reprovação (empresa sem dado não é empresa ruim).&#10;🔵 = referência, fora da pontuação. A margem de segurança saiu dos critérios em 06/09/2026: o preço justo se move por mudança de premissa e nunca foi testado como régua de ordenação. Ele continua na coluna Preço Justo, como disciplina e detector de absurdo — mas não reprova mais empresa nenhuma.`;
-    cScore.innerHTML = r.total
-      ? `<span style="color:${_decCorScore(r.passa, r.total)};font-weight:700;">${r.passa}/${r.total}</span><span class="col-tip" data-tip="${tip}">ⓘ</span>`
-      : `<span style="color:#9ca3af;">—</span><span class="col-tip" data-tip="${tip}">ⓘ</span>`;
-  }
   // ── TIR real e convergência (data/tir.data.js) ──────────────────────────────────────
   const T = _tirAoVivo(_tirDe(row), _decCotacao(row));
   // VEREDICTO: derivado das colunas, sobrescrevendo o valor escrito à mão. Ver
@@ -519,94 +494,34 @@ function atualizarDecisaoLinha(row) {
   row.dataset.decRoe = (seed && seed.roe != null) ? seed.roe.toFixed(2) : '';
   row.dataset.decMgBruta = (seed && seed.mgBruta != null) ? seed.mgBruta.toFixed(2) : '';
   row.dataset.decDyLtm = r.bruto.dyLtm != null ? r.bruto.dyLtm.toFixed(2) : '';
-  // Coluna 23 · crescimento
-  const cG = cells[DEC_COL_G];
-  if (cG) {
-    if (!T || T.g == null) {
-      cG.innerHTML = '<span style="color:#9ca3af;">—</span><span class="col-tip" data-tip="Sem crescimento calculável: a empresa não tem série de lucro recorrente nem ROE utilizável na base.">ⓘ</span>';
-      row.dataset.decG = '';
-    } else {
-      const br = T.gBruto != null ? T.gBruto : T.g;
-      const cortado = Math.abs(br - T.g) > 0.05;
-      const cor = T.g >= 10 ? '#0a5c35' : T.g >= 4 ? '#7a5c00' : '#9c1c1c';
-      const extra = cortado
-        ? ` <span style="color:#b45309;font-size:11px;">(${br >= 0 ? '+' : ''}${br.toFixed(1).replace('.', ',')}%)</span>` : '';
-      const tip = `CRESCIMENTO ANUAL (g) = ${T.g.toFixed(1).replace('.', ',')}%&#10;&#10;`
-        + (T.gRoe != null ? `ROE × retenção: ${T.gRoe.toFixed(1).replace('.', ',')}%&#10;` : '')
-        + (T.gCagr != null ? `Lucro recorrente (regressão log de 5 anos): ${T.gCagr.toFixed(1).replace('.', ',')}%&#10;` : 'Crescimento do lucro recorrente: não aplicável (financeira, holding ou cíclica — ver metodologia)&#10;')
-        + `Regra: usa o MENOR dos dois, com piso 0% e teto 15%.&#10;&#10;`
-        + (cortado
-            ? `⚠️ VALOR BRUTO ${br.toFixed(1).replace('.', ',')}% — ${br < 0 ? 'a série de lucro recorrente está CAINDO. O piso de zero é premissa do modelo (crescer negativo por 10 anos e depois voltar a crescer com a economia seria incoerente), mas o dado diz outra coisa e está aqui para você ver.' : 'o teto de 15% está cortando. Crescimento acima disso por 10 anos seguidos é raro o suficiente para eu não projetar.'}&#10;&#10;`
-            : '')
-        + `Este g move as três medidas da TIR real.&#10;⚠️ São 5 pontos de série — estimativa, não medida.`;
-      cG.innerHTML = `<span style="color:${cor};font-weight:600;">${T.g >= 0 ? '+' : ''}${T.g.toFixed(1).replace('.', ',')}%</span>${extra}<span class="col-tip" data-tip="${tip}">ⓘ</span>`;
-      row.dataset.decG = T.g.toFixed(2);
-    }
-  }
   row.dataset.decAmp = T && T.amp != null ? T.amp.toFixed(2) : '';
   row.dataset.decLo = T && T.lo != null ? T.lo.toFixed(2) : '';
-  if (cTir) {
-    if (!T || T.med == null) {
-      cTir.innerHTML = '<span style="color:#9ca3af;">—</span><span class="col-tip" data-tip="Sem TIR calculada: o payout está fora de 0-110% (a empresa distribui mais do que lucra) ou falta dado para qualquer uma das três medidas. Preferimos vazio a um número inventado.">ⓘ</span>';
-    } else {
-      const f = v => v == null ? '—' : (v >= 0 ? '+' : '') + v.toFixed(1).replace('.', ',') + '%';
-      const tip = [
-        `TIR REAL (acima do IPCA) — mediana de ${[T.cx, T.div, T.luc].filter(v => v != null).length} medidas independentes.`,
-        `Barra: NTN-B 2035 = IPCA + ${TIR_NTNB.toFixed(2).replace('.', ',')}%`,
-        '',
-        `Caixa (FCFE):        ${f(T.cx)}   — (FCO − capex${T.fcfeAjustada ? ' + Δdívida bruta' : ''}) ÷ valor de mercado${T.fcfeAjustada ? '' : ' ⚠️ sem dívida de 2 anos consecutivos — FCFF, não FCFE'}`,
-        `Dividendos (DDM):    ${f(T.div)}   — DY futuro ${T.payout.toFixed(0)}% payout mediano, g ${T.g.toFixed(1).replace('.', ',')}%`,
-        `Lucro normalizado:   ${f(T.luc)}   — ${T.motor}`,
-        '',
-        T.amp != null ? `Amplitude ${T.amp.toFixed(1).replace('.', ',')} p.p. — ${T.amp <= 4 ? 'as medidas CONCORDAM, leitura robusta' : T.amp <= 9 ? 'divergência moderada' : 'DIVERGEM MUITO: a leitura depende de qual régua você acredita'}` : 'Só uma medida disponível.',
-        `g usado: ${T.g.toFixed(1).replace('.', ',')}% = menor entre CAGR 5a do lucro recorrente (${T.gCagr == null ? 'não existe p/ financeira' : T.gCagr.toFixed(1).replace('.', ',') + '%'}) e ROE × retenção (${T.gRoe.toFixed(1).replace('.', ',')}%), limitado a 15%.`,
-        T._aoVivo
-          ? `Recalculado com a cotação ao vivo (R$ ${T._cotacaoUsada.toFixed(2).replace('.', ',')}). g, payout e lucro normalizado vêm do motor de ${TIR_DATA_EM}; caixa/dividendos/lucro reagem ao preço a cada atualização.`
-          : `Sem cotação ao vivo nesta linha ainda — mostrando o valor do motor de ${TIR_DATA_EM} (preço R$ ${T.precoBase != null ? T.precoBase.toFixed(2).replace('.', ',') : '?'}).`
-      ].join('&#10;');
-      const n1 = v => (v >= 0 ? '' : '−') + Math.abs(v).toFixed(1).replace('.', ',');
-      const veredicto = T.lo >= TIR_NTNB
-        ? 'Toda a faixa supera a NTN-B: ganha da renda fixa por qualquer das três medidas.'
-        : (T.hi < TIR_NTNB
-          ? 'Toda a faixa fica abaixo da NTN-B: perde da renda fixa por qualquer medida.'
-          : 'A faixa CRUZA a NTN-B: ganha por uma medida e perde por outra — precisa de análise, a tabela não decide.');
-      cTir.innerHTML = `<span style="color:${_decCorFaixa(T)};font-weight:700;font-size:11.5px;">${n1(T.lo)} → ${n1(T.hi)}%</span><span class="col-tip" data-tip="${tip}&#10;&#10;${veredicto}">ⓘ</span>`;
-    }
-  }
   return r;
 }
 
 function atualizarTodasDecisoes() {
   document.querySelectorAll('#tableBody tr[data-ticker]').forEach(atualizarDecisaoLinha);
   if (typeof renderRankingDecisao === 'function') renderRankingDecisao();
+  // ⚠️ 13/09/2026 — O CONTADOR DO TOPO CONTAVA OS VEREDICTOS VELHOS. applyFilters() lê
+  // data-veredicto e soma; ele rodava no load, ANTES de atualizarDecisaoLinha() reescrever
+  // cada veredicto a partir da margem, da TIR e dos critérios. O cabeçalho ficava dizendo
+  // "4 Compra" (os veredictos estáticos do HTML) enquanto a tabela logo abaixo tinha 1.
+  // Ninguém reclamava porque a divergência só aparecia para quem contasse as linhas na mão.
+  // Recontar aqui, depois de todos os veredictos derivados, fecha a conta.
+  if (typeof applyFilters === 'function') applyFilters();
 }
 
 // ── INJEÇÃO DAS COLUNAS ───────────────────────────────────────────────────────────────────
+// ⚠️ 13/09/2026 — AS QUATRO COLUNAS DE DECISÃO SAÍRAM DA TABELA (Prêmio Selic, Critérios,
+// TIR real e Crescimento). Pedido do usuário depois de a planilha ficar larga demais para ler.
+// Nada disso deixou de ser CALCULADO: o prêmio, os critérios e a TIR continuam alimentando o
+// veredicto (ver veredictoDerivado) e o score composto que ordena a fila. Só pararam de ocupar
+// coluna. Os blocos de render que escreviam nessas células foram removidos junto; o que
+// sobreviveu são os row.dataset.*, que é por onde a ordenação lê.
 function initColunasDecisao() {
   const table = document.getElementById('mainTable');
   if (!table || table.dataset.decisaoOk === '1') return;
   table.dataset.decisaoOk = '1';
-
-  const colgroup = table.querySelector('colgroup');
-  if (colgroup) {
-    colgroup.insertAdjacentHTML('beforeend',
-      '<col style="width:95px"><!-- Prêmio Selic --><col style="width:85px"><!-- Critérios --><col style="width:112px"><!-- TIR real (faixa) --><col style="width:118px"><!-- Crescimento g -->');
-  }
-
-  const head = table.querySelector('thead tr.col-header');
-  if (head) {
-    head.insertAdjacentHTML('beforeend', `
-      <th data-col="${DEC_COL_PREMIO}" class="sep gh-ret sortable" onclick="sortTable(${DEC_COL_PREMIO})"><div class="th-inner">Prêmio Selic<span class="sort-arrow"></span><span class="col-tag proj">decisão</span></div><span class="col-tip" data-tip="Fonte: Calculado&#10;Earnings yield (LPA LTM ÷ cotação) − Selic ${(SELIC * 100).toFixed(2).replace('.', ',')}%&#10;Positivo = o lucro atual da empresa, ao preço de hoje, rende mais que a renda fixa">ⓘ</span></th>
-      <th data-col="${DEC_COL_SCORE}" class="gh-ret sortable" onclick="sortTable(${DEC_COL_SCORE})"><div class="th-inner">Critérios<span class="sort-arrow"></span><span class="col-tag proj">decisão</span></div><span class="col-tip" data-tip="Fonte: Calculado&#10;Quantos dos 4 testes de qualidade+preço a empresa passa (METODOLOGIA_ANALISE.md, seção 9)&#10;&#10;⚠️ A margem de segurança contra o preço justo SAIU da pontuação em 06/09/2026 e aparece como 🔵 referência: o valor justo oscila por mudança de premissa e nunca foi validado como régua de ordenação.&#10;&#10;Passe o mouse no ⓘ de cada linha para ver critério a critério">ⓘ</span></th>
-      <th data-col="${DEC_COL_TIR}" class="gh-ret sortable" onclick="sortTable(${DEC_COL_TIR})"><div class="th-inner">TIR real<span class="sort-arrow"></span><span class="col-tag proj">decisão</span></div><span class="col-tip" data-tip="Fonte: Análise própria sobre MCP Partnr&#10;FAIXA de retorno anual REAL (acima do IPCA) das três medidas: caixa (FCFE), dividendos (DDM) e lucro normalizado&#10;&#10;Barra: NTN-B 2035 = IPCA + ${TIR_NTNB.toFixed(2).replace('.', ',')}%&#10;VERDE = faixa inteira acima da barra&#10;ÂMBAR = a faixa cruza a barra: depende de qual medida acertar&#10;VERMELHO = faixa inteira abaixo&#10;&#10;A largura da faixa É a informação: estreita = as três réguas concordam; larga = a leitura depende de qual você acredita&#10;Substituiu a Nota 0-100, que o backtest do projeto não validou&#10;&#10;⚠️ DEIXOU DE ORDENAR A FILA em 13/09/2026. Quando foi finalmente testada contra retorno futuro (scripts/backtest_ranking.py), ordenou pior que o L/P puro nos setores defensivos: spread barato−caro de +11,4 p.p. acertando 3 de 5 anos, contra +20,3 p.p. e 5 de 5 do L/P. O componente que ela acrescenta ao earnings yield (o crescimento g) não teve sinal próprio — somá-lo PIOROU o spread em 8,9 p.p. A TIR continua aqui porque responde a outra pergunta: quanto rende acima da NTN-B, não qual está mais barata&#10;Caixa/dividendos/lucro recalculam com a cotação ao vivo a cada atualização (motor de ${TIR_DATA_EM}; g/payout/lucro normalizado fixos até a próxima regeração)">ⓘ</span></th>
-      <th data-col="${DEC_COL_G}" class="gh-ret sortable" onclick="sortTable(${DEC_COL_G})"><div class="th-inner">Crescimento<span class="sort-arrow"></span><span class="col-tag proj">decisão</span></div><span class="col-tip" data-tip="Fonte: Análise própria sobre MCP Partnr&#10;g = crescimento anual usado na TIR real&#10;&#10;É o MENOR entre:&#10;· ROE × retenção — quanto a empresa cresce com o lucro que NÃO distribui&#10;· crescimento do lucro recorrente, por REGRESSÃO LOG sobre a série (não CAGR de pontas: o CAGR usa só 2 pontos e a CLSC4 saía com −0,7% num período em que a receita subiu 10% e o lucro contábil 57%)&#10;&#10;Piso 0% e teto 15%. Quando o valor bruto difere, ele aparece entre parênteses — é aí que está a informação que o corte esconde:&#10;· BBSE3 mostra 15% e o dado diz 23,1%&#10;· PASS3 mostra 0% e o dado diz −16,4% (encolhendo)&#10;· SHUL4 mostra 0% e o dado diz −3,2% (estagnada)&#10;&#10;⚠️ São 5 pontos de série. É estimativa, não medida.">ⓘ</span></th>`);
-  }
-
-  document.querySelectorAll('#tableBody tr[data-ticker]').forEach(row => {
-    row.insertAdjacentHTML('beforeend',
-      '<td class="sep dec-premio-cell"></td><td class="dec-score-cell"></td><td class="dec-tir-cell"></td><td class="dec-g-cell"></td>');
-  });
-
   atualizarTodasDecisoes();
 }
 
