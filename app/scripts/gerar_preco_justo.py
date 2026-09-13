@@ -67,7 +67,7 @@ def tooltip(t, r):
         '',
         f'{ptbr(met.get("conta") or conta_limpa(met.get("motor") or ""))} = {brl(justo)}',
         '',
-        f'O múltiplo é a {ptbr(met.get("origemMult") or "mediana da própria série")}.',
+        f'O múltiplo é {ptbr(met.get("origemMult") or "o mediano da própria série")}.',
     ])
 
 

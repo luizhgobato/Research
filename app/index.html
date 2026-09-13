@@ -1098,7 +1098,7 @@
     "data": "15/08/2026",
     "fontes": "Release 2T26, StatusInvest, cálculo próprio",
     "cotacao": "R$ 26,02",
-    "precoTeto": "R$ 31,00",
+    "precoJusto": "R$ 31,53",
     "max52": "R$ 33,15",
     "min52": "R$ 21,11",
     "classificacao": {
@@ -1337,29 +1337,34 @@
       "nota": "Lucro contábil não é o motor central em shoppings — a projeção relevante é de NOI, insumo do cap rate (seção 5)."
     },
     "valuation": {
+      "criterio": "P/FFO",
       "metodos": [
         {
-          "metodo": "Cap rate mercado (9,4% — média das transações reais)",
-          "precoJusto": "R$ 41,75"
-        },
-        {
-          "metodo": "Cap rate normalizado (10,9% — +150bps prêmio de liquidez de bolsa)",
-          "precoJusto": "R$ 35,00"
-        },
-        {
-          "metodo": "P/FFO pares (13x — Multiplan/Iguatemi)",
-          "precoJusto": "R$ 34,06"
-        },
-        {
-          "metodo": "Bazin (dividendo sustentável R$ 2,30 ÷ 9,0% exigido)",
-          "precoJusto": "R$ 25,56"
+          "metodo": "FFO por papel projetado R$ 3,88 × P/FFO 8,13x",
+          "precoJusto": "R$ 31,53"
         }
       ],
-      "dispersaoPct": "63,4%",
-      "dispersaoLeitura": "ALTA",
-      "precoJusto": "R$ 36,50",
-      "precoTeto": "R$ 31,00",
-      "nota": "A dispersão é a tese: cap rate de mercado mostra o valor do tijolo puro; Bazin pune o fato de o dividendo atual ser inflado. Cap rate normalizado e P/FFO convergem em ~R$ 34–35 e são os métodos mais robustos para o setor. Preço justo pondera com peso maior nesses dois."
+      "origemMult": "o P/FFO mediano da própria empresa ao longo de 3 anos (8,13x) — o grupo SHOP não tem 3 pares para comparar",
+      "precoJusto": "R$ 31,53",
+      "verificacao": [
+        {
+          "metodo": "VPA R$ 25,96 × P/VP 1,03x",
+          "precoJusto": "R$ 26,74"
+        },
+        {
+          "metodo": "LPA projetado 2026 R$ 2,20 × P/L 14,54x",
+          "precoJusto": "R$ 32,06"
+        },
+        {
+          "metodo": "receita R$ 2,9 bi × EV/Receita 6,96x − dívida líquida R$ 3,7 bi, ÷ 506 mi papéis",
+          "precoJusto": "R$ 32,60"
+        },
+        {
+          "metodo": "EBITDA LTM (R$ 2,1 bi) × EV/EBITDA 9,41x − dívida líquida R$ 3,7 bi, ÷ 506 mi papéis",
+          "precoJusto": "R$ 32,60"
+        }
+      ],
+      "nota": "Método ÚNICO: P/FFO. O preço justo é o fundamento projetado multiplicado pelo múltiplo que a empresa deve negociar — não é média nem mediana de métodos diferentes. Os 4 método(s) de verificação abaixo são calculados para comparação e NÃO entram na conta. Mesmo número da coluna Preço Justo do Radar, gerado pela mesma fonte (analise/tetos.json). Ver METODOLOGIA_ANALISE.md seção 31."
     },
     "retornoTotal": {
       "doze": {
@@ -1500,8 +1505,8 @@
       "class": "green",
       "conviccao": "★★☆☆☆",
       "cotacao": "R$ 26,02",
-      "precoTeto": "R$ 31,00",
-      "margem": "+16,1%",
+      "precoJusto": "R$ 31,53",
+      "margem": "+17,5%",
       "premioSelic": "+13,9 p.p.",
       "gatilhos": [
         "anúncio do dividendo/JCP para 2027 (evento binário)",
@@ -1518,7 +1523,7 @@
       "lucroNota": "Lucro contábil é distorcido e não é o motor de valuation (cap rate/NAV) — proxy usa FFO 2T26 (R$340,8mi) anualizado ×4. Estimativa 2026E = proxy × (1+g NOI 5% a.a., cenário base)."
     },
     "encaixeCarteira": "Seu portfólio tem ~49% concentrado em financeiro/seguros BR (IRBR3, BBAS3, BBSE3, CXSE3, ITUB3), todos correlacionados ao ciclo de crédito e à Selic da mesma forma. A Allos diversifica de verdade: é imobiliário/consumo, com receita atrelada a aluguel/inflação, e se beneficia (não sofre) de queda de juros via 98,7% da dívida no CDI. Não substitui a lacuna internacional (~1% da carteira), mas reduz a correlação intra-doméstica.",
-    "blocoCopiavel": "### ALOS3 — Allos S.A.\n**Setor:** Shoppings | **Motor de valuation:** Cap rate (NAV)\n\n| Veredicto | Convicção | Cotação | Preço Teto | Margem | Prêmio s/ Selic 12m |\n|---|---|---|---|---|---|\n| 🟢 Compra | ★★☆☆☆ | R$ 26,02 | R$ 31,00 | +16,1% | +13,9 p.p. |\n\n| Retorno Real 12m | Retorno Real 5a | Selic Real 5a | Diversifica? |\n|---|---|---|---|\n| +22,4% | +15,8% | 9,1% | Sim |\n\n| P/L | ROE | DY sustentável | Origem do excedente |\n|---|---|---|---|\n| — | 7,27% ⚠️ (não usar p/ valuation) | 8,84% ⚠️ (guidance é 13,46%) | Caixa + Ativos + Dívida |\n\n- **Tese em uma frase:** cap rate implícito de 13,84% vs. 9,2-9,6% pago em transações reais da própria empresa — desconto de ~45% sobre o valor do tijolo, com risco conhecido de corte de dividendo pela frente.\n- **Maior risco:** payout de 152% do AFFO é insustentável; guidance de dividendo vale só para 2026.\n- **Gatilho de monitoramento:** anúncio do dividendo/JCP para 2027 e captação do Kinea ALLOS Malls FII.",
+    "blocoCopiavel": "### ALOS3 — Allos S.A.\n**Setor:** Shoppings | **Motor de valuation:** Cap rate (NAV)\n\n| Veredicto | Convicção | Cotação | Preço justo | Margem | Prêmio s/ Selic 12m |\n|---|---|---|---|---|---|\n| 🟢 Compra | ★★☆☆☆ | R$ 26,02 | R$ 31,00 | +16,1% | +13,9 p.p. |\n\n| Retorno Real 12m | Retorno Real 5a | Selic Real 5a | Diversifica? |\n|---|---|---|---|\n| +22,4% | +15,8% | 9,1% | Sim |\n\n| P/L | ROE | DY sustentável | Origem do excedente |\n|---|---|---|---|\n| — | 7,27% ⚠️ (não usar p/ valuation) | 8,84% ⚠️ (guidance é 13,46%) | Caixa + Ativos + Dívida |\n\n- **Tese em uma frase:** cap rate implícito de 13,84% vs. 9,2-9,6% pago em transações reais da própria empresa — desconto de ~45% sobre o valor do tijolo, com risco conhecido de corte de dividendo pela frente.\n- **Maior risco:** payout de 152% do AFFO é insustentável; guidance de dividendo vale só para 2026.\n- **Gatilho de monitoramento:** anúncio do dividendo/JCP para 2027 e captação do Kinea ALLOS Malls FII.",
     "ressalvas": "cap rate de mercado (9,4%) usa apenas duas transações (Curitiba/Recife) como amostra — dado real mas limitado. Cenários de retorno usam premissas próprias de cap rate de saída, não consenso de mercado. Para fechar com mais precisão, envie: guidance de dividendos para 2027 (se divulgado) e relatórios de research da XP/BTG/Genial pós-2T26 com preço-alvo atualizado.",
     "projecaoDividendos": {
       "alerta": {
@@ -1594,7 +1599,7 @@
     "data": "24/08/2026",
     "fontes": "Release 2T26, ITR 2T26, informado pelo usuário",
     "cotacao": "R$ 4,55 ⚠️ confirme no home broker",
-    "precoTeto": "R$ 5,40",
+    "precoJusto": "R$ 6,66",
     "max52": "R$ 7,01 (mar/26)",
     "min52": "—",
     "classificacao": {
@@ -1836,29 +1841,30 @@
       "nota": "Projeção de lucro 2026E — não há série histórica completa (2021-2025) confirmada para esta empresa ainda; enviar ITRs anteriores fecha o cálculo com mais precisão."
     },
     "valuation": {
+      "criterio": "P/L",
       "metodos": [
         {
-          "metodo": "EV/EBITDA-AL (6,5x)",
-          "precoJusto": "R$ 6,35"
-        },
-        {
-          "metodo": "E/P histórico ⚠️",
-          "precoJusto": "R$ 6,80"
-        },
-        {
-          "metodo": "Bazin (DY 5%)",
-          "precoJusto": "R$ 5,00"
-        },
-        {
-          "metodo": "Consenso de mercado ⚠️ (defasado)",
-          "precoJusto": "R$ 7,30"
+          "metodo": "LPA projetado 2026 R$ 0,72 × P/L 9,28x",
+          "precoJusto": "R$ 6,66"
         }
       ],
-      "dispersaoPct": "46%",
-      "dispersaoLeitura": "ALTA",
-      "precoJusto": "R$ 6,35 (mediana)",
-      "precoTeto": "R$ 5,40",
-      "nota": "Dispersão alta — a divergência entre métodos é a própria tese: o mercado (consenso, E/P histórico) ainda não precificou o peso da nova dívida IPCA+, enquanto Bazin já pune o dividendo. Preço teto = mediana × 0,85 = R$ 5,40."
+      "origemMult": "a média entre o P/L mediano da própria empresa ao longo de 5 anos (8,93x) e o dos 4 pares do grupo UTIL (9,62x)",
+      "precoJusto": "R$ 6,66",
+      "verificacao": [
+        {
+          "metodo": "VPA R$ 3,06 × P/VP 1,73x",
+          "precoJusto": "R$ 5,28"
+        },
+        {
+          "metodo": "receita R$ 1,3 bi × EV/Receita 1,85x − dívida líquida R$ 0,4 bi, ÷ 364 mi papéis",
+          "precoJusto": "R$ 5,63"
+        },
+        {
+          "metodo": "FFO por papel projetado R$ 1,65 × P/FFO 4,32x",
+          "precoJusto": "R$ 7,15"
+        }
+      ],
+      "nota": "Método ÚNICO: P/L. O preço justo é o fundamento projetado multiplicado pelo múltiplo que a empresa deve negociar — não é média nem mediana de métodos diferentes. Os 3 método(s) de verificação abaixo são calculados para comparação e NÃO entram na conta. Mesmo número da coluna Preço Justo do Radar, gerado pela mesma fonte (analise/tetos.json). Ver METODOLOGIA_ANALISE.md seção 31."
     },
     "retornoTotal": {
       "doze": {
@@ -1951,8 +1957,8 @@
       "class": "green",
       "conviccao": "★★☆☆☆",
       "cotacao": "R$ 4,55",
-      "precoTeto": "R$ 5,40",
-      "margem": "+18,7%",
+      "precoJusto": "R$ 6,66",
+      "margem": "+31,7%",
       "premioSelic": "+10,2 p.p.",
       "gatilhos": [
         "3T26 (novembro/2026) — confirmar se margem EBITDA para de cair",
@@ -1969,7 +1975,7 @@
       "lucroNota": "Lucro Estimado 2026E é o cenário base da análise."
     },
     "encaixeCarteira": "Diversifica de verdade o risco setorial da carteira (hoje ~50% concentrada em financeiro/seguros BR). Não resolve o gap de exposição internacional — é uma tese 100% doméstica, com risco de crédito/juros brasileiro embutido via a dívida indexada ao IPCA.",
-    "blocoCopiavel": "### FIQE3 — Unifique Telecomunicações\n**Setor:** Telecom (ISP regional) | **Motor de valuation:** EV/EBITDA-AL\n\n| Veredicto | Convicção | Cotação | Preço Teto | Margem | Prêmio s/ Selic |\n|---|---|---|---|---|---|\n| 🟢 Compra | ★★☆☆☆ | R$ 4,55 | R$ 5,40 | +18,7% | +10,2 p.p. |\n\n| P/L | ROE | DY 12M |\n|---|---|---|\n| 7,7x | 18,7% | ~5,5% ⚠️ proj. (6,85% real 2025) |\n\n- **Tese em uma frase:** preço caiu 35% da máxima sem deterioração de auditoria, mas o lucro está estagnado pelo custo da nova dívida IPCA+ — é aposta de que o crescimento orgânico e o 5G maturam antes do juro corroer a tese.\n- **Maior risco:** adições orgânicas caíram 41,9% no 2T26; se não recuperar, a tese vira só \"M&A alavancado\".\n- **Gatilho de monitoramento:** 3T26 (novembro/2026) — confirmar se margem EBITDA para de cair e resultado financeiro estabiliza.",
+    "blocoCopiavel": "### FIQE3 — Unifique Telecomunicações\n**Setor:** Telecom (ISP regional) | **Motor de valuation:** EV/EBITDA-AL\n\n| Veredicto | Convicção | Cotação | Preço justo | Margem | Prêmio s/ Selic |\n|---|---|---|---|---|---|\n| 🟢 Compra | ★★☆☆☆ | R$ 4,55 | R$ 5,40 | +18,7% | +10,2 p.p. |\n\n| P/L | ROE | DY 12M |\n|---|---|---|\n| 7,7x | 18,7% | ~5,5% ⚠️ proj. (6,85% real 2025) |\n\n- **Tese em uma frase:** preço caiu 35% da máxima sem deterioração de auditoria, mas o lucro está estagnado pelo custo da nova dívida IPCA+ — é aposta de que o crescimento orgânico e o 5G maturam antes do juro corroer a tese.\n- **Maior risco:** adições orgânicas caíram 41,9% no 2T26; se não recuperar, a tese vira só \"M&A alavancado\".\n- **Gatilho de monitoramento:** 3T26 (novembro/2026) — confirmar se margem EBITDA para de cair e resultado financeiro estabiliza.",
     "ressalvas": "Lucro 2025, LPA histórico (2023-2025), ROE 2025 e a discriminação dos dividendos agora são dados CONFIRMADOS do Relatório Anual 2025 (RI da Unifique, via mziq, extraído em 24/08/2026) — deixaram de ser estimativa. A dívida bruta de R$538,9mi é a de 31/12/2025; a de R$1.178,4mi citada no release do 2T26 (12/08/2026) é mais recente e já reflete a 4ª emissão de debêntures de R$500mi feita ao longo de 2026 — não são a mesma data-base, não comparar diretamente sem ajustar o período. O payout real (52,6%) ficou acima do assumido (45%) e o LPA real 2025 (R$0,59) ficou acima do LPA projetado 2026E (R$0,55) — ver seção 3 (Descobertas) e seção 7 (Teste do payout). O preço-teto e o retorno total NÃO foram recalculados com esses números — se quiser, posso refazer o valuation completo incorporando o payout e o LPA reais confirmados.",
     "projecaoDividendos": {
       "alerta": null,
@@ -2222,21 +2228,34 @@
       "nota": "Lucro Estimado da tabela do Radar foi deixado como \"—\" (não travado num número único) porque a divergência entre o guidance de dividendos e o run-rate de lucro normalizado (Teste 3) torna qualquer projeção pontual de lucro 2026 prematura sem o fechamento do 3T26/4T26. Preferimos expor a faixa de cenários a inventar um ponto único."
     },
     "valuation": {
+      "criterio": "P/L",
       "metodos": [
         {
-          "metodo": "EV/EBITDA (múltiplo-alvo 5,0x ⚠️ estimativa própria)",
-          "precoJusto": 23.13
-        },
-        {
-          "metodo": "Bazin sobre dividendo sustentável (R$1,6722/ação; yield exigido 8% ⚠️ assumption, sensibilizado vs 9%)",
-          "precoJusto": 20.9
+          "metodo": "LPA projetado 2026 R$ 2,06 × P/L 11,43x",
+          "precoJusto": "R$ 23,50"
         }
       ],
-      "dispersaoPct": 10.66,
-      "dispersaoLeitura": "Dispersão de 10,66% entre os 2 métodos usáveis (≤15% → convergência \"boa\" pela régua mecânica da metodologia). Porém, com apenas 2 métodos válidos (P/L histórico descartado por divergência de fonte) e alta sensibilidade do resultado à assumption do yield Bazin (8% vs 9% muda a conclusão de forma material), a convicção foi rebaixada manualmente de ★★★★★ (sugerido pela dispersão) para ★★★☆☆ — ver Ressalvas.",
-      "precoJusto": 22.02,
-      "precoTeto": 18.71,
-      "nota": "Preço justo = média simples dos 2 métodos válidos. Preço teto = preço justo × 0,85 (margem de segurança de 15% da metodologia)."
+      "origemMult": "a média entre o P/L mediano da própria empresa ao longo de 6 anos (14,28x) e o dos 4 pares do grupo UTIL (8,57x)",
+      "precoJusto": "R$ 23,50",
+      "verificacao": [
+        {
+          "metodo": "receita R$ 27,3 bi × EV/Receita 1,81x − dívida líquida R$ -1,9 bi, ÷ 2,4 bi papéis",
+          "precoJusto": "R$ 21,19"
+        },
+        {
+          "metodo": "VPA R$ 10,69 × P/VP 2,04x",
+          "precoJusto": "R$ 21,77"
+        },
+        {
+          "metodo": "EBITDA LTM (R$ 13,7 bi) × EV/EBITDA 3,71x − dívida líquida R$ -1,9 bi, ÷ 2,4 bi papéis",
+          "precoJusto": "R$ 21,83"
+        },
+        {
+          "metodo": "FFO por papel projetado R$ 5,49 × P/FFO 4,43x",
+          "precoJusto": "R$ 24,30"
+        }
+      ],
+      "nota": "Método ÚNICO: P/L. O preço justo é o fundamento projetado multiplicado pelo múltiplo que a empresa deve negociar — não é média nem mediana de métodos diferentes. Os 4 método(s) de verificação abaixo são calculados para comparação e NÃO entram na conta. Mesmo número da coluna Preço Justo do Radar, gerado pela mesma fonte (analise/tetos.json). Ver METODOLOGIA_ANALISE.md seção 31."
     },
     "retornoTotal": {
       "doze": {
@@ -2341,7 +2360,7 @@
       "divLiqEbitdaNota": "Subiu de 0,82x no trimestre anterior (2T26)."
     },
     "encaixeCarteira": "Perfil Valor/Dividendos. Ainda não atende ao critério mecânico de entrada (prêmio de 12m sobre Selic negativo), mas está no radar próximo — monitorar o 3T26 para ver se o payout guidance-2026 é coberto por lucro real ou por dívida adicional. Se a cotação recuar mais um pouco (abaixo de ~R$18,00) ou a Selic cair, o critério de prêmio pode passar a ser satisfeito.",
-    "blocoCopiavel": "🟡 TIMS3 — AGUARDAR (★★★☆☆)\nCotação: R$ 18,47 | Preço-teto: R$ 18,71 | Margem: +1,30%\nDY sustentável: 9,05% (dividendo real FY2025, não guidance 2026)\nRetorno 12m: 10,38% | Prêmio sobre Selic 12m: -3,62pp (FALHA critério de compra)\nRetorno real 5a: 12,86% (> Selic real 9,09% — tese de longo prazo sustentada)\n\nAchado central: guidance de dividendos 2026 (R$5,3-5,5bi) implica payout ~130% sobre lucro normalizado atual — não sustentável sem dívida. Narrativa de mercado (\"DY até 12%, compra na baixa\") não confirmada pelos dados. Usar dividendo real 2025 (payout 92,17%, sustentável) como base.\n\nFontes: RI TIM (4T25/2T26), StatusInvest, Investidor10, InfoMoney, AUVP Analítica — 23-24/08/2026",
+    "blocoCopiavel": "🟡 TIMS3 — AGUARDAR (★★★☆☆)\nCotação: R$ 18,47 | Preço justo: R$ 23,50 | Margem: +1,30%\nDY sustentável: 9,05% (dividendo real FY2025, não guidance 2026)\nRetorno 12m: 10,38% | Prêmio sobre Selic 12m: -3,62pp (FALHA critério de compra)\nRetorno real 5a: 12,86% (> Selic real 9,09% — tese de longo prazo sustentada)\n\nAchado central: guidance de dividendos 2026 (R$5,3-5,5bi) implica payout ~130% sobre lucro normalizado atual — não sustentável sem dívida. Narrativa de mercado (\"DY até 12%, compra na baixa\") não confirmada pelos dados. Usar dividendo real 2025 (payout 92,17%, sustentável) como base.\n\nFontes: RI TIM (4T25/2T26), StatusInvest, Investidor10, InfoMoney, AUVP Analítica — 23-24/08/2026",
     "ressalvas": "⚠️ P/L: StatusInvest mostra 22,32x; cálculo próprio (preço÷LPA confirmado) mostra 10,18x — divergência não reconciliada, P/L histórico descartado do valuation por esse motivo. ⚠️ ARPU: R$55,70 (uma fonte) vs R$34,30 (outra) — não reconciliado, não usado em nenhum cálculo. ⚠️ Múltiplo EV/EBITDA-alvo de 5,0x é estimativa própria (não há consenso de mercado citável coletado nesta pesquisa) — sensibilizar antes de confiar cegamente. ⚠️ Yield Bazin de 8% é assumption própria (sensibilizado contra 9%, resultado muda a conclusão) — não é um número de consenso de mercado. Convicção rebaixada manualmente de ★★★★★ (dispersão mecânica) para ★★★☆☆ pelos motivos acima.",
     "projecaoDividendos": {
       "alerta": null,
@@ -2573,17 +2592,12 @@
       "nota": "Todos os cenários assumem câmbio USD/BRL constante — risco relevante não capturado (ver Riscos)."
     },
     "valuation": {
-      "metodos": [
-        {
-          "metodo": "P/VP × ROE (Gordon, ROE 32%, Ke 16%, g 8%)",
-          "precoJusto": 7.35
-        }
-      ],
-      "dispersaoPct": null,
-      "dispersaoLeitura": "Só um método aplicável com confiança (motor primário do setor). P/L de mercado (~20x) implica um preço justo muito mais alto se aceito como referência — mas P/L não é validação apropriada aqui por não ser o motor da matriz setorial, e serve só de contraste: a diferença entre os dois (R$7,35 pelo motor vs. ~R$12,40+ implícito no P/L de mercado) É a tese: o mercado está pagando por crescimento que o motor de banco maduro não captura.",
-      "precoJusto": 7.35,
-      "precoTeto": 6.25,
-      "nota": "Preço teto = preço justo × 0,85. Convicção rebaixada por conta da fragilidade do motor nesse caso-limite — ver Ressalvas."
+      "criterio": "—",
+      "metodos": [],
+      "origemMult": "",
+      "precoJusto": null,
+      "verificacao": [],
+      "nota": "SEM PREÇO JUSTO. RECUSA DECLARADA: BDR de empresa estrangeira (Nu Holdings, NYSE/Cayman), fora da cobertura B3/CVM do MCP Partnr. A base tem exatamente 1 ano de dado (2025, lido à mão de release), sem série para separar padrão de ano atípico. Gordon, lucro residual e múltiplo próprio rodariam todos sobre esse único ponto — \"consenso de métodos\" seria validação cruzada aparente, não real: os três concordariam porque vêm da mesma fonte única. Sem segunda fonte independente, não há preço justo defensável. Payout, TIR real e as demais colunas continuam calculados normalmente."
     },
     "retornoTotal": {
       "doze": {
@@ -2865,21 +2879,34 @@
       "nota": "LPA base 2025 = R$4,98 (R$5,74bi ÷ 1.152.254.440 ações)."
     },
     "valuation": {
+      "criterio": "P/L",
       "metodos": [
         {
-          "metodo": "EV/EBITDA (múltiplo-alvo 6,0x ⚠️ estimativa própria, sem peer comps confirmados)",
-          "precoJusto": 42.07
-        },
-        {
-          "metodo": "Bazin (dividendo R$3,73/ação; yield exigido 8,5% ⚠️ assumption, ponto médio de 8-9%)",
-          "precoJusto": 43.88
+          "metodo": "LPA projetado 2026 R$ 5,14 × P/L 9,10x",
+          "precoJusto": "R$ 46,76"
         }
       ],
-      "dispersaoPct": 4.3,
-      "dispersaoLeitura": "Dispersão de 4,3% entre os 2 métodos — convergência boa (≤15%).",
-      "precoJusto": 42.98,
-      "precoTeto": 36.53,
-      "nota": "P/L atual (8,5x) usado só como dado de contexto/validação, não entra na média — não é o motor da matriz setorial para este setor."
+      "origemMult": "a média entre o P/L mediano da própria empresa ao longo de 6 anos (8,21x) e o dos 4 pares do grupo UTIL (9,98x)",
+      "precoJusto": "R$ 46,76",
+      "verificacao": [
+        {
+          "metodo": "FFO por papel projetado R$ 7,54 × P/FFO 4,91x",
+          "precoJusto": "R$ 37,01"
+        },
+        {
+          "metodo": "VPA R$ 20,55 × P/VP 2,14x",
+          "precoJusto": "R$ 43,97"
+        },
+        {
+          "metodo": "EBITDA LTM (R$ 13,7 bi) × EV/EBITDA 5,80x − dívida líquida R$ 27,6 bi, ÷ 1,2 bi papéis",
+          "precoJusto": "R$ 44,85"
+        },
+        {
+          "metodo": "receita R$ 45,6 bi × EV/Receita 1,80x − dívida líquida R$ 27,6 bi, ÷ 1,2 bi papéis",
+          "precoJusto": "R$ 47,52"
+        }
+      ],
+      "nota": "Método ÚNICO: P/L. O preço justo é o fundamento projetado multiplicado pelo múltiplo que a empresa deve negociar — não é média nem mediana de métodos diferentes. Os 4 método(s) de verificação abaixo são calculados para comparação e NÃO entram na conta. Mesmo número da coluna Preço Justo do Radar, gerado pela mesma fonte (analise/tetos.json). Ver METODOLOGIA_ANALISE.md seção 31."
     },
     "retornoTotal": {
       "doze": {
@@ -2982,7 +3009,7 @@
       "lucroNota": "2026E é estimativa própria (g=6% a.a.)."
     },
     "encaixeCarteira": "Diversifica de verdade a concentração em financeiro/seguros BR das duas carteiras — setor regulado com receita indexada a tarifas/inflação, descorrelacionado do ciclo de crédito. Mas atenção: retorno real de 5 anos abaixo da Selic real no cenário base torna a entrada, no preço atual, mais sobre diversificação do que sobre retorno superior.",
-    "blocoCopiavel": "### CPFE3 — CPFL Energia\n**Setor:** Utilities Distribuição/Transmissão | **Motor de valuation:** EV/EBITDA\n\n| Veredicto | Convicção | Cotação | Preço Teto | Margem | Prêmio s/ Selic 12m |\n|---|---|---|---|---|---|\n| 🟡 Aguardar | ★★★☆☆ | R$ 42,32 | R$ 36,53 | -13,7% | -3,63 p.p. |\n\n| Retorno Real 12m | Retorno Real 5a | Selic Real 5a | Diversifica? |\n|---|---|---|---|\n| 5,62% | 8,25% | 9,1% | Sim |\n\n| P/L | ROE | DY sustentável | Origem do excedente |\n|---|---|---|---|\n| 8,5x | 26,4% | 8,81% | — |\n\n- **Tese em uma frase:** negócio regulado saudável com payout mais conservador que o histórico, mas 54% do crescimento recente de lucro veio de efeito fiscal, não operação.\n- **Maior risco:** alavancagem crescente (2,36x) para financiar capex pesado de R$31,1bi até 2030.\n- **Gatilho de monitoramento:** próxima RTP das distribuidoras e confirmação formal da política de payout.",
+    "blocoCopiavel": "### CPFE3 — CPFL Energia\n**Setor:** Utilities Distribuição/Transmissão | **Motor de valuation:** EV/EBITDA\n\n| Veredicto | Convicção | Cotação | Preço justo | Margem | Prêmio s/ Selic 12m |\n|---|---|---|---|---|---|\n| 🟡 Aguardar | ★★★☆☆ | R$ 42,32 | R$ 36,53 | -13,7% | -3,63 p.p. |\n\n| Retorno Real 12m | Retorno Real 5a | Selic Real 5a | Diversifica? |\n|---|---|---|---|\n| 5,62% | 8,25% | 9,1% | Sim |\n\n| P/L | ROE | DY sustentável | Origem do excedente |\n|---|---|---|---|\n| 8,5x | 26,4% | 8,81% | — |\n\n- **Tese em uma frase:** negócio regulado saudável com payout mais conservador que o histórico, mas 54% do crescimento recente de lucro veio de efeito fiscal, não operação.\n- **Maior risco:** alavancagem crescente (2,36x) para financiar capex pesado de R$31,1bi até 2030.\n- **Gatilho de monitoramento:** próxima RTP das distribuidoras e confirmação formal da política de payout.",
     "ressalvas": "⚠️ Múltiplo-alvo EV/EBITDA (6,0x) e yield Bazin (8,5%) são premissas próprias, não consenso de mercado confirmado. ⚠️ Divergência entre StatusInvest e release oficial na dívida líquida (R$27,56bi vs R$32,52bi) — usei o release oficial por ser mais recente e direto da fonte primária. ⚠️ Payout calculado indiretamente (não há declaração percentual formal da empresa encontrada) — pode mudar com dados mais completos do 3T26/4T26.",
     "projecaoDividendos": {
       "alerta": null,
@@ -3184,21 +3211,34 @@
       "nota": "Cenário base usado nos cálculos de retorno de 5 anos (g=5%/ano) é conservador frente ao ROE histórico da empresa, para não embutir continuidade automática do pico do ciclo."
     },
     "valuation": {
+      "criterio": "P/L",
       "metodos": [
         {
-          "metodo": "E/P histórico (P/L médio ≈9,5x, ⚠️ aproximado por P/L de fechamento anual)",
-          "precoJusto": 26.2
-        },
-        {
-          "metodo": "EV/EBITDA (validação, múltiplo histórico setorial ≈7,0x)",
-          "precoJusto": 27.35
+          "metodo": "LPA projetado 2026 R$ 4,50 × P/L 7,41x",
+          "precoJusto": "R$ 33,37"
         }
       ],
-      "dispersaoPct": 4.3,
-      "dispersaoLeitura": "Dispersão de 4,30% entre os 2 métodos (≤15% → convergência boa, usar mediana/média). Convicção mantida em ★★★☆☆ (não ★★★★★) porque o método primário depende de uma substituição metodológica (P/L de fechamento no lugar de preço médio anual, que não foi localizado nas fontes gratuitas) — ver Ressalvas.",
-      "precoJusto": 26.77,
-      "precoTeto": 22.75,
-      "nota": "Preço justo = média dos 2 métodos válidos. Preço teto = preço justo × 0,85 (margem de segurança de 15%)."
+      "origemMult": "o P/L mediano da própria empresa ao longo de 6 anos (7,41x) — o grupo IND não tem 3 pares para comparar",
+      "precoJusto": "R$ 33,37",
+      "verificacao": [
+        {
+          "metodo": "EBITDA LTM (R$ 1,1 bi) × EV/EBITDA 5,03x − dívida líquida R$ 1,1 bi, ÷ 136 mi papéis",
+          "precoJusto": "R$ 31,65"
+        },
+        {
+          "metodo": "receita R$ 5,4 bi × EV/Receita 1,04x − dívida líquida R$ 1,1 bi, ÷ 136 mi papéis",
+          "precoJusto": "R$ 32,99"
+        },
+        {
+          "metodo": "FFO por papel projetado R$ 6,09 × P/FFO 5,84x",
+          "precoJusto": "R$ 35,56"
+        },
+        {
+          "metodo": "VPA R$ 7,15 × P/VP 5,05x",
+          "precoJusto": "R$ 36,09"
+        }
+      ],
+      "nota": "Método ÚNICO: P/L. O preço justo é o fundamento projetado multiplicado pelo múltiplo que a empresa deve negociar — não é média nem mediana de métodos diferentes. Os 4 método(s) de verificação abaixo são calculados para comparação e NÃO entram na conta. Mesmo número da coluna Preço Justo do Radar, gerado pela mesma fonte (analise/tetos.json). Ver METODOLOGIA_ANALISE.md seção 31."
     },
     "retornoTotal": {
       "doze": {
@@ -3302,7 +3342,7 @@
       "lucroNota": "2026E é estimativa própria (g=5% a.a.)."
     },
     "encaixeCarteira": "Perfil Dividendos/Qualidade — mas fora de faixa de compra no momento. Vale manter no radar de acompanhamento: se o ciclo automotivo desacelerar e o preço recuar para próximo de R$22-23 (preço-teto), a tese de entrada muda substancialmente. Não recomendado para aporte na cotação atual (R$32,22).",
-    "blocoCopiavel": "🔴 LEVE3 — ACIMA DO TETO (★★★☆☆)\nCotação: R$ 32,22 | Preço-teto: R$ 22,75 | Margem: -29,4% (41,6% acima do teto)\nDY: 7,44% | Prêmio sobre Selic 12m: -6,56pp (FALHA)\nRetorno real 5a: 3,44% (< Selic real 9,09% — FALHA)\n\nEmpresa de altíssima qualidade (ROE>20%, alavancagem quase zero, payout ~85%), mas preço atual já embute o pico do ciclo automotivo sem margem de segurança. Acompanhar, não comprar nesta cotação.\n\nFontes: StatusInvest, Investidor10, RI Mahle Metal Leve — 23-24/08/2026",
+    "blocoCopiavel": "🔴 LEVE3 — ACIMA DO TETO (★★★☆☆)\nCotação: R$ 32,22 | Preço justo: R$ 33,37 | Margem: -29,4% (41,6% acima do teto)\nDY: 7,44% | Prêmio sobre Selic 12m: -6,56pp (FALHA)\nRetorno real 5a: 3,44% (< Selic real 9,09% — FALHA)\n\nEmpresa de altíssima qualidade (ROE>20%, alavancagem quase zero, payout ~85%), mas preço atual já embute o pico do ciclo automotivo sem margem de segurança. Acompanhar, não comprar nesta cotação.\n\nFontes: StatusInvest, Investidor10, RI Mahle Metal Leve — 23-24/08/2026",
     "ressalvas": "⚠️ P/L histórico foi calculado com preço de FECHAMENTO anual, não preço MÉDIO anual (a metodologia pede E/P sobre preço médio) — a série de preço médio anual não foi localizada nas fontes gratuitas consultadas nesta pesquisa. Isso é uma aproximação, não o cálculo puro prescrito pela metodologia. ⚠️ Múltiplo EV/EBITDA de validação (7,0x) é uma referência setorial histórica, não um consenso de mercado citável coletado nesta pesquisa. ⚠️ Lucro líquido FY2025 foi derivado (LPA × número de ações), não confirmado contra o release oficial linha a linha nesta pesquisa.",
     "projecaoDividendos": {
       "alerta": null,
@@ -3492,21 +3532,34 @@
       "nota": "Faixa de sensibilidade de múltiplo (5,0x-6,0x) mantida explicitamente como resultado, em vez de um número único — dispersão de 35,1% está no limite superior do que a metodologia considera 'convergência moderada', beirando 'alta divergência'."
     },
     "valuation": {
+      "criterio": "EV/EBITDA",
       "metodos": [
         {
-          "metodo": "EV/EBITDA meio-de-ciclo — múltiplo 5,0x (cenário conservador)",
-          "precoJusto": 5.97
-        },
-        {
-          "metodo": "EV/EBITDA meio-de-ciclo — múltiplo 6,0x (cenário otimista)",
-          "precoJusto": 8.51
+          "metodo": "EBITDA médio de 6 anos (R$ 0,6 bi) × EV/EBITDA 5,04x − dívida líquida R$ 1,1 bi, ÷ 240 mi papéis",
+          "precoJusto": "R$ 8,06"
         }
       ],
-      "dispersaoPct": 35.1,
-      "dispersaoLeitura": "Dispersão de 35,10% — no limiar entre 'moderada' e 'alta' (>35% = alta pela régua da metodologia, 'a divergência é a tese'). Por estar exatamente na fronteira, esta análise trata o intervalo R$5,97-R$8,51 como o resultado, em vez de forçar um único preço-justo confiável — a convicção foi rebaixada para ★☆☆☆☆. O veredicto pode mudar de 🔴 para 🟡 dependendo de qual múltiplo o mercado validar ao longo do ciclo.",
-      "precoJusto": 7.24,
-      "precoTeto": 6.15,
-      "nota": "Preço justo = ponto médio do intervalo 5,0x-6,0x (não uma 'mediana' de 3+ métodos, pois só há 2 cenários de múltiplo válidos aqui). Preço teto = preço justo × 0,85."
+      "origemMult": "o EV/EBITDA mediano da própria empresa ao longo de 6 anos (5,04x; a série foi de 4,8x a 5,9x) — em cíclica a janela cobre pico e fundo do ciclo de propósito",
+      "precoJusto": "R$ 8,06",
+      "verificacao": [
+        {
+          "metodo": "FFO por papel projetado R$ 1,32 × P/FFO 4,36x",
+          "precoJusto": "R$ 5,75"
+        },
+        {
+          "metodo": "VPA R$ 6,11 × P/VP 1,29x",
+          "precoJusto": "R$ 7,87"
+        },
+        {
+          "metodo": "receita R$ 1,7 bi × EV/Receita 1,84x − dívida líquida R$ 1,1 bi, ÷ 240 mi papéis",
+          "precoJusto": "R$ 8,46"
+        },
+        {
+          "metodo": "LPA projetado 2026 R$ 0,86 × P/L 10,25x",
+          "precoJusto": "R$ 8,84"
+        }
+      ],
+      "nota": "Método ÚNICO: EV/EBITDA. O preço justo é o fundamento projetado multiplicado pelo múltiplo que a empresa deve negociar — não é média nem mediana de métodos diferentes. Os 4 método(s) de verificação abaixo são calculados para comparação e NÃO entram na conta. Mesmo número da coluna Preço Justo do Radar, gerado pela mesma fonte (analise/tetos.json). Ver METODOLOGIA_ANALISE.md seção 31."
     },
     "retornoTotal": {
       "doze": {
@@ -3609,7 +3662,7 @@
       "payoutUsadoNota": "Histórico (StatusInvest). Payout do 2T26 está distorcido pelo efeito não-caixa de ativo biológico — pouco representativo."
     },
     "encaixeCarteira": "Não se encaixa no objetivo prioritário de dividendos da carteira (DY estrutural de 2,92% é baixo) nem atende aos critérios mecânicos de compra na cotação atual. Como já é uma posição existente na carteira do Luiz, a recomendação é MANTER e acompanhar (não hold indefinido — reavaliar no 3T26/4T26 quando o efeito do ativo biológico e a trajetória de dívida líquida ficarem mais claros), sem fazer novos aportes na cotação atual.",
-    "blocoCopiavel": "🔴 RANI3 — ACIMA DO TETO (★☆☆☆☆)\nCotação: R$ 7,79 | Preço-teto: R$ 6,15 | Margem: -26,7% (26,7% acima do teto)\nDY: 2,92% | Prêmio sobre Selic 12m: -11,08pp (FALHA)\nRetorno real 5a: 3,44% (< Selic real 9,09% — FALHA)\n\nAchado central: queda de -70,3% no lucro líquido do 2T26 é efeito contábil não-caixa (ativo biológico) — EBITDA operacional cresceu +8,2% a/a no mesmo trimestre. Dispersão de preço-justo de 35,1% (5,0x-6,0x EV/EBITDA) no limiar da 'alta divergência' — convicção mínima.\n\nFontes: StatusInvest, Investidor10, RI Irani — 23-24/08/2026",
+    "blocoCopiavel": "🔴 RANI3 — ACIMA DO TETO (★☆☆☆☆)\nCotação: R$ 7,79 | Preço justo: R$ 8,06 | Margem: -26,7% (26,7% acima do teto)\nDY: 2,92% | Prêmio sobre Selic 12m: -11,08pp (FALHA)\nRetorno real 5a: 3,44% (< Selic real 9,09% — FALHA)\n\nAchado central: queda de -70,3% no lucro líquido do 2T26 é efeito contábil não-caixa (ativo biológico) — EBITDA operacional cresceu +8,2% a/a no mesmo trimestre. Dispersão de preço-justo de 35,1% (5,0x-6,0x EV/EBITDA) no limiar da 'alta divergência' — convicção mínima.\n\nFontes: StatusInvest, Investidor10, RI Irani — 23-24/08/2026",
     "ressalvas": "⚠️ Dívida líquida (≈R$1,53bi) foi estimada por cálculo próprio a partir de EV implícito, não confirmada linha a linha contra o balanço patrimonial 2T26 nesta pesquisa — reconferir contra o release oficial antes de decisões de maior porte. ⚠️ EBITDA meio-de-ciclo (≈R$579mi) é uma normalização própria, não um número de consenso de mercado citável. ⚠️ Dispersão de 35,1% está no limiar exato entre 'moderada' (usar mediana) e 'alta' (>35%, 'a divergência é a tese') — tratada aqui como alta por precaução, dado o histórico de volatilidade do lucro contábil da empresa. ⚠️ Payout e LPA normalizado (ex-efeito de ativo biológico) são estimativas próprias, não números oficiais divulgados pela empresa como métrica ajustada.",
     "projecaoDividendos": {
       "alerta": {
@@ -3908,21 +3961,26 @@
       "nota": "⚠️ Não há guidance numérico oficial da empresa nem consenso de mercado formal (Bloomberg/Refinitiv) localizado nesta pesquisa — os três cenários são estimativa própria a partir do lucro gerencial de 2025 (R$4,3bi) e do crescimento financeiro padrão da metodologia (g=8%), sensibilizado para cima/baixo pelo risco regulatório do Bloco 8."
     },
     "valuation": {
+      "criterio": "P/L",
       "metodos": [
         {
-          "metodo": "P/VP × ROE — P/VP justo = (32%-8%)/(16%-8%) = 3,00x × VPA R$4,60",
-          "precoJusto": 13.8
-        },
-        {
-          "metodo": "Gordon (DDM) — DPS sustentável R$1,29 (90% payout × LPA R$1,43) ÷ (16%-8%)",
-          "precoJusto": 16.13
+          "metodo": "LPA projetado 2026 R$ 1,52 × P/L 10,20x",
+          "precoJusto": "R$ 15,48"
         }
       ],
-      "dispersaoPct": 16.9,
-      "dispersaoLeitura": "Dispersão de 16,9% — moderada (15-35%). Os dois métodos convergem razoavelmente; usa-se a média simples como preço-justo. Convicção moderada (★★★☆☆).",
-      "precoJusto": 14.97,
-      "precoTeto": 12.72,
-      "nota": "Preço justo = média dos 2 métodos (P/VP×ROE e Gordon/DDM). Preço teto = preço justo × 0,85 (margem de segurança de 15%). O ROE de 32% usado no método 1 é estruturalmente alto por causa do payout quase total (baixa retenção de capital) — é uma característica real do modelo de negócio, não um erro de leitura, mas deve ser monitorado se a empresa alterar sua política de retenção."
+      "origemMult": "a média entre o P/L mediano da própria empresa ao longo de 6 anos (11,62x) e o dos 8 pares do grupo FIN (8,79x)",
+      "precoJusto": "R$ 15,48",
+      "verificacao": [
+        {
+          "metodo": "VPA R$ 4,62 × P/VP 3,72x",
+          "precoJusto": "R$ 17,18"
+        },
+        {
+          "metodo": "FFO por papel projetado R$ 1,61 × P/FFO 11,46x",
+          "precoJusto": "R$ 18,40"
+        }
+      ],
+      "nota": "Método ÚNICO: P/L. O preço justo é o fundamento projetado multiplicado pelo múltiplo que a empresa deve negociar — não é média nem mediana de métodos diferentes. Os 2 método(s) de verificação abaixo são calculados para comparação e NÃO entram na conta. Mesmo número da coluna Preço Justo do Radar, gerado pela mesma fonte (analise/tetos.json). Ver METODOLOGIA_ANALISE.md seção 31."
     },
     "retornoTotal": {
       "doze": {
@@ -4002,7 +4060,7 @@
       "Correlação com outras posições financeiras da carteira (BBSE3, IRBR3, exposição bancária) — não é uma fonte de diversificação adicional."
     ],
     "encaixeCarteira": "CXSE3 já é uma posição existente na carteira do Luiz. A concentração em financeiros da carteira (~50%, incluindo BBAS3, ITUB3, BBSE3, CXSE3, IRBR3) já é elevada — CXSE3 não diversifica essa exposição, apenas a aprofunda (todas dependem, em graus diferentes, do ciclo de crédito e da política regulatória brasileira). Dado o valuation esticado (🔴 acima do teto) e o red flag regulatório já materializado, a recomendação é MANTER a posição e monitorar os próximos 1-2 trimestres (para ver se o efeito do prestamista se estabiliza e se a divergência gerencial/contábil se explica), sem fazer novos aportes na cotação atual.",
-    "blocoCopiavel": "🔴 CXSE3 — ACIMA DO TETO (★★★☆☆)\nSetor: Seguros (bancassurance) | Motor de valuation: P/VP × ROE (+ Gordon)\nCotação: R$ 18,59 | Preço Justo: R$ 14,97 | Preço-teto: R$ 12,72 | Margem: -46,2%\nPrêmio s/ Selic 12m: -26,53pp (FALHA)\nRetorno Real 12m: -16,29% | Retorno Real 5a: 2,12% | Selic Real 5a: 9,09% | Diversifica? NÃO (financeiro, ~50% da carteira)\nP/L: 12,3x (informativo) | ROE: 32,8% | DY sustentável: 6,94% | Origem do excedente: payout alto estrutural (asset-light)\n\nTese em uma frase: ROE muito alto e payout estrutural sustentam bom DY, mas o valuation está esticado após rali de 12 meses e um risco regulatório já se materializou no segmento prestamista.\nMaior risco: intervenção regulatória adicional sobre produtos distribuídos via rede Caixa (estatal).\nGatilho de monitoramento: esclarecimento da divergência gerencial vs. contábil do 4T25 e estabilização do segmento prestamista.\n\nFontes: StatusInvest, Investidor10, RI Caixa Seguridade, CAIXA Notícias — 25/08/2026",
+    "blocoCopiavel": "🔴 CXSE3 — ACIMA DO TETO (★★★☆☆)\nSetor: Seguros (bancassurance) | Motor de valuation: P/VP × ROE (+ Gordon)\nCotação: R$ 18,59 | Preço Justo: R$ 14,97 | Preço justo: R$ 15,48 | Margem: -46,2%\nPrêmio s/ Selic 12m: -26,53pp (FALHA)\nRetorno Real 12m: -16,29% | Retorno Real 5a: 2,12% | Selic Real 5a: 9,09% | Diversifica? NÃO (financeiro, ~50% da carteira)\nP/L: 12,3x (informativo) | ROE: 32,8% | DY sustentável: 6,94% | Origem do excedente: payout alto estrutural (asset-light)\n\nTese em uma frase: ROE muito alto e payout estrutural sustentam bom DY, mas o valuation está esticado após rali de 12 meses e um risco regulatório já se materializou no segmento prestamista.\nMaior risco: intervenção regulatória adicional sobre produtos distribuídos via rede Caixa (estatal).\nGatilho de monitoramento: esclarecimento da divergência gerencial vs. contábil do 4T25 e estabilização do segmento prestamista.\n\nFontes: StatusInvest, Investidor10, RI Caixa Seguridade, CAIXA Notícias — 25/08/2026",
     "ressalvas": "⚠️ Composição percentual da receita/lucro por segmento (seguros vs. previdência vs. capitalização vs. corretagem) não foi encontrada de forma consolidada — apenas variações a/a por linha. ⚠️ Causa exata da divergência gerencial vs. contábil do 4T25 não foi detalhada nas fontes secundárias — reconferir contra a nota explicativa do release oficial. ⚠️ Free float diverge entre fontes (17,25% vs. 20%) e não foi resolvido. ⚠️ Não há guidance numérico oficial nem consenso de mercado formal (Bloomberg/Refinitiv) para 2026 — os cenários de lucro são estimativa própria. ⚠️ Ações em tesouraria e índice de solvência regulatória (SUSEP, a nível das operacionais) não encontrados.",
     "veredicto": {
       "emoji": "🔴",
@@ -4237,21 +4295,22 @@
       "nota": "Os 3 cenários usam diretamente o guidance oficial da empresa (resultado operacional consolidado -7% a -3% para 2026) — o cenário base coincide com o consenso de mercado informal (AUVP Analítica), o que dá razoável confiança a esta faixa."
     },
     "valuation": {
+      "criterio": "P/L",
       "metodos": [
         {
-          "metodo": "P/VP × ROE — P/VP justo = (84,4%-5%)/(16%-5%) = 7,22x × VPA R$5,61 (g reduzido a 5% pelas razões do Bloco de Descobertas)",
-          "precoJusto": 40.5
-        },
-        {
-          "metodo": "Gordon (DDM) — DPS 2026E R$4,01 (90% payout guidance × LPA 2026E R$4,46) ÷ (16%-5%)",
-          "precoJusto": 36.5
+          "metodo": "LPA projetado 2026 R$ 4,28 × P/L 9,00x",
+          "precoJusto": "R$ 38,56"
         }
       ],
-      "dispersaoPct": 11.0,
-      "dispersaoLeitura": "Dispersão de 11,0% — boa (≤15%), usa-se a média. NOTA IMPORTANTE: apesar da baixa dispersão numérica, a convicção foi reduzida para ★★★☆☆ (em vez de ★★★★★) porque ambos os métodos dependem da mesma premissa não-padrão (g=5% em vez de 8%) — a baixa dispersão reflete consistência interna do modelo, não necessariamente baixa incerteza real.",
-      "precoJusto": 38.5,
-      "precoTeto": 32.7,
-      "nota": "Preço justo = média dos 2 métodos, ambos com g=5% (ver justificativa na Classificação). Preço teto = preço justo × 0,85. Resultado fica coerente com o preço-alvo médio de mercado (~R$37) — ao contrário do resultado mecânico com g=8% padrão (~R$54), que este relatório considera não-confiável dado o guidance de contração."
+      "origemMult": "a média entre o P/L mediano da própria empresa ao longo de 6 anos (8,45x) e o dos 8 pares do grupo FIN (9,55x)",
+      "precoJusto": "R$ 38,56",
+      "verificacao": [
+        {
+          "metodo": "VPA R$ 5,68 × P/VP 6,11x",
+          "precoJusto": "R$ 34,69"
+        }
+      ],
+      "nota": "Método ÚNICO: P/L. O preço justo é o fundamento projetado multiplicado pelo múltiplo que a empresa deve negociar — não é média nem mediana de métodos diferentes. Os 1 método(s) de verificação abaixo são calculados para comparação e NÃO entram na conta. Mesmo número da coluna Preço Justo do Radar, gerado pela mesma fonte (analise/tetos.json). Ver METODOLOGIA_ANALISE.md seção 31."
     },
     "retornoTotal": {
       "doze": {
@@ -4331,7 +4390,7 @@
       "Divergência contábil vs. gerencial identificada em 2024 (~6%) sem explicação detalhada nas fontes públicas."
     ],
     "encaixeCarteira": "BBSE3 já é uma posição existente na carteira do Luiz. A metodologia da carteira cita explicitamente BBAS3 e BBSE3 como correlacionados via ciclo agrícola — ou seja, BBSE3 NÃO diversifica a exposição a BBAS3 (se presente) nem à concentração geral em financeiros (~50% da carteira, incluindo CXSE3 e IRBR3). Com veredicto 🟡 AGUARDAR (preço entre teto e preço-justo) e DY elevado, a recomendação é MANTER a posição para continuar capturando o dividendo, mas sem fazer novos aportes relevantes até que o preço convirja para baixo do preço-teto (R$32,70) ou até que o guidance de 2026 se confirme e permita reavaliar o ROE sustentável com mais confiança.",
-    "blocoCopiavel": "🟡 BBSE3 — AGUARDAR (★★★☆☆)\nSetor: Seguros (bancassurance) | Motor de valuation: P/VP × ROE + Gordon (g ajustado a 5%)\nCotação: R$ 37,19 | Preço Justo: R$ 38,50 | Preço-teto: R$ 32,70 | Margem: -13,7%\nPrêmio s/ Selic 12m: +0,30pp\nRetorno Real 12m: +9,38% | Retorno Real 5a: 8,19% | Selic Real 5a: 9,09% | Diversifica? NÃO (financeiro + correlação ciclo agrícola com BBAS3)\nP/L: 7,9x (informativo) | ROE: 84,4%* (⚠️ distorcido, ver relatório) | DY sustentável: 10,78% | Origem do excedente: payout alto estrutural (asset-light)\n\nTese em uma frase: Preço-justo ajustado (R$38,5) fica muito próximo da cotação atual — DY elevado sustenta a posição, mas o guidance oficial de contração operacional impede um veredicto de compra plena.\nMaior risco: ROE contábil de 84% é estruturalmente distorcido pelo payout altíssimo — qualquer mudança de política de dividendos altera o valuation.\nGatilho de monitoramento: confirmação do guidance 2026 (resultado operacional -7% a -3%) nos próximos releases trimestrais.\n\nFontes: StatusInvest, Genial Analisa, InfoMoney, RI BB Seguridade — 25/08/2026",
+    "blocoCopiavel": "🟡 BBSE3 — AGUARDAR (★★★☆☆)\nSetor: Seguros (bancassurance) | Motor de valuation: P/VP × ROE + Gordon (g ajustado a 5%)\nCotação: R$ 37,19 | Preço Justo: R$ 38,50 | Preço justo: R$ 38,56 | Margem: -13,7%\nPrêmio s/ Selic 12m: +0,30pp\nRetorno Real 12m: +9,38% | Retorno Real 5a: 8,19% | Selic Real 5a: 9,09% | Diversifica? NÃO (financeiro + correlação ciclo agrícola com BBAS3)\nP/L: 7,9x (informativo) | ROE: 84,4%* (⚠️ distorcido, ver relatório) | DY sustentável: 10,78% | Origem do excedente: payout alto estrutural (asset-light)\n\nTese em uma frase: Preço-justo ajustado (R$38,5) fica muito próximo da cotação atual — DY elevado sustenta a posição, mas o guidance oficial de contração operacional impede um veredicto de compra plena.\nMaior risco: ROE contábil de 84% é estruturalmente distorcido pelo payout altíssimo — qualquer mudança de política de dividendos altera o valuation.\nGatilho de monitoramento: confirmação do guidance 2026 (resultado operacional -7% a -3%) nos próximos releases trimestrais.\n\nFontes: StatusInvest, Genial Analisa, InfoMoney, RI BB Seguridade — 25/08/2026",
     "ressalvas": "⚠️ O preço-justo desta análise usa g=5% (em vez do g financeiro padrão de 8% da metodologia) — uma escolha de modelagem explícita e documentada, não um número oficial da empresa ou do mercado, justificada pelo guidance de contração e pela distorção do ROE. ⚠️ Ações em tesouraria e margem líquida consolidada não encontradas. ⚠️ Lucro trimestral de 3T25 e 4T25 individualmente não encontrados nesta pesquisa (série trimestral incompleta). ⚠️ CSM (IFRS 17) não encontrada. ⚠️ Consenso de mercado de R$8,65-8,69bi para 2026 é uma agregação informal (AUVP Analítica), não confirmada em terminal Bloomberg/Refinitiv. ⚠️ Pequenas divergências de valores de dividendos entre fontes de imprensa (R$1,98 vs R$1,90/ação) não resolvidas — confirmar no Fato Relevante oficial. ⚠️ Site 'bbseguridade-website-2026.vercel.app' identificado nas buscas como possível clone/phishing do RI oficial — não usado como fonte.",
     "veredicto": {
       "emoji": "🟡",
@@ -4565,21 +4624,22 @@
       "nota": "⚠️ Não projetamos um cenário-base único: a divergência contábil vs. gerencial do 2T26 (Descobertas) torna qualquer ponto médio pouco confiável. Também não há guidance numérico oficial da empresa nem consenso de mercado formal localizado nesta pesquisa. Os extremos conservador/otimista acima ilustram a amplitude real da incerteza, não uma previsão."
     },
     "valuation": {
+      "criterio": "P/L",
       "metodos": [
         {
-          "metodo": "P/VP × ROE — base CONTÁBIL/IFRS (conservadora): ROE médio de ciclo 2023-25 (lucro médio R$330,6mi ÷ PL contábil R$5,33bi) = 6,2%; P/VP justo = (6,2%-0%)/(16%-0%) = 0,39x × VPA R$65,10 [g=0%, dado turnaround recente]",
-          "precoJusto": 25.23
-        },
-        {
-          "metodo": "P/VP × ROE — base GERENCIAL (replica lógica do mercado/BTG): ROE gerencial ≈22% (lucro LTM gerencial ~R$592mi ÷ PL ajustado R$2,7bi); P/VP justo = (22%-8%)/(16%-8%) = 1,75x × VPA gerencial R$33,00",
-          "precoJusto": 57.75
+          "metodo": "LPA projetado 2026 R$ 3,58 × P/L 8,90x",
+          "precoJusto": "R$ 31,90"
         }
       ],
-      "dispersaoPct": 128.9,
-      "dispersaoLeitura": "Dispersão de 128,9% — MUITO ALTA (>>35%). Pela regra da metodologia, 'não se escolhe o método, a divergência É a tese'. Esta análise não apresenta um preço-justo único com falsa precisão: usa a base contábil (mais conservadora, dado o histórico de opacidade da empresa) para o preço-teto de referência, mas reporta a base gerencial como cenário de upside caso o turnaround se confirme plenamente e a divergência do 2T26 se explique de forma satisfatória. Convicção mínima (★☆☆☆☆).",
-      "precoJusto": 25.23,
-      "precoTeto": 21.45,
-      "nota": "Preço justo = método CONTÁBIL (conservador, escolhido por prudência dada a divergência do Bloco de Descobertas — não é uma média com o método gerencial). Preço teto = preço justo × 0,85. g=0% (não 8%) foi usado no método contábil por prudência, dado o histórico curto pós-turnaround (confiança reduzida do protocolo)."
+      "origemMult": "a média entre o P/L mediano da própria empresa ao longo de 3 anos (8,25x) e o dos 8 pares do grupo FIN (9,55x)",
+      "precoJusto": "R$ 31,90",
+      "verificacao": [
+        {
+          "metodo": "VPA R$ 66,02 × P/VP 0,81x",
+          "precoJusto": "R$ 53,26"
+        }
+      ],
+      "nota": "Método ÚNICO: P/L. O preço justo é o fundamento projetado multiplicado pelo múltiplo que a empresa deve negociar — não é média nem mediana de métodos diferentes. Os 1 método(s) de verificação abaixo são calculados para comparação e NÃO entram na conta. Mesmo número da coluna Preço Justo do Radar, gerado pela mesma fonte (analise/tetos.json). Ver METODOLOGIA_ANALISE.md seção 31."
     },
     "retornoTotal": {
       "doze": {
@@ -4660,7 +4720,7 @@
       "Correlação com a concentração em financeiros da carteira (BBAS3, ITUB3, BBSE3, CXSE3) — soma risco setorial sem diversificar."
     ],
     "encaixeCarteira": "IRBR3 já é uma posição existente na carteira do Luiz. A concentração em financeiros (~50% da carteira, incluindo BBAS3, ITUB3, BBSE3, CXSE3, IRBR3) já é elevada, e IRBR3 não a diversifica — ao contrário, adiciona o risco específico de uma empresa com histórico recente de fraude contábil e turnaround ainda em consolidação. Dado o veredicto 🔴 acima do teto com convicção mínima (★☆☆☆☆) e a dispersão extrema de valuation, a recomendação é MANTER a posição existente com cautela redobrada e sem novos aportes, aguardando pelo menos mais 2-3 trimestres de histórico consistente (e, idealmente, esclarecimento da divergência contábil/gerencial do 2T26) antes de reavaliar.",
-    "blocoCopiavel": "🔴 IRBR3 — ACIMA DO TETO (★☆☆☆☆)\nSetor: Resseguros | Motor de valuation: P/VP × ROE (base contábil, conservadora)\nCotação: R$ 51,16 | Preço Justo: R$ 25,23 (contábil) a R$ 57,75 (gerencial) | Preço-teto: R$ 21,45 | Margem: -138,5%\nPrêmio s/ Selic 12m: -61,18pp (FALHA)\nRetorno Real 12m: -49,42% | Retorno Real 5a: -17,6% | Selic Real 5a: 9,09% | Diversifica? NÃO (financeiro, + risco idiossincrático de fraude contábil 2020)\nP/L: — (proibido para resseguradoras; P/L médio de ciclo informativo ~12,4x-12,7x) | ROE: 4,5% (contábil) / ~22% (gerencial, ⚠️ divergência é a tese) | DY: 3,5% (mínimo estatutário) | Origem: dividendo recém-retomado, sem margem de segurança testável\n\nTese em uma frase: Turnaround real está em andamento, mas o histórico é curto e o trimestre mais recente trouxe o maior red flag contábil da análise — dispersão de valuation de quase 130% entre a leitura conservadora e a otimista.\nMaior risco: divergência entre lucro contábil (IFRS) e gerencial, com sinal invertido no 2T26 — ceticismo obrigatório dado o histórico de 2020.\nGatilho de monitoramento: esclarecimento da divergência contábil/gerencial do 2T26 e mais 2-3 trimestres de histórico consistente pós-turnaround.\n\nFontes: StatusInvest, irbre.com, CVM, DOJ/Kroll, Money Times — 25/08/2026",
+    "blocoCopiavel": "🔴 IRBR3 — ACIMA DO TETO (★☆☆☆☆)\nSetor: Resseguros | Motor de valuation: P/VP × ROE (base contábil, conservadora)\nCotação: R$ 51,16 | Preço Justo: R$ 25,23 (contábil) a R$ 57,75 (gerencial) | Preço justo: R$ 31,90 | Margem: -138,5%\nPrêmio s/ Selic 12m: -61,18pp (FALHA)\nRetorno Real 12m: -49,42% | Retorno Real 5a: -17,6% | Selic Real 5a: 9,09% | Diversifica? NÃO (financeiro, + risco idiossincrático de fraude contábil 2020)\nP/L: — (proibido para resseguradoras; P/L médio de ciclo informativo ~12,4x-12,7x) | ROE: 4,5% (contábil) / ~22% (gerencial, ⚠️ divergência é a tese) | DY: 3,5% (mínimo estatutário) | Origem: dividendo recém-retomado, sem margem de segurança testável\n\nTese em uma frase: Turnaround real está em andamento, mas o histórico é curto e o trimestre mais recente trouxe o maior red flag contábil da análise — dispersão de valuation de quase 130% entre a leitura conservadora e a otimista.\nMaior risco: divergência entre lucro contábil (IFRS) e gerencial, com sinal invertido no 2T26 — ceticismo obrigatório dado o histórico de 2020.\nGatilho de monitoramento: esclarecimento da divergência contábil/gerencial do 2T26 e mais 2-3 trimestres de histórico consistente pós-turnaround.\n\nFontes: StatusInvest, irbre.com, CVM, DOJ/Kroll, Money Times — 25/08/2026",
     "ressalvas": "⚠️ Esta é a análise de MAIOR incerteza do dashboard — dispersão de valuation de 128,9% entre a base contábil e a gerencial. ⚠️ ROE gerencial (~22%) e patrimônio ajustado (R$2,7bi) são calculados/derivados por este relatório a partir de dados parciais — não são números diretamente publicados de forma consolidada pela empresa. ⚠️ Ações em tesouraria, free float exato, CSM (IFRS 17) e run-off de sinistros de anos anteriores não encontrados. ⚠️ Guidance numérico oficial de lucro/ROE não encontrado. ⚠️ Rating de crédito atual (AM Best) não confirmado com nota e outlook específicos nesta pesquisa. ⚠️ Metodologia exata por trás do salto do índice de solvência (183%→316%) não confirmada. ⚠️ Status atual do processo individual contra Fernando Passos (ex-CFO) nos EUA não confirmado.",
     "veredicto": {
       "emoji": "🔴",
@@ -4871,21 +4931,22 @@
       "nota": "Consenso de mercado agregado (Bloomberg/Refinitiv) para 2026 não foi encontrado nesta pesquisa — os 3 cenários são estimativa própria a partir do lucro 2025 e do guidance oficial de carteira/margem financeira."
     },
     "valuation": {
+      "criterio": "P/L",
       "metodos": [
         {
-          "metodo": "P/VP × ROE — VPA R$19,00 (derivado de cotação ÷ P/VP de ITUB3, convergente com agregadores R$19,02-19,75) × P/VP justo (22,45%-8%)/(16%-8%) = 1,81x",
-          "precoJusto": 34.32
-        },
-        {
-          "metodo": "Gordon (DDM) — LPA LTM R$4,25 × payout 73,67% = DPS R$3,13 ÷ (16%-8%)",
-          "precoJusto": 39.1
+          "metodo": "LPA projetado 2026 R$ 5,16 × P/L 9,39x",
+          "precoJusto": "R$ 48,47"
         }
       ],
-      "dispersaoPct": 13.9,
-      "dispersaoLeitura": "Dispersão de 13,9% — boa (≤15%), os dois métodos convergem. Convicção alta (★★★★★).",
-      "precoJusto": 36.71,
-      "precoTeto": 31.2,
-      "nota": "Preço justo = média dos 2 métodos. Preço teto = preço justo × 0,85. Este preço-justo é calculado sobre a base de ITUB3 (ON) — aplicar o mesmo motor sobre ITUB4 (PN, mais barata) resultaria em número parecido em termos absolutos (mesmo VPA/LPA), mas a margem de segurança seria maior por partir de um preço de entrada mais baixo."
+      "origemMult": "a média entre o P/L mediano da própria empresa ao longo de 6 anos (10,00x) e o dos 8 pares do grupo FIN (8,79x)",
+      "precoJusto": "R$ 48,47",
+      "verificacao": [
+        {
+          "metodo": "VPA R$ 19,49 × P/VP 1,89x",
+          "precoJusto": "R$ 36,77"
+        }
+      ],
+      "nota": "Método ÚNICO: P/L. O preço justo é o fundamento projetado multiplicado pelo múltiplo que a empresa deve negociar — não é média nem mediana de métodos diferentes. Os 1 método(s) de verificação abaixo são calculados para comparação e NÃO entram na conta. Mesmo número da coluna Preço Justo do Radar, gerado pela mesma fonte (analise/tetos.json). Ver METODOLOGIA_ANALISE.md seção 31."
     },
     "retornoTotal": {
       "doze": {
@@ -4965,7 +5026,7 @@
       "Correlação com a concentração em financeiros já elevada da carteira (BBAS3, BBSE3, CXSE3, IRBR3)."
     ],
     "encaixeCarteira": "ITUB3 não é uma posição existente identificada na carteira do Luiz (a metodologia cita ITUB3 no contexto de concentração em financeiros — se já fizer parte da carteira, tratar esta análise como reavaliação; se for consideração de novo aporte, o veredicto abaixo já desaconselha). A concentração em financeiros da carteira já é de ~50% (BBAS3, ITUB3, BBSE3, CXSE3, IRBR3) — qualquer novo aporte em ITUB3 aprofunda essa concentração, não diversifica. Com veredicto 🔴 acima do teto e o spread ON/PN penalizando especificamente esta classe de ação, a recomendação é NÃO aportar em ITUB3 no preço atual — se a tese em Itaú for atrativa, ITUB4 (PN) oferece o mesmo negócio subjacente a um preço mais baixo, reduzindo a distância até o preço-teto.",
-    "blocoCopiavel": "🔴 ITUB3 — ACIMA DO TETO (★★★★★)\nSetor: Bancos | Motor de valuation: P/VP × ROE + Gordon\nCotação: R$ 41,66 | Preço Justo: R$ 36,71 | Preço-teto: R$ 31,20 | Margem: -33,5%\nPrêmio s/ Selic 12m: -18,37pp (FALHA)\nRetorno Real 12m: -8,45% | Retorno Real 5a: 7,29% | Selic Real 5a: 9,09% | Diversifica? NÃO (financeiro, ~50% da carteira)\nP/L: 9,8x | ROE: 22,45% (recorrente 24,3%) | DY sustentável: 7,51% | Origem do excedente: —\n\nTese em uma frase: banco de altíssima qualidade (ROE 22-24%), mas ITUB3 (ON) paga um ágio de +7,57% sobre ITUB4 sem diferença de fundamentos — parte do preço não vem do resultado.\nMaior risco: compressão do spread ON/PN penalizaria especificamente esta classe, independentemente do desempenho do banco.\nGatilho de monitoramento: convergência do spread ON/PN e confirmação/série histórica completa do ROE recorde.\n\nFontes: DadosDeMercado, StatusInvest, Itaú RI — 25/08/2026",
+    "blocoCopiavel": "🔴 ITUB3 — ACIMA DO TETO (★★★★★)\nSetor: Bancos | Motor de valuation: P/VP × ROE + Gordon\nCotação: R$ 41,66 | Preço Justo: R$ 36,71 | Preço justo: R$ 48,47 | Margem: -33,5%\nPrêmio s/ Selic 12m: -18,37pp (FALHA)\nRetorno Real 12m: -8,45% | Retorno Real 5a: 7,29% | Selic Real 5a: 9,09% | Diversifica? NÃO (financeiro, ~50% da carteira)\nP/L: 9,8x | ROE: 22,45% (recorrente 24,3%) | DY sustentável: 7,51% | Origem do excedente: —\n\nTese em uma frase: banco de altíssima qualidade (ROE 22-24%), mas ITUB3 (ON) paga um ágio de +7,57% sobre ITUB4 sem diferença de fundamentos — parte do preço não vem do resultado.\nMaior risco: compressão do spread ON/PN penalizaria especificamente esta classe, independentemente do desempenho do banco.\nGatilho de monitoramento: convergência do spread ON/PN e confirmação/série histórica completa do ROE recorde.\n\nFontes: DadosDeMercado, StatusInvest, Itaú RI — 25/08/2026",
     "ressalvas": "⚠️ Preço-alvo de analistas encontrados são todos referenciados a ITUB4 (PN), não a ITUB3 — nenhuma casa com preço-alvo específico para a ON foi localizada. ⚠️ Ações em tesouraria (valor exato), free float numérico preciso, e a política formal de dividendos (texto oficial) não foram encontrados. ⚠️ Divergência de patrimônio líquido entre Fact Sheet (R$200bi) e StatusInvest (R$218bi) não resolvida — pode ser apenas defasagem de trimestre. ⚠️ Divergência entre 'CET1' (12,3%) e 'Índice de Capital Nível I' (13,4%) entre fontes/trimestres não confirmada como mesma métrica. ⚠️ Consenso de mercado formal (Bloomberg/Refinitiv) para lucro 2026/2027 não encontrado — os cenários de projeção são estimativa própria.",
     "veredicto": {
       "emoji": "🔴",
@@ -5162,21 +5223,12 @@
       "nota": "⚠️ Guidance numérico oficial da companhia para 2026/2027 não encontrado no release do 2T26. Cenários construídos a partir do EBITDA recorrente projetado pela XP (R$4,4bi) e do EBITDA trimestral anualizado (R$1,27bi × 4 ≈ R$5,08bi) — pequena divergência entre as duas bases, tratada como faixa."
     },
     "valuation": {
-      "metodos": [
-        {
-          "metodo": "EV/EBITDA atual de mercado (5,87x) aplicado ao EBITDA recorrente projetado XP (R$4,4bi) — EV justo R$25,83bi; Preço justo = (EV − Dívida líquida R$11,5bi) ÷ 714,19mi ações",
-          "precoJusto": 20.06
-        },
-        {
-          "metodo": "Preço-alvo XP (fim de 2027, TIR real 13%) trazido a valor presente aproximado para 12 meses",
-          "precoJusto": 30.5
-        }
-      ],
-      "dispersaoPct": 52.0,
-      "dispersaoLeitura": "Dispersão de 52% — alta (>35%). O método 1 (múltiplo atual de mercado sobre EBITDA projetado) reflete o quanto o mercado já paga hoje; o método 2 (preço-alvo XP para 2027, trazido a 12m) embute reprecificação de múltiplo que ainda não aconteceu. Não escolher um método — a divergência reflete a incerteza real de uma empresa com apenas 3,5 meses de histórico como listada.",
-      "precoJusto": 24.6,
-      "precoTeto": 20.91,
-      "nota": "Preço justo = média simples dos 2 métodos, dada a alta dispersão e a falta de histórico para validar qual método é mais confiável. Preço teto = preço justo × 0,85. Diferente das outras análises desta rodada, aqui o preço-teto (R$20,91) fica muito próximo da cotação atual (R$21,55) — reflexo direto da recém-listagem e da falta de série histórica para maior precisão."
+      "criterio": "—",
+      "metodos": [],
+      "origemMult": "",
+      "precoJusto": null,
+      "verificacao": [],
+      "nota": "SEM PREÇO JUSTO. RECUSADO: o método que decide esta linha (P/L) rodou sobre menos de 3 exercícios comparáveis, então não há amplitude observada — só um ponto. Um ponto não descreve quanto a empresa deveria valer; descreve um ano. O que existe de real sobre a empresa continua nas outras colunas (L/P, ROE, dívida, crescimento)."
     },
     "retornoTotal": {
       "doze": {
@@ -5460,29 +5512,30 @@
       "nota": "⚠️ Guidance financeiro formal da companhia para 2026 não encontrado. Cenários construídos a partir do NOI 2T26 anualizado (R$529,9mi × 4) e do SSR/pipeline reportados nos releases trimestrais."
     },
     "valuation": {
+      "criterio": "P/FFO",
       "metodos": [
         {
-          "metodo": "Cap rate mercado (9,4% — mesma referência de transações reais usada em ALOS3): Valor ativos = NOI anualizado R$2,12bi ÷ 9,4%; Preço justo = (Valor ativos − Dívida líquida) ÷ ações",
-          "precoJusto": 35.08
-        },
-        {
-          "metodo": "Cap rate normalizado (10,9% — +150bps prêmio de liquidez de bolsa, mesma referência ALOS3)",
-          "precoJusto": 29.04
-        },
-        {
-          "metodo": "P/FFO pares (10,2x — média de ALOS3 10,0x e IGTI11 10,4x, excluindo o próprio múltiplo de MULT3) × FFO/ação LTM R$3,22",
-          "precoJusto": 32.81
-        },
-        {
-          "metodo": "Bazin (dividendo sustentável R$1,35 ÷ 9,0% exigido, mesma referência ALOS3)",
-          "precoJusto": 15.0
+          "metodo": "FFO por papel projetado R$ 3,70 × P/FFO 9,43x",
+          "precoJusto": "R$ 34,94"
         }
       ],
-      "dispersaoPct": 133.9,
-      "dispersaoLeitura": "Dispersão de 133,9% — alta (>35%), puxada para baixo pelo Bazin (payout de apenas ~50% sobre o lucro, mais baixo que outros métodos capturam). Segue o mesmo padrão do caso ALOS3: 'Bazin pune o fato de o payout ser mais baixo que a geração de caixa real'. Preço-justo pondera os 2 métodos mais robustos (cap rate normalizado + P/FFO pares).",
-      "precoJusto": 30.93,
-      "precoTeto": 26.29,
-      "nota": "Preço justo = média simples de cap rate normalizado (R$29,04) e P/FFO pares (R$32,81) — os 2 métodos mais robustos, seguindo o mesmo critério de ponderação usado em ALOS3. Preço teto = preço justo × 0,85."
+      "origemMult": "o P/FFO mediano da própria empresa ao longo de 5 anos (9,43x) — o grupo SHOP não tem 3 pares para comparar",
+      "precoJusto": "R$ 34,94",
+      "verificacao": [
+        {
+          "metodo": "LPA projetado 2026 R$ 2,74 × P/L 10,13x",
+          "precoJusto": "R$ 27,80"
+        },
+        {
+          "metodo": "VPA R$ 13,44 × P/VP 2,23x",
+          "precoJusto": "R$ 29,97"
+        },
+        {
+          "metodo": "receita R$ 3,2 bi × EV/Receita 6,99x − dívida líquida R$ 4,6 bi, ÷ 520 mi papéis",
+          "precoJusto": "R$ 34,18"
+        }
+      ],
+      "nota": "Método ÚNICO: P/FFO. O preço justo é o fundamento projetado multiplicado pelo múltiplo que a empresa deve negociar — não é média nem mediana de métodos diferentes. Os 3 método(s) de verificação abaixo são calculados para comparação e NÃO entram na conta. Mesmo número da coluna Preço Justo do Radar, gerado pela mesma fonte (analise/tetos.json). Ver METODOLOGIA_ANALISE.md seção 31."
     },
     "retornoTotal": {
       "doze": {
@@ -5562,7 +5615,7 @@
       "Payout relativamente baixo (~27% sobre FFO) mantém o DY corrente modesto — a tese depende mais de valorização/reprecificação do que de renda."
     ],
     "encaixeCarteira": "MULT3 não é uma posição existente na carteira do Luiz. A metodologia da carteira cita explicitamente o setor imobiliário como 'genuinamente diversificante' (receita indexada à inflação, descorrelacionada do ciclo de crédito) — MULT3 reduziria a concentração de ~50% em financeiros, ao contrário de ITUB3/BMEB4 nesta mesma rodada. Com veredicto 🟡 Aguardar (cotação muito próxima do preço-teto, margem de apenas -2,2%) e prêmio positivo sobre a Selic em 12 meses (+6,18pp), MULT3 é uma das candidatas mais interessantes desta rodada para diversificação — mas o retorno real de 5 anos ainda fica abaixo da Selic real, então o tamanho da posição deveria refletir isso.",
-    "blocoCopiavel": "🟡 MULT3 — AGUARDAR (★☆☆☆☆)\nSetor: Shoppings/Imobiliário | Motor de valuation: Cap rate (NAV)\nCotação: R$ 26,86 | Preço Justo: R$ 30,93 | Preço-teto: R$ 26,29 | Margem: -2,2%\nPrêmio s/ Selic 12m: +6,18pp\nRetorno Real 12m: +15,01% | Retorno Real 5a: 6,84% | Selic Real 5a: 9,09% | Diversifica? SIM (imobiliário)\nP/L: — | ROE: — | DY sustentável: 5,03% | Origem do excedente: —\n\nTese em uma frase: melhor portfólio de shoppings do setor (ocupação recorde, desalavancagem consistente), mas o mercado já paga um prêmio por essa qualidade — margem de segurança apertada na cotação atual.\nMaior risco: comparações de lucro 'sujas' nos próximos trimestres por causa do crédito tributário não recorrente do 2T26.\nGatilho de monitoramento: normalização do lucro contábil no 3T26/4T26 e ritmo de entrega do pipeline de expansão (~13.000m² até o 4T26).\n\nFontes: StatusInvest, RI Multiplan, Investalk, XP — 25/08/2026",
+    "blocoCopiavel": "🟡 MULT3 — AGUARDAR (★☆☆☆☆)\nSetor: Shoppings/Imobiliário | Motor de valuation: Cap rate (NAV)\nCotação: R$ 26,86 | Preço Justo: R$ 30,93 | Preço justo: R$ 34,94 | Margem: -2,2%\nPrêmio s/ Selic 12m: +6,18pp\nRetorno Real 12m: +15,01% | Retorno Real 5a: 6,84% | Selic Real 5a: 9,09% | Diversifica? SIM (imobiliário)\nP/L: — | ROE: — | DY sustentável: 5,03% | Origem do excedente: —\n\nTese em uma frase: melhor portfólio de shoppings do setor (ocupação recorde, desalavancagem consistente), mas o mercado já paga um prêmio por essa qualidade — margem de segurança apertada na cotação atual.\nMaior risco: comparações de lucro 'sujas' nos próximos trimestres por causa do crédito tributário não recorrente do 2T26.\nGatilho de monitoramento: normalização do lucro contábil no 3T26/4T26 e ritmo de entrega do pipeline de expansão (~13.000m² até o 4T26).\n\nFontes: StatusInvest, RI Multiplan, Investalk, XP — 25/08/2026",
     "ressalvas": "⚠️ Cap rate implícito (~11,4%) é estimativa própria — a empresa não divulga cap rate/NAV oficial nas fontes consultadas. ⚠️ Série histórica anual de FFO (2021-2025), AFFO e vendas/NOI por m² em valores absolutos não encontradas. ⚠️ Dividend yield diverge bastante entre fontes (2,12% a 4,90% dependendo da janela) — usado o valor calculado a partir de distribuições recentes (5,03% sustentável). ⚠️ Preço-alvo do BTG Pactual não foi acessado (paywall). ⚠️ Guidance financeiro formal para 2026 não encontrado. ⚠️ Release oficial completo em ri.multiplan.com.br e ITR na CVM não foram acessados diretamente — todos os números vêm de casas de análise/imprensa que citam essas fontes primárias.",
     "veredicto": {
       "emoji": "🟡",
@@ -5763,21 +5816,22 @@
       "nota": "⚠️ Não há guidance oficial da empresa. O cenário otimista replica a projeção da Safra, que pressupõe expansão de ROE muito acima do atual sem confirmação de qualidade de carteira (Bloco 4 vazio) — tratar com cautela."
     },
     "valuation": {
+      "criterio": "P/L",
       "metodos": [
         {
-          "metodo": "P/VP × ROE — P/VP justo = (26,7%-8%)/(16%-8%) = 2,34x × VPA R$24,77 (g financeiro padrão)",
-          "precoJusto": 57.9
-        },
-        {
-          "metodo": "Gordon (DDM) — DPS R$1,82 (payout 27,82% × LPA R$6,55) ÷ (16%-8%), g financeiro padrão",
-          "precoJusto": 22.77
+          "metodo": "LPA projetado 2026 R$ 7,31 × P/L 9,01x",
+          "precoJusto": "R$ 65,83"
         }
       ],
-      "dispersaoPct": 154.3,
-      "dispersaoLeitura": "Dispersão de 154,3% — extremamente alta (>>35%). A causa raiz: com payout de apenas 27,82% e ROE de 26,7%, a taxa de crescimento sustentável implícita pela retenção de capital (≈19,3% a.a.) é muito maior que o g padrão de 8% usado no Gordon, fazendo esse método subestimar o valor. Pela regra da metodologia, não se escolhe um método — a divergência é a tese. Dado o histórico de dados não confiáveis (Descobertas) e a ausência total dos indicadores prudenciais, esta análise usa a média geométrica (mais conservadora que a aritmética para dispersões extremas) como preço-justo, não a média simples.",
-      "precoJusto": 36.3,
-      "precoTeto": 30.86,
-      "nota": "Preço justo = média geométrica dos 2 métodos (√(57,90×22,77) ≈ 36,30), escolhida por prudência dada a dispersão extrema e a qualidade de dados ruim. Preço teto = preço justo × 0,85. Este é o método de valuation de menor confiança entre todas as análises já feitas para a carteira."
+      "origemMult": "a média entre o P/L mediano da própria empresa ao longo de 6 anos (8,46x) e o dos 8 pares do grupo FIN (9,55x)",
+      "precoJusto": "R$ 65,83",
+      "verificacao": [
+        {
+          "metodo": "VPA R$ 26,44 × P/VP 2,90x",
+          "precoJusto": "R$ 76,59"
+        }
+      ],
+      "nota": "Método ÚNICO: P/L. O preço justo é o fundamento projetado multiplicado pelo múltiplo que a empresa deve negociar — não é média nem mediana de métodos diferentes. Os 1 método(s) de verificação abaixo são calculados para comparação e NÃO entram na conta. Mesmo número da coluna Preço Justo do Radar, gerado pela mesma fonte (analise/tetos.json). Ver METODOLOGIA_ANALISE.md seção 31."
     },
     "retornoTotal": {
       "doze": {
@@ -5857,7 +5911,7 @@
       "Projeções otimistas de Safra/XP (ROE 40%+) não foram confirmadas por guidance oficial nem por indicadores prudenciais independentes."
     ],
     "encaixeCarteira": "BMEB4 não é uma posição existente na carteira do Luiz. Diferente de ITUB3 (grande banco diversificado, altamente correlacionado ao ciclo de crédito nacional), BMEB4 é um banco pequeno e familiar com foco em nicho de crédito consignado INSS — a correlação com as posições financeiras já existentes (BBAS3, ITUB3, BBSE3, CXSE3, IRBR3) é menor, mas ainda compartilha o mesmo ciclo macro de juros/crédito, então a diversificação é apenas Parcial, não real. Dado o veredicto 🔴 acima do teto com convicção mínima (★☆☆☆☆), a dispersão extrema de valuation, a ausência dos indicadores prudenciais e a liquidez baixíssima, a recomendação é NÃO aportar em BMEB4 no momento — mesmo que a tese otimista de XP/Safra se confirme, a falta de dados de qualidade e a dificuldade de saída tornam este o papel de maior risco desta rodada de análises.",
-    "blocoCopiavel": "🔴 BMEB4 — ACIMA DO TETO (★☆☆☆☆)\nSetor: Bancos | Motor de valuation: P/VP × ROE + Gordon\nCotação: R$ 60,40 | Preço Justo: R$ 36,30 | Preço-teto: R$ 30,86 | Margem: -95,7%\nPrêmio s/ Selic 12m: -50,88pp (FALHA)\nRetorno Real 12m: -39,60% | Retorno Real 5a: -2,92% | Selic Real 5a: 9,09% | Diversifica? PARCIAL (nicho de consignado, correlação menor com grandes bancos)\nP/L: 9,4x-12,2x (divergente) | ROE: 26,7% | DY sustentável: 3,02% | Origem do excedente: —\n\nTese em uma frase: ROE elevado e cobertura otimista de XP/Safra, mas a pior qualidade de dados de toda a carteira (indicadores prudenciais ausentes) e liquidez baixíssima pedem cautela extrema.\nMaior risco: impossibilidade de confirmar a qualidade da carteira de crédito por trás do ROE (CET1, inadimplência, custo de crédito e eficiência não encontrados em nenhuma fonte).\nGatilho de monitoramento: divulgação dos indicadores prudenciais completos (ITR 2T26/3T26) e confirmação independente das projeções de Safra/XP.\n\nFontes: StatusInvest, Fundamentus, Dados de Mercado, InfoMoney — 25/08/2026",
+    "blocoCopiavel": "🔴 BMEB4 — ACIMA DO TETO (★☆☆☆☆)\nSetor: Bancos | Motor de valuation: P/VP × ROE + Gordon\nCotação: R$ 60,40 | Preço Justo: R$ 36,30 | Preço justo: R$ 65,83 | Margem: -95,7%\nPrêmio s/ Selic 12m: -50,88pp (FALHA)\nRetorno Real 12m: -39,60% | Retorno Real 5a: -2,92% | Selic Real 5a: 9,09% | Diversifica? PARCIAL (nicho de consignado, correlação menor com grandes bancos)\nP/L: 9,4x-12,2x (divergente) | ROE: 26,7% | DY sustentável: 3,02% | Origem do excedente: —\n\nTese em uma frase: ROE elevado e cobertura otimista de XP/Safra, mas a pior qualidade de dados de toda a carteira (indicadores prudenciais ausentes) e liquidez baixíssima pedem cautela extrema.\nMaior risco: impossibilidade de confirmar a qualidade da carteira de crédito por trás do ROE (CET1, inadimplência, custo de crédito e eficiência não encontrados em nenhuma fonte).\nGatilho de monitoramento: divulgação dos indicadores prudenciais completos (ITR 2T26/3T26) e confirmação independente das projeções de Safra/XP.\n\nFontes: StatusInvest, Fundamentus, Dados de Mercado, InfoMoney — 25/08/2026",
     "ressalvas": "⚠️ Esta é a análise de PIOR qualidade de dados de toda a carteira — cotação, P/L, P/VP, patrimônio líquido e dividend yield divergem significativamente entre StatusInvest, Investidor10, Fundamentus e Dados de Mercado. ⚠️ Nenhum dos 4 indicadores prudenciais obrigatórios para bancos (CET1, inadimplência 90d, custo de crédito, eficiência) foi encontrado. ⚠️ Controlador (família Andrade de Araújo) identificado via Fundamentus, mas não confirmado em fonte primária (CVM/Formulário de Referência). ⚠️ Cotação BMEB3 (ON) não encontrada — spread ON/PN não pôde ser calculado. ⚠️ Lucro líquido de 2021 e NII/margem financeira em valor absoluto não encontrados. ⚠️ Recomenda-se fortemente re-confirmar todos os números contra o ITR do 2T26 na CVM antes de qualquer decisão de investimento neste papel.",
     "veredicto": {
       "emoji": "🔴",

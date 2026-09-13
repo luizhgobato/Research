@@ -115,7 +115,7 @@ function secHeader(r){
       </div>
       <div style="text-align:right;">
         <div class="rp-cotacao">${esc(r.cotacao)}</div>
-        <div style="font-size:11px;color:#aaa;margin-top:4px;">Preço teto ${esc(r.precoTeto)} · Máx 52s ${esc(r.max52||'—')} · Mín 52s ${esc(r.min52||'—')}</div>
+        <div style="font-size:11px;color:#aaa;margin-top:4px;">Preço justo ${esc(r.precoJusto||r.precoTeto||'—')} · Máx 52s ${esc(r.max52||'—')} · Mín 52s ${esc(r.min52||'—')}</div>
       </div>
     </div>`;
 }
@@ -186,23 +186,37 @@ function secProjecaoLucro(r){
     </div>`;
 }
 
+// ⚠️ REESCRITA EM 13/09/2026. Esta seção mostrava uma TABELA DE MÉTODOS, uma "dispersão"
+// entre eles e um "preço justo (ponderado)" — a arquitetura de consenso que o Radar abandonou.
+// O usuário abriu um relatório, leu "média dos 2 métodos" e disse: "eu já disse que não quero
+// dessa forma, você precisa entender o que estou pedindo e implementar".
+// Agora: UM método decide e aparece como conta; os demais aparecem separados e rotulados como
+// verificação que NÃO entra no cálculo. Ver METODOLOGIA_ANALISE.md seção 31.
 function secValuation(r){
   const v = r.valuation;
   if(!v) return '';
-  const rows = (v.metodos||[]).map(m=>`<tr><td>${esc(m.metodo)}</td><td class="rp-bold rp-mono">${esc(m.precoJusto)}</td></tr>`).join('');
-  const dispCls = v.dispersaoLeitura === 'ALTA' ? 'rp-tag-red' : v.dispersaoLeitura === 'MODERADA' ? 'rp-tag-yellow' : 'rp-tag-green';
+  const decide = (v.metodos||[])[0];
+  const verif = v.verificacao||[];
+  const linhasVerif = verif.map(m=>`<tr><td>${esc(m.metodo)}</td><td class="rp-mono">${esc(m.precoJusto)}</td></tr>`).join('');
   return `
     <div class="rp-section">
       <div class="rp-section-title">8 · Valuation</div>
-      <div class="rp-table-wrap"><table class="rp-table">
-        <thead><tr><th>Método</th><th>Preço justo</th></tr></thead>
-        <tbody>${rows}</tbody>
-      </table></div>
-      <div class="rp-info-grid" style="margin-top:1rem;">
-        <div class="rp-info-item"><div class="rp-info-label">Dispersão</div><div class="rp-info-value">${esc(v.dispersaoPct)} <span class="rp-tag ${dispCls}">${esc(v.dispersaoLeitura)}</span></div></div>
-        <div class="rp-info-item"><div class="rp-info-label">Preço justo (ponderado)</div><div class="rp-info-value">${esc(v.precoJusto)}</div></div>
-        <div class="rp-info-item"><div class="rp-info-label">Preço teto (margem seg.)</div><div class="rp-info-value">${esc(v.precoTeto)}</div></div>
+      ${decide ? `
+      <div class="rp-info-grid">
+        <div class="rp-info-item"><div class="rp-info-label">Critério</div><div class="rp-info-value">${esc(v.criterio||'—')}</div></div>
+        <div class="rp-info-item"><div class="rp-info-label">Preço justo</div><div class="rp-info-value">${esc(v.precoJusto||'—')}</div></div>
       </div>
+      <p class="rp-note" style="font-size:13px;color:#1a1a1a;margin-top:0.9rem;">
+        <strong>${esc(decide.metodo)} = ${esc(decide.precoJusto)}</strong>
+      </p>
+      ${v.origemMult ? `<p class="rp-note">O múltiplo é ${esc(v.origemMult)}.</p>` : ''}
+      ` : '<p class="rp-note">Sem preço justo calculável — ver a nota abaixo.</p>'}
+      ${verif.length ? `
+      <div class="rp-section-title" style="font-size:12px;margin-top:1.2rem;">Verificação — não entra na conta</div>
+      <div class="rp-table-wrap"><table class="rp-table">
+        <thead><tr><th>Outra régua</th><th>Daria</th></tr></thead>
+        <tbody>${linhasVerif}</tbody>
+      </table></div>` : ''}
       ${v.nota ? `<p class="rp-note">${esc(v.nota)}</p>` : ''}
     </div>`;
 }
@@ -232,18 +246,15 @@ function secRetornoTotal(r){
 
   const cotNum = _parseNumBR(r.cotacao);
   const precoJustoNum = _parseNumBR(v.precoJusto);
-  const precoTetoNum = _parseNumBR(v.precoTeto || r.precoTeto);
+  // Não existe mais "preço teto" no relatório: a segunda leitura de valor é a MARGEM DE
+  // SEGURANÇA contra o preço justo, exatamente como na coluna do Radar.
+  const margemPct = (cotNum && precoJustoNum) ? _fmtPct((precoJustoNum - cotNum)/precoJustoNum*100) : null;
 
   let valorJustoPct = null, valorJustoR$ = null;
   if(cotNum && precoJustoNum){
     valorJustoPct = _fmtPct((precoJustoNum/cotNum - 1) * 100);
     valorJustoR$ = _fmtR$(precoJustoNum - cotNum);
   }
-  let valorTetoR$ = null;
-  if(cotNum && precoTetoNum){
-    valorTetoR$ = _fmtR$(precoTetoNum - cotNum);
-  }
-
   // tenta achar o dividendo/ação (cenário base) na tabela embutida, se existir
   let divPorAcao = null;
   const linhasEmb = (rt.embutido && rt.embutido.tabelaProjecao) || [];
@@ -265,14 +276,14 @@ function secRetornoTotal(r){
         ${valorJustoR$ ? `<div class="rp-ganho-sub">${esc(valorJustoR$)}/ação · justo ${esc(v.precoJusto||'—')}</div>` : ''}
       </div>
       <div class="rp-ganho-item">
-        <div class="rp-ganho-label">🎯 Até o preço teto</div>
-        <div class="rp-ganho-value">${esc(doze.valorizacao || '—')}</div>
-        ${valorTetoR$ ? `<div class="rp-ganho-sub">${esc(valorTetoR$)}/ação · teto ${esc(v.precoTeto||r.precoTeto||'—')}</div>` : ''}
+        <div class="rp-ganho-label">🛡️ Margem de segurança</div>
+        <div class="rp-ganho-value">${esc(margemPct || '—')}</div>
+        <div class="rp-ganho-sub">(preço justo − cotação) ÷ preço justo</div>
       </div>
       <div class="rp-ganho-item rp-ganho-neutro">
         <div class="rp-ganho-label">🏆 Retorno total (12m)</div>
         <div class="rp-ganho-value">${esc(doze.total || '—')}</div>
-        <div class="rp-ganho-sub">dividendos + valorização até o teto</div>
+        <div class="rp-ganho-sub">dividendos + valorização até o preço justo</div>
       </div>
     </div>`;
 
@@ -454,9 +465,8 @@ function secVeredicto(r){
         <div class="rp-vf-item"><div class="rp-vf-label">Veredicto</div><div class="rp-vf-value ${v.class||''}">${esc(v.emoji)} ${esc(v.label)}</div></div>
         <div class="rp-vf-item"><div class="rp-vf-label">Convicção</div><div class="rp-vf-value yellow">${_convComNota(v.conviccao)}</div></div>
         <div class="rp-vf-item"><div class="rp-vf-label">Cotação</div><div class="rp-vf-value">${esc(v.cotacao)}</div></div>
-        <div class="rp-vf-item"><div class="rp-vf-label">Preço justo</div><div class="rp-vf-value">${esc(precoJusto||'—')}</div></div>
-        <div class="rp-vf-item"><div class="rp-vf-label">Preço teto</div><div class="rp-vf-value">${esc(v.precoTeto)}</div></div>
-        <div class="rp-vf-item"><div class="rp-vf-label">Margem de segurança (cotação → teto)</div><div class="rp-vf-value green">${esc(v.margem)}</div></div>
+        <div class="rp-vf-item"><div class="rp-vf-label">Preço justo</div><div class="rp-vf-value">${esc(precoJusto||v.precoJusto||'—')}</div></div>
+        <div class="rp-vf-item"><div class="rp-vf-label">Margem de segurança (cotação → preço justo)</div><div class="rp-vf-value green">${esc(v.margem)}</div></div>
         <div class="rp-vf-item"><div class="rp-vf-label">Retorno total projetado (12m)</div><div class="rp-vf-value yellow">${esc(retornoTotalProjetado||'—')}</div></div>
         <div class="rp-vf-item"><div class="rp-vf-label">DY projetado</div><div class="rp-vf-value yellow">${esc(v.dyProjetado||'—')}</div></div>
         <div class="rp-vf-item"><div class="rp-vf-label">P/L atual</div><div class="rp-vf-value">${_valComTip(v.plAtual, v.plAtualNota)}</div></div>

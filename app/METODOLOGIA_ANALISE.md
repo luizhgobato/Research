@@ -2213,3 +2213,43 @@ Honestidade sobre o custo da mudança:
 
 É o preço de ter um método com significado: ele pode dizer "não se aplica". A mediana nunca dizia,
 e era essa a aparência de robustez que a versão anterior vendia.
+
+### 31.7 Os relatórios embutidos passam a usar o mesmo motor
+
+O usuário abriu um relatório e leu, no bloco de valuation: *"Preço justo = média dos 2 métodos.
+Preço teto = preço justo × 0,85."* Resposta dele: *"eu já disse que não quero dessa forma, você
+precisa entender o que estou pedindo e implementar"*.
+
+Ele estava certo e o erro era meu: troquei o motor do **Radar** para método único e deixei os
+**14 relatórios** com o valuation antigo, escrito à mão em datas diferentes, cada um com sua
+média de métodos e sua margem de 15%. É a queixa que abriu esta linha de trabalho inteira — *"não
+faz sentido eu ter um valor no relatório e outro no radar"* — reaparecendo pelo outro lado.
+
+`scripts/gerar_relatorio_valuation.py` (novo) reescreve, em cada relatório, o bloco `valuation`,
+o preço do veredicto, o do cabeçalho e o número dentro do bloco colável, tudo a partir de
+`analise/tetos.json`. O `secValuation` de `js/navegacao.js` foi reescrito junto: sai a tabela de
+métodos com "dispersão" e "preço justo ponderado", entra o critério, a conta, a origem do
+múltiplo e uma tabela separada rotulada **"Verificação — não entra na conta"**.
+
+A prosa do relatório (tese, riscos, gatilhos, bloco de descobertas) **não** é tocada: aquilo é
+análise escrita com data e fonte declaradas, e regenerar texto de análise a partir de um JSON
+seria inventar.
+
+### 31.8 O bug que escondeu tudo isso: o `cp` manual
+
+Duas publicações seguidas saíram com a correção no repositório e a versão ANTIGA na tela do
+usuário. A causa não estava no motor nem no gerador:
+
+```
+app/scripts/build.py  →  app/exports/Analista Investimento standalone.html
+                              ↓  cp MANUAL, documentado só no README
+                         Analista Investimento.html   ← o que o GitHub Pages serve
+```
+
+Eu rodava `build.py`, via "OK", commitava e publicava — e o arquivo da raiz continuava no build
+de dois commits atrás. Nada quebrava, nenhum teste falhava, e a tooltip `"Justo = mediana dos 2
+métodos"` sobreviveu a duas correções que a tinham removido do motor.
+
+É a pior forma da falha de duas fontes de verdade que já apareceu quatro vezes neste projeto,
+porque aqui as duas fontes são o MESMO arquivo em dois caminhos. `build.py` agora escreve os dois
+de uma vez. **Passo manual em pipeline é passo que não existe.**

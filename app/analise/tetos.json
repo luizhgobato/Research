@@ -13,7 +13,7 @@
     "justo": 31.53,
     "papel": "principal",
     "conta": "FFO por papel projetado R$ 3.88 × P/FFO 8.13x",
-    "origemMult": "mediana da própria série (8.13x) — o grupo SHOP não tem 3 pares para comparar",
+    "origemMult": "o P/FFO mediano da própria empresa ao longo de 3 anos (8.13x) — o grupo SHOP não tem 3 pares para comparar",
     "faixa": [
      26.56,
      35.18
@@ -23,7 +23,7 @@
     "chave": "P/VP",
     "justo": 26.74,
     "papel": "verificação",
-    "conta": "P/VP 1.03x × VPA R$ 25.96 por papel",
+    "conta": "VPA R$ 25.96 × P/VP 1.03x",
     "faixa": [
      21.81,
      28.56
@@ -33,7 +33,7 @@
     "chave": "E/P",
     "justo": 32.06,
     "papel": "verificação",
-    "conta": "E/P: P/L 14.54x próprio (sem 3 pares no grupo SHOP) × LPA projetado R$ 2.20",
+    "conta": "LPA projetado 2026 R$ 2.20 × P/L 14.54x",
     "faixa": [
      28.51,
      35.69
@@ -43,7 +43,7 @@
     "chave": "EV/Receita",
     "justo": 32.6,
     "papel": "verificação",
-    "conta": "EV/Receita 6.96x próprio (sem 3 pares no grupo SHOP) × receita R$ 2.9 bi",
+    "conta": "receita R$ 2.9 bi × EV/Receita 6.96x − dívida líquida R$ 3.7 bi, ÷ 506 mi papéis",
     "faixa": [
      31.21,
      35.05
@@ -53,7 +53,7 @@
     "chave": "EV/EBITDA",
     "justo": 32.6,
     "papel": "verificação",
-    "conta": "EV/EBITDA 9.41x sobre EBITDA LTM (R$ 2.1 bi)",
+    "conta": "EBITDA LTM (R$ 2.1 bi) × EV/EBITDA 9.41x − dívida líquida R$ 3.7 bi, ÷ 506 mi papéis",
     "faixa": [
      30.35,
      33.87
@@ -91,7 +91,7 @@
     "justo": 19.31,
     "papel": "principal",
     "conta": "VPA R$ 13.04 × P/VP 1.48x",
-    "origemMult": "mediana dos 4 pares do grupo UTIL — a própria empresa não tem série utilizável",
+    "origemMult": "o múltiplo mediano dos 4 pares do grupo UTIL (1.48x) — a própria empresa não tem série utilizável",
     "faixa": [
      11.28,
      27.92
@@ -130,7 +130,7 @@
     "justo": 38.56,
     "papel": "principal",
     "conta": "LPA projetado 2026 R$ 4.28 × P/L 9.00x",
-    "origemMult": "média entre 8.45x da própria série e 9.55x dos 8 pares do grupo FIN",
+    "origemMult": "a média entre o P/L mediano da própria empresa ao longo de 6 anos (8.45x) e o dos 8 pares do grupo FIN (9.55x)",
     "faixa": [
      37.6,
      38.67
@@ -140,7 +140,7 @@
     "chave": "P/VP",
     "justo": 34.69,
     "papel": "verificação",
-    "conta": "P/VP 6.11x × VPA R$ 5.68 por papel",
+    "conta": "VPA R$ 5.68 × P/VP 6.11x",
     "faixa": [
      32.32,
      39.32
@@ -169,7 +169,7 @@
     "justo": 65.83,
     "papel": "principal",
     "conta": "LPA projetado 2026 R$ 7.31 × P/L 9.01x",
-    "origemMult": "média entre 8.46x da própria série e 9.55x dos 8 pares do grupo FIN",
+    "origemMult": "a média entre o P/L mediano da própria empresa ao longo de 6 anos (8.46x) e o dos 8 pares do grupo FIN (9.55x)",
     "faixa": [
      64.0,
      93.03
@@ -179,7 +179,7 @@
     "chave": "P/VP",
     "justo": 76.59,
     "papel": "verificação",
-    "conta": "P/VP 2.90x × VPA R$ 26.44 por papel",
+    "conta": "VPA R$ 26.44 × P/VP 2.90x",
     "faixa": [
      58.7,
      86.46
@@ -208,7 +208,7 @@
     "justo": 121.75,
     "papel": "principal",
     "conta": "LPA projetado 2026 R$ 5.05 × P/L 24.12x",
-    "origemMult": "média entre 39.45x da própria série e 8.79x dos 8 pares do grupo FIN",
+    "origemMult": "a média entre o P/L mediano da própria empresa ao longo de 6 anos (39.45x) e o dos 8 pares do grupo FIN (8.79x)",
     "faixa": [
      111.05,
      125.96
@@ -218,7 +218,7 @@
     "chave": "P/VP",
     "justo": 50.15,
     "papel": "verificação",
-    "conta": "P/VP 2.35x × VPA R$ 21.37 por papel",
+    "conta": "VPA R$ 21.37 × P/VP 2.35x",
     "faixa": [
      48.39,
      54.42
@@ -247,7 +247,7 @@
     "justo": 19.27,
     "papel": "principal",
     "conta": "preço justo de VALE3 R$ 66.75 × paridade 0.289",
-    "origemMult": "razão entre o preço de BRAP4 e o de VALE3 ao longo de 6 anos (0.289) — o desconto de holding que o mercado pratica",
+    "origemMult": "a razão entre o preço de BRAP4 e o de VALE3 ao longo de 6 anos (0.289) — o desconto de holding que o mercado pratica",
     "faixa": [
      18.76,
      19.67
@@ -257,7 +257,7 @@
     "chave": "E/P",
     "justo": 15.59,
     "papel": "verificação",
-    "conta": "E/P: P/L 14.95x próprio (sem 3 pares no grupo NAV) × LPA projetado R$ 1.04",
+    "conta": "LPA projetado 2026 R$ 1.04 × P/L 14.95x",
     "faixa": [
      10.68,
      16.51
@@ -267,7 +267,7 @@
     "chave": "P/FFO",
     "justo": 16.0,
     "papel": "verificação",
-    "conta": "P/FFO 14.32x próprio (sem 3 pares no grupo NAV) × FFO/papel projetado R$ 1.12",
+    "conta": "FFO por papel projetado R$ 1.12 × P/FFO 14.32x",
     "faixa": [
      11.06,
      16.61
@@ -277,7 +277,7 @@
     "chave": "P/VP",
     "justo": 21.55,
     "papel": "verificação",
-    "conta": "P/VP 1.02x × VPA R$ 21.06 por papel",
+    "conta": "VPA R$ 21.06 × P/VP 1.02x",
     "faixa": [
      19.69,
      24.11
@@ -306,7 +306,7 @@
     "justo": 31.56,
     "papel": "principal",
     "conta": "LPA projetado 2026 R$ 4.50 × P/L 7.01x",
-    "origemMult": "média entre 4.46x da própria série e 9.55x dos 8 pares do grupo FIN",
+    "origemMult": "a média entre o P/L mediano da própria empresa ao longo de 6 anos (4.46x) e o dos 8 pares do grupo FIN (9.55x)",
     "faixa": [
      26.16,
      37.11
@@ -316,7 +316,7 @@
     "chave": "P/VP",
     "justo": 14.83,
     "papel": "verificação",
-    "conta": "P/VP 0.47x × VPA R$ 31.23 por papel",
+    "conta": "VPA R$ 31.23 × P/VP 0.47x",
     "faixa": [
      14.68,
      14.99
@@ -345,7 +345,7 @@
     "justo": 153.56,
     "papel": "principal",
     "conta": "LPA projetado 2026 R$ 19.43 × P/L 7.90x",
-    "origemMult": "média entre 5.82x da própria série e 9.98x dos 4 pares do grupo UTIL",
+    "origemMult": "a média entre o P/L mediano da própria empresa ao longo de 6 anos (5.82x) e o dos 4 pares do grupo UTIL (9.98x)",
     "faixa": [
      135.09,
      167.15
@@ -355,7 +355,7 @@
     "chave": "P/VP",
     "justo": 143.87,
     "papel": "verificação",
-    "conta": "P/VP 1.11x × VPA R$ 130.00 por papel",
+    "conta": "VPA R$ 130.00 × P/VP 1.11x",
     "faixa": [
      133.9,
      159.9
@@ -365,7 +365,7 @@
     "chave": "P/FFO",
     "justo": 155.54,
     "papel": "verificação",
-    "conta": "P/FFO 4.56x = média entre 4.35x próprio e 4.77x dos 4 pares UTIL × FFO/papel projetado R$ 34.09",
+    "conta": "FFO por papel projetado R$ 34.09 × P/FFO 4.56x",
     "faixa": [
      129.94,
      161.83
@@ -375,7 +375,7 @@
     "chave": "EV/Receita",
     "justo": 291.69,
     "papel": "verificação",
-    "conta": "EV/Receita 1.31x = média entre 0.77x próprio e 1.86x dos 4 pares UTIL × receita R$ 12.5 bi",
+    "conta": "receita R$ 12.5 bi × EV/Receita 1.31x − dívida líquida R$ 5.2 bi, ÷ 39 mi papéis",
     "faixa": [
      266.28,
      337.47
@@ -404,7 +404,7 @@
     "justo": 46.76,
     "papel": "principal",
     "conta": "LPA projetado 2026 R$ 5.14 × P/L 9.10x",
-    "origemMult": "média entre 8.21x da própria série e 9.98x dos 4 pares do grupo UTIL",
+    "origemMult": "a média entre o P/L mediano da própria empresa ao longo de 6 anos (8.21x) e o dos 4 pares do grupo UTIL (9.98x)",
     "faixa": [
      46.05,
      49.21
@@ -414,7 +414,7 @@
     "chave": "P/FFO",
     "justo": 37.01,
     "papel": "verificação",
-    "conta": "P/FFO 4.91x = média entre 5.74x próprio e 4.08x dos 4 pares UTIL × FFO/papel projetado R$ 7.54",
+    "conta": "FFO por papel projetado R$ 7.54 × P/FFO 4.91x",
     "faixa": [
      32.59,
      39.26
@@ -424,7 +424,7 @@
     "chave": "P/VP",
     "justo": 43.97,
     "papel": "verificação",
-    "conta": "P/VP 2.14x × VPA R$ 20.55 por papel",
+    "conta": "VPA R$ 20.55 × P/VP 2.14x",
     "faixa": [
      42.99,
      45.41
@@ -434,7 +434,7 @@
     "chave": "EV/EBITDA",
     "justo": 44.85,
     "papel": "verificação",
-    "conta": "EV/EBITDA 5.80x sobre EBITDA LTM (R$ 13.7 bi)",
+    "conta": "EBITDA LTM (R$ 13.7 bi) × EV/EBITDA 5.80x − dívida líquida R$ 27.6 bi, ÷ 1,2 bi papéis",
     "faixa": [
      36.19,
      47.1
@@ -444,7 +444,7 @@
     "chave": "EV/Receita",
     "justo": 47.52,
     "papel": "verificação",
-    "conta": "EV/Receita 1.80x = média entre 1.75x próprio e 1.86x dos 4 pares UTIL × receita R$ 45.6 bi",
+    "conta": "receita R$ 45.6 bi × EV/Receita 1.80x − dívida líquida R$ 27.6 bi, ÷ 1,2 bi papéis",
     "faixa": [
      47.0,
      48.52
@@ -473,7 +473,7 @@
     "justo": 15.48,
     "papel": "principal",
     "conta": "LPA projetado 2026 R$ 1.52 × P/L 10.20x",
-    "origemMult": "média entre 11.62x da própria série e 8.79x dos 8 pares do grupo FIN",
+    "origemMult": "a média entre o P/L mediano da própria empresa ao longo de 6 anos (11.62x) e o dos 8 pares do grupo FIN (8.79x)",
     "faixa": [
      14.75,
      16.74
@@ -483,7 +483,7 @@
     "chave": "P/VP",
     "justo": 17.18,
     "papel": "verificação",
-    "conta": "P/VP 3.72x × VPA R$ 4.62 por papel",
+    "conta": "VPA R$ 4.62 × P/VP 3.72x",
     "faixa": [
      16.07,
      18.22
@@ -493,7 +493,7 @@
     "chave": "P/FFO",
     "justo": 18.4,
     "papel": "verificação",
-    "conta": "P/FFO 11.46x próprio (sem 3 pares no grupo FIN) × FFO/papel projetado R$ 1.61",
+    "conta": "FFO por papel projetado R$ 1.61 × P/FFO 11.46x",
     "faixa": [
      17.59,
      20.12
@@ -522,7 +522,7 @@
     "justo": 6.66,
     "papel": "principal",
     "conta": "LPA projetado 2026 R$ 0.72 × P/L 9.28x",
-    "origemMult": "média entre 8.93x da própria série e 9.62x dos 4 pares do grupo UTIL",
+    "origemMult": "a média entre o P/L mediano da própria empresa ao longo de 5 anos (8.93x) e o dos 4 pares do grupo UTIL (9.62x)",
     "faixa": [
      6.3,
      7.07
@@ -532,7 +532,7 @@
     "chave": "P/VP",
     "justo": 5.28,
     "papel": "verificação",
-    "conta": "P/VP 1.73x × VPA R$ 3.06 por papel",
+    "conta": "VPA R$ 3.06 × P/VP 1.73x",
     "faixa": [
      4.27,
      6.04
@@ -542,7 +542,7 @@
     "chave": "EV/Receita",
     "justo": 5.63,
     "papel": "verificação",
-    "conta": "EV/Receita 1.85x = média entre 1.93x próprio e 1.77x dos 4 pares UTIL × receita R$ 1.3 bi",
+    "conta": "receita R$ 1.3 bi × EV/Receita 1.85x − dívida líquida R$ 0.4 bi, ÷ 364 mi papéis",
     "faixa": [
      4.62,
      6.31
@@ -552,7 +552,7 @@
     "chave": "P/FFO",
     "justo": 7.15,
     "papel": "verificação",
-    "conta": "P/FFO 4.32x = média entre 3.61x próprio e 5.04x dos 4 pares UTIL × FFO/papel projetado R$ 1.65",
+    "conta": "FFO por papel projetado R$ 1.65 × P/FFO 4.32x",
     "faixa": [
      6.62,
      7.71
@@ -581,7 +581,7 @@
     "justo": 20.52,
     "papel": "principal",
     "conta": "LPA projetado 2026 R$ 1.36 × P/L 15.05x",
-    "origemMult": "mediana da própria série (15.05x) — o grupo IND não tem 3 pares para comparar",
+    "origemMult": "o P/L mediano da própria empresa ao longo de 4 anos (15.05x) — o grupo IND não tem 3 pares para comparar",
     "faixa": [
      19.19,
      22.17
@@ -591,7 +591,7 @@
     "chave": "P/VP",
     "justo": 17.76,
     "papel": "verificação",
-    "conta": "P/VP 1.69x × VPA R$ 10.51 por papel",
+    "conta": "VPA R$ 10.51 × P/VP 1.69x",
     "faixa": [
      16.05,
      18.94
@@ -601,7 +601,7 @@
     "chave": "EV/Receita",
     "justo": 21.83,
     "papel": "verificação",
-    "conta": "EV/Receita 1.76x próprio (sem 3 pares no grupo IND) × receita R$ 8.8 bi",
+    "conta": "receita R$ 8.8 bi × EV/Receita 1.76x − dívida líquida R$ 3.5 bi, ÷ 547 mi papéis",
     "faixa": [
      20.88,
      22.84
@@ -611,7 +611,7 @@
     "chave": "EV/EBITDA",
     "justo": 21.87,
     "papel": "verificação",
-    "conta": "EV/EBITDA 6.86x sobre EBITDA LTM (R$ 2.3 bi)",
+    "conta": "EBITDA LTM (R$ 2.3 bi) × EV/EBITDA 6.86x − dívida líquida R$ 3.5 bi, ÷ 547 mi papéis",
     "faixa": [
      20.91,
      23.17
@@ -621,7 +621,7 @@
     "chave": "P/FFO",
     "justo": 22.38,
     "papel": "verificação",
-    "conta": "P/FFO 6.08x próprio (sem 3 pares no grupo IND) × FFO/papel projetado R$ 3.68",
+    "conta": "FFO por papel projetado R$ 3.68 × P/FFO 6.08x",
     "faixa": [
      19.55,
      26.7
@@ -650,7 +650,7 @@
     "justo": 31.9,
     "papel": "principal",
     "conta": "LPA projetado 2026 R$ 3.58 × P/L 8.90x",
-    "origemMult": "média entre 8.25x da própria série e 9.55x dos 8 pares do grupo FIN",
+    "origemMult": "a média entre o P/L mediano da própria empresa ao longo de 3 anos (8.25x) e o dos 8 pares do grupo FIN (9.55x)",
     "faixa": [
      31.74,
      73.81
@@ -660,7 +660,7 @@
     "chave": "P/VP",
     "justo": 53.26,
     "papel": "verificação",
-    "conta": "P/VP 0.81x × VPA R$ 66.02 por papel",
+    "conta": "VPA R$ 66.02 × P/VP 0.81x",
     "faixa": [
      51.5,
      55.79
@@ -690,7 +690,7 @@
     "justo": 15.63,
     "papel": "principal",
     "conta": "preço justo de ITUB3 R$ 48.47 × paridade 0.322",
-    "origemMult": "razão entre o preço de ITSA4 e o de ITUB3 ao longo de 6 anos (0.322) — o desconto de holding que o mercado pratica",
+    "origemMult": "a razão entre o preço de ITSA4 e o de ITUB3 ao longo de 6 anos (0.322) — o desconto de holding que o mercado pratica",
     "faixa": [
      15.48,
      15.74
@@ -700,7 +700,7 @@
     "chave": "E/P",
     "justo": 13.12,
     "papel": "verificação",
-    "conta": "E/P: P/L 7.98x próprio (sem 3 pares no grupo NAV) × LPA projetado R$ 1.64",
+    "conta": "LPA projetado 2026 R$ 1.64 × P/L 7.98x",
     "faixa": [
      13.11,
      13.94
@@ -710,7 +710,7 @@
     "chave": "P/VP",
     "justo": 13.37,
     "papel": "verificação",
-    "conta": "P/VP 1.44x × VPA R$ 9.31 por papel",
+    "conta": "VPA R$ 9.31 × P/VP 1.44x",
     "faixa": [
      12.66,
      14.24
@@ -720,7 +720,7 @@
     "chave": "EV/Receita",
     "justo": 13.38,
     "papel": "verificação",
-    "conta": "EV/Receita 17.36x próprio (sem 3 pares no grupo NAV) × receita R$ 8.5 bi",
+    "conta": "receita R$ 8.5 bi × EV/Receita 17.36x − dívida líquida R$ 4.1 bi, ÷ 10,7 bi papéis",
     "faixa": [
      12.8,
      14.25
@@ -730,7 +730,7 @@
     "chave": "P/FFO",
     "justo": 13.61,
     "papel": "verificação",
-    "conta": "P/FFO 7.33x próprio (sem 3 pares no grupo NAV) × FFO/papel projetado R$ 1.86",
+    "conta": "FFO por papel projetado R$ 1.86 × P/FFO 7.33x",
     "faixa": [
      12.41,
      14.07
@@ -740,7 +740,7 @@
     "chave": "EV/EBITDA",
     "justo": 14.04,
     "papel": "verificação",
-    "conta": "EV/EBITDA 7.53x sobre EBITDA LTM (R$ 20.5 bi)",
+    "conta": "EBITDA LTM (R$ 20.5 bi) × EV/EBITDA 7.53x − dívida líquida R$ 4.1 bi, ÷ 10,7 bi papéis",
     "faixa": [
      13.57,
      14.45
@@ -769,7 +769,7 @@
     "justo": 48.47,
     "papel": "principal",
     "conta": "LPA projetado 2026 R$ 5.16 × P/L 9.39x",
-    "origemMult": "média entre 10.00x da própria série e 8.79x dos 8 pares do grupo FIN",
+    "origemMult": "a média entre o P/L mediano da própria empresa ao longo de 6 anos (10.00x) e o dos 8 pares do grupo FIN (8.79x)",
     "faixa": [
      40.98,
      49.66
@@ -779,7 +779,7 @@
     "chave": "P/VP",
     "justo": 36.77,
     "papel": "verificação",
-    "conta": "P/VP 1.89x × VPA R$ 19.49 por papel",
+    "conta": "VPA R$ 19.49 × P/VP 1.89x",
     "faixa": [
      33.62,
      42.29
@@ -808,7 +808,7 @@
     "justo": 20.17,
     "papel": "principal",
     "conta": "EBITDA médio de 6 anos (R$ 8.6 bi) × EV/EBITDA 5.73x − dívida líquida R$ 24.8 bi, ÷ 1,2 bi papéis",
-    "origemMult": "mediana da série inteira (cíclica cobre pico e fundo) do próprio histórico, 6 anos (4.5x a 6.6x)",
+    "origemMult": "o EV/EBITDA mediano da própria empresa ao longo de 6 anos (5.73x; a série foi de 4.5x a 6.6x) — em cíclica a janela cobre pico e fundo do ciclo de propósito",
     "faixa": [
      15.98,
      24.31
@@ -818,7 +818,7 @@
     "chave": "E/P",
     "justo": 10.63,
     "papel": "verificação",
-    "conta": "E/P: P/L 10.25x = média entre 12.83x próprio e 7.68x dos 3 pares CICL × LPA projetado R$ 1.04",
+    "conta": "LPA projetado 2026 R$ 1.04 × P/L 10.25x",
     "faixa": [
      9.98,
      23.4
@@ -828,7 +828,7 @@
     "chave": "P/FFO",
     "justo": 14.9,
     "papel": "verificação",
-    "conta": "P/FFO 4.36x = média entre 4.14x próprio e 4.59x dos 3 pares CICL × FFO/papel projetado R$ 3.41",
+    "conta": "FFO por papel projetado R$ 3.41 × P/FFO 4.36x",
     "faixa": [
      13.05,
      16.76
@@ -838,7 +838,7 @@
     "chave": "EV/Receita",
     "justo": 16.63,
     "papel": "verificação",
-    "conta": "EV/Receita 2.17x = média entre 2.51x próprio e 1.83x dos 3 pares CICL × receita R$ 20.7 bi",
+    "conta": "receita R$ 20.7 bi × EV/Receita 2.17x − dívida líquida R$ 24.8 bi, ÷ 1,2 bi papéis",
     "faixa": [
      14.08,
      18.96
@@ -848,7 +848,7 @@
     "chave": "P/VP",
     "justo": 24.81,
     "papel": "verificação",
-    "conta": "P/VP 0.38x × VPA R$ 65.99 por papel",
+    "conta": "VPA R$ 65.99 × P/VP 0.38x",
     "faixa": [
      19.6,
      27.52
@@ -877,7 +877,7 @@
     "justo": 33.37,
     "papel": "principal",
     "conta": "LPA projetado 2026 R$ 4.50 × P/L 7.41x",
-    "origemMult": "mediana da própria série (7.41x) — o grupo IND não tem 3 pares para comparar",
+    "origemMult": "o P/L mediano da própria empresa ao longo de 6 anos (7.41x) — o grupo IND não tem 3 pares para comparar",
     "faixa": [
      30.89,
      33.96
@@ -887,7 +887,7 @@
     "chave": "EV/EBITDA",
     "justo": 31.65,
     "papel": "verificação",
-    "conta": "EV/EBITDA 5.03x sobre EBITDA LTM (R$ 1.1 bi)",
+    "conta": "EBITDA LTM (R$ 1.1 bi) × EV/EBITDA 5.03x − dívida líquida R$ 1.1 bi, ÷ 136 mi papéis",
     "faixa": [
      30.5,
      34.34
@@ -897,7 +897,7 @@
     "chave": "EV/Receita",
     "justo": 32.99,
     "papel": "verificação",
-    "conta": "EV/Receita 1.04x próprio (sem 3 pares no grupo IND) × receita R$ 5.4 bi",
+    "conta": "receita R$ 5.4 bi × EV/Receita 1.04x − dívida líquida R$ 1.1 bi, ÷ 136 mi papéis",
     "faixa": [
      29.99,
      33.48
@@ -907,7 +907,7 @@
     "chave": "P/FFO",
     "justo": 35.56,
     "papel": "verificação",
-    "conta": "P/FFO 5.84x próprio (sem 3 pares no grupo IND) × FFO/papel projetado R$ 6.09",
+    "conta": "FFO por papel projetado R$ 6.09 × P/FFO 5.84x",
     "faixa": [
      34.5,
      36.4
@@ -917,7 +917,7 @@
     "chave": "P/VP",
     "justo": 36.09,
     "papel": "verificação",
-    "conta": "P/VP 5.05x × VPA R$ 7.15 por papel",
+    "conta": "VPA R$ 7.15 × P/VP 5.05x",
     "faixa": [
      34.84,
      37.88
@@ -946,7 +946,7 @@
     "justo": 34.94,
     "papel": "principal",
     "conta": "FFO por papel projetado R$ 3.70 × P/FFO 9.43x",
-    "origemMult": "mediana da própria série (9.43x) — o grupo SHOP não tem 3 pares para comparar",
+    "origemMult": "o P/FFO mediano da própria empresa ao longo de 5 anos (9.43x) — o grupo SHOP não tem 3 pares para comparar",
     "faixa": [
      31.18,
      37.75
@@ -956,7 +956,7 @@
     "chave": "E/P",
     "justo": 27.8,
     "papel": "verificação",
-    "conta": "E/P: P/L 10.13x próprio (sem 3 pares no grupo SHOP) × LPA projetado R$ 2.74",
+    "conta": "LPA projetado 2026 R$ 2.74 × P/L 10.13x",
     "faixa": [
      26.76,
      33.8
@@ -966,7 +966,7 @@
     "chave": "P/VP",
     "justo": 29.97,
     "papel": "verificação",
-    "conta": "P/VP 2.23x × VPA R$ 13.44 por papel",
+    "conta": "VPA R$ 13.44 × P/VP 2.23x",
     "faixa": [
      27.95,
      30.23
@@ -976,7 +976,7 @@
     "chave": "EV/Receita",
     "justo": 34.18,
     "papel": "verificação",
-    "conta": "EV/Receita 6.99x próprio (sem 3 pares no grupo SHOP) × receita R$ 3.2 bi",
+    "conta": "receita R$ 3.2 bi × EV/Receita 6.99x − dívida líquida R$ 4.6 bi, ÷ 520 mi papéis",
     "faixa": [
      31.21,
      37.35
@@ -1014,7 +1014,7 @@
     "justo": 42.94,
     "papel": "principal",
     "conta": "EBITDA médio de 6 anos (R$ 270.5 bi) × EV/EBITDA 3.21x − dívida líquida R$ 312.8 bi, ÷ 13,0 bi papéis",
-    "origemMult": "mediana da série inteira (cíclica cobre pico e fundo) do próprio histórico, 6 anos (1.6x a 4.3x)",
+    "origemMult": "o EV/EBITDA mediano da própria empresa ao longo de 6 anos (3.21x; a série foi de 1.6x a 4.3x) — em cíclica a janela cobre pico e fundo do ciclo de propósito",
     "faixa": [
      30.95,
      53.37
@@ -1024,7 +1024,7 @@
     "chave": "P/VP",
     "justo": 47.09,
     "papel": "verificação",
-    "conta": "P/VP 1.14x × VPA R$ 41.49 por papel",
+    "conta": "VPA R$ 41.49 × P/VP 1.14x",
     "faixa": [
      44.81,
      56.22
@@ -1034,7 +1034,7 @@
     "chave": "EV/Receita",
     "justo": 52.0,
     "papel": "verificação",
-    "conta": "EV/Receita 1.80x = média entre 1.75x próprio e 1.85x dos 3 pares CICL × receita R$ 548.5 bi",
+    "conta": "receita R$ 548.5 bi × EV/Receita 1.80x − dívida líquida R$ 312.8 bi, ÷ 13,0 bi papéis",
     "faixa": [
      47.25,
      55.51
@@ -1044,7 +1044,7 @@
     "chave": "P/FFO",
     "justo": 60.41,
     "papel": "verificação",
-    "conta": "P/FFO 3.69x = média entre 2.80x próprio e 4.59x dos 3 pares CICL × FFO/papel projetado R$ 16.35",
+    "conta": "FFO por papel projetado R$ 16.35 × P/FFO 3.69x",
     "faixa": [
      52.17,
      78.55
@@ -1054,7 +1054,7 @@
     "chave": "E/P",
     "justo": 74.06,
     "papel": "verificação",
-    "conta": "E/P: P/L 9.12x = média entre 5.41x próprio e 12.83x dos 3 pares CICL × LPA projetado R$ 8.12",
+    "conta": "LPA projetado 2026 R$ 8.12 × P/L 9.12x",
     "faixa": [
      65.78,
      112.46
@@ -1083,7 +1083,7 @@
     "justo": 54.67,
     "papel": "principal",
     "conta": "LPA projetado 2026 R$ 5.96 × P/L 9.17x",
-    "origemMult": "média entre 9.11x da própria série e 9.23x dos 8 pares do grupo FIN",
+    "origemMult": "a média entre o P/L mediano da própria empresa ao longo de 6 anos (9.11x) e o dos 8 pares do grupo FIN (9.23x)",
     "faixa": [
      50.69,
      62.33
@@ -1093,7 +1093,7 @@
     "chave": "P/VP",
     "justo": 52.65,
     "papel": "verificação",
-    "conta": "P/VP 2.02x × VPA R$ 26.02 por papel",
+    "conta": "VPA R$ 26.02 × P/VP 2.02x",
     "faixa": [
      51.65,
      53.6
@@ -1103,7 +1103,7 @@
     "chave": "P/FFO",
     "justo": 56.99,
     "papel": "verificação",
-    "conta": "P/FFO 7.90x próprio (sem 3 pares no grupo FIN) × FFO/papel projetado R$ 7.21",
+    "conta": "FFO por papel projetado R$ 7.21 × P/FFO 7.90x",
     "faixa": [
      55.42,
      58.22
@@ -1113,7 +1113,7 @@
     "chave": "EV/Receita",
     "justo": 71.07,
     "papel": "verificação",
-    "conta": "EV/Receita 0.74x próprio (sem 3 pares no grupo FIN) × receita R$ 42.6 bi",
+    "conta": "receita R$ 42.6 bi × EV/Receita 0.74x − dívida líquida R$ -14.5 bi, ÷ 647 mi papéis",
     "faixa": [
      70.08,
      72.37
@@ -1142,7 +1142,7 @@
     "justo": 8.06,
     "papel": "principal",
     "conta": "EBITDA médio de 6 anos (R$ 0.6 bi) × EV/EBITDA 5.04x − dívida líquida R$ 1.1 bi, ÷ 240 mi papéis",
-    "origemMult": "mediana da série inteira (cíclica cobre pico e fundo) do próprio histórico, 6 anos (4.8x a 5.9x)",
+    "origemMult": "o EV/EBITDA mediano da própria empresa ao longo de 6 anos (5.04x; a série foi de 4.8x a 5.9x) — em cíclica a janela cobre pico e fundo do ciclo de propósito",
     "faixa": [
      7.49,
      8.99
@@ -1152,7 +1152,7 @@
     "chave": "P/FFO",
     "justo": 5.75,
     "papel": "verificação",
-    "conta": "P/FFO 4.36x = média entre 4.59x próprio e 4.14x dos 3 pares CICL × FFO/papel projetado R$ 1.32",
+    "conta": "FFO por papel projetado R$ 1.32 × P/FFO 4.36x",
     "faixa": [
      5.27,
      6.09
@@ -1162,7 +1162,7 @@
     "chave": "P/VP",
     "justo": 7.87,
     "papel": "verificação",
-    "conta": "P/VP 1.29x × VPA R$ 6.11 por papel",
+    "conta": "VPA R$ 6.11 × P/VP 1.29x",
     "faixa": [
      7.7,
      8.01
@@ -1172,7 +1172,7 @@
     "chave": "EV/Receita",
     "justo": 8.46,
     "papel": "verificação",
-    "conta": "EV/Receita 1.84x = média entre 1.85x próprio e 1.83x dos 3 pares CICL × receita R$ 1.7 bi",
+    "conta": "receita R$ 1.7 bi × EV/Receita 1.84x − dívida líquida R$ 1.1 bi, ÷ 240 mi papéis",
     "faixa": [
      8.19,
      8.87
@@ -1182,7 +1182,7 @@
     "chave": "E/P",
     "justo": 8.84,
     "papel": "verificação",
-    "conta": "E/P: P/L 10.25x = média entre 7.68x próprio e 12.83x dos 3 pares CICL × LPA projetado R$ 0.86",
+    "conta": "LPA projetado 2026 R$ 0.86 × P/L 10.25x",
     "faixa": [
      7.89,
      12.34
@@ -1220,7 +1220,7 @@
     "justo": 41.98,
     "papel": "principal",
     "conta": "LPA projetado 2026 R$ 3.43 × P/L 12.24x",
-    "origemMult": "média entre 15.70x da própria série e 8.79x dos 8 pares do grupo FIN",
+    "origemMult": "a média entre o P/L mediano da própria empresa ao longo de 6 anos (15.70x) e o dos 8 pares do grupo FIN (8.79x)",
     "faixa": [
      36.23,
      44.75
@@ -1230,7 +1230,7 @@
     "chave": "P/VP",
     "justo": 29.76,
     "papel": "verificação",
-    "conta": "P/VP 0.88x × VPA R$ 33.95 por papel",
+    "conta": "VPA R$ 33.95 × P/VP 0.88x",
     "faixa": [
      29.53,
      29.87
@@ -1268,7 +1268,7 @@
     "justo": 21.63,
     "papel": "principal",
     "conta": "LPA projetado 2026 R$ 2.21 × P/L 9.80x",
-    "origemMult": "média entre 11.04x da própria série e 8.57x dos 4 pares do grupo UTIL",
+    "origemMult": "a média entre o P/L mediano da própria empresa ao longo de 3 anos (11.04x) e o dos 4 pares do grupo UTIL (8.57x)",
     "faixa": [
      15.87,
      25.41
@@ -1278,7 +1278,7 @@
     "chave": "P/FFO",
     "justo": 17.63,
     "papel": "verificação",
-    "conta": "P/FFO 6.40x = média entre 8.71x próprio e 4.08x dos 4 pares UTIL × FFO/papel projetado R$ 2.76",
+    "conta": "FFO por papel projetado R$ 2.76 × P/FFO 6.40x",
     "faixa": [
      9.98,
      17.84
@@ -1288,7 +1288,7 @@
     "chave": "EV/Receita",
     "justo": 19.92,
     "papel": "verificação",
-    "conta": "EV/Receita 2.55x = média entre 3.34x próprio e 1.77x dos 4 pares UTIL × receita R$ 40.9 bi",
+    "conta": "receita R$ 40.9 bi × EV/Receita 2.55x − dívida líquida R$ 34.2 bi, ÷ 3,5 bi papéis",
     "faixa": [
      15.13,
      24.16
@@ -1298,7 +1298,7 @@
     "chave": "P/VP",
     "justo": 28.06,
     "papel": "verificação",
-    "conta": "P/VP 2.10x × VPA R$ 13.36 por papel",
+    "conta": "VPA R$ 13.36 × P/VP 2.10x",
     "faixa": [
      26.19,
      34.61
@@ -1308,7 +1308,7 @@
     "chave": "EV/EBITDA",
     "justo": 29.03,
     "papel": "verificação",
-    "conta": "EV/EBITDA 8.81x sobre EBITDA LTM (R$ 15.5 bi)",
+    "conta": "EBITDA LTM (R$ 15.5 bi) × EV/EBITDA 8.81x − dívida líquida R$ 34.2 bi, ÷ 3,5 bi papéis",
     "faixa": [
      14.73,
      33.43
@@ -1337,7 +1337,7 @@
     "justo": 5.5,
     "papel": "principal",
     "conta": "LPA projetado 2026 R$ 0.79 × P/L 7.01x",
-    "origemMult": "mediana da própria série (7.01x) — o grupo IND não tem 3 pares para comparar",
+    "origemMult": "o P/L mediano da própria empresa ao longo de 6 anos (7.01x) — o grupo IND não tem 3 pares para comparar",
     "faixa": [
      4.87,
      6.35
@@ -1347,7 +1347,7 @@
     "chave": "P/FFO",
     "justo": 4.75,
     "papel": "verificação",
-    "conta": "P/FFO 4.78x próprio (sem 3 pares no grupo IND) × FFO/papel projetado R$ 0.99",
+    "conta": "FFO por papel projetado R$ 0.99 × P/FFO 4.78x",
     "faixa": [
      4.53,
      5.58
@@ -1376,7 +1376,7 @@
     "justo": 23.5,
     "papel": "principal",
     "conta": "LPA projetado 2026 R$ 2.06 × P/L 11.43x",
-    "origemMult": "média entre 14.28x da própria série e 8.57x dos 4 pares do grupo UTIL",
+    "origemMult": "a média entre o P/L mediano da própria empresa ao longo de 6 anos (14.28x) e o dos 4 pares do grupo UTIL (8.57x)",
     "faixa": [
      20.07,
      23.86
@@ -1386,7 +1386,7 @@
     "chave": "EV/Receita",
     "justo": 21.19,
     "papel": "verificação",
-    "conta": "EV/Receita 1.81x = média entre 1.78x próprio e 1.84x dos 4 pares UTIL × receita R$ 27.3 bi",
+    "conta": "receita R$ 27.3 bi × EV/Receita 1.81x − dívida líquida R$ -1.9 bi, ÷ 2,4 bi papéis",
     "faixa": [
      20.85,
      22.37
@@ -1396,7 +1396,7 @@
     "chave": "P/VP",
     "justo": 21.77,
     "papel": "verificação",
-    "conta": "P/VP 2.04x × VPA R$ 10.69 por papel",
+    "conta": "VPA R$ 10.69 × P/VP 2.04x",
     "faixa": [
      18.5,
      23.52
@@ -1406,7 +1406,7 @@
     "chave": "EV/EBITDA",
     "justo": 21.83,
     "papel": "verificação",
-    "conta": "EV/EBITDA 3.71x sobre EBITDA LTM (R$ 13.7 bi)",
+    "conta": "EBITDA LTM (R$ 13.7 bi) × EV/EBITDA 3.71x − dívida líquida R$ -1.9 bi, ÷ 2,4 bi papéis",
     "faixa": [
      20.04,
      22.72
@@ -1416,7 +1416,7 @@
     "chave": "P/FFO",
     "justo": 24.3,
     "papel": "verificação",
-    "conta": "P/FFO 4.43x = média entre 3.81x próprio e 5.04x dos 4 pares UTIL × FFO/papel projetado R$ 5.49",
+    "conta": "FFO por papel projetado R$ 5.49 × P/FFO 4.43x",
     "faixa": [
      22.76,
      27.16
@@ -1445,7 +1445,7 @@
     "justo": 66.75,
     "papel": "principal",
     "conta": "EBITDA médio de 6 anos (R$ 86.4 bi) × EV/EBITDA 4.30x − dívida líquida R$ 68.2 bi, ÷ 4,5 bi papéis",
-    "origemMult": "mediana da série inteira (cíclica cobre pico e fundo) do próprio histórico, 6 anos (2.5x a 8.9x)",
+    "origemMult": "o EV/EBITDA mediano da própria empresa ao longo de 6 anos (4.30x; a série foi de 2.5x a 8.9x) — em cíclica a janela cobre pico e fundo do ciclo de propósito",
     "faixa": [
      53.15,
      120.7
@@ -1455,7 +1455,7 @@
     "chave": "P/FFO",
     "justo": 34.46,
     "papel": "verificação",
-    "conta": "P/FFO 7.68x = média entre 11.23x próprio e 4.14x dos 3 pares CICL × FFO/papel projetado R$ 4.48",
+    "conta": "FFO por papel projetado R$ 4.48 × P/FFO 7.68x",
     "faixa": [
      25.33,
      37.86
@@ -1465,7 +1465,7 @@
     "chave": "E/P",
     "justo": 38.42,
     "papel": "verificação",
-    "conta": "E/P: P/L 19.70x = média entre 31.72x próprio e 7.68x dos 3 pares CICL × LPA projetado R$ 1.95",
+    "conta": "LPA projetado 2026 R$ 1.95 × P/L 19.70x",
     "faixa": [
      24.21,
      43.52
@@ -1475,7 +1475,7 @@
     "chave": "EV/Receita",
     "justo": 73.38,
     "papel": "verificação",
-    "conta": "EV/Receita 1.84x = média entre 1.83x próprio e 1.85x dos 3 pares CICL × receita R$ 218.1 bi",
+    "conta": "receita R$ 218.1 bi × EV/Receita 1.84x − dívida líquida R$ 68.2 bi, ÷ 4,5 bi papéis",
     "faixa": [
      68.22,
      80.53
@@ -1485,7 +1485,7 @@
     "chave": "P/VP",
     "justo": 78.31,
     "papel": "verificação",
-    "conta": "P/VP 1.69x × VPA R$ 46.47 por papel",
+    "conta": "VPA R$ 46.47 × P/VP 1.69x",
     "faixa": [
      69.59,
      89.11
