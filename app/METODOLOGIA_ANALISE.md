@@ -2335,3 +2335,44 @@ escrita de uma coluna em silêncio neste projeto (seção 31.4), então os consu
 atualizados junto e conferidos no navegador: `js/calculos.js` (16,17,19 → 17,18,20),
 `js/cotacoes.js` (17 → 18), `js/main.js` (19 → 20) e a guarda do sort em `js/radar.js`
 (a coluna Relatório, não ordenável, foi de 20 para 21).
+
+### 31.11 BBDC3 entra no Radar (13/09/2026)
+
+Bradesco ON, grupo **FIN**. Série 2021-2026 de `companies_reports` (DRE e balanço
+CONSOLIDATED/ANNUAL, mais TTM 2026-06-30), `companies_ratios` e `companies_valuationRatios`,
+com preço de fechamento do último pregão de cada ano.
+
+⚠️ **Classe de ação.** `pl`, `pvp` e `dy` vêm dos ids terminados em **`_CS`** (ordinária), não
+`_PS`. A Partnr separa as duas classes e a PN negocia com prêmio — P/VP de 1,09x contra 0,97x em
+2026. Pegar a série errada colocaria o múltiplo da BBDC4 sobre o preço da BBDC3. É a mesma
+armadilha que já apareceu no DY do ITUB3.
+
+| | |
+|---|---|
+| Preço justo | **R$ 18,73** = LPA projetado R$ 2,30 × P/L 8,15x |
+| Múltiplo | média entre 7,19x da própria série (6 anos) e 9,11x dos 9 pares do grupo FIN |
+| Cotação | R$ 16,32 · margem **+13%** |
+
+Entrar no grupo FIN move o múltiplo dos pares para todo mundo: o P/L mediano do setor caiu de
+8,9x para 8,6x, e ITUB3 foi de R$ 48,47 para R$ 47,63. É o comportamento esperado de uma âncora
+que usa pares — não um efeito colateral.
+
+### 31.12 O bug que o BBDC3 revelou: seis linhas publicadas desalinhadas
+
+Ao incluir o ticker, a contagem de células acusou 23 em vez de 22 — e não só na linha nova.
+**VIVA3, ASAI3, ROXO34, PASS3, SAUD3 e AXIA3 tinham sido publicadas com uma célula a mais**, com
+a linha inteira deslocada em relação ao cabeçalho a partir da coluna do múltiplo.
+
+A causa: a migração da coluna 16 (seção 31.10) detectava "esta linha já migrou?" procurando a
+tooltip do múltiplo no texto da linha. Nas seis linhas **sem preço justo** não existe tooltip
+nenhuma, então a resposta era sempre "ainda não migrou" e cada nova execução do gerador inseria
+a célula de novo. Rodar duas vezes bastava.
+
+Duas correções:
+
+1. A detecção passou a ser por **contagem de células** (21 = migrar, 22 = substituir) — a única
+   verificação que não depende de o conteúdo ter sido escrito antes.
+2. O gerador **conserta** uma linha de 23 células removendo a duplicata, em vez de exigir que
+   alguém edite HTML à mão.
+
+Conferido com três execuções seguidas: 33 linhas, todas com 22 células.

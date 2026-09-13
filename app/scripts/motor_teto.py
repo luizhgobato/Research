@@ -99,7 +99,7 @@ MOTOR = {
     # O motor E/P devolvia teto de R$3,71 contra cotação de R$14,60 (−294%), e o fallback
     # setorial piorava para R$1,80 porque o único par sem quebra no grupo era a LEVE3
     # (autopeças). Reclassificada para FIN, que é o motor de capital alocado.
-    **{t: 'FIN' for t in ['ITUB3','BBSE3','CXSE3','BMEB4','BRSR6','PSSA3','SANB11','BPAC11','IRBR3','ROXO34','SAUD3']},
+    **{t: 'FIN' for t in ['BBDC3','ITUB3','BBSE3','CXSE3','BMEB4','BRSR6','PSSA3','SANB11','BPAC11','IRBR3','ROXO34','SAUD3']},
     # holdings puras → NAV (mantidos manuais: exigem valor de mercado das investidas)
     **{t: 'NAV' for t in ['ITSA4','BRAP4']},
     # cíclicas de commodity → EV/EBITDA meio-de-ciclo

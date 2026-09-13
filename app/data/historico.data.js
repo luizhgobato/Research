@@ -97,6 +97,23 @@ const HIST_SEED = {
     2022: { preco:0.86, receita:7047042000, custos:-8486196000, lucrobruto:-1439154000, ebitda:null, ebit:-1795222000, imposto:550420000, lucrolin:-630341000, divbruta:null, divliq:null, mgBruta:-20.42, mgEbitda:null, mgLiq:-8.94, roe:-16.66, roic:null, pl:-2.21, pvp:0.52, dy:0, evEbitda:null, divPl:null, lpa:-7.66 },
     2021: { preco:4.02, receita:7987428000, custos:-9564136000, lucrobruto:-1576708000, ebitda:null, ebit:-2005554000, imposto:712764000, lucrolin:-682701000, divbruta:null, divliq:null, mgBruta:-19.74, mgEbitda:null, mgLiq:-8.55, roe:-16.79, roic:null, pl:-5.47, pvp:1.27, dy:0.65, evEbitda:null, divPl:null, lpa:-0.54 },
   },
+  // BBDC3 — Bradesco ON. Incluído a pedido do usuário em 13/09/2026.
+  // Fonte: MCP Partnr (B3/CVM). DRE e balanço CONSOLIDATED/ANNUAL 2021-2025 e TTM
+  // 2026-06-30; preços = fechamento do último pregão de cada ano (BBDC3, ON).
+  // ⚠️ CLASSE DE AÇÃO: `pl`, `pvp` e `dy` vêm dos ids _CS (ordinária), não dos _PS —
+  // a Partnr separa as duas classes e a PN negocia com prêmio (P/VP 1,09x contra
+  // 0,97x em 2026). Pegar a série errada colocaria o múltiplo da BBDC4 sobre o preço
+  // da BBDC3. Mesma armadilha que já apareceu no DY do ITUB3.
+  // ⚠️ Campos de banco (ebitda, ebit, dívida, EV/EBITDA) são null de propósito: em
+  // banco o passivo é a matéria-prima, não alavancagem. Igual ao ITUB3 e ao SANB11.
+  BBDC3: {
+    2026: { preco:16.32, receita:299942971000, custos:-218576140000, lucrobruto:81366831000, ebitda:null, ebit:null, imposto:-1213526000, lucrolin:24586062000, divbruta:null, divliq:null, mgBruta:27.13, mgEbitda:null, mgLiq:8.2, roe:13.69, roic:null, pl:7.21, pvp:0.97, dy:5.44, evEbitda:null, divPl:null, lpa:2.2 },
+    2025: { preco:15.6, receita:270183106000, custos:-193843753000, lucrobruto:76339353000, ebitda:null, ebit:null, imposto:2900052000, lucrolin:23924636000, divbruta:null, divliq:null, mgBruta:28.25, mgEbitda:null, mgLiq:8.85, roe:13.66, roic:null, pl:7.15, pvp:0.96, dy:4.95, evEbitda:null, divPl:null, lpa:2.26 },
+    2024: { preco:10.65, receita:213219736000, custos:-144279153000, lucrobruto:68940583000, ebitda:null, ebit:null, imposto:641639000, lucrolin:17542153000, divbruta:null, divliq:null, mgBruta:32.33, mgEbitda:null, mgLiq:8.23, roe:10.5, roic:null, pl:7.16, pvp:0.74, dy:8.56, evEbitda:null, divPl:null, lpa:1.65 },
+    2023: { preco:15.28, receita:224457793000, custos:-156376055000, lucrobruto:68081738000, ebitda:null, ebit:null, imposto:4294414000, lucrolin:14502765000, divbruta:null, divliq:null, mgBruta:30.33, mgEbitda:null, mgLiq:6.46, roe:8.74, roic:null, pl:9.07, pvp:0.79, dy:3.89, evEbitda:null, divPl:null, lpa:1.36 },
+    2022: { preco:13.47, receita:205913274000, custos:-131311254000, lucrobruto:74602020000, ebitda:null, ebit:null, imposto:-2992753000, lucrolin:21217196000, divbruta:null, divliq:null, mgBruta:36.23, mgEbitda:null, mgLiq:10.3, roe:13.44, roic:null, pl:6.08, pvp:0.81, dy:6.42, evEbitda:null, divPl:null, lpa:1.99 },
+    2021: { preco:16.19, receita:125443431000, custos:-55121323000, lucrobruto:70322108000, ebitda:null, ebit:null, imposto:-9471563000, lucrolin:23380804000, divbruta:null, divliq:null, mgBruta:56.06, mgEbitda:null, mgLiq:18.64, roe:14.91, roic:null, pl:7.29, pvp:1.07, dy:5.47, evEbitda:null, divPl:null, lpa:2.41 },
+  },
   ITUB3: {
     2026: { preco:43.07, receita:385985000000, custos:-242271000000, lucrobruto:143714000000, ebitda:null, ebit:null, imposto:-6746000000, lucrolin:47943000000, divbruta:null, divliq:null, mgBruta:37.23, mgEbitda:null, mgLiq:12.42, roe:21.03, roic:null, pl:10.49, pvp:2.21, dy:6.46, evEbitda:null, divPl:null, lpa:4.35 },
     2025: { preco:36.35, receita:387118000000, custos:-248171000000, lucrobruto:138947000000, ebitda:null, ebit:null, imposto:-4401000000, lucrolin:45849000000, divbruta:null, divliq:null, mgBruta:35.89, mgEbitda:null, mgLiq:11.84, roe:21.32, roic:null, pl:10, pvp:2.13, dy:11.24, evEbitda:null, divPl:null, lpa:4.16 },
