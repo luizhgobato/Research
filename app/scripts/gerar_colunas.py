@@ -35,7 +35,8 @@
 # ⚠️ A COLUNA 6 MUDA DE SIGNIFICADO. Era "crescimento projetado"; passa a ser a DISTÂNCIA
 # entre o resultado corrente e o normalizado. Não é previsão: é diagnóstico de ciclo. KLBN11
 # com −83% não vai cair 83%; ela está 83% abaixo do que a própria série sugere como normal.
-import json, re, statistics as st
+import json
+import math, re, statistics as st
 from pathlib import Path
 
 RAIZ = Path(__file__).resolve().parent.parent
@@ -80,7 +81,38 @@ def _tircampo(t, c):
     m = re.search(r'\b%s:\s*(-?[\d.]+|null)' % c, b)
     return None if (not m or m.group(1) == 'null') else float(m.group(1))
 
+# ── CRESCIMENTO DECLARADO PELA EMPRESA OU PELO CONSENSO ──────────────────────────────────
+# Precedência sobre qualquer estimativa do motor, pelo mesmo princípio que POLITICA já aplica
+# ao payout em motor_teto.py: um fato declarado vence uma inferência. O motor projeta olhando
+# para trás; quando a companhia ou o consenso publica uma expectativa para a frente, ela sabe
+# mais.
+# Formato: ticker → (taxa %, fonte). A fonte vai inteira para a tooltip — número sem
+# procedência aqui é pior que número nenhum.
+CRESCIMENTO_DECLARADO = {
+    'BBSE3': (-5.0,
+              'Consenso de mercado para 2026: lucro de R$ 8,6 bi, −5,4% sobre 2025. O guidance '
+              'da companhia divulgado com o 4T25 projeta prêmios emitidos de −1,5% (faixa −3% a '
+              '+2%), depois de 2025 fechar em −8,8%, abaixo do próprio guidance revisado. '
+              'Pressões declaradas: seguro agrícola em queda pelo terceiro ano, prescritivo de '
+              'crédito afetado pela Selic alta e saída líquida na Brasilprev após o IOF sobre '
+              'VGBL. O motor estimava +23,1% por ROE × retenção — ver a ressalva abaixo.'),
+}
+
 CRESC_CAP = 25.0   # projeção de UM ano; o cap de 15% do motor é para perpetuidade de 10 anos
+
+def _reg_log_lucro(t):
+    """Crescimento anual do LUCRO CONTÁBIL por regressão log sobre a série da base."""
+    A = H.get(t)
+    if not A: return None
+    val, _q = M['anos_validos'](A)
+    pts = [(y, A[y]['lucrolin']) for y in val if A[y].get('lucrolin') and A[y]['lucrolin'] > 0]
+    if len(pts) < 3: return None
+    xs = [y for y, _ in pts]; ys = [math.log(v) for _, v in pts]
+    mx, my = st.mean(xs), st.mean(ys)
+    den = sum((x - mx) ** 2 for x in xs)
+    if not den: return None
+    return (math.exp(sum((x - mx) * (y - my) for x, y in zip(xs, ys)) / den) - 1) * 100
+
 
 def crescimento(t):
     """(taxa %, origem) para projetar 2026 a partir de 2025.
@@ -97,14 +129,35 @@ def crescimento(t):
     crescimento que a empresa sustenta com o lucro que não distribui, e é o que o próprio motor
     usa como a outra metade do `g`.
     """
+    decl = CRESCIMENTO_DECLARADO.get(t)
+    if decl:
+        return decl[0], (decl[1], None)
+
     g = _tircampo(t, 'gCagr')
     if g is not None:
         return max(-CRESC_CAP, min(g, CRESC_CAP)), ('CAGR do lucro recorrente por regressão log', g)
+
+    # ⚠️ SEM gCagr, ROE × RETENÇÃO NÃO PODE DECIDIR SOZINHO. O motor anula o CAGR do lucro
+    # recorrente para banco, seguradora, holding e cíclica, e até 13/09/2026 sobrava só o
+    # gRoe — que é uma IDENTIDADE CONTÁBIL, não uma medida: ele assume que o lucro retido
+    # rende o mesmo ROE de sempre. A BBSE3 expôs isso: ROE de 79% × retenção de 29% dá 23,1%
+    # de crescimento, enquanto o lucro dela de fato fez +10%, +4%, +2% nos últimos três anos.
+    # A regressão log sobre o LUCRO CONTÁBIL da própria série devolve a segunda opinião que
+    # faltava — o mesmo estimador de cagr_recorrente(), aplicado ao que a base tem. Pega-se o
+    # MENOR dos dois, que é a regra que o motor já usa quando os dois existem.
     g = _tircampo(t, 'gRoe')
-    if g is not None:
-        return max(-CRESC_CAP, min(g, CRESC_CAP)), ('ROE × retenção — o lucro recorrente não se '
-                                                    'aplica a banco, seguradora, holding ou cíclica', g)
-    return None, (None, None)
+    reg = _reg_log_lucro(t)
+    cands = [x for x in (g, reg) if x is not None]
+    if not cands:
+        return None, (None, None)
+    esc = min(cands)
+    if reg is not None and esc == reg and (g is None or reg < g):
+        fonte = ('regressão log sobre o lucro contábil da série — menor que ROE × retenção'
+                 + (f' ({g:.1f}%)' if g is not None else '') + ', e é o que a empresa entregou')
+    else:
+        fonte = ('ROE × retenção — o lucro recorrente não se aplica a banco, seguradora, '
+                 'holding ou cíclica')
+    return max(-CRESC_CAP, min(esc, CRESC_CAP)), (fonte, esc)
 
 
 def normalizado(t, A, usar_cache=True):
@@ -236,7 +289,7 @@ def gerar():
              f'{"+" if g >= 0 else ""}{br(g,1)}%</span>'
              + (f' <span style="color:#b45309;font-size:11px;">({"+" if bruto >= 0 else ""}'
                 f'{br(bruto,1)}%)</span>' if cortado else '')) if g is not None else VAZIO,
-            (f'CRESCIMENTO APLICADO = {br(g,1)}%&#10;&#10;{origem}.&#10;'
+            (f'CRESCIMENTO APLICADO = {br(g,1)}%&#10;&#10;{origem.rstrip(".")}.&#10;'
              if g is not None else
              'SEM TAXA DE CRESCIMENTO&#10;&#10;A empresa não tem série de lucro recorrente nem '
              'ROE utilizável na base.&#10;')
@@ -244,7 +297,8 @@ def gerar():
                f'±{br(CRESC_CAP,0)}% porque projetar mais que isso em um ano, a partir de série '
                f'de 5 pontos, é chute com casa decimal.&#10;' if cortado else '')
             + '&#10;É esta taxa que leva a coluna Lucro 2025 à coluna Lucro Projetado 2026.&#10;'
-            + base)
+            + ('⚠️ TAXA DECLARADA, não estimada pelo motor — a procedência está acima.&#10;'
+               if t in CRESCIMENTO_DECLARADO else base))
 
         cells[5] = cel(dinheiro(proj) or VAZIO,
             (f'LUCRO PROJETADO 2026 = lucro 2025 R$ {br((l25 or 0)/1e9)} bi × (1 + {br(g)}%)'
