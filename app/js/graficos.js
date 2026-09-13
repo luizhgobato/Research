@@ -126,9 +126,13 @@ function makeSVGDonut(el, labels, values, colors, opts){
     const a=amt(i);
     const valTxt=a?`<span style="font-weight:700;color:#333;margin-left:6px;white-space:nowrap;">${a}</span><span style="color:#888;margin-left:5px;white-space:nowrap;">${pct}%</span>`
                  :`<span style="font-weight:700;color:#333;margin-left:6px;">${pct}%</span>`;
-    legend+=`<div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;font-size:11px;color:#555;"><div style="width:9px;height:9px;border-radius:2px;background:${colors[i%colors.length]};flex-shrink:0;"></div><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${l}</span>${valTxt}</div>`;
+    legend+=`<div class="svg-donut-leg-item" style="display:flex;align-items:center;gap:6px;margin-bottom:6px;font-size:11px;color:#555;"><div style="width:9px;height:9px;border-radius:2px;background:${colors[i%colors.length]};flex-shrink:0;"></div><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${l}</span>${valTxt}</div>`;
   });
-  el.innerHTML=`<div style="display:flex;align-items:center;gap:16px;"><svg width="210" height="${H}" viewBox="0 0 210 ${H}" style="flex-shrink:0;">${paths}</svg><div style="flex:1;min-width:0;">${legend}</div></div>`;
+  // As classes existem para o CSS poder empilhar rosca e legenda quando não cabem lado a lado.
+  // Sem isso a legenda ficava espremida numa coluna de 82px no celular e os valores (que são
+  // white-space:nowrap, senão "R$ 244.074" quebraria no meio) vazavam para fora da tela — era
+  // esse vazamento que fazia a página inteira rolar 49px de lado sem ter nada lá.
+  el.innerHTML=`<div class="svg-donut-row"><svg class="svg-donut-svg" width="210" height="${H}" viewBox="0 0 210 ${H}">${paths}</svg><div class="svg-donut-legend">${legend}</div></div>`;
 }
 
 function makeSVGBar(el, labels, values, colors, fmt){
