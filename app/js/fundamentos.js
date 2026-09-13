@@ -52,10 +52,14 @@ function semCell(val, ruleKey, digits=1, suffix='') {
 // Adiciona classes CSS às células "reais" do Radar (DY, P/L, ROE, Dív/EBITDA)
 // para poder atualizá-las com dados do fundamentus sem depender de índice de coluna.
 function initRadarRealCells() {
-  const COL = { dyReal:10, plAtual:11, roe:12, divEbitda:13 };  // layout de 19 colunas (13/09/2026)
+  // ⚠️ dyReal SAIU do mapa em 13/09/2026. A coluna que ela marcava virou "Div. Yield 2025",
+// gerada de data/historico.data.js como todo o resto. Sem a classe .radar-dy-real, o bloco
+// de runtime mais abaixo não acha a célula e não reescreve nada — que é o comportamento
+// desejado: aquele bloco sobrepunha o valor da API por cima de um número digitado à mão, e
+// nenhum dos dois vinha da base que alimenta a tabela.
+  const COL = { plAtual:12, roe:13, divEbitda:14 };  // layout de 20 colunas (13/09/2026)
   document.querySelectorAll('#tableBody tr[data-ticker]').forEach(row => {
     const cells = row.querySelectorAll('td');
-    cells[COL.dyReal]?.classList.add('radar-dy-real');
     cells[COL.plAtual]?.classList.add('radar-pl-atual');
     cells[COL.roe]?.classList.add('radar-roe-real');
     cells[COL.divEbitda]?.classList.add('radar-div-eb-real');

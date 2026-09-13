@@ -210,7 +210,26 @@ def gerar():
         # ── Coluna 5 · LUCRO PROJETADO 2026 ─────────────────────────────────────────────
         origem, bruto = origem_g, g_bruto
         cortado = (g is not None and bruto is not None and abs(bruto - g) > 0.05)
-        cells[5] = cel(dinheiro(proj) or VAZIO,
+        # ── Coluna 5 · TAXA DE CRESCIMENTO 2025 → 2026 ──────────────────────────────────
+        # Pedido do usuário. Ela já existia embutida na projeção, mas só aparecia na tooltip —
+        # e é o único número que separa a coluna de 2025 da de 2026. Exposta, a linha inteira
+        # fica conferível de cabeça: lucro × (1 + taxa) = projetado.
+        cells[5] = cel(
+            (f'<span style="color:{"#0a5c35" if g >= 0 else "#9c1c1c"};font-weight:600;">'
+             f'{"+" if g >= 0 else ""}{br(g,1)}%</span>'
+             + (f' <span style="color:#b45309;font-size:11px;">({"+" if bruto >= 0 else ""}'
+                f'{br(bruto,1)}%)</span>' if cortado else '')) if g is not None else VAZIO,
+            (f'CRESCIMENTO APLICADO = {br(g,1)}%&#10;&#10;{origem}.&#10;'
+             if g is not None else
+             'SEM TAXA DE CRESCIMENTO&#10;&#10;A empresa não tem série de lucro recorrente nem '
+             'ROE utilizável na base.&#10;')
+            + (f'&#10;⚠️ VALOR BRUTO {br(bruto,1)}% — o número entre parênteses. Limitado a '
+               f'±{br(CRESC_CAP,0)}% porque projetar mais que isso em um ano, a partir de série '
+               f'de 5 pontos, é chute com casa decimal.&#10;' if cortado else '')
+            + '&#10;É esta taxa que leva a coluna Lucro 2025 à coluna Lucro Projetado 2026.&#10;'
+            + base)
+
+        cells[6] = cel(dinheiro(proj) or VAZIO,
             (f'LUCRO PROJETADO 2026 = lucro 2025 R$ {br((l25 or 0)/1e9)} bi × (1 + {br(g)}%)'
              if proj else 'LUCRO PROJETADO 2026 — não calculável')
             + '&#10;&#10;'
@@ -226,7 +245,7 @@ def gerar():
               '(scripts/backtest_ranking.py) mostrou que somar crescimento ao earnings yield '
               'PIOROU o poder de ordenar em 8,9 p.p. Está aqui para leitura.&#10;' + base)
 
-        cells[6] = cel(f'R$ {br(lpa)}' if lpa else VAZIO,
+        cells[7] = cel(f'R$ {br(lpa)}' if lpa else VAZIO,
             (f'LUCRO POR AÇÃO = lucro projetado 2026 R$ {br(proj/1e9)} bi ÷ {pap/1e6:.0f} mi papéis'
              if lpa else 'LUCRO POR AÇÃO — sem lucro projetado 2026')
             + '&#10;&#10;Papéis NEGOCIADOS: a contagem é derivada de lucro ÷ LPA da própria base, '
@@ -242,7 +261,7 @@ def gerar():
                'nao_paga': 'a empresa não paga dividendos',
                'pares': 'payout mediano dos pares — não é da empresa',
                'realizado': 'realizado da própria série'}.get(pf[0], pf[0])
-        cells[8] = cel(f'R$ {br(dps)}' if dps else VAZIO,
+        cells[9] = cel(f'R$ {br(dps)}' if dps else VAZIO,
             (f'DIVIDENDO POR AÇÃO = LPA R$ {br(lpa)} × payout {po*100:.0f}%'
              if dps else 'DIVIDENDO POR AÇÃO — sem LPA ou sem payout')
             + f'&#10;&#10;Payout: {rot} (detalhe na coluna Payout).&#10;'
@@ -250,11 +269,31 @@ def gerar():
               '"DY × cotação", o que fazia o dividendo por ação subir quando a AÇÃO subia. '
               'A relação foi invertida — o DPS sai do lucro, e o DY é que deriva dele.&#10;' + base)
 
-        cells[9] = cel(f'{br(dy,2)}%' if dy else VAZIO,
+        cells[10] = cel(f'{br(dy,2)}%' if dy else VAZIO,
             (f'DIVIDEND YIELD = Div./Ação R$ {br(dps)} ÷ cotação R$ {br(preco)}'
              if dy else 'DIVIDEND YIELD — sem dividendo por ação calculável')
             + '&#10;&#10;Recalculado a cada atualização de cotação: o dividendo é fixo (vem do '
               'lucro) e o yield é que se move com o preço, como deve ser.&#10;' + base)
+
+        # ── Coluna 11 · DIVIDEND YIELD REALIZADO DE 2025 ────────────────────────────────
+        # Pedido do usuário: "troque a DY LTM por DY 2025". A coluna antiga era digitada à mão
+        # — várias linhas citavam StatusInvest como fonte e a do ITUB3 usava o DY da ITUB4,
+        # "mais líquida" — e ainda era reescrita em runtime pela API do Partnr. Dois números de
+        # fora da base, brigando pela mesma célula. Este sai de data/historico.data.js, igual
+        # ao resto da tabela, e é fato consumado: serve para conferir o DY projetado ao lado.
+        dy25 = (A.get(2025) or {}).get('dy')
+        cells[11] = cel(
+            (f'<span style="{"color:#059669;font-weight:600" if dy25 >= 8 else ("" if dy25 >= 4 else "color:#dc2626")}">'
+             f'{br(dy25,2)}%</span>') if dy25 else VAZIO,
+            (f'DIVIDEND YIELD REALIZADO DE 2025 = {br(dy25,2)}%&#10;&#10;'
+             'Proventos pagos no exercício de 2025 ÷ preço de fechamento de 2025.&#10;'
+             if dy25 else
+             'DY DE 2025 — sem dado&#10;&#10;A base devolve DIVIDEND_YIELD ausente ou zero para '
+             'este ticker em 2025, o que aqui significa dado faltando e não dividendo zero.&#10;')
+            + '&#10;É FATO, não projeção. A coluna ao lado é o DY projetado, que sai do lucro de '
+              '2026 × payout ÷ cotação de hoje — as duas juntas mostram se a projeção está '
+              'pedindo muito mais do que a empresa entregou.&#10;'
+            + f'Fonte: MCP Partnr (B3/CVM), exercício 2025.')
 
         i = h.index(f'{t}.SA"'); m = h.find('<tr', i); end = m if m > 0 else len(h)
         blk = h[i:end]
@@ -309,4 +348,4 @@ if __name__ == '__main__':
         print(f"{t:8}{(f'{ltm/1e9:.2f}' if ltm else '—'):>10}{(f'{ln/1e9:.2f}' if ln else '—'):>10}"
               f"{(f'{lpa:.2f}' if lpa else '—'):>8}{(f'{po*100:.0f}%' if po is not None else '—'):>6}"
               f"{(f'{dps:.2f}' if dps else '—'):>8}{(f'{dy:.1f}%' if dy else '—'):>8}")
-    print(f"\n{len(log)} linhas regeneradas — colunas 4,5,6,8,9")
+    print(f"\n{len(log)} linhas regeneradas — colunas 4,5,6,7,9,10,11")
