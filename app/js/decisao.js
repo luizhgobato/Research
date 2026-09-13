@@ -258,16 +258,25 @@ function _decCotacao(row) {
 // calculada hoje.
 //
 // Agora ele deriva de três coisas que a própria tabela já calcula:
-//   🟢 COMPRA    margem ≥ 0  E  piso da TIR real ≥ NTN-B  E  passa em todos os critérios
-//   🟡 AGUARDAR  a faixa da TIR cruza a NTN-B, ou passa nos critérios mas está acima do teto
+//   🟢 COMPRA    margem ≥ MARGEM_MIN_COMPRA  E  piso da TIR real ≥ NTN-B  E  passa em tudo
+//   🟡 AGUARDAR  a faixa da TIR cruza a NTN-B, ou passa nos critérios sem margem suficiente
 //   🔴 ACIMA     faixa inteira da TIR abaixo da NTN-B, ou reprova em critério
 //
 // É deliberadamente EXIGENTE no verde: as três condições juntas. Um número que autoriza
 // compra tem que ser difícil de acender.
+// ⚠️ 13/09/2026 — A MARGEM MÍNIMA PASSOU A SER EXPLÍCITA. O preço-teto saiu da planilha
+// (decisão do usuário: um número de valor por linha, não dois), e com ele saiu a margem que
+// ele embutia sem dizer: o teto era o piso da faixa, e a distância dele até o justo variava
+// de 4% (KLBN11) a 28% (CLSC4) conforme o múltiplo da empresa tivesse oscilado mais ou menos.
+// Exigir `margem ≥ 0` contra o JUSTO seria afrouxar o verde — o justo é maior que o teto era,
+// então a mesma cotação passa a mostrar margem maior. Este número devolve a exigência, agora
+// como uma linha que se lê, igual para todas as empresas e fácil de mudar.
+const MARGEM_MIN_COMPRA = 0.15;
+
 function veredictoDerivado(row, r, T) {
-  const teto = parseFloat(row.dataset.precoTeto);
+  const justo = parseFloat(row.dataset.precoJusto);
   const cot = _decCotacao(row);
-  const mg = (teto > 0 && cot > 0) ? (teto - cot) / teto : null;
+  const mg = (justo > 0 && cot > 0) ? (justo - cot) / justo : null;
   const passaTudo = r.total > 0 && r.passa === r.total;
   const lo = T && T.lo != null ? T.lo : null;
   const hi = T && T.hi != null ? T.hi : null;
@@ -276,7 +285,7 @@ function veredictoDerivado(row, r, T) {
   // 23 de 30 caíam em "aguardar" — uma classificação que não classifica nada, porque `hi` é
   // sempre a medida mais otimista das três. A mediana é o consenso, e separa 18 de 12.
   const med = T && T.med != null ? T.med : null;
-  if (mg != null && mg >= 0 && med != null && med >= TIR_NTNB && passaTudo) return 'compra';
+  if (mg != null && mg >= MARGEM_MIN_COMPRA && med != null && med >= TIR_NTNB && passaTudo) return 'compra';
   if (med != null && med >= TIR_NTNB) return 'aguardar';
   return 'acima';
 }
@@ -357,19 +366,19 @@ function calcularCriterios(row) {
   //  (c) NENHUM TESTE CONTRA RETORNO FUTURO. Os seis motores foram escolhidos por argumento
   //      econômico, não por evidência. O único critério que passou por backtest foi o L/P
   //      vs Selic (nº 1), e com margem modesta: +21,9% contra +19,0% do baseline.
-  // O teto CONTINUA na tabela, na coluna própria, com convicção ★ e tooltip de auditoria.
-  // Serve para disciplina (número declarado antes de comprar) e para detectar absurdo de
-  // dado — foi ele que expôs a incorporação da Bradsaúde. Só não pontua mais.
-  const teto = parseFloat(row.dataset.precoTeto);
-  if (teto > 0 && cot > 0) {
-    const mg = ((teto - cot) / teto) * 100;
+  // O PREÇO JUSTO continua na tabela, na coluna própria, com tooltip de auditoria. Serve para
+  // disciplina (número declarado antes de comprar) e para detectar absurdo de dado — foi ele
+  // que expôs a incorporação da Bradsaúde. Só não pontua.
+  const justo = parseFloat(row.dataset.precoJusto);
+  if (justo > 0 && cot > 0) {
+    const mg = ((justo - cot) / justo) * 100;
     bruto.margem = mg;
     criterios.push({
       ref: true, na: true,
-      texto: `[referência, não pontua] Margem de segurança ${mg >= 0 ? '+' : ''}${mg.toFixed(1).replace('.', ',')}% — cotação R$ ${cot.toFixed(2).replace('.', ',')} vs teto R$ ${teto.toFixed(2).replace('.', ',')}`
+      texto: `[referência, não pontua] Margem de segurança ${mg >= 0 ? '+' : ''}${mg.toFixed(1).replace('.', ',')}% — cotação R$ ${cot.toFixed(2).replace('.', ',')} vs justo R$ ${justo.toFixed(2).replace('.', ',')}`
     });
   } else {
-    criterios.push({ ref: true, na: true, texto: '[referência, não pontua] Margem de segurança — sem preço-teto ou cotação' });
+    criterios.push({ ref: true, na: true, texto: '[referência, não pontua] Margem de segurança — sem preço justo ou cotação' });
   }
 
   // 4 · Alavancagem sob controle (não se aplica a financeiras) ──────────────────────────
@@ -473,7 +482,7 @@ function atualizarDecisaoLinha(row) {
   if (cScore) {
     const lista = r.criterios.map(c =>
       `${c.ref ? '🔵' : (c.na ? '⚪' : (c.ok ? '🟢' : '🔴'))} ${c.texto}`).join('&#10;');
-    const tip = `${lista}&#10;&#10;⚪ = critério não se aplica ou falta dado — sai do denominador em vez de contar como reprovação (empresa sem dado não é empresa ruim).&#10;🔵 = referência, fora da pontuação. A margem de segurança saiu dos critérios em 06/09/2026: o preço-teto se move até 23% em um dia por mudança de premissa minha e nunca foi testado contra retorno futuro. Ele continua na coluna Preço Teto, com convicção ★, como disciplina e detector de absurdo — mas não reprova mais empresa nenhuma.`;
+    const tip = `${lista}&#10;&#10;⚪ = critério não se aplica ou falta dado — sai do denominador em vez de contar como reprovação (empresa sem dado não é empresa ruim).&#10;🔵 = referência, fora da pontuação. A margem de segurança saiu dos critérios em 06/09/2026: o preço justo se move por mudança de premissa e nunca foi testado como régua de ordenação. Ele continua na coluna Preço Justo, como disciplina e detector de absurdo — mas não reprova mais empresa nenhuma.`;
     cScore.innerHTML = r.total
       ? `<span style="color:${_decCorScore(r.passa, r.total)};font-weight:700;">${r.passa}/${r.total}</span><span class="col-tip" data-tip="${tip}">ⓘ</span>`
       : `<span style="color:#9ca3af;">—</span><span class="col-tip" data-tip="${tip}">ⓘ</span>`;
@@ -588,7 +597,7 @@ function initColunasDecisao() {
   if (head) {
     head.insertAdjacentHTML('beforeend', `
       <th data-col="${DEC_COL_PREMIO}" class="sep gh-ret sortable" onclick="sortTable(${DEC_COL_PREMIO})"><div class="th-inner">Prêmio Selic<span class="sort-arrow"></span><span class="col-tag proj">decisão</span></div><span class="col-tip" data-tip="Fonte: Calculado&#10;Earnings yield (LPA LTM ÷ cotação) − Selic ${(SELIC * 100).toFixed(2).replace('.', ',')}%&#10;Positivo = o lucro atual da empresa, ao preço de hoje, rende mais que a renda fixa">ⓘ</span></th>
-      <th data-col="${DEC_COL_SCORE}" class="gh-ret sortable" onclick="sortTable(${DEC_COL_SCORE})"><div class="th-inner">Critérios<span class="sort-arrow"></span><span class="col-tag proj">decisão</span></div><span class="col-tip" data-tip="Fonte: Calculado&#10;Quantos dos 4 testes de qualidade+preço a empresa passa (METODOLOGIA_ANALISE.md, seção 9)&#10;&#10;⚠️ A margem de segurança contra o preço-teto SAIU da pontuação em 06/09/2026 e aparece como 🔵 referência: o teto oscila até 23% em um dia por mudança de premissa e nunca foi validado contra retorno futuro.&#10;&#10;Passe o mouse no ⓘ de cada linha para ver critério a critério">ⓘ</span></th>
+      <th data-col="${DEC_COL_SCORE}" class="gh-ret sortable" onclick="sortTable(${DEC_COL_SCORE})"><div class="th-inner">Critérios<span class="sort-arrow"></span><span class="col-tag proj">decisão</span></div><span class="col-tip" data-tip="Fonte: Calculado&#10;Quantos dos 4 testes de qualidade+preço a empresa passa (METODOLOGIA_ANALISE.md, seção 9)&#10;&#10;⚠️ A margem de segurança contra o preço justo SAIU da pontuação em 06/09/2026 e aparece como 🔵 referência: o valor justo oscila por mudança de premissa e nunca foi validado como régua de ordenação.&#10;&#10;Passe o mouse no ⓘ de cada linha para ver critério a critério">ⓘ</span></th>
       <th data-col="${DEC_COL_TIR}" class="gh-ret sortable" onclick="sortTable(${DEC_COL_TIR})"><div class="th-inner">TIR real<span class="sort-arrow"></span><span class="col-tag proj">decisão</span></div><span class="col-tip" data-tip="Fonte: Análise própria sobre MCP Partnr&#10;FAIXA de retorno anual REAL (acima do IPCA) das três medidas: caixa (FCFE), dividendos (DDM) e lucro normalizado&#10;&#10;Barra: NTN-B 2035 = IPCA + ${TIR_NTNB.toFixed(2).replace('.', ',')}%&#10;VERDE = faixa inteira acima da barra&#10;ÂMBAR = a faixa cruza a barra: depende de qual medida acertar&#10;VERMELHO = faixa inteira abaixo&#10;&#10;A largura da faixa É a informação: estreita = as três réguas concordam; larga = a leitura depende de qual você acredita&#10;Substituiu a Nota 0-100, que o backtest do projeto não validou&#10;&#10;⚠️ DEIXOU DE ORDENAR A FILA em 13/09/2026. Quando foi finalmente testada contra retorno futuro (scripts/backtest_ranking.py), ordenou pior que o L/P puro nos setores defensivos: spread barato−caro de +11,4 p.p. acertando 3 de 5 anos, contra +20,3 p.p. e 5 de 5 do L/P. O componente que ela acrescenta ao earnings yield (o crescimento g) não teve sinal próprio — somá-lo PIOROU o spread em 8,9 p.p. A TIR continua aqui porque responde a outra pergunta: quanto rende acima da NTN-B, não qual está mais barata&#10;Caixa/dividendos/lucro recalculam com a cotação ao vivo a cada atualização (motor de ${TIR_DATA_EM}; g/payout/lucro normalizado fixos até a próxima regeração)">ⓘ</span></th>
       <th data-col="${DEC_COL_G}" class="gh-ret sortable" onclick="sortTable(${DEC_COL_G})"><div class="th-inner">Crescimento<span class="sort-arrow"></span><span class="col-tag proj">decisão</span></div><span class="col-tip" data-tip="Fonte: Análise própria sobre MCP Partnr&#10;g = crescimento anual usado na TIR real&#10;&#10;É o MENOR entre:&#10;· ROE × retenção — quanto a empresa cresce com o lucro que NÃO distribui&#10;· crescimento do lucro recorrente, por REGRESSÃO LOG sobre a série (não CAGR de pontas: o CAGR usa só 2 pontos e a CLSC4 saía com −0,7% num período em que a receita subiu 10% e o lucro contábil 57%)&#10;&#10;Piso 0% e teto 15%. Quando o valor bruto difere, ele aparece entre parênteses — é aí que está a informação que o corte esconde:&#10;· BBSE3 mostra 15% e o dado diz 23,1%&#10;· PASS3 mostra 0% e o dado diz −16,4% (encolhendo)&#10;· SHUL4 mostra 0% e o dado diz −3,2% (estagnada)&#10;&#10;⚠️ São 5 pontos de série. É estimativa, não medida.">ⓘ</span></th>`);
   }
