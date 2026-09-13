@@ -181,7 +181,9 @@ def tir_ddm(preco, d0, g1, gt=GT, anos=ANOS_G1):
 def calcular(t, A, velho):
     c = A[max(A)]
     preco = c.get('preco'); pap = M['papeis'](t, A)
-    ln, motor, _f = G['normalizado'](t, A)
+    # usar_cache=False: este script ESCREVE o lucroNorm — ler o próprio arquivo antes de
+    # recalcular congelava o número para sempre (ver o comentário em gerar_colunas.py).
+    ln, motor, _f = G['normalizado'](t, A, usar_cache=False)
     if not preco or not pap or not ln or ln <= 0:
         return None
     mcap = preco * pap
