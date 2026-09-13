@@ -13,7 +13,7 @@
 //                        O 5º (margem de segurança) virou REFERÊNCIA em 06/09/2026 — ver bloco 3.
 //
 // POR QUE AS COLUNAS SÃO ACRESCENTADAS NO FIM E NÃO NO MEIO:
-// meia dúzia de arquivos indexam células por posição (cells[7] = LPA, cells[16] = cotação,
+// meia dúzia de arquivos indexam células por posição (cells[7] = LPA, cells[17] = cotação,
 // sortTable(12) = P/L…). Inserir coluna no meio deslocaria TODOS esses índices e quebraria
 // preço-teto, margem de segurança e ordenação de uma vez. Acrescentar no fim é aditivo:
 // nenhum índice existente muda. O ranking no topo da aba resolve a visibilidade.
