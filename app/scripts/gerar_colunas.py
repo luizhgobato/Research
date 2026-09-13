@@ -81,83 +81,29 @@ def _tircampo(t, c):
     m = re.search(r'\b%s:\s*(-?[\d.]+|null)' % c, b)
     return None if (not m or m.group(1) == 'null') else float(m.group(1))
 
-# ── CRESCIMENTO DECLARADO PELA EMPRESA OU PELO CONSENSO ──────────────────────────────────
-# Precedência sobre qualquer estimativa do motor, pelo mesmo princípio que POLITICA já aplica
-# ao payout em motor_teto.py: um fato declarado vence uma inferência. O motor projeta olhando
-# para trás; quando a companhia ou o consenso publica uma expectativa para a frente, ela sabe
-# mais.
-# Formato: ticker → (taxa %, fonte). A fonte vai inteira para a tooltip — número sem
-# procedência aqui é pior que número nenhum.
-CRESCIMENTO_DECLARADO = {
-    'BBSE3': (-5.0,
-              'Consenso de mercado para 2026: lucro de R$ 8,6 bi, −5,4% sobre 2025. O guidance '
-              'da companhia divulgado com o 4T25 projeta prêmios emitidos de −1,5% (faixa −3% a '
-              '+2%), depois de 2025 fechar em −8,8%, abaixo do próprio guidance revisado. '
-              'Pressões declaradas: seguro agrícola em queda pelo terceiro ano, prescritivo de '
-              'crédito afetado pela Selic alta e saída líquida na Brasilprev após o IOF sobre '
-              'VGBL. O motor estimava +23,1% por ROE × retenção — ver a ressalva abaixo.'),
-}
-
-CRESC_CAP = 25.0   # projeção de UM ano; o cap de 15% do motor é para perpetuidade de 10 anos
-
-def _reg_log_lucro(t):
-    """Crescimento anual do LUCRO CONTÁBIL por regressão log sobre a série da base."""
-    A = H.get(t)
-    if not A: return None
-    val, _q = M['anos_validos'](A)
-    pts = [(y, A[y]['lucrolin']) for y in val if A[y].get('lucrolin') and A[y]['lucrolin'] > 0]
-    if len(pts) < 3: return None
-    xs = [y for y, _ in pts]; ys = [math.log(v) for _, v in pts]
-    mx, my = st.mean(xs), st.mean(ys)
-    den = sum((x - mx) ** 2 for x in xs)
-    if not den: return None
-    return (math.exp(sum((x - mx) * (y - my) for x, y in zip(xs, ys)) / den) - 1) * 100
+# Crescimento, taxa declarada e cap vivem em scripts/motor_teto.py — UMA definição, carregada
+# aqui pelo mesmo exec() que traz o resto do motor. Durante algumas horas em 13/09/2026 houve
+# uma cópia de cada coisa nos dois arquivos, e elas já divergiam: a TIMS3 saía com 15,6% na
+# tabela e 3,1% no preço justo, porque só um dos lados conhecia o CAGR do lucro recorrente.
+CRESCIMENTO_DECLARADO = M['CRESCIMENTO_DECLARADO']
+CRESC_CAP = M['CRESC_CAP']
 
 
 def crescimento(t):
-    """(taxa %, origem) para projetar 2026 a partir de 2025.
-
-    Pedido do usuário: "utilize o lucro recorrente pra calcular a taxa de crescimento". É o
-    `gCagr` que gerar_tir.py já produz — REGRESSÃO LOG sobre a série de lucro recorrente de
-    data/fluxo.json. A escolha do estimador está justificada em cagr_recorrente(): média
-    aritmética tem viés de Jensen e explodiu a ALOS3 para 59,7% por causa do ano da fusão;
-    mediana das variações esconde queda monotônica e salvava a PASS3 indevidamente; CAGR de
-    pontas usa 2 pontos e ignora o meio. A regressão usa todos.
-
-    ⚠️ O motor ANULA gCagr para financeira, holding e cíclica de commodity — lucro recorrente
-    não é conceito aplicável ali. São 21 dos 32 tickers. Nesses vale ROE × retenção, que é o
-    crescimento que a empresa sustenta com o lucro que não distribui, e é o que o próprio motor
-    usa como a outra metade do `g`.
-    """
-    decl = CRESCIMENTO_DECLARADO.get(t)
-    if decl:
-        return decl[0], (decl[1], None)
-
-    g = _tircampo(t, 'gCagr')
-    if g is not None:
-        return max(-CRESC_CAP, min(g, CRESC_CAP)), ('CAGR do lucro recorrente por regressão log', g)
-
-    # ⚠️ SEM gCagr, ROE × RETENÇÃO NÃO PODE DECIDIR SOZINHO. O motor anula o CAGR do lucro
-    # recorrente para banco, seguradora, holding e cíclica, e até 13/09/2026 sobrava só o
-    # gRoe — que é uma IDENTIDADE CONTÁBIL, não uma medida: ele assume que o lucro retido
-    # rende o mesmo ROE de sempre. A BBSE3 expôs isso: ROE de 79% × retenção de 29% dá 23,1%
-    # de crescimento, enquanto o lucro dela de fato fez +10%, +4%, +2% nos últimos três anos.
-    # A regressão log sobre o LUCRO CONTÁBIL da própria série devolve a segunda opinião que
-    # faltava — o mesmo estimador de cagr_recorrente(), aplicado ao que a base tem. Pega-se o
-    # MENOR dos dois, que é a regra que o motor já usa quando os dois existem.
-    g = _tircampo(t, 'gRoe')
-    reg = _reg_log_lucro(t)
-    cands = [x for x in (g, reg) if x is not None]
-    if not cands:
+    """(taxa %, (origem, valor bruto)) — casca sobre M['crescimento'] no formato desta tabela."""
+    A = H.get(t)
+    if not A:
         return None, (None, None)
-    esc = min(cands)
-    if reg is not None and esc == reg and (g is None or reg < g):
-        fonte = ('regressão log sobre o lucro contábil da série — menor que ROE × retenção'
-                 + (f' ({g:.1f}%)' if g is not None else '') + ', e é o que a empresa entregou')
-    else:
-        fonte = ('ROE × retenção — o lucro recorrente não se aplica a banco, seguradora, '
-                 'holding ou cíclica')
-    return max(-CRESC_CAP, min(esc, CRESC_CAP)), (fonte, esc)
+    g, fonte = M['crescimento'](t, A, H)
+    if g is None:
+        return None, (None, None)
+    bruto = None
+    if t not in CRESCIMENTO_DECLARADO:
+        val, _q = M['anos_validos'](A)
+        cands = [x for x in (M['_reg_log']([(y, A[y].get('lucrolin')) for y in val]),) if x is not None]
+        if cands and abs(cands[0]) > CRESC_CAP:
+            bruto = cands[0]
+    return g, (fonte, bruto if bruto is not None else g)
 
 
 def normalizado(t, A, usar_cache=True):

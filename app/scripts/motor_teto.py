@@ -35,7 +35,7 @@
 #    mais desconto deve ser exigido — agora isso entra na conta.
 #
 # Fonte de tudo: data/historico.data.js (Partnr/CVM). Rodar: python3 scripts/motor_teto.py
-import re, json, statistics as st
+import re, json, math, statistics as st
 
 IPCA = 4.44
 # ⚠️ JUÍZO MAIS IMPORTANTE DO MOTOR — a taxa livre de risco é NORMALIZADA, não a spot.
@@ -752,7 +752,106 @@ def teto_bazin(t, A):
         nota=f'DPS = LPA R$ {lpa*FATOR_UNIT.get(t,1):.2f} × payout mediano {payout*100:.0f}% ({len(pos)} anos). '
              f'Yield exigido = Ke − g = {ye:.2f}%, substitui o Bazin de 8-9% arbitrário. {det}')
 
-def teto_ep(t, A, pl_setor=None):
+# ══════════════════════════════════════════════════════════════════════════════════════════
+# CRESCIMENTO PARA PROJETAR O FUNDAMENTO — mora aqui e não em gerar_colunas.py de propósito.
+# ══════════════════════════════════════════════════════════════════════════════════════════
+# O usuário: "o preço justo não está igual definimos da Allos, que era o LPA estimado x o
+# múltiplo". Estava mesmo diferente — os métodos multiplicavam o múltiplo pelo fundamento dos
+# ÚLTIMOS 12 MESES, enquanto a coluna de LPA da tabela já mostrava o projetado para 2026. Duas
+# contas de LPA na mesma linha: ITUB3 R$ 4,35 no motor contra R$ 5,16 na tela, e a BBSE3 com o
+# motor usando um LPA MAIOR justamente onde o lucro vai cair.
+#
+# A função vive no motor porque os três scripts o carregam com exec() — assim existe UMA
+# definição. A alternativa seria motor_teto ler data/tir.data.js, que é escrito por gerar_tir,
+# que lê motor_teto: o mesmo ciclo de cache que congelou o lucro normalizado da TIM.
+CRESC_CAP = 25.0
+
+CRESCIMENTO_DECLARADO = {
+    'BBSE3': (-5.0,
+              'Consenso de mercado para 2026: lucro de R$ 8,6 bi, −5,4% sobre 2025. O guidance '
+              'da companhia divulgado com o 4T25 projeta prêmios emitidos de −1,5% (faixa −3% a '
+              '+2%), depois de 2025 fechar em −8,8%, abaixo do próprio guidance revisado. '
+              'Pressões: seguro agrícola em queda pelo terceiro ano, prestamista afetado pela '
+              'Selic alta e saída líquida na Brasilprev após o IOF sobre VGBL.'),
+}
+
+
+def _reg_log(vals):
+    """Inclinação anual de ln(valor) — o mesmo estimador de cagr_recorrente()."""
+    pts = [(y, v) for y, v in vals if v and v > 0]
+    if len(pts) < 3: return None
+    xs = [y for y, _ in pts]; ys = [math.log(v) for _, v in pts]
+    mx, my = st.mean(xs), st.mean(ys)
+    den = sum((x - mx) ** 2 for x in xs)
+    if not den: return None
+    return (math.exp(sum((x - mx) * (y - my) for x, y in zip(xs, ys)) / den) - 1) * 100
+
+
+_FLUXO = None
+
+def _recorrente(t):
+    """CAGR do LUCRO RECORRENTE por regressão log, de data/fluxo.json.
+
+    Lido direto do arquivo, que é coletado à mão e não sai da pipeline — então não há o ciclo
+    de "o gerador lê a própria saída" que congelou o lucro normalizado da TIM. O motor anula
+    este conceito para banco, seguradora, holding e cíclica; nesses casos a função devolve None
+    e a decisão cai nas outras duas opiniões.
+    """
+    global _FLUXO
+    if _FLUXO is None:
+        try:
+            _FLUXO = json.load(open('data/fluxo.json', encoding='utf-8'))['tickers']
+        except Exception:
+            _FLUXO = {}
+    h = (_FLUXO.get(t) or {}).get('lucro_recorrente_hist') or {}
+    return _reg_log([(int(y), v) for y, v in h.items() if v is not None])
+
+
+def crescimento(t, A, H=None):
+    """(taxa %, origem) para projetar o fundamento de hoje ao exercício seguinte.
+
+    Ordem: taxa DECLARADA pela companhia ou pelo consenso vence tudo (princípio que POLITICA já
+    aplica ao payout). Senão, o CAGR do lucro RECORRENTE quando existe. Senão, o MENOR entre
+    ROE × retenção e a regressão log do lucro contábil — as duas opiniões que sobram quando o
+    conceito de recorrente não se aplica.
+    """
+    decl = CRESCIMENTO_DECLARADO.get(t)
+    if decl:
+        return decl[0], decl[1]
+    # ⚠️ FIN, NAV e CICL NÃO USAM O RECORRENTE, e a regra não é minha: está em gerar_tir.py
+    # desde que o Itaú saiu com −23% ao ano por esse caminho — a série de "recorrente" de um
+    # banco na base mede outra coisa. Nas cíclicas o motivo é o outro já conhecido: o CAGR
+    # herdado mede a queda até o fundo do ciclo, e projetar isso é tratar ano ruim como
+    # capacidade normal (a KLBN11 saía com −70%).
+    rec = _recorrente(t) if MOTOR.get(t) not in ('FIN', 'NAV', 'CICL') else None
+    if rec is not None:
+        return max(-CRESC_CAP, min(rec, CRESC_CAP)), 'CAGR do lucro recorrente por regressão log'
+    val, _q = anos_validos(A)
+    reg = _reg_log([(y, A[y].get('lucrolin')) for y in val])
+    roes = [A[y]['roe'] for y in val if A[y].get('roe') is not None]
+    po, _n, _f = payout_final(t, A, H)
+    groe = (mediana_com_tendencia(roes, limiar_abs=2.0)[0] * (1 - po)
+            if (roes and po is not None and po < 1) else None)
+    cands = [x for x in (reg, groe) if x is not None]
+    if not cands:
+        return None, None
+    g = min(cands)
+    fonte = ('regressão log do lucro da própria série' if g == reg
+             else 'ROE × retenção')
+    return max(-CRESC_CAP, min(g, CRESC_CAP)), fonte
+
+
+def projetar(t, A, valor, H=None):
+    """Aplica o crescimento a um fundamento por papel. Devolve (valor projetado, taxa, fonte)."""
+    if valor is None:
+        return None, None, None
+    g, fonte = crescimento(t, A, H)
+    if g is None:
+        return valor, None, None
+    return valor * (1 + g / 100), g, fonte
+
+
+def teto_ep(t, A, pl_setor=None, com_pares=True):
     """E/P histórico, respeitando quebra de série."""
     c = A[max(A)]
     val, q = anos_validos(A)
@@ -798,10 +897,32 @@ def teto_ep(t, A, pl_setor=None):
                    f'e NÃO serve de âncora.' if q else ''))
     else:
         return None
-    lpa_unit = lpa * FATOR_UNIT.get(t, 1)
-    return dict(justo=alvo*lpa_unit, conv=conv, chave='E/P',
+    # ⚠️ LPA PROJETADO, não o dos últimos 12 meses. Múltiplo é quanto se paga por um lucro
+    # FUTURO; multiplicá-lo pelo lucro que já passou embute a premissa de crescimento zero sem
+    # dizer. E a tabela já mostrava o LPA projetado na coluna própria — eram duas contas de LPA
+    # na mesma linha, ITUB3 com R$ 4,35 aqui e R$ 5,16 na tela.
+    # ⚠️ O LPA PROJETADO SAI DO LUCRO, não do campo `lpa` da base — e é de propósito: é assim
+    # que a coluna da tabela o calcula (lucro de 2025 × (1+g) ÷ papéis) e os dois têm que dar o
+    # MESMO número. Crescer o campo `lpa` dava R$ 4,80 no ITUB3 contra R$ 5,16 na tela, porque
+    # o `lpa` da base (R$ 4,35) não reconcilia com lucro ÷ papeis() (R$ 4,89): a contagem de
+    # papéis é ancorada com a regra de ±25% e nem sempre cai no divisor que a fonte usou.
+    # Partindo do lucro, a identidade fecha por construção.
+    alvo0 = alvo
+    alvo, nota_pares = (alvo_com_pares(t, 'E/P', alvo) if com_pares else (alvo, ''))
+    l25 = (A.get(2025) or {}).get('lucrolin')
+    pap_ep = papeis(t, A)
+    if l25 and l25 > 0 and pap_ep:
+        base_lpa, g, fonte_g = projetar(t, A, l25, H_GLOBAL)
+        lpa_unit = base_lpa / pap_ep
+        nota_g = (f' LPA projetado R$ {lpa_unit:.2f} = lucro de 2025 R$ {l25/1e9:.2f} bi '
+                  f'× (1{g:+.1f}%) ÷ {pap_ep/1e6:.0f} mi papéis, {fonte_g}.' if g is not None else '')
+    else:
+        lpa_unit = lpa * FATOR_UNIT.get(t, 1)
+        g, nota_g = None, ' ⚠️ Sem lucro de 2025 positivo: usa o LPA dos últimos 12 meses.'
+    return dict(justo=alvo*lpa_unit, conv=conv, chave='E/P', alvo=alvo0,
         faixa=((faixa_mult[0]*lpa_unit, faixa_mult[1]*lpa_unit) if faixa_mult else None),
-        motor=f'E/P histórico: P/L {alvo:.2f}x × LPA R$ {lpa_unit:.2f}', nota=nota)
+        motor=f'E/P: P/L {nota_pares or f"{alvo:.2f}x"} × LPA projetado R$ {lpa_unit:.2f}',
+        nota=nota + nota_g)
 
 # ══════════════════════════════════════════════════════════════════════════════════════════
 # DOIS MÉTODOS UNIVERSAIS — para que NENHUMA empresa fique sem ao menos duas leituras
@@ -856,7 +977,7 @@ def papeis(t, A):
     prox = [x for x in ns if abs(x/ref - 1) <= 0.25] or [ref]
     return st.median(prox) / FATOR_UNIT.get(t, 1)
 
-def teto_pvp(t, A):
+def teto_pvp(t, A, com_pares=True):
     val, q = anos_validos(A)
     pv = serie_pvp(t, A, val)
     if len(pv) < 3: return None
@@ -868,14 +989,16 @@ def teto_pvp(t, A):
     # reconciliar erra por um fator inteiro: a KLBN11 dava R$3,96 (= R$19,80 ÷ 5).
     v = vpa(t, A)
     if not v or v <= 0: return None
-    return dict(justo=alvo*v, conv=2, chave='P/VP', faixa=(p25*v, p75*v),
-        motor=f'P/VP {alvo:.2f}x × VPA R$ {v:.2f} por papel (faixa {p25:.2f}x–{p75:.2f}x)',
+    alvo0 = alvo
+    alvo, nota_pares = (alvo_com_pares(t, 'P/VP', alvo) if com_pares else (alvo, ''))
+    return dict(justo=alvo*v, conv=2, chave='P/VP', alvo=alvo0, faixa=(p25*v, p75*v),
+        motor=f'P/VP {nota_pares or f"{alvo:.2f}x"} × VPA R$ {v:.2f} por papel',
         nota=f'P/VP-alvo = {nota} de {len(pv)} anos ({min(pv):.2f}x a {max(pv):.2f}x), corrigido para units. '
              f'Não depende de lucro — é o método que sobrevive a prejuízo e a lucro contábil distorcido. '
              f'⚠️ Ignora rentabilidade: patrimônio grande com ROE ruim vale menos que isto sugere.'
              + (f' Restrito a partir de {q} por quebra de série.' if q else ''))
 
-def teto_ev_receita(t, A):
+def teto_ev_receita(t, A, com_pares=True):
     val, q = anos_validos(A)
     r = []
     for y in val:
@@ -892,12 +1015,14 @@ def teto_ev_receita(t, A):
     dl = (c.get('divliq') or 0)
     def _justo(mult):
         return (mult*c['receita'] - dl) / pap
+    alvo0 = alvo
+    alvo, nota_pares = (alvo_com_pares(t, 'EV/Receita', alvo) if com_pares else (alvo, ''))
     justo = _justo(alvo)
     if justo <= 0: return None
     fx = tuple(sorted((_justo(p25), _justo(p75))))
-    return dict(justo=justo, conv=2, chave='EV/Receita',
+    return dict(justo=justo, conv=2, chave='EV/Receita', alvo=alvo0,
         faixa=(fx if fx[0] > 0 else None),
-        motor=f'EV/Receita {alvo:.2f}x × receita R$ {c["receita"]/1e9:.1f} bi (faixa {p25:.2f}x–{p75:.2f}x)',
+        motor=f'EV/Receita {nota_pares or f"{alvo:.2f}x"} × receita R$ {c["receita"]/1e9:.1f} bi',
         nota=f'EV/Receita-alvo = {nota} de {len(r)} anos ({min(r):.2f}x a {max(r):.2f}x). '
              f'Não depende de lucro nem de EBITDA — sobrevive a margem colapsando e a EBITDA volátil. '
              f'EV justo − dívida líquida R$ {(c.get("divliq") or 0)/1e9:.1f} bi ÷ {pap/1e6:.0f} mi papéis. '
@@ -916,7 +1041,7 @@ def teto_ev_receita(t, A):
 # que ter um jeito de calcular o preço justo".
 #
 # Entra SÓ quando há menos de 2 métodos próprios, e sempre com ★☆☆.
-def teto_ffo(t, A):
+def teto_ffo(t, A, com_pares=True):
     """P/FFO próprio — o múltiplo certo para shopping.
 
     POR QUE SHOPPING NÃO PODE USAR E/P NEM P/VP, e a própria metodologia já dizia isso antes
@@ -959,9 +1084,15 @@ def teto_ffo(t, A):
     if len(pfs) < 3 or not atual:
         return None
     p25, alvo, p75, nfx = faixa_com_tendencia(pfs, limiar_rel=0.15)
-    return dict(justo=alvo * atual, conv=2, chave='P/FFO',
+    alvo0 = alvo
+    alvo, nota_pares = (alvo_com_pares(t, 'P/FFO', alvo) if com_pares else (alvo, ''))
+    atual0 = atual
+    atual, g, fonte_g = projetar(t, A, atual0, H_GLOBAL)   # mesmo motivo do E/P
+    if g is not None:
+        nfx += f' · FFO/papel projetado R$ {atual:.2f} = R$ {atual0:.2f} × (1{g:+.1f}%), {fonte_g}'
+    return dict(justo=alvo * atual, conv=2, chave='P/FFO', alvo=alvo0,
         faixa=(p25 * atual, p75 * atual),
-        motor=f'P/FFO {alvo:.2f}x × FFO/papel R$ {atual:.2f} (faixa {p25:.2f}x–{p75:.2f}x)',
+        motor=f'P/FFO {nota_pares or f"{alvo:.2f}x"} × FFO/papel projetado R$ {atual:.2f}',
         nota=f'P/FFO-alvo = {nfx}, série de {len(pfs)} anos ({min(pfs):.1f}x a {max(pfs):.1f}x). '
              f'FFO = lucro líquido + depreciação — devolve a despesa que não sai caixa e que a '
              f'contabilidade cobra do imóvel como se ele se desgastasse. '
@@ -1395,10 +1526,79 @@ def pl_setorial(H):
 
 PL_SETOR = {}
 
+# ══════════════════════════════════════════════════════════════════════════════════════════
+# MÚLTIPLO DOS PARES — a metade que faltava no preço justo
+# ══════════════════════════════════════════════════════════════════════════════════════════
+# `backtest_pares.py` (13/09/2026) testou as três âncoras ponto no tempo, 54 observações:
+#
+#   MÉDIA própria + pares   +14,1 p.p.   t +9,07   3 de 3 anos   p 0,040
+#   PARES do setor          +11,1 p.p.   t +4,21   3 de 3 anos   p 0,081
+#   PRÓPRIA (motor)          -1,8 p.p.   t -0,21   2 de 3 anos   p 0,549
+#
+# A média ganhou das DUAS pontas que a compõe, nas duas formas de corte. O mecanismo está na
+# última linha da saída: própria e pares concordam no veredicto em apenas 39% das linhas — são
+# informações independentes, e somar cancela o erro de cada uma. A própria prende a empresa no
+# patamar dela e nunca enxerga re-rating; a dos pares ignora o que ela tem de específico.
+#
+# O usuário mandou implementar e o assunto virou outro antes de eu fazer. Ficou de fora até
+# aqui: o preço justo usava SÓ o múltiplo próprio, que é justamente a âncora que deu negativo.
+#
+# ⚠️ Pares = mesmo grupo de motor, o ticker FORA da própria mediana, mínimo de 3. Com menos, o
+# múltiplo próprio decide sozinho — mediana de 2 pares é a opinião de duas empresas, não do
+# setor. SHOP tem 2 empresas e fica assim.
+MIN_PARES = 3
+MULT_PARES = {}
+
+def multiplos_pares(H):
+    """{(motor, chave): mediana do múltiplo-alvo dos pares}. Pré-passe, como pl_setorial."""
+    por = {}
+    for t, A in H.items():
+        g = MOTOR.get(t)
+        if not g:
+            continue
+        for f in (lambda: teto_ep(t, A, com_pares=False), lambda: teto_pvp(t, A, com_pares=False),
+                  lambda: teto_ev_receita(t, A, com_pares=False),
+                  lambda: teto_ffo(t, A, com_pares=False)):
+            try:
+                r = f()
+            except Exception:
+                r = None
+            if r and r.get('alvo') and r['alvo'] > 0:
+                por.setdefault((g, r['chave']), []).append((t, r['alvo']))
+    return por
+
+
+# P/VP FICA DE FORA DA MÉDIA COM PARES, e não é preferência: é identidade. O P/VP justo de uma
+# empresa é ≈ (ROE − g) ÷ (Ke − g) — ele É uma função do ROE. Misturar o P/VP de empresas com
+# ROE diferente compara negócios diferentes, e o projeto já tinha registrado o tombo: "o BBSE3
+# caiu de R$29,04 para R$17,76 por causa de um P/VP mediano de pares que nada tem a ver com uma
+# seguradora de ROE 79%". Ligando os pares, o erro voltou nas duas pontas — a BBSE3 (ROE 79%)
+# perdeu 18% ao ser comparada com bancos de ROE 20%, e pior, o IRBR3 (ROE 5%) GANHOU 69%
+# herdando o P/VP de quem lucra quatro vezes mais.
+# Os múltiplos de FLUXO não têm esse acoplamento mecânico e continuam na média.
+# ⚠️ Declarado: `backtest_pares.py` validou a média sobre um conjunto que INCLUÍA P/VP. Tirá-lo
+# é desviar da configuração testada — mas o mecanismo acima não é questão de amostra, e os dois
+# casos são concretos. Se for para revalidar, é o backtest que roda de novo, não o P/VP que
+# volta calado.
+PARES_SEM = {'P/VP'}
+
+def alvo_com_pares(t, chave, alvo_proprio):
+    """Média entre o múltiplo da empresa e a mediana dos pares. Devolve (alvo, nota)."""
+    if chave in PARES_SEM:
+        return alvo_proprio, ''
+    g = MOTOR.get(t)
+    pares = [v for (o, v) in MULT_PARES.get((g, chave), []) if o != t]
+    if len(pares) < MIN_PARES:
+        return alvo_proprio, f'{alvo_proprio:.2f}x próprio (sem {MIN_PARES} pares no grupo {g})'
+    mp = st.median(pares)
+    return (alvo_proprio + mp) / 2, (f'{(alvo_proprio + mp) / 2:.2f}x = média entre '
+                                     f'{alvo_proprio:.2f}x próprio e {mp:.2f}x dos {len(pares)} pares {g}')
+
 if __name__ == '__main__':
     H = carregar(); out = {}
     globals()['H_GLOBAL'] = H
     PL_SETOR.update(pl_setorial(H))
+    MULT_PARES.update(multiplos_pares(H))
     print('P/L mediano dos pares sem quebra:', {k: round(v,1) for k,v in PL_SETOR.items()}, '\n')
     print("Teto = limite INFERIOR da faixa de múltiplos próprios (p25-p75). "
           "Ke, Gordon/Bazin e convicção em estrelas saíram em 13/09/2026 — ver seção 30.\n")
