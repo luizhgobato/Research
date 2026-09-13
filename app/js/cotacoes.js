@@ -53,7 +53,7 @@ function aplicarPrecoRadar(row, preco){
   const ticker=row.dataset.ticker;
   const cotacaoCell=row.querySelector('.cotacao-cell'),margemCell=row.querySelector('.margem-cell'),cells=row.querySelectorAll('td');
   // Captura cotação e DY antigos ANTES de atualizar a célula
-  const _oldCot=parseFloat((cells[16]?.textContent||'').replace(/[^0-9,.]/g,'').replace(',','.')) || 0;
+  const _oldCot=parseFloat((cells[17]?.textContent||'').replace(/[^0-9,.]/g,'').replace(',','.')) || 0;
   const _oldDy =parseFloat(row.dataset.dyProj) || 0;
   cotacaoCell.classList.remove('loading','error');
   cotacaoCell.classList.add('updated');

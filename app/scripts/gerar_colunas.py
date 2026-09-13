@@ -47,6 +47,23 @@ M['H_GLOBAL'] = H
 
 # lucro normalizado + motor declarado, de data/tir.data.js (seção 10 da metodologia)
 tir = (RAIZ / 'data/tir.data.js').read_text()
+
+# Série anual de dividend yield, 2016-2026, coletada da Partnr em 13/09/2026. Substituiu duas
+# fontes que brigavam pela mesma célula: um texto digitado à mão (várias linhas citando
+# StatusInvest, a do ITUB3 usando o DY da ITUB4) e um bloco de runtime que sobrescrevia com a
+# API. Agora as duas colunas de DY realizado — a de 2025 e a mediana de 10 anos — saem daqui.
+DYH = json.loads((RAIZ / 'analise/dy_historico.json').read_text())['tickers']
+
+def dy_ano(t, ano):
+    v = DYH.get(t, {}).get(str(ano))
+    return v if (v and v > 0) else None      # zero na base = dado ausente, não dividendo zero
+
+def dy_mediana(t, n=10, ate=2025):
+    anos = {int(y): v for y, v in DYH.get(t, {}).items()
+            if ate - n + 1 <= int(y) <= ate and v and v > 0}
+    if len(anos) < 3:
+        return None, anos
+    return st.median(anos.values()), anos
 LN = {k: (float(v), mo) for k, v, mo in
       re.findall(r"(\w+):\s*\{[^}]*lucroNorm:(-?[\d.]+)[^}]*motor:'([^']*)'", tir)}
 FIN = {k for k, v in M['MOTOR'].items() if v in ('FIN', 'NAV')}
@@ -210,11 +227,11 @@ def gerar():
         # ── Coluna 5 · LUCRO PROJETADO 2026 ─────────────────────────────────────────────
         origem, bruto = origem_g, g_bruto
         cortado = (g is not None and bruto is not None and abs(bruto - g) > 0.05)
-        # ── Coluna 5 · TAXA DE CRESCIMENTO 2025 → 2026 ──────────────────────────────────
+        # ── Coluna 6 · TAXA DE CRESCIMENTO 2025 → 2026 ──────────────────────────────────
         # Pedido do usuário. Ela já existia embutida na projeção, mas só aparecia na tooltip —
         # e é o único número que separa a coluna de 2025 da de 2026. Exposta, a linha inteira
         # fica conferível de cabeça: lucro × (1 + taxa) = projetado.
-        cells[5] = cel(
+        cells[6] = cel(
             (f'<span style="color:{"#0a5c35" if g >= 0 else "#9c1c1c"};font-weight:600;">'
              f'{"+" if g >= 0 else ""}{br(g,1)}%</span>'
              + (f' <span style="color:#b45309;font-size:11px;">({"+" if bruto >= 0 else ""}'
@@ -229,7 +246,7 @@ def gerar():
             + '&#10;É esta taxa que leva a coluna Lucro 2025 à coluna Lucro Projetado 2026.&#10;'
             + base)
 
-        cells[6] = cel(dinheiro(proj) or VAZIO,
+        cells[5] = cel(dinheiro(proj) or VAZIO,
             (f'LUCRO PROJETADO 2026 = lucro 2025 R$ {br((l25 or 0)/1e9)} bi × (1 + {br(g)}%)'
              if proj else 'LUCRO PROJETADO 2026 — não calculável')
             + '&#10;&#10;'
@@ -282,18 +299,38 @@ def gerar():
         # fora da base, brigando pela mesma célula. Este sai de data/historico.data.js, igual
         # ao resto da tabela, e é fato consumado: serve para conferir o DY projetado ao lado.
         dy25 = (A.get(2025) or {}).get('dy')
+        # ── Coluna 11 · DY REALIZADO DE 2025 · Coluna 12 · MEDIANA DE 10 ANOS ───────────
+        d25 = dy_ano(t, 2025)
         cells[11] = cel(
-            (f'<span style="{"color:#059669;font-weight:600" if dy25 >= 8 else ("" if dy25 >= 4 else "color:#dc2626")}">'
-             f'{br(dy25,2)}%</span>') if dy25 else VAZIO,
-            (f'DIVIDEND YIELD REALIZADO DE 2025 = {br(dy25,2)}%&#10;&#10;'
-             'Proventos pagos no exercício de 2025 ÷ preço de fechamento de 2025.&#10;'
-             if dy25 else
-             'DY DE 2025 — sem dado&#10;&#10;A base devolve DIVIDEND_YIELD ausente ou zero para '
-             'este ticker em 2025, o que aqui significa dado faltando e não dividendo zero.&#10;')
-            + '&#10;É FATO, não projeção. A coluna ao lado é o DY projetado, que sai do lucro de '
-              '2026 × payout ÷ cotação de hoje — as duas juntas mostram se a projeção está '
-              'pedindo muito mais do que a empresa entregou.&#10;'
-            + f'Fonte: MCP Partnr (B3/CVM), exercício 2025.')
+            (f'<span style="{"color:#059669;font-weight:600" if d25 >= 8 else ("" if d25 >= 4 else "color:#dc2626")}">'
+             f'{br(d25,2)}%</span>') if d25 else VAZIO,
+            (f'DIVIDEND YIELD REALIZADO DE 2025 = {br(d25,2)}%&#10;&#10;'
+             'Proventos do exercício de 2025 ÷ preço da data-base.&#10;'
+             if d25 else
+             'DY DE 2025 — sem dado&#10;&#10;A base devolve yield ausente ou zero para este '
+             'ticker em 2025, e zero aqui significa dado faltando, não dividendo zero.&#10;')
+            + '&#10;É FATO, não projeção. A coluna à esquerda é o DY projetado (lucro de 2026 × '
+              'payout ÷ cotação) e a da direita é a mediana de 10 anos — as três juntas mostram '
+              'se a projeção está dentro do que a empresa costuma pagar.&#10;'
+              'Fonte: MCP Partnr (B3/CVM), analise/dy_historico.json.')
+
+        med10, usados = dy_mediana(t)
+        cells[12] = cel(
+            (f'<span style="{"color:#059669;font-weight:600" if med10 >= 8 else ("" if med10 >= 4 else "color:#dc2626")}">'
+             f'{br(med10,2)}%</span>') if med10 else VAZIO,
+            (f'DY MEDIANO DE 10 ANOS = {br(med10,2)}%&#10;&#10;'
+             f'{len(usados)} exercícios com dado, de {min(usados)} a {max(usados)}.&#10;'
+             f'Faixa: {br(min(usados.values()),2)}% a {br(max(usados.values()),2)}%.&#10;'
+             f'Média dos mesmos anos: {br(sum(usados.values())/len(usados),2)}%.&#10;&#10;'
+             'MEDIANA e não média: a PETR4 pagou 65% em 2022 e a BRAP4 47,9% em 2021 — '
+             'extraordinários que levam a média da PETR4 a 16,4% contra 10,6% da mediana. '
+             'A mediana descreve o ano típico.&#10;'
+             if med10 else
+             'DY MEDIANO DE 10 ANOS — não calculável&#10;&#10;Menos de 3 exercícios com dado '
+             'utilizável na janela. Empresa recém-listada ou sem histórico de proventos na base.&#10;')
+            + '&#10;⚠️ Anos com yield zero saem da conta: zero na base significa dado ausente.&#10;'
+              '⚠️ 10 anos podem abranger mais de uma empresa — a ALOS3 era Aliansce até 2023.&#10;'
+              'Fonte: MCP Partnr (B3/CVM), analise/dy_historico.json.')
 
         i = h.index(f'{t}.SA"'); m = h.find('<tr', i); end = m if m > 0 else len(h)
         blk = h[i:end]
@@ -348,4 +385,4 @@ if __name__ == '__main__':
         print(f"{t:8}{(f'{ltm/1e9:.2f}' if ltm else '—'):>10}{(f'{ln/1e9:.2f}' if ln else '—'):>10}"
               f"{(f'{lpa:.2f}' if lpa else '—'):>8}{(f'{po*100:.0f}%' if po is not None else '—'):>6}"
               f"{(f'{dps:.2f}' if dps else '—'):>8}{(f'{dy:.1f}%' if dy else '—'):>8}")
-    print(f"\n{len(log)} linhas regeneradas — colunas 4,5,6,7,9,10,11")
+    print(f"\n{len(log)} linhas regeneradas — colunas 4,5,6,7,9,10,11,12")
