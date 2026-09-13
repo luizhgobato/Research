@@ -1,22 +1,22 @@
 {
  "ALOS3": {
-  "justo": 31.52580292409439,
+  "justo": 28.801931066495236,
   "faixa": [
-   26.555994671343075,
-   35.17769937294588
+   24.261520944219047,
+   32.13829874077933
   ],
   "largura": 0.245,
   "nMetodos": 1,
   "metodos": [
    {
     "chave": "P/FFO",
-    "justo": 31.53,
+    "justo": 28.8,
     "papel": "principal",
-    "conta": "FFO por papel projetado R$ 3.88 × P/FFO 8.13x",
+    "conta": "FFO por papel projetado R$ 3.54 × P/FFO 8.13x",
     "origemMult": "o P/FFO mediano da própria empresa ao longo de 3 anos (8.13x) — o grupo SHOP não tem 3 pares para comparar",
     "faixa": [
-     26.56,
-     35.18
+     24.26,
+     32.14
     ]
    },
    {
@@ -31,12 +31,12 @@
    },
    {
     "chave": "E/P",
-    "justo": 32.06,
+    "justo": 29.29,
     "papel": "verificação",
-    "conta": "LPA projetado 2026 R$ 2.20 × P/L 14.54x",
+    "conta": "LPA projetado 2026 R$ 2.01 × P/L 14.54x",
     "faixa": [
-     28.51,
-     35.69
+     26.04,
+     32.61
     ]
    },
    {
@@ -60,13 +60,13 @@
     ]
    }
   ],
-  "motor": "P/FFO · faixa R$ 26.56 a R$ 35.18",
-  "nota": "PREÇO JUSTO por P/FFO, MÉTODO ÚNICO — o múltiplo que descreve este negócio, aplicado ao fundamento projetado. Não é mediana de réguas diferentes. A faixa de R$ 26.56 a R$ 35.18 (largura 25%) é a OSCILAÇÃO HISTÓRICA do próprio múltiplo — percentil 25 a 75 da série —, e o limite inferior é o teto de compra. P/FFO-alvo = série de 3 anos — amplitude observada (mín-máx), não percentis · FFO/papel projetado R$ 3.88 = R$ 3.29 × (1+17.9%), CAGR do lucro recorrente por regressão log, série de 3 anos (6.9x a 9.1x). FFO = lucro líquido + depreciação — devolve a despesa que não sai caixa e que a contabilidade cobra do imóvel como se ele se desgastasse. ⚠️ PROXY: o FFO oficial também exclui ganho de venda de ativo e ajuste a valor justo, que a base não separa. ⚠️ NÃO comparar com o P/FFO de outra operadora: quem usa valor justo quase não deprecia e o mesmo cálculo mede outra coisa. Restrito a partir de 2023 por quebra de série. || VERIFICAÇÃO (não entra na conta): P/VP R$ 26.74 · E/P R$ 32.06 · EV/Receita R$ 32.60 · EV/EBITDA R$ 32.60. Todas dentro da faixa. ",
-  "teto": 26.56,
-  "faixaLo": 26.56,
-  "faixaHi": 35.18,
+  "motor": "P/FFO · faixa R$ 24.26 a R$ 32.14",
+  "nota": "PREÇO JUSTO por P/FFO, MÉTODO ÚNICO — o múltiplo que descreve este negócio, aplicado ao fundamento projetado. Não é mediana de réguas diferentes. A faixa de R$ 24.26 a R$ 32.14 (largura 25%) é a OSCILAÇÃO HISTÓRICA do próprio múltiplo — percentil 25 a 75 da série —, e o limite inferior é o teto de compra. P/FFO-alvo = série de 3 anos — amplitude observada (mín-máx), não percentis · FFO/papel projetado R$ 3.54 = R$ 3.29 × (1+7.7%), regressão log do FFO da própria série (shopping não projeta lucro contábil), série de 3 anos (6.9x a 9.1x). FFO = lucro líquido + depreciação — devolve a despesa que não sai caixa e que a contabilidade cobra do imóvel como se ele se desgastasse. ⚠️ PROXY: o FFO oficial também exclui ganho de venda de ativo e ajuste a valor justo, que a base não separa. ⚠️ NÃO comparar com o P/FFO de outra operadora: quem usa valor justo quase não deprecia e o mesmo cálculo mede outra coisa. Restrito a partir de 2023 por quebra de série. || VERIFICAÇÃO (não entra na conta): P/VP R$ 26.74 · E/P R$ 29.29 · EV/Receita R$ 32.60 · EV/EBITDA R$ 32.60. 2 fora da faixa — as réguas discordam, olhe a empresa. ",
+  "teto": 24.26,
+  "faixaLo": 24.26,
+  "faixaHi": 32.14,
   "cot": 26.74,
-  "seg": -0.6928956378180238
+  "seg": -10.215678817001434
  },
  "ASAI3": {
   "justo": null,
@@ -933,33 +933,33 @@
   "seg": -5.260740736808005
  },
  "MULT3": {
-  "justo": 34.93749999999999,
+  "justo": 30.8214305989143,
   "faixa": [
-   31.18435218229238,
-   37.75371372975685
+   27.510449990944586,
+   33.30585953697256
   ],
   "largura": 0.174,
   "nMetodos": 1,
   "metodos": [
    {
     "chave": "P/FFO",
-    "justo": 34.94,
+    "justo": 30.82,
     "papel": "principal",
-    "conta": "FFO por papel projetado R$ 3.70 × P/FFO 9.43x",
+    "conta": "FFO por papel projetado R$ 3.27 × P/FFO 9.43x",
     "origemMult": "o P/FFO mediano da própria empresa ao longo de 5 anos (9.43x) — o grupo SHOP não tem 3 pares para comparar",
     "faixa": [
-     31.18,
-     37.75
+     27.51,
+     33.31
     ]
    },
    {
     "chave": "E/P",
-    "justo": 27.8,
+    "justo": 24.53,
     "papel": "verificação",
-    "conta": "LPA projetado 2026 R$ 2.74 × P/L 10.13x",
+    "conta": "LPA projetado 2026 R$ 2.42 × P/L 10.13x",
     "faixa": [
-     26.76,
-     33.8
+     23.61,
+     29.82
     ]
    },
    {
@@ -983,13 +983,13 @@
     ]
    }
   ],
-  "motor": "P/FFO · faixa R$ 31.18 a R$ 37.75",
-  "nota": "PREÇO JUSTO por P/FFO, MÉTODO ÚNICO — o múltiplo que descreve este negócio, aplicado ao fundamento projetado. Não é mediana de réguas diferentes. A faixa de R$ 31.18 a R$ 37.75 (largura 17%) é a OSCILAÇÃO HISTÓRICA do próprio múltiplo — percentil 25 a 75 da série —, e o limite inferior é o teto de compra. P/FFO-alvo = TENDÊNCIA -4.8 entre as metades → faixa só dos 3 anos recentes · FFO/papel projetado R$ 3.70 = R$ 2.96 × (1+25.0%), CAGR do lucro recorrente por regressão log, série de 5 anos (7.4x a 14.6x). FFO = lucro líquido + depreciação — devolve a despesa que não sai caixa e que a contabilidade cobra do imóvel como se ele se desgastasse. ⚠️ PROXY: o FFO oficial também exclui ganho de venda de ativo e ajuste a valor justo, que a base não separa. ⚠️ NÃO comparar com o P/FFO de outra operadora: quem usa valor justo quase não deprecia e o mesmo cálculo mede outra coisa. Restrito a partir de 2022 por quebra de série. || VERIFICAÇÃO (não entra na conta): E/P R$ 27.80 · P/VP R$ 29.97 · EV/Receita R$ 34.18. 2 fora da faixa — as réguas discordam, olhe a empresa. ",
-  "teto": 31.18,
-  "faixaLo": 31.18,
-  "faixaHi": 37.75,
+  "motor": "P/FFO · faixa R$ 27.51 a R$ 33.31",
+  "nota": "PREÇO JUSTO por P/FFO, MÉTODO ÚNICO — o múltiplo que descreve este negócio, aplicado ao fundamento projetado. Não é mediana de réguas diferentes. A faixa de R$ 27.51 a R$ 33.31 (largura 17%) é a OSCILAÇÃO HISTÓRICA do próprio múltiplo — percentil 25 a 75 da série —, e o limite inferior é o teto de compra. P/FFO-alvo = TENDÊNCIA -4.8 entre as metades → faixa só dos 3 anos recentes · FFO/papel projetado R$ 3.27 = R$ 2.96 × (1+10.3%), regressão log do FFO da própria série (shopping não projeta lucro contábil), série de 5 anos (7.4x a 14.6x). FFO = lucro líquido + depreciação — devolve a despesa que não sai caixa e que a contabilidade cobra do imóvel como se ele se desgastasse. ⚠️ PROXY: o FFO oficial também exclui ganho de venda de ativo e ajuste a valor justo, que a base não separa. ⚠️ NÃO comparar com o P/FFO de outra operadora: quem usa valor justo quase não deprecia e o mesmo cálculo mede outra coisa. Restrito a partir de 2022 por quebra de série. || VERIFICAÇÃO (não entra na conta): E/P R$ 24.53 · P/VP R$ 29.97 · EV/Receita R$ 34.18. 2 fora da faixa — as réguas discordam, olhe a empresa. ",
+  "teto": 27.51,
+  "faixaLo": 27.51,
+  "faixaHi": 33.31,
   "cot": 27.95,
-  "seg": 10.371715158248385
+  "seg": -1.5977565223400432
  },
  "PASS3": {
   "justo": null,

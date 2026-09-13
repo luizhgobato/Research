@@ -99,8 +99,16 @@ function atualizarPLAtualLinha(row) {
   if (!preco || preco <= 0) return;
   const pl = preco / lpaLtm;
   const fonte = row.dataset.lpaFonte || '';
-  const tip = `Cotação R$ ${preco.toFixed(2).replace('.', ',')} ÷ LPA LTM R$ ${lpaLtm.toFixed(2).replace('.', ',')}${fonte ? ' — ' + fonte : ''}. Recalculado automaticamente a cada atualização de cotação (LPA travado até o próximo resultado trimestral).`;
-  plCell.innerHTML = `${pl.toFixed(1).replace('.', ',')}x<span class="col-tip" data-tip="${tip.replace(/"/g, '&quot;')}">ⓘ</span>`;
+  // SHOPPING: o denominador é FFO por papel, não LPA — a linha traz data-metrica-lucro="FFO".
+  // Sem isto a coluna mostraria "P/L" sobre um número que não é lucro, que é pior que não
+  // mostrar nada: o leitor compararia 8,1x de shopping com 9,4x de banco como se fossem a
+  // mesma régua. Ver METODOLOGIA_ANALISE.md seção 31.9.
+  const ehFFO = row.dataset.metricaLucro === 'FFO';
+  const nomeMult = ehFFO ? 'P/FFO' : 'P/L';
+  const nomeBase = ehFFO ? 'FFO por papel (LTM)' : 'LPA LTM';
+  const tip = `${nomeMult} — Cotação R$ ${preco.toFixed(2).replace('.', ',')} ÷ ${nomeBase} R$ ${lpaLtm.toFixed(2).replace('.', ',')}${fonte ? ' — ' + fonte : ''}. Recalculado automaticamente a cada atualização de cotação (o fundamento fica travado até o próximo resultado trimestral).`;
+  const selo = ehFFO ? '<span style="font-size:9px;font-weight:700;color:#7c3aed;background:#f3e8ff;border-radius:3px;padding:1px 4px;margin-left:4px;vertical-align:middle;">FFO</span>' : '';
+  plCell.innerHTML = `${pl.toFixed(1).replace('.', ',')}x${selo}<span class="col-tip" data-tip="${tip.replace(/"/g, '&quot;')}">ⓘ</span>`;
   plCell.style.cssText = pl <= 0 ? 'color:#dc2626' : pl <= 12 ? 'color:#059669;font-weight:600' : pl <= 20 ? 'color:#2563eb' : 'color:#dc2626';
 }
 function atualizarTodosPLAtual() {
@@ -150,7 +158,17 @@ function atualizarCelulasRadarFund(ticker, d) {
   if (dyReal && d.dy === 0 && !dyReal.querySelector('.col-tip')) {
     dyReal.innerHTML = '<span style="color:#9ca3af;">—</span><span class="col-tip" data-tip="A base Partnr devolve DIVIDEND_YIELD = 0 para este ticker, o que aqui significa dado ausente e não dividendo zero. O payout mediano usado na TIR foi calculado com os anos que têm dado.">ⓘ</span>';
   }
-  if (roeReal && d.roe != null && !roeReal.querySelector('.col-tip')) {
+  // SHOPPING: FFO ÷ patrimônio no lugar de lucro ÷ patrimônio (data-roe-ffo, gerado por
+  // scripts/gerar_colunas.py). Decisão do usuário, tomada depois de eu levantar a ressalva —
+  // que continua valendo e está escrita na tooltip: o patrimônio segue medido a custo
+  // histórico, então o retorno sai ALTO por construção e não se compara com o de uma empresa
+  // sem imóvel no balanço.
+  const roeFFO = parseFloat(radarRow.dataset.roeFfo);
+  if (roeReal && roeFFO && !roeReal.querySelector('.col-tip')) {
+    roeReal.innerHTML = `<span style="${roeFFO >= 20 ? 'color:#059669;font-weight:600' : roeFFO >= 10 ? 'color:#2563eb' : 'color:#9ca3af'}">${fmtPct(roeFFO)}</span>` +
+      '<span style="font-size:9px;font-weight:700;color:#7c3aed;background:#f3e8ff;border-radius:3px;padding:1px 4px;margin-left:4px;vertical-align:middle;">FFO</span>' +
+      `<span class="col-tip" data-tip="RETORNO SOBRE O PATRIMÔNIO, MEDIDO EM FFO (LTM)&#10;&#10;FFO dos últimos 12 meses ÷ patrimônio líquido.&#10;&#10;Em shopping o lucro contábil desconta a depreciação do imóvel, que não sai caixa e não corresponde a desgaste real — por isso a coluna inteira desta linha usa FFO.&#10;&#10;⚠️ NÃO é comparável com o ROE das outras linhas: o patrimônio do shopping carrega o imóvel a CUSTO HISTÓRICO, um capital subavaliado, então este retorno sai alto por construção.&#10;Fonte: MCP Partnr (B3/CVM), TTM 2T26.">ⓘ</span>`;
+  } else if (roeReal && d.roe != null && !roeReal.querySelector('.col-tip')) {
     roeReal.innerHTML = `<span style="${d.roe >= 20 ? 'color:#059669;font-weight:600' : d.roe >= 10 ? 'color:#2563eb' : 'color:#9ca3af'}">${fmtPct(d.roe)}</span>` +
       `<span class="col-tip" data-tip="ROE — RETORNO SOBRE O PATRIMÔNIO LÍQUIDO (LTM)&#10;&#10;Campo ROE da base, série TTM, data-base 30/06/2026. Fonte: MCP Partnr (B3/CVM).&#10;&#10;⚠️ É o ROE PONTUAL (lucro LTM ÷ patrimônio final), não o ROE_AVG sobre patrimônio médio — as duas definições dão números diferentes e o projeto usa a pontual em toda parte, inclusive no motor de preço-teto.&#10;Critério nº 2 do Radar: ROE ≥ 15%.">ⓘ</span>`;
   }
