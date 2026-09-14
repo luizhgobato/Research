@@ -3470,3 +3470,72 @@ A quantidade existe no Formulário de Referência e nas notas do ITR. **Decisão
 usuário**, porque muda o preço justo de 6 tickers: coletar a quantidade e passar a usar ações
 em circulação, ou manter capital social e deixar registrado que os 6 métodos de firma ficam
 conservadores na proporção da tesouraria.
+
+### 40.6 CORRIGIDO — o motor passa a usar ações em circulação (14/09/2026)
+
+> "Vamos corrigir e já colocar essa informação no motor."
+
+**Quanto tem de tesouraria, de fato** (linha do BPP consolidado, 2026Q2):
+
+| ticker | tesouraria (R$) | % das ações | origem da quantidade |
+|---|---|---|---|
+| **VALE3** | **13.854 mi** | **3,87%** | `1 − free_float` (não tem controlador) |
+| BPAC11 | 739 mi | 0,33% | estimada pelo preço |
+| KLBN11 | 82 mi | 0,35% | estimada pelo preço |
+| PETR4 | **0** | 0% | BPP diz zero nas duas posições |
+| RANI3 | **0** | 0% | BPP diz zero |
+
+A surpresa útil: **a Petrobras não carrega tesouraria nenhuma hoje**, e a RANI3 também não.
+Das 6 linhas que a seção 40.3 apontou como sensíveis, só a VALE3 é material.
+
+**A quantidade, que era o obstáculo.** O BPP traz o valor em REAIS (custo de aquisição), não o
+número de ações — e eu tinha dito que estimar poria estimativa dentro de um divisor. Achei o
+caminho: `valor de tesouraria ÷ valor de mercado`. A premissa é que a recompra correu perto do
+preço de hoje, o que vale para quem compra continuamente a mercado.
+
+⚠️ **E ela se valida sozinha na VALE3**, com dois caminhos independentes:
+- `13.854 ÷ 351.138` (valor de mercado) = **3,95%**
+- `1 − 0,96044` (free float, e a Vale não tem controlador) = **3,96%**
+
+Um centésimo de diferença. Onde o free float serve, ele manda; onde não serve, a estimativa
+pelo preço entra com o método declarado na célula.
+
+**Efeito — 4 linhas, todas para cima** (preço justo sobe porque o lucro passa a ser dividido
+por menos ações):
+
+| ticker | antes | depois | Δ |
+|---|---|---|---|
+| **VALE3** | R$ 66,75 | **R$ 69,43** | **+4,02%** |
+| **BRAP4** | R$ 19,27 | **R$ 20,04** | **+4,02%** |
+| KLBN11 | R$ 20,17 | R$ 20,24 | +0,35% |
+| BPAC11 | R$ 76,90 | R$ 77,15 | +0,33% |
+
+A BRAP4 sobe sem ter tesouraria própria coletada: ela é avaliada por **paridade com a VALE3**,
+então herda a correção da investida. É o comportamento certo.
+
+**O que o motor passa a saber, e a dizer.** `tesouraria_pendente()` lista quem ainda não foi
+coletado, e o `__main__` imprime o aviso no fim de cada rodada:
+
+```
+⚠️ tesouraria não coletada em 29 de 34 tickers — entram como zero: ALOS3, ASAI3, …
+```
+
+Isso é o ponto da mudança tanto quanto o número: antes o motor era **cegamente** blind à
+tesouraria; agora ele sabe exatamente de quem não sabe. Ticker sem coleta entra como zero —
+que é uma suposição, não um dado — e o aviso diz isso em voz alta.
+
+Cobrir os 29 restantes é uma chamada de `companies_rawReports` por empresa; o coletor
+(`scripts/coletar_tesouraria.py`) lê a resposta e alimenta `analise/tesouraria.json`. Como o N
+cancela em 28 dos 34 (seção 40.2), o impacto sobre o PREÇO JUSTO já está praticamente todo
+capturado — o que falta é a precisão das colunas Lucro por Ação e Div. por Ação.
+
+**Dois bugs de implementação, registrados porque nenhum dos dois dava sintoma:**
+
+1. `Path(__file__)` para achar o JSON fazia o dicionário nascer VAZIO. `gerar_colunas.py` e
+   `gerar_relatorio_valuation.py` carregam o motor com `exec(src, M)`, e aí `__file__` não
+   existe no namespace — o `try/except` engolia o `NameError` e **todo ticker saía
+   "nao_coletado"**, sem nenhum sinal além de o número não mudar. Virou caminho relativo, como
+   o resto do módulo.
+2. A linha "Ações em Tesouraria" existe em **duas posições** do plano de contas da CVM: sob
+   Reservas de Capital (VALE3) e sob Reservas de Lucros (BPAC11, KLBN11). Ler só a primeira
+   teria deixado a BPAC11 e a KLBN11 passarem como zero. O coletor soma as duas.
