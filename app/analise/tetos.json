@@ -315,23 +315,23 @@
   "seg": -6.363645591901625
  },
  "BPAC11": {
-  "justo": 76.89560924861685,
+  "justo": 77.15197682621366,
   "faixa": [
-   70.14080417708796,
-   79.55659306467369
+   70.37465144396418,
+   79.82183227982708
   ],
   "largura": 0.118,
   "nMetodos": 1,
   "metodos": [
    {
     "chave": "P/L",
-    "justo": 76.9,
+    "justo": 77.15,
     "papel": "principal",
-    "conta": "LPA projetado 2026 R$ 5.05 × P/L 15.23x",
+    "conta": "LPA projetado 2026 R$ 5.07 × P/L 15.23x",
     "origemMult": "o P/L mediano da própria empresa ao longo de 6 anos (13.15x), ajustado pela rentabilidade (ROE): hoje 23.3% contra 20.1% de mediana do período dá fator 1.16 → múltiplo-alvo 15.23x. Proporção direta, sem teto: mais rentável que a própria mediana merece múltiplo maior; menos rentável, menor. O múltiplo do setor NÃO entra desde 14/09/2026.",
     "faixa": [
-     70.14,
-     79.56
+     70.37,
+     79.82
     ]
    },
    {
@@ -345,32 +345,32 @@
     ]
    }
   ],
-  "motor": "P/L · faixa R$ 70.14 a R$ 79.56",
-  "nota": "PREÇO JUSTO por P/L, MÉTODO ÚNICO — o múltiplo que descreve este negócio, aplicado ao fundamento projetado. Não é mediana de réguas diferentes. A faixa de R$ 70.14 a R$ 79.56 (largura 12%) é a OSCILAÇÃO HISTÓRICA do próprio múltiplo — percentil 25 a 75 da série —, e o limite inferior é o teto de compra. P/L: faixa 12.0x–13.6x (mediana 13.1x) · percentis de 6 anos, série de 6 anos (10.8x a 13.8x). LPA projetado R$ 5.05 = lucro base R$ 16.66 bi (exercício fechado de 2025) × (1+16.6%) ÷ 3847 mi papéis, ROE × retenção. || VERIFICAÇÃO (não entra na conta): P/VP R$ 58.09. 1 fora da faixa — as réguas discordam, olhe a empresa. ",
-  "teto": 70.14,
-  "faixaLo": 70.14,
-  "faixaHi": 79.56,
+  "motor": "P/L · faixa R$ 70.37 a R$ 79.82",
+  "nota": "PREÇO JUSTO por P/L, MÉTODO ÚNICO — o múltiplo que descreve este negócio, aplicado ao fundamento projetado. Não é mediana de réguas diferentes. A faixa de R$ 70.37 a R$ 79.82 (largura 12%) é a OSCILAÇÃO HISTÓRICA do próprio múltiplo — percentil 25 a 75 da série —, e o limite inferior é o teto de compra. P/L: faixa 12.0x–13.6x (mediana 13.1x) · percentis de 6 anos, série de 6 anos (10.8x a 13.8x). LPA projetado R$ 5.07 = lucro base R$ 16.66 bi (exercício fechado de 2025) × (1+16.6%) ÷ 3834 mi papéis, ROE × retenção. || VERIFICAÇÃO (não entra na conta): P/VP R$ 58.09. 1 fora da faixa — as réguas discordam, olhe a empresa. ",
+  "teto": 70.37,
+  "faixaLo": 70.37,
+  "faixaHi": 79.82,
   "cot": 57.8,
-  "seg": 17.594329466098678
+  "seg": 17.868154493065948
  },
  "BRAP4": {
-  "justo": 19.26557341570943,
+  "justo": 20.04036484707503,
   "faixa": [
-   18.755057794985863,
-   19.669426539737152
+   19.50931814118831,
+   20.46045947781917
   ],
   "largura": 0.046,
   "nMetodos": 1,
   "metodos": [
    {
     "chave": "Paridade",
-    "justo": 19.27,
+    "justo": 20.04,
     "papel": "principal",
-    "conta": "preço justo de VALE3 R$ 66.75 × paridade 0.289",
+    "conta": "preço justo de VALE3 R$ 69.43 × paridade 0.289",
     "origemMult": "a razão entre o preço de BRAP4 e o de VALE3 ao longo de 6 anos (0.289) — o desconto de holding que o mercado pratica",
     "faixa": [
-     18.76,
-     19.67
+     19.51,
+     20.46
     ]
    },
    {
@@ -404,13 +404,13 @@
     ]
    }
   ],
-  "motor": "Paridade · faixa R$ 18.76 a R$ 19.67",
-  "nota": "PREÇO JUSTO por Paridade, MÉTODO ÚNICO — o múltiplo que descreve este negócio, aplicado ao fundamento projetado. Não é mediana de réguas diferentes. A faixa de R$ 18.76 a R$ 19.67 (largura 5%) é a OSCILAÇÃO HISTÓRICA do próprio múltiplo — percentil 25 a 75 da série —, e o limite inferior é o teto de compra. Razão preço BRAP4 ÷ preço VALE3 = TENDÊNCIA -0.0 entre as metades da série → média dos 3 anos recentes de 6 anos (0.277 a 0.334, dispersão 17%; faixa 0.281 a 0.295, TENDÊNCIA -0.0 entre as metades → faixa só dos 3 anos recentes). É o desconto de holding medido pelo próprio mercado, não um NAV estimado por mim. ⚠️ NÃO enxerga os demais ativos da holding nem a dívida dela, e não sabe dizer se o par inteiro está caro: se o motor errar em VALE3, erra aqui junto. Convicção limitada a ★★☆ por isso. || VERIFICAÇÃO (não entra na conta): E/P R$ 1.88 · P/FFO R$ 2.09 · P/VP R$ 8.79. 3 fora da faixa — as réguas discordam, olhe a empresa. ",
-  "teto": 18.76,
-  "faixaLo": 18.76,
-  "faixaHi": 19.67,
+  "motor": "Paridade · faixa R$ 19.51 a R$ 20.46",
+  "nota": "PREÇO JUSTO por Paridade, MÉTODO ÚNICO — o múltiplo que descreve este negócio, aplicado ao fundamento projetado. Não é mediana de réguas diferentes. A faixa de R$ 19.51 a R$ 20.46 (largura 5%) é a OSCILAÇÃO HISTÓRICA do próprio múltiplo — percentil 25 a 75 da série —, e o limite inferior é o teto de compra. Razão preço BRAP4 ÷ preço VALE3 = TENDÊNCIA -0.0 entre as metades da série → média dos 3 anos recentes de 6 anos (0.277 a 0.334, dispersão 17%; faixa 0.281 a 0.295, TENDÊNCIA -0.0 entre as metades → faixa só dos 3 anos recentes). É o desconto de holding medido pelo próprio mercado, não um NAV estimado por mim. ⚠️ NÃO enxerga os demais ativos da holding nem a dívida dela, e não sabe dizer se o par inteiro está caro: se o motor errar em VALE3, erra aqui junto. Convicção limitada a ★★☆ por isso. || VERIFICAÇÃO (não entra na conta): E/P R$ 1.88 · P/FFO R$ 2.09 · P/VP R$ 8.79. 3 fora da faixa — as réguas discordam, olhe a empresa. ",
+  "teto": 19.51,
+  "faixaLo": 19.51,
+  "faixaHi": 20.46,
   "cot": 22.95,
-  "seg": -22.36699161831241
+  "seg": -17.63609488507792
  },
  "BRSR6": {
   "justo": 26.90610247178413,
@@ -912,23 +912,23 @@
   "seg": -2.071750791332833
  },
  "KLBN11": {
-  "justo": 20.170247531396022,
+  "justo": 20.240712966183338,
   "faixa": [
-   15.977458131363164,
-   24.309963647884164
+   16.03327591606165,
+   24.394891319468044
   ],
   "largura": 0.343,
   "nMetodos": 1,
   "metodos": [
    {
     "chave": "EV/EBITDA",
-    "justo": 20.17,
+    "justo": 20.24,
     "papel": "principal",
     "conta": "EBITDA médio de 6 anos (R$ 8.6 bi) × EV/EBITDA 5.73x − dívida líquida R$ 24.8 bi, ÷ 1,2 bi papéis",
     "origemMult": "o EV/EBITDA mediano da própria empresa ao longo de 6 anos (5.73x; a série foi de 4.5x a 6.6x) — em cíclica a janela cobre pico e fundo do ciclo de propósito",
     "faixa": [
-     15.98,
-     24.31
+     16.03,
+     24.39
     ]
    },
    {
@@ -938,7 +938,7 @@
     "conta": "LPA projetado 2026 R$ 1.04 × P/L 1.87x",
     "faixa": [
      1.38,
-     2.35
+     2.36
     ]
    },
    {
@@ -953,22 +953,22 @@
    },
    {
     "chave": "P/FFO",
-    "justo": 15.53,
+    "justo": 15.58,
     "papel": "verificação",
-    "conta": "FFO por papel projetado R$ 20.59 × P/FFO 0.75x",
+    "conta": "FFO por papel projetado R$ 20.66 × P/FFO 0.75x",
     "faixa": [
-     13.61,
-     17.47
+     13.65,
+     17.53
     ]
    }
   ],
-  "motor": "EV/EBITDA · faixa R$ 15.98 a R$ 24.31",
-  "nota": "PREÇO JUSTO por EV/EBITDA, MÉTODO ÚNICO — o múltiplo que descreve este negócio, aplicado ao fundamento projetado. Não é mediana de réguas diferentes. A faixa de R$ 15.98 a R$ 24.31 (largura 34%) é a OSCILAÇÃO HISTÓRICA do próprio múltiplo — percentil 25 a 75 da série —, e o limite inferior é o teto de compra. Múltiplo-alvo 5.73x = MEDIANA da série inteira (cíclica cobre pico e fundo) do próprio histórico (6 anos: 4.5x a 6.6x), não de pares. Faixa 5.14x a 6.32x (percentis dos 6 anos, série inteira). EV justo − dívida líquida R$ 24.8 bi ÷ 1215 mi papéis. || VERIFICAÇÃO (não entra na conta): E/P R$ 1.94 · P/VP R$ 4.54 · P/FFO R$ 15.53. 3 fora da faixa — as réguas discordam, olhe a empresa. ",
-  "teto": 15.98,
-  "faixaLo": 15.98,
-  "faixaHi": 24.31,
+  "motor": "EV/EBITDA · faixa R$ 16.03 a R$ 24.39",
+  "nota": "PREÇO JUSTO por EV/EBITDA, MÉTODO ÚNICO — o múltiplo que descreve este negócio, aplicado ao fundamento projetado. Não é mediana de réguas diferentes. A faixa de R$ 16.03 a R$ 24.39 (largura 34%) é a OSCILAÇÃO HISTÓRICA do próprio múltiplo — percentil 25 a 75 da série —, e o limite inferior é o teto de compra. Múltiplo-alvo 5.73x = MEDIANA da série inteira (cíclica cobre pico e fundo) do próprio histórico (6 anos: 4.5x a 6.6x), não de pares. Faixa 5.14x a 6.32x (percentis dos 6 anos, série inteira). EV justo − dívida líquida R$ 24.8 bi ÷ 1210 mi papéis. || VERIFICAÇÃO (não entra na conta): E/P R$ 1.94 · P/VP R$ 4.54 · P/FFO R$ 15.58. 3 fora da faixa — as réguas discordam, olhe a empresa. ",
+  "teto": 16.03,
+  "faixaLo": 16.03,
+  "faixaHi": 24.39,
   "cot": 19.4,
-  "seg": -21.4210661076214
+  "seg": -20.998354307404295
  },
  "LEVE3": {
   "justo": 41.22830028696638,
@@ -1592,53 +1592,53 @@
   "seg": 46.77155999329503
  },
  "VALE3": {
-  "justo": 66.74513172785828,
+  "justo": 69.42937865019202,
   "faixa": [
-   53.150531334693596,
-   120.69573119024257
+   55.28805277576683,
+   125.54967538960666
   ],
   "largura": 0.56,
   "nMetodos": 1,
   "metodos": [
    {
     "chave": "EV/EBITDA",
-    "justo": 66.75,
+    "justo": 69.43,
     "papel": "principal",
-    "conta": "EBITDA médio de 6 anos (R$ 86.4 bi) × EV/EBITDA 4.30x − dívida líquida R$ 68.2 bi, ÷ 4,5 bi papéis",
+    "conta": "EBITDA médio de 6 anos (R$ 86.4 bi) × EV/EBITDA 4.30x − dívida líquida R$ 68.2 bi, ÷ 4,4 bi papéis",
     "origemMult": "o EV/EBITDA mediano da própria empresa ao longo de 6 anos (4.30x; a série foi de 2.5x a 8.9x) — em cíclica a janela cobre pico e fundo do ciclo de propósito",
     "faixa": [
-     53.15,
-     120.7
+     55.29,
+     125.55
     ]
    },
    {
     "chave": "E/P",
-    "justo": 3.66,
+    "justo": 3.81,
     "papel": "verificação",
-    "conta": "LPA projetado 2026 R$ 1.95 × P/L 1.88x",
+    "conta": "LPA projetado 2026 R$ 2.03 × P/L 1.88x",
     "faixa": [
-     2.03,
-     12.32
+     2.11,
+     12.81
     ]
    },
    {
     "chave": "EV/Receita",
-    "justo": 3.86,
+    "justo": 4.02,
     "papel": "verificação",
-    "conta": "receita R$ 218.1 bi × EV/Receita 0.39x − dívida líquida R$ 68.2 bi, ÷ 4,5 bi papéis",
+    "conta": "receita R$ 218.1 bi × EV/Receita 0.39x − dívida líquida R$ 68.2 bi, ÷ 4,4 bi papéis",
     "faixa": [
-     3.18,
-     6.62
+     3.31,
+     6.89
     ]
    },
    {
     "chave": "P/FFO",
-    "justo": 6.78,
+    "justo": 7.06,
     "papel": "verificação",
-    "conta": "FFO por papel projetado R$ 4.81 × P/FFO 1.41x",
+    "conta": "FFO por papel projetado R$ 5.00 × P/FFO 1.41x",
     "faixa": [
-     4.87,
-     11.73
+     5.06,
+     12.2
     ]
    },
    {
@@ -1652,12 +1652,12 @@
     ]
    }
   ],
-  "motor": "EV/EBITDA · faixa R$ 53.15 a R$ 120.70",
-  "nota": "⛔ SEM TETO DE COMPRA — o múltiplo oscilou 56% ao longo da série (faixa de R$ 53.15 a R$ 120.70). O preço justo continua valendo — é a mediana do múltiplo, a melhor estimativa única —, mas o limite inferior de uma faixa tão larga é o ano mais pessimista da série, não uma estimativa conservadora de valor. Dar um preço de entrada aqui seria emprestar precisão à volatilidade. || PREÇO JUSTO por EV/EBITDA, MÉTODO ÚNICO — o múltiplo que descreve este negócio, aplicado ao fundamento projetado. Não é mediana de réguas diferentes. A faixa de R$ 53.15 a R$ 120.70 (largura 56%) é a OSCILAÇÃO HISTÓRICA do próprio múltiplo — percentil 25 a 75 da série —, e o limite inferior é o teto de compra. Múltiplo-alvo 4.30x = MEDIANA da série inteira (cíclica cobre pico e fundo) do próprio histórico (6 anos: 2.5x a 8.9x), não de pares. Faixa 3.58x a 7.14x (percentis dos 6 anos, série inteira). EV justo − dívida líquida R$ 68.2 bi ÷ 4542 mi papéis. || VERIFICAÇÃO (não entra na conta): E/P R$ 3.66 · EV/Receita R$ 3.86 · P/FFO R$ 6.78 · P/VP R$ 19.13. 4 fora da faixa — as réguas discordam, olhe a empresa. ",
+  "motor": "EV/EBITDA · faixa R$ 55.29 a R$ 125.55",
+  "nota": "⛔ SEM TETO DE COMPRA — o múltiplo oscilou 56% ao longo da série (faixa de R$ 55.29 a R$ 125.55). O preço justo continua valendo — é a mediana do múltiplo, a melhor estimativa única —, mas o limite inferior de uma faixa tão larga é o ano mais pessimista da série, não uma estimativa conservadora de valor. Dar um preço de entrada aqui seria emprestar precisão à volatilidade. || PREÇO JUSTO por EV/EBITDA, MÉTODO ÚNICO — o múltiplo que descreve este negócio, aplicado ao fundamento projetado. Não é mediana de réguas diferentes. A faixa de R$ 55.29 a R$ 125.55 (largura 56%) é a OSCILAÇÃO HISTÓRICA do próprio múltiplo — percentil 25 a 75 da série —, e o limite inferior é o teto de compra. Múltiplo-alvo 4.30x = MEDIANA da série inteira (cíclica cobre pico e fundo) do próprio histórico (6 anos: 2.5x a 8.9x), não de pares. Faixa 3.58x a 7.14x (percentis dos 6 anos, série inteira). EV justo − dívida líquida R$ 68.2 bi ÷ 4367 mi papéis. || VERIFICAÇÃO (não entra na conta): E/P R$ 3.81 · EV/Receita R$ 4.02 · P/FFO R$ 7.06 · P/VP R$ 19.13. 4 fora da faixa — as réguas discordam, olhe a empresa. ",
   "teto_suprimido": true,
   "teto": null,
-  "faixaLo": 53.15,
-  "faixaHi": 120.7,
+  "faixaLo": 55.29,
+  "faixaHi": 125.55,
   "cot": 80.4,
   "seg": null
  },

@@ -1266,6 +1266,70 @@ def teto_ep(t, A, pl_setor=None, com_pares=True):
 # Nenhum dos dois é bom SOZINHO: P/VP ignora rentabilidade (patrimônio grande e ROE ruim
 # destrói valor) e EV/Receita ignora margem (receita alta com prejuízo não vale nada). Eles
 # valem como o 2º e o 3º voto de uma mediana, e é assim que entram.
+# ══ AÇÕES EM TESOURARIA — 14/09/2026 ═══════════════════════════════════════════════════
+# Pergunta do usuário: "para o LPA você está considerando retirar as ações que estão na
+# tesouraria?" A resposta era NÃO, e agora é SIM.
+#
+# O QUE ESTAVA ERRADO: `papeis()` deriva a contagem de `lucro ÷ LPA` da base, e a Partnr
+# divide por CAPITAL SOCIAL. Provado três vezes: (1) lucro ÷ CONTROLLING_EPS da ALOS3 bate
+# com `total_shares` em 1,0000 nos 8 últimos trimestres, com degrau exato na data em que a
+# contagem muda — não é média ponderada, como manda o IAS 33; (2) patrimônio ÷ VPA dá o
+# mesmo número; (3) a VALE3 recompra continuamente desde 2021 e a contagem mudou 4 vezes em
+# 4 anos, só em datas de CANCELAMENTO.
+#
+# Ação em tesouraria não tem dono: não recebe dividendo, não vota, não tem direito ao lucro.
+# Dividir o lucro por ela subestima o LPA de todo mundo.
+#
+# ⚠️ ONDE ISSO MUDA O PREÇO JUSTO E ONDE NÃO MUDA. Em 28 dos 34 tickers NÃO muda, porque o
+# mesmo N aparece dos dois lados e cancela:
+#     múltiplo = preço × N ÷ lucro   e   fundamento = lucro ÷ N   →   N some no produto.
+# Muda nos métodos em que o múltiplo é de FIRMA e não carrega N: EV/EBITDA (VALE3, PETR4,
+# KLBN11, RANI3), múltiplo DECLARADO e paridade (BRAP4). E muda SEMPRE nas colunas lidas de
+# frente — Lucro por Ação, Div. por Ação e DY projetado.
+#
+# DE ONDE VEM A QUANTIDADE, por ordem de confiança:
+#   1. `quantidade` declarada em analise/tesouraria.json, quando a fonte permite (free_float
+#      em empresa SEM controlador; o resto do capital é tesouraria);
+#   2. ESTIMATIVA pelo preço: valor de aquisição ÷ cotação atual. A premissa é que a recompra
+#      correu perto do preço de hoje, o que é verdade para quem compra continuamente a
+#      mercado. ⚠️ VALIDADA NA VALE3: 13,854 bi ÷ 351,1 bi de valor de mercado = 3,95%,
+#      contra 3,96% que o free_float dá de forma independente. Um centésimo de diferença.
+#   3. Zero, quando o BPP diz zero (PETR4, RANI3) ou quando o ticker não foi coletado — e
+#      neste último caso `tesouraria_pendente()` avisa em vez de calar.
+# ⚠️ CAMINHO RELATIVO, como o resto do módulo (`carregar` abre 'data/historico.data.js').
+# A primeira versão usou Path(__file__) e o dicionário nascia VAZIO: gerar_colunas.py e
+# gerar_relatorio_valuation.py carregam este arquivo com exec(src, M), e aí `__file__` não
+# existe no namespace — o try/except engolia o NameError e todo ticker saía "nao_coletado",
+# sem nenhum sintoma além do número não mudar.
+try:
+    _TES = json.loads(open('analise/tesouraria.json', encoding='utf-8').read())['tickers']
+except Exception:
+    _TES = {}
+
+
+def tesouraria(t, A):
+    """(ações em tesouraria, método). Em AÇÕES, não em units — quem divide é papeis()."""
+    e = _TES.get(t)
+    if not e:
+        return 0.0, 'nao_coletado'
+    q = e.get('quantidade')
+    if q is not None:
+        return float(q), e.get('metodo') or 'declarado'
+    v = e.get('valor_brl') or 0
+    if not v:
+        return 0.0, 'zero'
+    pr = (A[max(A)] or {}).get('preco')
+    if not pr or pr <= 0:
+        return 0.0, 'sem_preco'
+    # o valor do BPP é em AÇÕES; a cotação de um ticker unit é da UNIT → converte
+    return v / (pr / FATOR_UNIT.get(t, 1)), 'estimado_por_preco'
+
+
+def tesouraria_pendente():
+    """Tickers do Radar sem coleta de tesouraria. Chamado pelo __main__ para avisar."""
+    return sorted(t for t in MOTOR if t not in _TES)
+
+
 def papeis(t, A):
     """Quantidade de papéis NEGOCIADOS (units, quando for o caso).
 
@@ -1296,7 +1360,12 @@ def papeis(t, A):
     # razão de existir a mediana) sem misturar bases acionárias diferentes.
     ref = ns[-1]
     prox = [x for x in ns if abs(x/ref - 1) <= 0.25] or [ref]
-    return st.median(prox) / FATOR_UNIT.get(t, 1)
+    emitidas = st.median(prox)
+    tes, _m = tesouraria(t, A)
+    # Nunca deixa a tesouraria comer mais de 25% do capital: acima disso é erro de dado, não
+    # recompra, e um divisor errado contamina tudo o que passa por ele.
+    tes = min(tes, emitidas * 0.25)
+    return (emitidas - tes) / FATOR_UNIT.get(t, 1)
 
 def teto_pvp(t, A, com_pares=True):
     val, q = anos_validos(A)
@@ -2206,3 +2275,10 @@ if __name__ == '__main__':
               f"{r.get('largura', 0)*100:>5.0f}% {cot:>8.2f} {r['seg']:>6.0f}%")
     json.dump(out, open('analise/tetos.json', 'w'), ensure_ascii=False, indent=1)
     print(f"\n{len(out)} tetos calculados → analise/tetos.json")
+    # Avisa em vez de calar: ticker sem coleta de tesouraria entra na conta como se tivesse
+    # ZERO em tesouraria, e isso é uma suposição, não um dado. Ver `tesouraria()`.
+    pend = tesouraria_pendente()
+    if pend:
+        print(f"\n⚠️ tesouraria não coletada em {len(pend)} de {len(MOTOR)} tickers — "
+              f"entram como zero: {', '.join(pend)}")
+        print("   Corrigir com scripts/coletar_tesouraria.py (ver cabeçalho).")

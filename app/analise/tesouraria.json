@@ -1,0 +1,30 @@
+{
+ "fonte": "MCP Partnr — companies_rawReports BPP CONSOLIDATED (valor em R$) + companies_retrieve (free_float)",
+ "coletado_em": "2026-09-14",
+ "nota": "valor_brl = linha 'Ações em Tesouraria' do BPP, ao CUSTO de aquisição. quantidade = nº de AÇÕES (não units). metodo diz como a quantidade foi obtida.",
+ "tickers": {
+  "VALE3": {
+   "valor_brl": 13854000000,
+   "quantidade": 175612958,
+   "metodo": "free_float",
+   "data": "2026-06-30",
+   "nota": "4.439.159.752 × (1 − 0,96044). A VALE não tem acionista controlador, então o que não é free float é essencialmente tesouraria (fora as golden shares, punhado de PN). Confere com o custo: R$ 13,854 bi ÷ 175,6 mi = R$ 78,9 de preço médio, dentro da faixa em que a recompra correu."
+  },
+  "PETR4": {
+   "valor_brl": 0, "quantidade": 0, "metodo": "BPP", "data": "2026-06-30",
+   "nota": "'Ações em Tesouraria' = 0 nas duas posições do BPP (Reservas de Capital e Reservas de Lucros). A Petrobras não carrega tesouraria hoje."
+  },
+  "RANI3": {
+   "valor_brl": 0, "quantidade": 0, "metodo": "BPP", "data": "2026-06-30",
+   "nota": "'Ações em Tesouraria' = 0 no BPP consolidado."
+  },
+  "BPAC11": {
+   "valor_brl": 738877000, "quantidade": null, "metodo": "estimado_por_preco", "data": "2026-06-30",
+   "nota": "R$ 739 mi em Reservas de Lucros. Quantidade não divulgada na estrutura normalizada — estimada pelo preço (ver fracao_tesouraria). 0,8% do patrimônio."
+  },
+  "KLBN11": {
+   "valor_brl": 82033000, "quantidade": null, "metodo": "estimado_por_preco", "data": "2026-06-30",
+   "nota": "R$ 82 mi em Reservas de Lucros, 0,5% do patrimônio de R$ 15,97 bi. Imaterial."
+  }
+ }
+}
