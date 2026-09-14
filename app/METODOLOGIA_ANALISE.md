@@ -2989,3 +2989,73 @@ janela longa e o fator 0,689 o preço justo sairia R$ 44,17 — ainda longe dos 
 **Decisão pendente do usuário:** manter `ROE histórico` na janela 2021→ (como está, e como ele
 fixou) ou coletar ROE de 10 anos só para esse denominador. A segunda opção faz a amarração morder
 em bancos deteriorados e exige uma coleta nova na Partnr.
+
+---
+
+## 36. O múltiplo de unit vinha inflado, e o filtro do celular estava fora da tela (14/09/2026)
+
+> "O P/L mediano do BTG está errado, não é esse."
+> "O filtro não aparece no celular."
+
+### 36.1 O bug do múltiplo de unit
+
+O Radar mostrava **P/L mediano de 39,45x** para o BPAC11 e daí tirava preço justo de **R$ 230,69**
+(margem de 73%). O BTG negocia perto de **11x**.
+
+**A causa:** para alguns papéis a Partnr traz `pl` e `pvp` como *preço da UNIT ÷ valor por AÇÃO*.
+A unit do BPAC11 é 1 ON + 2 PN, então o múltiplo sai **3× inflado**. O motor já tinha `FATOR_UNIT`
+e o aplicava no LPA derivado e no P/VP — mas `teto_ep` lia o campo `pl` **cru**, e esse campo
+ganhava da derivação sempre que existia. O `pl_setorial` lia cru também, contaminando a mediana do
+grupo FIN.
+
+**E o fator declarado não resolve.** Conferindo contra o balanço (valor de mercado ÷ lucro):
+
+| ativo | campo `pl` | P/L do balanço | fator medido | é unit? |
+|---|---|---|---|---|
+| BPAC11 | 32,48 | **11,55** | 2,81 → **3** | sim |
+| SANB11 | 15,52 | **7,73** | 2,01 → **2** | sim |
+| KLBN11 | 43,67 | 43,96 | **0,99 → 1** | **sim, e mesmo assim não infla** |
+
+A unit da Klabin vale 5 ações, mas os campos dela **já vêm por unit**. Dividir por 5 quebraria a
+Klabin para consertar o BTG. **Não existe regra de unit que acerte os três — só medição acerta.**
+
+A correção: `fator_multiplo(t, A)` mede o fator contra o balanço; `pl_ano(t, A, y)` é a **única**
+definição de P/L do exercício e serve os três consumidores (`teto_ep`, `pl_setorial` e a coluna
+P/L mediano). A medição decide o **valor**; a lista `FATOR_UNIT` decide quem é **elegível** —
+papel que não é unit nunca entra, por mais ruidosa que a contagem de papéis esteja num ano (o
+ITUB3 mede 1,19 e o BMEB4 1,13, e nem chegam a ser testados).
+
+**Efeito — 4 linhas:**
+
+| Ativo | Múltiplo | Justo | Δ | Margem |
+|---|---|---|---|---|
+| **BPAC11** | 45,69x → **15,23x** | R$ 230,69 → **R$ 76,90** | **−67%** | 73% → 18% |
+| **SANB11** | 15,70x → **7,85x** | R$ 53,84 → **R$ 26,92** | **−50%** | +36% → −29% |
+| VIVA3 | 7,87x → 7,80x | R$ 24,21 → R$ 24,00 | −1% | — |
+| ASAI3 | 7,87x → 7,80x | R$ 5,61 → R$ 5,56 | −1% | — |
+
+VIVA3 e ASAI3 usam o P/L do `_UNIVERSO` (não têm série própria), que caiu de 7,9x para 7,8x quando
+a contaminação saiu.
+
+⚠️ **Este bug também explica a seção 35.5.** O exemplo do usuário para o SANB11 dava preço justo de
+**R$ 26,94** e o motor dava R$ 53,84 — exatamente o dobro, porque o P/L estava dobrado. Corrigido,
+o motor dá **R$ 26,92**. A divergência não era de janela nem de método; era o fator de unit.
+
+### 36.2 O filtro de segmento no celular
+
+Duas causas em série, e a primeira escondeu a segunda.
+
+**Primeira** (corrigida antes): `.filter-group{display:none}` dentro de `@media(max-width:768px)`,
+regra que vinha da versão original — fazia sentido com 20 segmentos ocupando três linhas, deixou
+de fazer com 10.
+
+**Segunda, e era esta que importava:** com `display` devolvido, os chips continuavam invisíveis.
+A tabela tem 2.563px, então o **documento** fica com ~1.560px de largura no telefone.
+`width:100%` numa barra `position:fixed` resolve contra o **bloco contêiner inicial** — 1.560px —
+e elemento fixo **não acompanha rolagem horizontal**. Tudo o que passava dos 390px da tela ficava
+inalcançável **para sempre**. Os chips de segmento são os últimos da barra: existiam no DOM,
+respondiam a clique via JS, e nenhum dedo conseguia chegar neles.
+
+`width:100vw` é a largura da **tela**, não do documento. Verificado em iPhone 13 (390px),
+iPhone SE (320px) e Pixel 5 (393px): os 10 chips dentro da tela, clique no último filtrando a
+tabela, zero erro de console.

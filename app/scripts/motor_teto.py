@@ -87,6 +87,72 @@ def ddm2(D0, g1, ke, anos=ANOS_G1, gt=G):
 VPA_BALANCO = {'BPAC11': 21.371, 'SANB11': 33.947}
 FATOR_UNIT  = {'KLBN11': 5, 'SANB11': 2, 'BPAC11': 3}
 
+# ══ O FATOR DE UNIT NOS MÚLTIPLOS DA BASE É MEDIDO, NÃO DECLARADO (14/09/2026) ═══════════
+# Bug encontrado pelo usuário: "o P/L mediano do BTG está errado, não é esse". Estava — o
+# motor mostrava 39,45x para o BPAC11. O BTG negocia perto de 11x.
+#
+# A CAUSA: para alguns papéis a Partnr traz `pl` e `pvp` como PREÇO DA UNIT ÷ VALOR POR AÇÃO.
+# Como a unit do BPAC11 é 1 ON + 2 PN, o múltiplo sai 3× inflado. O motor já tinha FATOR_UNIT
+# e o aplicava no LPA derivado e no P/VP — mas `teto_ep` lia o campo `pl` CRU, e era esse
+# campo que ganhava da derivação sempre que existia. O `pl_setorial` lia cru também, então o
+# P/L mediano do grupo FIN saía contaminado junto.
+#
+# ⚠️ E O FATOR DECLARADO NÃO SERVE PARA ISSO. Conferindo contra o balanço (valor de mercado ÷
+# lucro, e valor de mercado ÷ patrimônio), a unit do KLBN11 vale 5 ações mas os campos `pl` e
+# `pvp` dela JÁ VÊM por unit — fator medido 0,99. Dividir por 5 quebraria a Klabin para
+# consertar o BTG. Não há regra de unit que acerte os três; só medição acerta.
+#
+#   ativo    campo pl   pl do balanço   fator medido
+#   BPAC11      32,48           11,55           2,81  → 3
+#   SANB11      15,52            7,73           2,01  → 2
+#   KLBN11      43,67           43,96           0,99  → 1   (é unit, e mesmo assim não infla)
+#
+# A medição decide o VALOR; a lista FATOR_UNIT decide quem é ELEGÍVEL. Papel que não é unit
+# nunca entra, por mais que a contagem de papéis esteja ruidosa num ano (o ITUB3 mede 1,19 e
+# o BMEB4 1,13 — arredondam para 1, mas nem chegam a ser testados).
+_FATOR_PL_CACHE = {}
+
+
+def fator_multiplo(t, A):
+    """Divisor a aplicar nos campos `pl` e `pvp` da base. 1 quando não há inflação de unit."""
+    if t in _FATOR_PL_CACHE:
+        return _FATOR_PL_CACHE[t]
+    f = 1
+    if t in FATOR_UNIT:
+        c = A[max(A)]
+        pap = papeis(t, A)
+        li, pr = c.get('lucrolin'), c.get('preco')
+        if pap and pr and li and li > 0 and c.get('pl'):
+            k = c['pl'] / (pr * pap / li)
+            if k >= 1.5:
+                f = min(round(k), max(FATOR_UNIT.values()))
+    _FATOR_PL_CACHE[t] = f
+    return f
+
+
+def pl_ano(t, A, y):
+    """P/L do exercício `y`, já corrigido do fator de unit. UMA definição, três consumidores:
+    teto_ep, pl_setorial e a coluna P/L mediano do Radar (scripts/gerar_colunas.py).
+
+    Campo `pl` da base quando existe; senão DERIVADO de preço ÷ LPA. O SHUL4 expôs a segunda
+    via: a base não traz `pl` para ele em nenhum dos 6 anos, e sem a derivação ele caía no
+    fallback setorial — cujo único par sem quebra no grupo IND é a LEVE3 (autopeças). Um par
+    não é setor. Mas `preco` e `lpa` estão lá nos 6 anos: 8,41/1,08 = 7,8x, 4,71/0,76 = 6,2x.
+    Derivar é aritmética sobre dado da mesma fonte, não estimativa.
+    """
+    d = A.get(y) or {}
+    v = d.get('pl')
+    if v:
+        v = v / fator_multiplo(t, A)
+        if 0 < v < 60:
+            return v
+    pr, lp = d.get('preco'), d.get('lpa')
+    if pr and lp and lp > 0:
+        dv = pr / (lp * FATOR_UNIT.get(t, 1))
+        if 0 < dv < 60:
+            return dv
+    return None
+
 MOTOR = {
     # financeiras e seguradoras → P/VP × ROE
     # SAUD3 = BRADSAUDE (ticker anterior ODPV3, Odontoprev). Estava classificada como
@@ -435,10 +501,11 @@ def recentrar(p25, p50, p75, alvo):
 
 
 def serie_pvp(t, A, val=None):
-    """P/VP corrigido para units. O P/VP do Partnr divide preço da UNIT por valor patrimonial
-    por AÇÃO, então sai inflado pelo fator da unit: pvp_real = pvp_reportado ÷ fator.
-    Conferido no SANB11 (1,74x ÷ 2 = 0,87x contra 0,88x do balanço)."""
-    f = FATOR_UNIT.get(t, 1)
+    """P/VP corrigido para units, com o fator MEDIDO contra o balanço (ver fator_multiplo).
+    Conferido: SANB11 1,74x ÷ 2 = 0,87x contra 0,88x do balanço; BPAC11 6,95x ÷ 3 = 2,32x
+    contra 2,69x. ⚠️ O KLBN11 é unit e mede fator 1 — o campo dela já vem por unit (1,47x
+    contra 1,56x do balanço), e dividir por 5 daria 0,29x. Por isso o fator é medido."""
+    f = fator_multiplo(t, A)
     ys = val if val is not None else sorted(A)
     return [A[y]['pvp']/f for y in ys if A[y].get('pvp') and A[y]['pvp'] > 0]
 
@@ -474,7 +541,7 @@ def vpa(t, A):
     if t in VPA_BALANCO: return VPA_BALANCO[t]
     c = A.get(max(A), {})
     if c.get('pvp') and c['pvp'] > 0 and c.get('preco'):
-        return c['preco'] / c['pvp'] * FATOR_UNIT.get(t, 1)
+        return c['preco'] / c['pvp'] * fator_multiplo(t, A)
     return None
 
 # ── FCFE DE VERDADE — item #9 do punch-list de 06/09/2026 (07/09/2026) ───────────────────
@@ -1076,26 +1143,7 @@ def teto_ep(t, A, pl_setor=None, com_pares=True):
     c = A[max(A)]
     val, q = anos_validos(A)
 
-    # P/L do ano: campo `pl` da base quando existe, senão DERIVADO de preço ÷ LPA.
-    # O SHUL4 expôs isto: a base Partnr não traz `pl` para ele em nenhum dos 6 anos, então
-    # teto_ep caía direto no fallback setorial — cujo único par sem quebra no grupo IND é a
-    # LEVE3 (autopeças). Um par não é setor, e o teto do SHUL4 vinha de uma empresa que não é
-    # ele. Mas `preco` e `lpa` estão na base nos 6 anos: 8,41/1,08 = 7,8x, 4,71/0,76 = 6,2x…
-    # a série existe inteira, só não estava pré-calculada. Derivar é aritmética sobre dado da
-    # mesma fonte, não estimativa. FATOR_UNIT porque `lpa` é POR AÇÃO e `preco` é POR UNIT.
-    def _pl(y):
-        D = A[y]
-        v = D.get('pl')
-        if v and 0 < v < 60:
-            return v
-        pr, lp = D.get('preco'), D.get('lpa')
-        if pr and lp and lp > 0:
-            d = pr / (lp * FATOR_UNIT.get(t, 1))
-            if 0 < d < 60:
-                return d
-        return None
-
-    pls = [x for x in (_pl(y) for y in val) if x]
+    pls = [x for x in (pl_ano(t, A, y) for y in val) if x]
     # LPA de referência: o campo da base, ou derivado do lucro LTM ÷ papéis quando ele falta.
     # A ASAI3 é o caso — a base não traz `lpa` para ela, e sem este fallback a empresa saía
     # sem preço justo por falta de UM campo, tendo lucro e contagem de papéis.
@@ -1881,7 +1929,7 @@ def pl_setorial(H):
     for t, A in H.items():
         m = MOTOR.get(t)
         if ano_quebra(A): continue
-        pls = [A[y]['pl'] for y in A if A[y].get('pl') and 0 < A[y]['pl'] < 60]
+        pls = [x for x in (pl_ano(t, A, y) for y in A) if x]
         if len(pls) >= 4:
             todas.append(st.median(pls))
             if m: por.setdefault(m, []).append(st.median(pls))
