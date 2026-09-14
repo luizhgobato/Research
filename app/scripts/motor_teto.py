@@ -290,7 +290,7 @@ def anos_validos(A):
     ys = [y for y in sorted(A) if y not in fora]
     return ([y for y in ys if y >= q], q) if q else (ys, None)
 
-def mediana_com_tendencia(vals, limiar_rel=0.12, limiar_abs=None):
+def mediana_com_tendencia(vals, limiar_rel=0.12, limiar_abs=None, truncar=True):
     """Mediana que detecta TENDÊNCIA e ignora a metade velha da série quando ela existe.
 
     POR QUE ISTO EXISTE — foi o defeito que fez TODAS as 9 financeiras reprovarem:
@@ -308,6 +308,9 @@ def mediana_com_tendencia(vals, limiar_rel=0.12, limiar_abs=None):
     tendência e vale a mediana só da metade recente. Vale nos dois sentidos — o SANB11
     deteriorou (−7,0 p.p.) e passa a usar o ROE recente, MENOR, ficando mais conservador.
     """
+    if not truncar:
+        # ⚠️ 14/09/2026 — SEM TRUNCAGEM onde o ajuste de ROE atua. Ver faixa_com_tendencia.
+        return st.median(vals), f'mediana plena de {len(vals)} anos (a correção de fase fica com o ROE)'
     if len(vals) < 5: return st.median(vals), 'série curta — mediana simples'
     meio = len(vals)//2
     velho, novo = vals[:meio], vals[meio:]
@@ -328,7 +331,7 @@ def mediana_com_tendencia(vals, limiar_rel=0.12, limiar_abs=None):
         return est, f'TENDÊNCIA {d:+.1f} entre as metades da série → {como} dos {len(novo)} anos recentes'
     return st.median(vals), f'série estável ({d:+.1f} entre as metades) → mediana dos {len(vals)} anos'
 
-def faixa_com_tendencia(vals, limiar_rel=0.12, limiar_abs=None):
+def faixa_com_tendencia(vals, limiar_rel=0.12, limiar_abs=None, truncar=True):
     """Percentis 25/50/75 do múltiplo, com a MESMA regra de tendência de mediana_com_tendencia.
 
     ══ POR QUE O TETO VIROU FAIXA EM 13/09/2026 ══════════════════════════════════════════
@@ -365,7 +368,19 @@ def faixa_com_tendencia(vals, limiar_rel=0.12, limiar_abs=None):
         return min(vals), st.median(vals), max(vals), 'série de 3 anos — amplitude observada (mín-máx), não percentis'
     base = sorted(vals)
     nota = f'percentis de {len(vals)} anos'
-    if len(vals) >= 5:
+    # ══ truncar=False: A CORREÇÃO DE FASE FICA COM O ROE (14/09/2026) ═════════════════════
+    # O usuário escreveu a regra que quer, e ela diz "P/L MEDIANO HISTÓRICO × (ROE atual ÷
+    # ROE histórico)". Mediana histórica é a da SÉRIE INTEIRA — não a dos 3 anos recentes.
+    #
+    # E não é só literalidade: truncar a série e AINDA multiplicar pelo ajuste de ROE aplica
+    # a correção de recência DUAS VEZES. Os dois mecanismos fazem o mesmo trabalho — dizer
+    # que a empresa de hoje não é a dos anos antigos —, só que a truncagem faz isso mudo
+    # (joga metade da série fora sem declarar por quê) e o ROE faz declarando o motivo e o
+    # tamanho. Onde o ROE atua, a truncagem sai.
+    # O ITUB3 é o caso: truncado, a âncora era 10,0x (só 2024-2026, o período CARO); plena,
+    # 7,8x. Com o ajuste de ROE de 1,156 em cima, a versão truncada cobrava 11,56x — o
+    # múltiplo caro E o prêmio de rentabilidade, pelo mesmo fato.
+    if truncar and len(vals) >= 5:
         # ⚠️ 14/09/2026 — A DETECÇÃO DE TENDÊNCIA COMPARA MEDIANAS, NÃO MÉDIAS.
         # Pedido do usuário: "troca média por mediana do P/L". O valor que esta função devolve
         # já era mediana (percentil 50); a média sobrevivia só aqui, no teste que decide se a
@@ -1091,7 +1106,7 @@ def teto_ep(t, A, pl_setor=None, com_pares=True):
     if not lpa or lpa <= 0: return None
     faixa_mult = None
     if len(pls) >= 3:
-        p25, alvo, p75, nfx = faixa_com_tendencia(pls)
+        p25, alvo, p75, nfx = faixa_com_tendencia(pls, truncar=False)
         faixa_mult = (p25, p75)
         mediana_propria = alvo
         conv = 3 if len(pls) >= 5 else 2
@@ -1220,8 +1235,8 @@ def teto_pvp(t, A, com_pares=True):
     val, q = anos_validos(A)
     pv = serie_pvp(t, A, val)
     if len(pv) < 3: return None
-    alvo, nota = mediana_com_tendencia(pv, limiar_rel=0.12)
-    p25, _p50, p75, _nfx = faixa_com_tendencia(pv, limiar_rel=0.12)
+    alvo, nota = mediana_com_tendencia(pv, limiar_rel=0.12, truncar=False)
+    p25, _p50, p75, _nfx = faixa_com_tendencia(pv, limiar_rel=0.12, truncar=False)
     # ⚠️ UNITS, sétima vez. `vpa()` devolve preço_unit ÷ pvp_reportado, e o pvp do Partnr é
     # preço da UNIT sobre patrimônio por AÇÃO — então vpa() sai POR AÇÃO. Já `alvo` vem de
     # serie_pvp(), que divide pelo fator e portanto é POR UNIT. Multiplicar os dois sem
@@ -1250,8 +1265,8 @@ def teto_ev_receita(t, A, com_pares=True):
     c = A[max(A)]
     if len(r) < 3 or not c.get('receita') or not c.get('lucrolin') or not c.get('lpa') or c['lpa'] == 0:
         return None
-    alvo, nota = mediana_com_tendencia(r, limiar_rel=0.15)
-    p25, _p50, p75, _nfx = faixa_com_tendencia(r, limiar_rel=0.15)
+    alvo, nota = mediana_com_tendencia(r, limiar_rel=0.15, truncar=False)
+    p25, _p50, p75, _nfx = faixa_com_tendencia(r, limiar_rel=0.15, truncar=False)
     pap = papeis(t, A)
     if not pap: return None
     dl = (c.get('divliq') or 0)
@@ -1368,7 +1383,7 @@ def teto_ffo(t, A, com_pares=True):
     atual = (f_hoje / pap_ffo * fator) if (f_hoje and pap_ffo) else _ffo_pap(max(A))
     if len(pfs) < 3 or not atual:
         return None
-    p25, alvo, p75, nfx = faixa_com_tendencia(pfs, limiar_rel=0.15)
+    p25, alvo, p75, nfx = faixa_com_tendencia(pfs, limiar_rel=0.15, truncar=False)
     alvo0 = alvo
     alvo, nota_pares, origem_mult = (alvo_com_pares(t, 'P/FFO', alvo, len(pfs), A) if com_pares
                                       else (alvo, '', f'o P/FFO mediano da própria empresa ({alvo:.2f}x)'))
@@ -1898,7 +1913,10 @@ PL_SETOR = {}
 # múltiplo próprio decide sozinho — mediana de 2 pares é a opinião de duas empresas, não do
 # setor. SHOP tem 2 empresas e fica assim.
 # Limites do ajuste de ROE sobre o múltiplo histórico. Ver alvo_com_pares().
-ROE_AJUSTE_MIN, ROE_AJUSTE_MAX = 0.70, 1.30
+# ⚠️ SEM EFEITO DESDE 14/09/2026 — mantidas só para não quebrar quem as importa.
+# O teto de ±30% saiu quando o usuário escreveu a regra que quer, e ela não tem teto:
+# 'P/L Ajustado = P/L Mediano Histórico × (ROE Atual ÷ ROE Histórico)'. Ver alvo_com_pares.
+ROE_AJUSTE_MIN, ROE_AJUSTE_MAX = 0.0, 99.0
 
 MIN_PARES = 3
 MULT_PARES = {}
@@ -2003,14 +2021,16 @@ def alvo_com_pares(t, chave, alvo_proprio, n_anos=None, A=None):
         g = ROE × retenção: mais ROE significa mais crescimento sustentável e, com tudo o mais
         constante, múltiplo justificadamente maior.
 
-            ajuste = ROE atual ÷ ROE MEDIANO do período,   limitado a [0,70 ; 1,30]
+            ajuste = ROE atual ÷ ROE MEDIANO do período   (proporção direta, sem teto)
 
-        ⚠️ O LIMITE DE ±30% É PREMISSA DECLARADA, não calibração. A relação entre ROE e P/L
-        justo é não-linear e depende de payout e de Ke — nenhum dos dois observável sem
-        premissa, e o Ke variável saiu do motor em 13/09 justamente por isso (seção 30).
-        Proporção direta sem limite faria o múltiplo dobrar quando o ROE dobrasse, o que a
-        teoria não sustenta. O limite deixa o ajuste MOVER o múltiplo sem deixá-lo DOMINAR a
-        mediana histórica, que continua sendo a âncora.
+        ⚠️ O LIMITE DE ±30% SAIU EM 14/09/2026, a pedido do usuário, que escreveu a regra
+        com proporção direta e sem teto. O que o teto protegia continua verdadeiro e fica
+        registrado: proporção direta faz o múltiplo DOBRAR quando o ROE dobra, e a teoria não
+        sustenta isso — a relação entre ROE e P/L justo é não-linear e depende de payout e de
+        Ke, nenhum dos dois observável sem premissa (o Ke variável saiu do motor em 13/09 por
+        isso, seção 30). Sem teto, o ajuste pode DOMINAR a mediana histórica em vez de só
+        movê-la. Nenhuma linha do Radar hoje passa de ±45%, então o efeito prático é pequeno;
+        o risco aparece em empresa que vem de ano de prejuízo ou de lucro extraordinário.
     """
     janela = f' ao longo de {n_anos} anos' if n_anos else ''
     nome = {'E/P': 'P/L'}.get(chave, chave)
@@ -2036,15 +2056,15 @@ def alvo_com_pares(t, chave, alvo_proprio, n_anos=None, A=None):
                                             'sem ajuste possível')
 
     bruto = roe_hoje / roe_med
-    aj = max(ROE_AJUSTE_MIN, min(bruto, ROE_AJUSTE_MAX))
+    aj = bruto
     alvo = alvo_proprio * aj
-    limitado = abs(bruto - aj) > 1e-9
+    limitado = False
     return alvo, f'{alvo:.2f}x = {alvo_proprio:.2f}x × ajuste de ROE {aj:.2f}', (
         f'{proprio}, ajustado pela rentabilidade ({metrica}): hoje {roe_hoje:.1f}% contra '
         f'{roe_med:.1f}% de mediana do período dá fator {bruto:.2f}'
-        + (f', limitado a {aj:.2f} pelo teto de ±30%' if limitado else '')
-        + f' → múltiplo-alvo {alvo:.2f}x. Mais rentável que a própria média merece múltiplo '
-          f'maior; menos rentável, menor. O múltiplo do setor NÃO entra desde 14/09/2026.')
+        + f' → múltiplo-alvo {alvo:.2f}x. Proporção direta, sem teto: mais rentável que a '
+          f'própria mediana merece múltiplo maior; menos rentável, menor. O múltiplo do setor '
+          f'NÃO entra desde 14/09/2026.')
 
 
 if __name__ == '__main__':
