@@ -338,16 +338,17 @@
     <col style="width:70px"> <!-- 10 Div. Yield proj. -->
     <col style="width:100px"><!-- 11 Div. Yield 2025 -->
     <col style="width:95px"> <!-- 12 DY médio 10 anos -->
-    <col style="width:105px"><!-- 13 Preço/Lucro atual -->
-    <col style="width:110px"> <!-- 14 P/L médio -->
-    <col style="width:98px"> <!-- 15 ROE -->
-    <col style="width:100px"><!-- 16 Dív. Líq./EBITDA -->
-    <col style="width:150px"> <!-- 17 Múltiplo -->
-    <col style="width:90px"> <!-- 18 Preço Justo -->
-    <col style="width:90px"> <!-- 19 Cotação -->
-    <col style="width:100px"><!-- 20 Margem de Segurança -->
-    <col style="width:95px"> <!-- 21 Retorno Total -->
-    <col style="width:120px"><!-- 22 Relatório -->
+    <col style="width:105px"><!-- 13 P/L atual -->
+    <col style="width:100px"> <!-- 14 P/L médio 2021- -->
+    <col style="width:88px"> <!-- 15 ROE atual -->
+    <col style="width:100px"> <!-- 16 ROE médio 2021- -->
+    <col style="width:100px"><!-- 17 Dív. Líq./EBITDA -->
+    <col style="width:150px"> <!-- 18 Múltiplo -->
+    <col style="width:90px"> <!-- 19 Preço Justo -->
+    <col style="width:90px"> <!-- 20 Cotação -->
+    <col style="width:100px"><!-- 21 Margem de Segurança -->
+    <col style="width:95px"> <!-- 22 Retorno Total -->
+    <col style="width:120px"><!-- 23 Relatório -->
   </colgroup>
   <thead>
     <tr class="col-header">
@@ -365,15 +366,16 @@
       <th data-col="11" onclick="sortTable(11)" class="gh-div col-mob-hide sortable"><div class="th-inner">Div. Yield<span class="sort-arrow"></span><span class="col-tag real">2025</span></div><span class="col-tip" data-tip="Fonte: MCP Partnr (B3/CVM)&#10;Dividend yield REALIZADO do exercício de 2025: proventos pagos em 2025 ÷ preço de fechamento de 2025.&#10;&#10;É fato consumado, não projeção — serve para conferir a coluna ao lado, que é o DY projetado a partir do lucro de 2026.&#10;&#10;⚠️ Substituiu o "DY real LTM" em 13/09/2026. Aquele era digitado à mão (várias linhas citavam StatusInvest como fonte, uma delas usando ITUB4 no lugar de ITUB3) e era reescrito em runtime pela API. Este sai da mesma base do resto da tabela.">ⓘ</span></th>
       <th data-col="12" onclick="sortTable(12)" class="gh-div col-mob-hide sortable"><div class="th-inner">DY médio 10a<span class="sort-arrow"></span><span class="col-tag real">real</span></div><span class="col-tip" data-tip="Fonte: MCP Partnr (B3/CVM) — analise/dy_historico.json&#10;MEDIANA do dividend yield realizado dos últimos 10 exercícios (2016-2025).&#10;&#10;MEDIANA e não média, e o motivo está no dado: a PETR4 pagou 65% em 2022 e a BRAP4 47,9% em 2021 — dividendos extraordinários que puxam a média da PETR4 para 16,4% contra 10,6% da mediana. A mediana descreve o ano TÍPICO; a média descreve o ano excepcional.&#10;&#10;Anos com yield ZERO são excluídos: na base o zero significa dado ausente, não dividendo zero. O número de anos efetivamente usados aparece na tooltip de cada linha.&#10;&#10;⚠️ 10 anos podem abranger mais de uma empresa: a ALOS3 era Aliansce até 2023 e a AXIA3 mudou de controle. A tooltip da linha diz o intervalo real usado.&#10;&#10;Serve de âncora para as duas colunas de DY à esquerda: se o projetado está muito acima da mediana de 10 anos, ele está pedindo um ano excepcional.">ⓘ</span></th>
       <th data-col="13" onclick="sortTable(13)"  class="sep gh-val col-mob-hide sortable" ><div class="th-inner">Preço/Lucro<span class="sort-arrow"></span><span class="col-tag real">atual LTM</span></div><span class="col-tip" data-tip="Fonte: MCP Partnr (B3/CVM)&#10;Cotação ÷ LPA dos últimos 12 meses (TTM)&#10;Passe o mouse no ⓘ de cada linha para ver a cotação e a LPA exatas usadas no cálculo">ⓘ</span></th>
-      <th data-col="14" onclick="sortTable(14)"  class="gh-fund col-mob-hide sortable" ><div class="th-inner">P/L médio<span class="sort-arrow"></span><span class="col-tag real">real</span></div><span class="col-tip" data-tip="Fonte: MCP Partnr (B3/CVM)&#10;P/L mediano da própria empresa ao longo da série disponível.&#10;&#10;Serve para ler a coluna ao lado: o P/L ATUAL acima deste valor significa que a ação está cara contra a própria história; abaixo, barata.&#10;&#10;É a metade PRÓPRIA do múltiplo que produz o Preço Justo — a outra metade é a mediana dos pares do segmento. A tooltip de cada célula traz os anos um a um.">ⓘ</span></th>
+      <th data-col="14" onclick="sortTable(14)"  class="gh-fund col-mob-hide sortable" ><div class="th-inner">P/L médio<span class="sort-arrow"></span><span class="col-tag real">real</span></div><span class="col-tip" data-tip="Fonte: MCP Partnr (B3/CVM)&#10;P/L MEDIANO da própria empresa de 2021 para cá.&#10;&#10;Serve para ler a coluna ao lado: o P/L ATUAL acima deste valor significa que a ação está cara contra a própria história; abaixo, barata.&#10;&#10;É a ÂNCORA do múltiplo que produz o Preço Justo — desde 14/09/2026 a única, sem mistura com os pares do setor; o que a corrige é o ROE médio, duas colunas à direita. A tooltip de cada célula traz os anos um a um.&#10;&#10;JANELA 2021→, a pedido do usuário: é o intervalo em que a Selic voltou ao patamar de dois dígitos. Múltiplo praticado com juro de 2% a 7% (2011-2020) descreve outro custo de capital e não serve de referência para hoje.">ⓘ</span></th>
       <th data-col="15" onclick="sortTable(15)"  class="gh-val col-mob-hide sortable" ><div class="th-inner">ROE<span class="sort-arrow"></span><span class="col-tag real">real LTM</span></div><span class="col-tip" data-tip="Fonte: MCP Partnr (B3/CVM)&#10;Lucro Líquido ÷ Patrimônio Líquido × 100&#10;Mede a eficiência no uso do capital próprio">ⓘ</span></th>
-      <th data-col="16" onclick="sortTable(16)"  class="gh-val col-mob-hide sortable" ><div class="th-inner">Dív. Líq./EBITDA<span class="sort-arrow"></span><span class="col-tag real">real LTM</span></div><span class="col-tip" data-tip="Fonte: MCP Partnr (B3/CVM)&#10;Dívida Líquida ÷ EBITDA&#10;Mede o grau de alavancagem financeira">ⓘ</span></th>
-      <th data-col="17" onclick="sortTable(17)"  class="sep gh-opp col-mob-hide sortable" ><div class="th-inner">Múltiplo<span class="sort-arrow"></span><span class="col-tag proj">proj.</span></div><span class="col-tip" data-tip="Fonte: Análise própria&#10;O múltiplo pelo qual o fundamento projetado é multiplicado para chegar ao Preço Justo da coluna ao lado.&#10;&#10;Qual múltiplo depende do negócio: P/L no caso geral · P/FFO em shopping · EV/EBITDA sobre a média do ciclo em cíclica · paridade com a investida em holding.&#10;&#10;O valor-alvo é a média entre o múltiplo mediano da própria empresa ao longo da série e o dos pares do setor. A tooltip de cada célula traz a conta completa.">ⓘ</span></th>
-      <th data-col="18" onclick="sortTable(18)"  class="sep gh-opp col-mob-hide sortable" ><div class="th-inner">Preço Justo<span class="sort-arrow"></span><span class="col-tag proj">proj.</span></div><span class="col-tip" data-tip="Fonte: Análise própria&#10;Quanto a empresa deveria valer — fundamento PROJETADO × o múltiplo que ela deve negociar, segundo a própria história e a dos pares.&#10;&#10;UM múltiplo por empresa, escolhido pelo que o negócio é: P/L no caso geral · P/FFO em shopping · EV/EBITDA sobre a média do ciclo em cíclica · paridade com a investida em holding. Não é mediana de réguas diferentes.&#10;&#10;NÃO é preço de compra: pagando o justo você não tem margem. Use a coluna Margem de Segurança ao lado e exija o mínimo que você aceita (o veredicto usa 15%).">ⓘ</span></th>
-      <th data-col="19" onclick="sortTable(19)"  class="gh-opp sortable" ><div class="th-inner">Cotação<span class="sort-arrow"></span><span class="col-tag real">real</span></div><span class="col-tip" data-tip="Fonte: MCP Partnr (B3/CVM)&#10;Último preço negociado na B3 (atualizado via botão Atualizar Cotações)">ⓘ</span></th>
-      <th data-col="20" onclick="sortTable(20)"  class="gh-opp sortable" ><div class="th-inner">Margem de Segurança<span class="sort-arrow"></span><span class="col-tag proj">proj.</span></div><span class="col-tip" data-tip="Fonte: Calculado&#10;(Preço Justo − Cotação) ÷ Preço Justo × 100&#10;Positivo = cotação abaixo do valor justo&#10;Negativo = cotação acima do valor justo&#10;&#10;O veredicto 🟢 compra exige margem de pelo menos 15%.">ⓘ</span></th>
-      <th data-col="21" onclick="sortTable(21)"  class="sep gh-ret col-mob-hide sortable" ><div class="th-inner">Retorno Total<span class="sort-arrow"></span><span class="col-tag proj">proj.</span></div><span class="col-tip" data-tip="Fonte: Calculado&#10;Valorização até o Preço Justo + DY projetado&#10;Retorno total esperado no horizonte de análise">ⓘ</span></th>
-      <th data-col="22"  class="sep gh-rep" style="cursor:default;"><div class="th-inner">Relatório <span class="col-tip" data-tip="Fonte: Análise própria&#10;Link para o relatório detalhado do ativo com tese, riscos e projeções">ⓘ</span></div></th>
+      <th data-col="16" onclick="sortTable(16)"  class="gh-val col-mob-hide sortable" ><div class="th-inner">ROE médio<span class="sort-arrow"></span><span class="col-tag real">real</span></div><span class="col-tip" data-tip="Fonte: MCP Partnr (B3/CVM)&#10;ROE MEDIANO da própria empresa de 2021 para cá — a mesma janela e a mesma série que a coluna P/L médio ao lado.&#10;&#10;É ele que AJUSTA o múltiplo do Preço Justo desde 14/09/2026: o múltiplo aplicado é o P/L mediano da própria empresa × (ROE atual ÷ ROE médio), limitado a ±30%.&#10;&#10;Pela relação de Gordon, P/L = payout ÷ (Ke − g) e g = ROE × retenção — mais ROE significa mais crescimento sustentável e, com o resto constante, múltiplo maior. Comparar esta coluna com o ROE atual ao lado mostra, na mesma linha, de onde veio o ajuste.&#10;&#10;MEDIANA e não média: um ano de prejuízo ou de lucro extraordinário move a média e não move a mediana.">ⓘ</span></th>
+      <th data-col="17" onclick="sortTable(17)"  class="gh-val col-mob-hide sortable" ><div class="th-inner">Dív. Líq./EBITDA<span class="sort-arrow"></span><span class="col-tag real">real LTM</span></div><span class="col-tip" data-tip="Fonte: MCP Partnr (B3/CVM)&#10;Dívida Líquida ÷ EBITDA&#10;Mede o grau de alavancagem financeira">ⓘ</span></th>
+      <th data-col="18" onclick="sortTable(18)"  class="sep gh-opp col-mob-hide sortable" ><div class="th-inner">Múltiplo<span class="sort-arrow"></span><span class="col-tag proj">proj.</span></div><span class="col-tip" data-tip="Fonte: Análise própria&#10;O múltiplo pelo qual o fundamento projetado é multiplicado para chegar ao Preço Justo da coluna ao lado.&#10;&#10;Qual múltiplo depende do negócio: P/L no caso geral · P/FFO em shopping · EV/EBITDA sobre a média do ciclo em cíclica · paridade com a investida em holding.&#10;&#10;O valor-alvo é o múltiplo mediano da PRÓPRIA empresa de 2021 para cá, ajustado pela rentabilidade: × (ROE atual ÷ ROE médio do período), limitado a ±30%.&#10;&#10;O múltiplo do SETOR saiu da conta em 14/09/2026 — a mediana do segmento mistura empresas com rentabilidade e risco diferentes. Quem faz esse papel agora é o ajuste de ROE. A tooltip de cada célula traz a conta completa.">ⓘ</span></th>
+      <th data-col="19" onclick="sortTable(19)"  class="sep gh-opp col-mob-hide sortable" ><div class="th-inner">Preço Justo<span class="sort-arrow"></span><span class="col-tag proj">proj.</span></div><span class="col-tip" data-tip="Fonte: Análise própria&#10;Quanto a empresa deveria valer — fundamento PROJETADO × o múltiplo que ela deve negociar, segundo a PRÓPRIA história (2021→) corrigida pela rentabilidade de hoje.&#10;&#10;UM múltiplo por empresa, escolhido pelo que o negócio é: P/L no caso geral · P/FFO em shopping · EV/EBITDA sobre a média do ciclo em cíclica · paridade com a investida em holding. Não é mediana de réguas diferentes.&#10;&#10;NÃO é preço de compra: pagando o justo você não tem margem. Use a coluna Margem de Segurança ao lado e exija o mínimo que você aceita (o veredicto usa 15%).">ⓘ</span></th>
+      <th data-col="20" onclick="sortTable(20)"  class="gh-opp sortable" ><div class="th-inner">Cotação<span class="sort-arrow"></span><span class="col-tag real">real</span></div><span class="col-tip" data-tip="Fonte: MCP Partnr (B3/CVM)&#10;Último preço negociado na B3 (atualizado via botão Atualizar Cotações)">ⓘ</span></th>
+      <th data-col="21" onclick="sortTable(21)"  class="gh-opp sortable" ><div class="th-inner">Margem de Segurança<span class="sort-arrow"></span><span class="col-tag proj">proj.</span></div><span class="col-tip" data-tip="Fonte: Calculado&#10;(Preço Justo − Cotação) ÷ Preço Justo × 100&#10;Positivo = cotação abaixo do valor justo&#10;Negativo = cotação acima do valor justo&#10;&#10;O veredicto 🟢 compra exige margem de pelo menos 15%.">ⓘ</span></th>
+      <th data-col="22" onclick="sortTable(22)"  class="sep gh-ret col-mob-hide sortable" ><div class="th-inner">Retorno Total<span class="sort-arrow"></span><span class="col-tag proj">proj.</span></div><span class="col-tip" data-tip="Fonte: Calculado&#10;Valorização até o Preço Justo + DY projetado&#10;Retorno total esperado no horizonte de análise">ⓘ</span></th>
+      <th data-col="23"  class="sep gh-rep" style="cursor:default;"><div class="th-inner">Relatório <span class="col-tip" data-tip="Fonte: Análise própria&#10;Link para o relatório detalhado do ativo com tese, riscos e projeções">ⓘ</span></div></th>
     </tr>
   </thead>
   <tbody id="tableBody"><!-- populado por data/radar-rows.data.js --></tbody>
@@ -1353,33 +1355,33 @@
       "criterio": "P/FFO",
       "metodos": [
         {
-          "metodo": "FFO por papel projetado R$ 3,37 × P/FFO 8,13x",
-          "precoJusto": "R$ 27,39"
+          "metodo": "FFO por papel projetado R$ 3,37 × P/FFO 8,93x",
+          "precoJusto": "R$ 30,07"
         }
       ],
-      "origemMult": "o P/FFO mediano da própria empresa ao longo de 3 anos (8,13x) — o grupo SHOP não tem 3 pares para comparar",
-      "precoJusto": "R$ 27,39",
+      "origemMult": "o P/FFO mediano da própria empresa ao longo de 3 anos (8,13x), ajustado pela rentabilidade (FFO ÷ patrimônio): hoje 12,3% contra 11,2% de mediana do período dá fator 1,10 → múltiplo-alvo 8,93x. Mais rentável que a própria média merece múltiplo maior; menos rentável, menor. O múltiplo do setor NÃO entra desde 14/09/2026.",
+      "precoJusto": "R$ 30,07",
       "verificacao": [
         {
-          "metodo": "VPA R$ 25,96 × P/VP 1,03x",
-          "precoJusto": "R$ 26,74"
+          "metodo": "VPA R$ 25,96 × P/VP 1,13x",
+          "precoJusto": "R$ 29,36"
         },
         {
-          "metodo": "LPA projetado 2026 R$ 2,01 × P/L 14,54x",
-          "precoJusto": "R$ 29,29"
-        },
-        {
-          "metodo": "receita R$ 2,9 bi × EV/Receita 6,96x − dívida líquida R$ 3,7 bi, ÷ 506 mi papéis",
-          "precoJusto": "R$ 32,60"
+          "metodo": "LPA projetado 2026 R$ 2,01 × P/L 15,97x",
+          "precoJusto": "R$ 32,16"
         },
         {
           "metodo": "EBITDA LTM (R$ 2,1 bi) × EV/EBITDA 9,41x − dívida líquida R$ 3,7 bi, ÷ 506 mi papéis",
           "precoJusto": "R$ 32,60"
+        },
+        {
+          "metodo": "receita R$ 2,9 bi × EV/Receita 7,64x − dívida líquida R$ 3,7 bi, ÷ 506 mi papéis",
+          "precoJusto": "R$ 36,51"
         }
       ],
       "nota": "Método ÚNICO: P/FFO. O preço justo é o fundamento projetado multiplicado pelo múltiplo que a empresa deve negociar — não é média nem mediana de métodos diferentes. Os 4 método(s) de verificação abaixo são calculados para comparação e NÃO entram na conta. Mesmo número da coluna Preço Justo do Radar, gerado pela mesma fonte (analise/tetos.json). Ver METODOLOGIA_ANALISE.md seção 31.",
       "cenariosLpa": {
-        "multiplo": "8,13x",
+        "multiplo": "8,93x",
         "fundamento": "FFO por ação",
         "base": "R$ 1,58 bi (FFO do exercício de 2025)",
         "cenarios": [
@@ -1387,21 +1389,21 @@
             "cenario": "Conservador",
             "crescimento": "+0,0%",
             "lpa": "R$ 3,13",
-            "precoJusto": "R$ 25,41",
+            "precoJusto": "R$ 27,91",
             "premissa": "crescimento ZERO — a empresa repete o resultado-base, sem supor deterioração nem avanço"
           },
           {
             "cenario": "Base",
             "crescimento": "+7,7%",
             "lpa": "R$ 3,37",
-            "precoJusto": "R$ 27,37",
+            "precoJusto": "R$ 30,07",
             "premissa": "regressão log do FFO da própria série (shopping não projeta lucro contábil)"
           },
           {
             "cenario": "Otimista",
             "crescimento": "+11,6%",
             "lpa": "R$ 3,49",
-            "precoJusto": "R$ 28,35",
+            "precoJusto": "R$ 31,14",
             "premissa": "a taxa do base vezes 1,5, limitada ao teto de 25% — premissa declarada, não calibração"
           }
         ]
@@ -1553,7 +1555,7 @@
       "conviccao": "★★☆☆☆",
       "cotacao": "R$ 26,02",
       "precoJusto": "R$ 31,53",
-      "margem": "+5,0%",
+      "margem": "+13,5%",
       "premioSelic": "+13,9 p.p.",
       "gatilhos": [
         "anúncio do dividendo/JCP para 2027 (evento binário)",
@@ -1894,29 +1896,29 @@
       "criterio": "P/L",
       "metodos": [
         {
-          "metodo": "LPA projetado 2026 R$ 0,60 × P/L 8,49x",
-          "precoJusto": "R$ 5,09"
+          "metodo": "LPA projetado 2026 R$ 0,60 × P/L 11,15x",
+          "precoJusto": "R$ 6,68"
         }
       ],
-      "origemMult": "a média entre o P/L mediano da própria empresa ao longo de 5 anos (8,93x) e o dos 6 pares do grupo UTIL (8,04x)",
-      "precoJusto": "R$ 5,09",
+      "origemMult": "o P/L mediano da própria empresa ao longo de 5 anos (8,93x), ajustado pela rentabilidade (ROE): hoje 18,9% contra 15,1% de mediana do período dá fator 1,25 → múltiplo-alvo 11,15x. Mais rentável que a própria média merece múltiplo maior; menos rentável, menor. O múltiplo do setor NÃO entra desde 14/09/2026.",
+      "precoJusto": "R$ 6,68",
       "verificacao": [
         {
-          "metodo": "VPA R$ 3,06 × P/VP 1,73x",
-          "precoJusto": "R$ 5,28"
+          "metodo": "VPA R$ 3,06 × P/VP 2,16x",
+          "precoJusto": "R$ 6,59"
         },
         {
-          "metodo": "receita R$ 1,3 bi × EV/Receita 1,85x − dívida líquida R$ 0,4 bi, ÷ 364 mi papéis",
-          "precoJusto": "R$ 5,63"
+          "metodo": "FFO por papel projetado R$ 1,64 × P/FFO 4,50x",
+          "precoJusto": "R$ 7,40"
         },
         {
-          "metodo": "FFO por papel projetado R$ 1,64 × P/FFO 4,32x",
-          "precoJusto": "R$ 7,11"
+          "metodo": "receita R$ 1,3 bi × EV/Receita 2,41x − dívida líquida R$ 0,4 bi, ÷ 364 mi papéis",
+          "precoJusto": "R$ 7,64"
         }
       ],
       "nota": "Método ÚNICO: P/L. O preço justo é o fundamento projetado multiplicado pelo múltiplo que a empresa deve negociar — não é média nem mediana de métodos diferentes. Os 3 método(s) de verificação abaixo são calculados para comparação e NÃO entram na conta. Mesmo número da coluna Preço Justo do Radar, gerado pela mesma fonte (analise/tetos.json). Ver METODOLOGIA_ANALISE.md seção 31.",
       "cenariosLpa": {
-        "multiplo": "8,49x",
+        "multiplo": "11,15x",
         "fundamento": "LPA",
         "base": "R$ 0,21 bi (exercício fechado de 2025)",
         "cenarios": [
@@ -1924,21 +1926,21 @@
             "cenario": "Conservador",
             "crescimento": "+0,0%",
             "lpa": "R$ 0,57",
-            "precoJusto": "R$ 4,88",
+            "precoJusto": "R$ 6,41",
             "premissa": "crescimento ZERO — a empresa repete o resultado-base, sem supor deterioração nem avanço"
           },
           {
             "cenario": "Base",
             "crescimento": "+4,3%",
             "lpa": "R$ 0,60",
-            "precoJusto": "R$ 5,09",
+            "precoJusto": "R$ 6,68",
             "premissa": "lucro de 2026 declarado no relatório — Cenário BASE do relatório de 24/08/2026 (LPA R$ 0,55). A faixa vai de R$ 205 mi (conservador) a R$ 232 mi (otimista)."
           },
           {
             "cenario": "Otimista",
             "crescimento": "+6,5%",
             "lpa": "R$ 0,61",
-            "precoJusto": "R$ 5,19",
+            "precoJusto": "R$ 6,82",
             "premissa": "a taxa do base vezes 1,5, limitada ao teto de 25% — premissa declarada, não calibração"
           }
         ]
@@ -2043,7 +2045,7 @@
       "conviccao": "★★☆☆☆",
       "cotacao": "R$ 4,55",
       "precoJusto": "R$ 6,66",
-      "margem": "+10,5%",
+      "margem": "+31,9%",
       "premioSelic": "+10,2 p.p.",
       "gatilhos": [
         "3T26 (novembro/2026) — confirmar se margem EBITDA para de cair",
@@ -2319,33 +2321,33 @@
       "criterio": "P/L",
       "metodos": [
         {
-          "metodo": "LPA projetado 2026 R$ 2,06 × P/L 11,16x",
-          "precoJusto": "R$ 22,95"
+          "metodo": "LPA projetado 2026 R$ 2,06 × P/L 18,56x",
+          "precoJusto": "R$ 38,18"
         }
       ],
-      "origemMult": "a média entre o P/L mediano da própria empresa ao longo de 6 anos (14,28x) e o dos 6 pares do grupo UTIL (8,04x)",
-      "precoJusto": "R$ 22,95",
+      "origemMult": "o P/L mediano da própria empresa ao longo de 6 anos (14,28x), ajustado pela rentabilidade (ROE): hoje 17,5% contra 12,2% de mediana do período dá fator 1,43, limitado a 1,30 pelo teto de ±30% → múltiplo-alvo 18,56x. Mais rentável que a própria média merece múltiplo maior; menos rentável, menor. O múltiplo do setor NÃO entra desde 14/09/2026.",
+      "precoJusto": "R$ 38,18",
       "verificacao": [
-        {
-          "metodo": "receita R$ 27,3 bi × EV/Receita 1,81x − dívida líquida R$ -1,9 bi, ÷ 2,4 bi papéis",
-          "precoJusto": "R$ 21,19"
-        },
-        {
-          "metodo": "VPA R$ 10,69 × P/VP 2,04x",
-          "precoJusto": "R$ 21,77"
-        },
         {
           "metodo": "EBITDA LTM (R$ 13,7 bi) × EV/EBITDA 3,71x − dívida líquida R$ -1,9 bi, ÷ 2,4 bi papéis",
           "precoJusto": "R$ 21,83"
         },
         {
-          "metodo": "FFO por papel projetado R$ 5,43 × P/FFO 4,43x",
-          "precoJusto": "R$ 24,06"
+          "metodo": "receita R$ 27,3 bi × EV/Receita 2,32x − dívida líquida R$ -1,9 bi, ÷ 2,4 bi papéis",
+          "precoJusto": "R$ 26,87"
+        },
+        {
+          "metodo": "FFO por papel projetado R$ 5,43 × P/FFO 4,96x",
+          "precoJusto": "R$ 26,92"
+        },
+        {
+          "metodo": "VPA R$ 10,69 × P/VP 2,65x",
+          "precoJusto": "R$ 28,31"
         }
       ],
       "nota": "Método ÚNICO: P/L. O preço justo é o fundamento projetado multiplicado pelo múltiplo que a empresa deve negociar — não é média nem mediana de métodos diferentes. Os 4 método(s) de verificação abaixo são calculados para comparação e NÃO entram na conta. Mesmo número da coluna Preço Justo do Radar, gerado pela mesma fonte (analise/tetos.json). Ver METODOLOGIA_ANALISE.md seção 31.",
       "cenariosLpa": {
-        "multiplo": "11,16x",
+        "multiplo": "18,56x",
         "fundamento": "LPA",
         "base": "R$ 4,31 bi (exercício fechado de 2025)",
         "cenarios": [
@@ -2353,21 +2355,21 @@
             "cenario": "Conservador",
             "crescimento": "+0,0%",
             "lpa": "R$ 1,78",
-            "precoJusto": "R$ 19,86",
+            "precoJusto": "R$ 33,03",
             "premissa": "crescimento ZERO — a empresa repete o resultado-base, sem supor deterioração nem avanço"
           },
           {
             "cenario": "Base",
             "crescimento": "+15,5%",
             "lpa": "R$ 2,06",
-            "precoJusto": "R$ 22,95",
+            "precoJusto": "R$ 38,17",
             "premissa": "CAGR do lucro recorrente por regressão log"
           },
           {
             "cenario": "Otimista",
             "crescimento": "+23,3%",
             "lpa": "R$ 2,19",
-            "precoJusto": "R$ 24,50",
+            "precoJusto": "R$ 40,74",
             "premissa": "a taxa do base vezes 1,5, limitada ao teto de 25% — premissa declarada, não calibração"
           }
         ]
@@ -2720,12 +2722,12 @@
       "criterio": "P/L",
       "metodos": [
         {
-          "metodo": "LPA projetado 2026 R$ 0,75 × P/L 8,36x",
-          "precoJusto": "R$ 6,27"
+          "metodo": "LPA projetado 2026 R$ 0,75 × P/L 7,50x",
+          "precoJusto": "R$ 5,62"
         }
       ],
-      "origemMult": "a média entre o P/L mediano da própria empresa ao longo de 1 anos (7,50x) e o dos 6 pares do grupo FIN (9,23x)",
-      "precoJusto": "R$ 6,27",
+      "origemMult": "o P/L mediano da própria empresa ao longo de 1 anos (7,50x) — sem ROE suficiente na série para ajustar pela rentabilidade, fica a média histórica pura",
+      "precoJusto": "R$ 5,62",
       "verificacao": [],
       "nota": "Método ÚNICO: P/L. O preço justo é o fundamento projetado multiplicado pelo múltiplo que a empresa deve negociar — não é média nem mediana de métodos diferentes. Mesmo número da coluna Preço Justo do Radar, gerado pela mesma fonte (analise/tetos.json). Ver METODOLOGIA_ANALISE.md seção 31.",
       "leituraDados": [
@@ -3020,33 +3022,33 @@
       "criterio": "P/L",
       "metodos": [
         {
-          "metodo": "LPA projetado 2026 R$ 5,14 × P/L 8,31x",
-          "precoJusto": "R$ 42,69"
+          "metodo": "LPA projetado 2026 R$ 5,14 × P/L 7,72x",
+          "precoJusto": "R$ 39,67"
         }
       ],
-      "origemMult": "a média entre o P/L mediano da própria empresa ao longo de 6 anos (8,21x) e o dos 6 pares do grupo UTIL (8,40x)",
-      "precoJusto": "R$ 42,69",
+      "origemMult": "o P/L mediano da própria empresa ao longo de 6 anos (8,21x), ajustado pela rentabilidade (ROE): hoje 26,1% contra 27,8% de mediana do período dá fator 0,94 → múltiplo-alvo 7,72x. Mais rentável que a própria média merece múltiplo maior; menos rentável, menor. O múltiplo do setor NÃO entra desde 14/09/2026.",
+      "precoJusto": "R$ 39,67",
       "verificacao": [
         {
-          "metodo": "FFO por papel projetado R$ 6,99 × P/FFO 4,91x",
-          "precoJusto": "R$ 34,33"
+          "metodo": "FFO por papel projetado R$ 6,99 × P/FFO 5,39x",
+          "precoJusto": "R$ 37,72"
         },
         {
-          "metodo": "VPA R$ 20,55 × P/VP 2,14x",
-          "precoJusto": "R$ 43,97"
+          "metodo": "receita R$ 45,6 bi × EV/Receita 1,65x − dívida líquida R$ 27,6 bi, ÷ 1,2 bi papéis",
+          "precoJusto": "R$ 41,30"
+        },
+        {
+          "metodo": "VPA R$ 20,55 × P/VP 2,01x",
+          "precoJusto": "R$ 41,33"
         },
         {
           "metodo": "EBITDA LTM (R$ 13,7 bi) × EV/EBITDA 5,80x − dívida líquida R$ 27,6 bi, ÷ 1,2 bi papéis",
           "precoJusto": "R$ 44,85"
-        },
-        {
-          "metodo": "receita R$ 45,6 bi × EV/Receita 1,80x − dívida líquida R$ 27,6 bi, ÷ 1,2 bi papéis",
-          "precoJusto": "R$ 47,52"
         }
       ],
       "nota": "Método ÚNICO: P/L. O preço justo é o fundamento projetado multiplicado pelo múltiplo que a empresa deve negociar — não é média nem mediana de métodos diferentes. Os 4 método(s) de verificação abaixo são calculados para comparação e NÃO entram na conta. Mesmo número da coluna Preço Justo do Radar, gerado pela mesma fonte (analise/tetos.json). Ver METODOLOGIA_ANALISE.md seção 31.",
       "cenariosLpa": {
-        "multiplo": "8,31x",
+        "multiplo": "7,72x",
         "fundamento": "LPA",
         "base": "R$ 5,74 bi (exercício fechado de 2025)",
         "cenarios": [
@@ -3054,21 +3056,21 @@
             "cenario": "Conservador",
             "crescimento": "+0,0%",
             "lpa": "R$ 4,98",
-            "precoJusto": "R$ 41,42",
+            "precoJusto": "R$ 38,48",
             "premissa": "crescimento ZERO — a empresa repete o resultado-base, sem supor deterioração nem avanço"
           },
           {
             "cenario": "Base",
             "crescimento": "+3,1%",
             "lpa": "R$ 5,14",
-            "precoJusto": "R$ 42,71",
+            "precoJusto": "R$ 39,68",
             "premissa": "CAGR do lucro recorrente por regressão log"
           },
           {
             "cenario": "Otimista",
             "crescimento": "+4,7%",
             "lpa": "R$ 5,22",
-            "precoJusto": "R$ 43,36",
+            "precoJusto": "R$ 40,28",
             "premissa": "a taxa do base vezes 1,5, limitada ao teto de 25% — premissa declarada, não calibração"
           }
         ]
@@ -3390,33 +3392,33 @@
       "criterio": "P/L",
       "metodos": [
         {
-          "metodo": "LPA projetado 2026 R$ 4,50 × P/L 7,41x",
-          "precoJusto": "R$ 33,37"
+          "metodo": "LPA projetado 2026 R$ 4,50 × P/L 9,63x",
+          "precoJusto": "R$ 43,38"
         }
       ],
-      "origemMult": "o P/L mediano da própria empresa ao longo de 6 anos (7,41x) — o grupo IND não tem 3 pares para comparar",
-      "precoJusto": "R$ 33,37",
+      "origemMult": "o P/L mediano da própria empresa ao longo de 6 anos (7,41x), ajustado pela rentabilidade (ROE): hoje 73,7% contra 53,7% de mediana do período dá fator 1,37, limitado a 1,30 pelo teto de ±30% → múltiplo-alvo 9,63x. Mais rentável que a própria média merece múltiplo maior; menos rentável, menor. O múltiplo do setor NÃO entra desde 14/09/2026.",
+      "precoJusto": "R$ 43,38",
       "verificacao": [
         {
           "metodo": "EBITDA LTM (R$ 1,1 bi) × EV/EBITDA 5,03x − dívida líquida R$ 1,1 bi, ÷ 136 mi papéis",
           "precoJusto": "R$ 31,65"
         },
         {
-          "metodo": "FFO por papel projetado R$ 5,45 × P/FFO 5,84x",
-          "precoJusto": "R$ 31,83"
+          "metodo": "FFO por papel projetado R$ 5,45 × P/FFO 7,60x",
+          "precoJusto": "R$ 41,37"
         },
         {
-          "metodo": "receita R$ 5,4 bi × EV/Receita 1,04x − dívida líquida R$ 1,1 bi, ÷ 136 mi papéis",
-          "precoJusto": "R$ 32,99"
+          "metodo": "receita R$ 5,4 bi × EV/Receita 1,35x − dívida líquida R$ 1,1 bi, ÷ 136 mi papéis",
+          "precoJusto": "R$ 45,32"
         },
         {
-          "metodo": "VPA R$ 7,15 × P/VP 5,05x",
-          "precoJusto": "R$ 36,09"
+          "metodo": "VPA R$ 7,15 × P/VP 6,57x",
+          "precoJusto": "R$ 46,92"
         }
       ],
       "nota": "Método ÚNICO: P/L. O preço justo é o fundamento projetado multiplicado pelo múltiplo que a empresa deve negociar — não é média nem mediana de métodos diferentes. Os 4 método(s) de verificação abaixo são calculados para comparação e NÃO entram na conta. Mesmo número da coluna Preço Justo do Radar, gerado pela mesma fonte (analise/tetos.json). Ver METODOLOGIA_ANALISE.md seção 31.",
       "cenariosLpa": {
-        "multiplo": "7,41x",
+        "multiplo": "9,63x",
         "fundamento": "LPA",
         "base": "R$ 0,61 bi (exercício fechado de 2025)",
         "cenarios": [
@@ -3424,21 +3426,21 @@
             "cenario": "Conservador",
             "crescimento": "+0,0%",
             "lpa": "R$ 4,49",
-            "precoJusto": "R$ 33,28",
+            "precoJusto": "R$ 43,26",
             "premissa": "crescimento ZERO — a empresa repete o resultado-base, sem supor deterioração nem avanço"
           },
           {
             "cenario": "Base",
             "crescimento": "+0,3%",
             "lpa": "R$ 4,50",
-            "precoJusto": "R$ 33,37",
+            "precoJusto": "R$ 43,37",
             "premissa": "CAGR do lucro recorrente por regressão log"
           },
           {
             "cenario": "Otimista",
             "crescimento": "+0,4%",
             "lpa": "R$ 4,51",
-            "precoJusto": "R$ 33,42",
+            "precoJusto": "R$ 43,43",
             "premissa": "a taxa do base vezes 1,5, limitada ao teto de 25% — premissa declarada, não calibração"
           }
         ]
@@ -3756,20 +3758,20 @@
       "precoJusto": "R$ 9,21",
       "verificacao": [
         {
-          "metodo": "FFO por papel projetado R$ 1,59 × P/FFO 4,36x",
-          "precoJusto": "R$ 6,95"
+          "metodo": "receita R$ 1,7 bi × EV/Receita 1,29x − dívida líquida R$ 1,1 bi, ÷ 240 mi papéis",
+          "precoJusto": "R$ 4,60"
         },
         {
-          "metodo": "VPA R$ 6,11 × P/VP 1,29x",
-          "precoJusto": "R$ 7,87"
+          "metodo": "LPA projetado 2026 R$ 0,86 × P/L 5,38x",
+          "precoJusto": "R$ 4,64"
         },
         {
-          "metodo": "receita R$ 1,7 bi × EV/Receita 1,84x − dívida líquida R$ 1,1 bi, ÷ 240 mi papéis",
-          "precoJusto": "R$ 8,46"
+          "metodo": "FFO por papel projetado R$ 1,59 × P/FFO 3,21x",
+          "precoJusto": "R$ 5,11"
         },
         {
-          "metodo": "LPA projetado 2026 R$ 0,86 × P/L 10,25x",
-          "precoJusto": "R$ 8,84"
+          "metodo": "VPA R$ 6,11 × P/VP 0,90x",
+          "precoJusto": "R$ 5,51"
         }
       ],
       "nota": "Método ÚNICO: EV/EBITDA. O preço justo é o fundamento projetado multiplicado pelo múltiplo que a empresa deve negociar — não é média nem mediana de métodos diferentes. Os 4 método(s) de verificação abaixo são calculados para comparação e NÃO entram na conta. Mesmo número da coluna Preço Justo do Radar, gerado pela mesma fonte (analise/tetos.json). Ver METODOLOGIA_ANALISE.md seção 31.",
@@ -4213,25 +4215,25 @@
       "criterio": "P/L",
       "metodos": [
         {
-          "metodo": "LPA projetado 2026 R$ 1,54 × P/L 9,98x",
-          "precoJusto": "R$ 15,42"
+          "metodo": "LPA projetado 2026 R$ 1,54 × P/L 13,23x",
+          "precoJusto": "R$ 20,43"
         }
       ],
-      "origemMult": "a média entre o P/L mediano da própria empresa ao longo de 6 anos (11,62x) e o dos 4 pares do grupo SEG (8,35x)",
-      "precoJusto": "R$ 15,42",
+      "origemMult": "o P/L mediano da própria empresa ao longo de 6 anos (11,62x), ajustado pela rentabilidade (ROE): hoje 33,1% contra 29,1% de mediana do período dá fator 1,14 → múltiplo-alvo 13,23x. Mais rentável que a própria média merece múltiplo maior; menos rentável, menor. O múltiplo do setor NÃO entra desde 14/09/2026.",
+      "precoJusto": "R$ 20,43",
       "verificacao": [
         {
-          "metodo": "VPA R$ 4,62 × P/VP 3,72x",
-          "precoJusto": "R$ 17,18"
+          "metodo": "VPA R$ 4,62 × P/VP 4,24x",
+          "precoJusto": "R$ 19,57"
         },
         {
-          "metodo": "FFO por papel projetado R$ 1,79 × P/FFO 11,46x",
-          "precoJusto": "R$ 20,47"
+          "metodo": "FFO por papel projetado R$ 1,79 × P/FFO 13,05x",
+          "precoJusto": "R$ 23,31"
         }
       ],
       "nota": "Método ÚNICO: P/L. O preço justo é o fundamento projetado multiplicado pelo múltiplo que a empresa deve negociar — não é média nem mediana de métodos diferentes. Os 2 método(s) de verificação abaixo são calculados para comparação e NÃO entram na conta. Mesmo número da coluna Preço Justo do Radar, gerado pela mesma fonte (analise/tetos.json). Ver METODOLOGIA_ANALISE.md seção 31.",
       "cenariosLpa": {
-        "multiplo": "9,98x",
+        "multiplo": "13,23x",
         "fundamento": "LPA",
         "base": "R$ 4,29 bi (exercício fechado de 2025)",
         "cenarios": [
@@ -4239,21 +4241,21 @@
             "cenario": "Conservador",
             "crescimento": "+0,0%",
             "lpa": "R$ 1,43",
-            "precoJusto": "R$ 14,25",
+            "precoJusto": "R$ 18,89",
             "premissa": "crescimento ZERO — a empresa repete o resultado-base, sem supor deterioração nem avanço"
           },
           {
             "cenario": "Base",
             "crescimento": "+8,1%",
             "lpa": "R$ 1,54",
-            "precoJusto": "R$ 15,41",
+            "precoJusto": "R$ 20,43",
             "premissa": "lucro de 2026 declarado no relatório — Cenário BASE do relatório de 25/08/2026: crescimento financeiro de 8% a.a. sem novo choque regulatório. ⚠️ Não há guidance numérico oficial da…"
           },
           {
             "cenario": "Otimista",
             "crescimento": "+12,2%",
             "lpa": "R$ 1,60",
-            "precoJusto": "R$ 15,99",
+            "precoJusto": "R$ 21,19",
             "premissa": "a taxa do base vezes 1,5, limitada ao teto de 25% — premissa declarada, não calibração"
           }
         ]
@@ -4585,21 +4587,21 @@
       "criterio": "P/L",
       "metodos": [
         {
-          "metodo": "LPA projetado 2026 R$ 4,32 × P/L 8,56x",
-          "precoJusto": "R$ 37,04"
+          "metodo": "LPA projetado 2026 R$ 4,32 × P/L 8,42x",
+          "precoJusto": "R$ 36,43"
         }
       ],
-      "origemMult": "a média entre o P/L mediano da própria empresa ao longo de 6 anos (8,45x) e o dos 4 pares do grupo SEG (8,68x)",
-      "precoJusto": "R$ 37,04",
+      "origemMult": "o P/L mediano da própria empresa ao longo de 6 anos (8,45x), ajustado pela rentabilidade (ROE): hoje 78,6% contra 78,8% de mediana do período dá fator 1,00 → múltiplo-alvo 8,42x. Mais rentável que a própria média merece múltiplo maior; menos rentável, menor. O múltiplo do setor NÃO entra desde 14/09/2026.",
+      "precoJusto": "R$ 36,43",
       "verificacao": [
         {
-          "metodo": "VPA R$ 5,68 × P/VP 6,11x",
-          "precoJusto": "R$ 34,69"
+          "metodo": "VPA R$ 5,68 × P/VP 6,09x",
+          "precoJusto": "R$ 34,58"
         }
       ],
       "nota": "Método ÚNICO: P/L. O preço justo é o fundamento projetado multiplicado pelo múltiplo que a empresa deve negociar — não é média nem mediana de métodos diferentes. Os 1 método(s) de verificação abaixo são calculados para comparação e NÃO entram na conta. Mesmo número da coluna Preço Justo do Radar, gerado pela mesma fonte (analise/tetos.json). Ver METODOLOGIA_ANALISE.md seção 31.",
       "cenariosLpa": {
-        "multiplo": "8,56x",
+        "multiplo": "8,42x",
         "fundamento": "LPA",
         "base": "R$ 9,02 bi (exercício fechado de 2025)",
         "cenarios": [
@@ -4607,21 +4609,21 @@
             "cenario": "Conservador",
             "crescimento": "+0,0%",
             "lpa": "R$ 4,51",
-            "precoJusto": "R$ 38,59",
+            "precoJusto": "R$ 37,96",
             "premissa": "crescimento ZERO — a empresa repete o resultado-base, sem supor deterioração nem avanço"
           },
           {
             "cenario": "Base",
             "crescimento": "-4,1%",
             "lpa": "R$ 4,32",
-            "precoJusto": "R$ 37,02",
+            "precoJusto": "R$ 36,41",
             "premissa": "lucro de 2026 declarado no relatório — Cenário BASE do relatório de 25/08/2026, que usa o guidance oficial da companhia (resultado operacional consolidado −7% a −3% para 2026; o base é o…"
           },
           {
             "cenario": "Otimista",
             "crescimento": "-2,7%",
             "lpa": "R$ 4,39",
-            "precoJusto": "R$ 37,54",
+            "precoJusto": "R$ 36,93",
             "premissa": "a taxa do base vezes 1,5, limitada ao teto de 25% — premissa declarada, não calibração"
           }
         ]
@@ -4952,12 +4954,12 @@
       "criterio": "P/L",
       "metodos": [
         {
-          "metodo": "LPA projetado 2026 R$ 4,03 × P/L 8,52x",
-          "precoJusto": "R$ 34,34"
+          "metodo": "LPA projetado 2026 R$ 4,03 × P/L 8,25x",
+          "precoJusto": "R$ 33,27"
         }
       ],
-      "origemMult": "a média entre o P/L mediano da própria empresa ao longo de 3 anos (8,25x) e o dos 4 pares do grupo SEG (8,78x)",
-      "precoJusto": "R$ 34,34",
+      "origemMult": "o P/L mediano da própria empresa ao longo de 3 anos (8,25x), ajustado pela rentabilidade (ROE): hoje 4,5% contra 4,5% de mediana do período dá fator 1,00 → múltiplo-alvo 8,25x. Mais rentável que a própria média merece múltiplo maior; menos rentável, menor. O múltiplo do setor NÃO entra desde 14/09/2026.",
+      "precoJusto": "R$ 33,27",
       "verificacao": [
         {
           "metodo": "VPA R$ 66,02 × P/VP 0,81x",
@@ -4966,7 +4968,7 @@
       ],
       "nota": "Método ÚNICO: P/L. O preço justo é o fundamento projetado multiplicado pelo múltiplo que a empresa deve negociar — não é média nem mediana de métodos diferentes. Os 1 método(s) de verificação abaixo são calculados para comparação e NÃO entram na conta. Mesmo número da coluna Preço Justo do Radar, gerado pela mesma fonte (analise/tetos.json). Ver METODOLOGIA_ANALISE.md seção 31.",
       "cenariosLpa": {
-        "multiplo": "8,52x",
+        "multiplo": "8,25x",
         "fundamento": "LPA",
         "base": "R$ 0,39 bi (exercício fechado de 2025)",
         "cenarios": [
@@ -4974,21 +4976,21 @@
             "cenario": "Conservador",
             "crescimento": "+0,0%",
             "lpa": "R$ 4,78",
-            "precoJusto": "R$ 40,70",
+            "precoJusto": "R$ 39,41",
             "premissa": "crescimento ZERO — a empresa repete o resultado-base, sem supor deterioração nem avanço"
           },
           {
             "cenario": "Base",
             "crescimento": "-15,6%",
             "lpa": "R$ 4,03",
-            "precoJusto": "R$ 34,36",
+            "precoJusto": "R$ 33,27",
             "premissa": "lucro de 2026 declarado no relatório — Cenário CONSERVADOR do relatório de 25/08/2026 — e é o único disponível: o próprio relatório se recusa a publicar um cenário base, porque a…"
           },
           {
             "cenario": "Otimista",
             "crescimento": "-10,4%",
             "lpa": "R$ 4,28",
-            "precoJusto": "R$ 36,47",
+            "precoJusto": "R$ 35,32",
             "premissa": "a taxa do base vezes 1,5, limitada ao teto de 25% — premissa declarada, não calibração"
           }
         ]
@@ -5298,21 +5300,21 @@
       "criterio": "P/L",
       "metodos": [
         {
-          "metodo": "LPA projetado 2026 R$ 5,17 × P/L 9,08x",
-          "precoJusto": "R$ 46,93"
+          "metodo": "LPA projetado 2026 R$ 5,17 × P/L 11,56x",
+          "precoJusto": "R$ 59,75"
         }
       ],
-      "origemMult": "a média entre o P/L mediano da própria empresa ao longo de 6 anos (10,00x) e o dos 6 pares do grupo FIN (8,17x)",
-      "precoJusto": "R$ 46,93",
+      "origemMult": "o P/L mediano da própria empresa ao longo de 6 anos (10,00x), ajustado pela rentabilidade (ROE): hoje 21,0% contra 18,2% de mediana do período dá fator 1,16 → múltiplo-alvo 11,56x. Mais rentável que a própria média merece múltiplo maior; menos rentável, menor. O múltiplo do setor NÃO entra desde 14/09/2026.",
+      "precoJusto": "R$ 59,75",
       "verificacao": [
         {
-          "metodo": "VPA R$ 19,49 × P/VP 1,89x",
-          "precoJusto": "R$ 36,77"
+          "metodo": "VPA R$ 19,49 × P/VP 2,18x",
+          "precoJusto": "R$ 42,52"
         }
       ],
       "nota": "Método ÚNICO: P/L. O preço justo é o fundamento projetado multiplicado pelo múltiplo que a empresa deve negociar — não é média nem mediana de métodos diferentes. Os 1 método(s) de verificação abaixo são calculados para comparação e NÃO entram na conta. Mesmo número da coluna Preço Justo do Radar, gerado pela mesma fonte (analise/tetos.json). Ver METODOLOGIA_ANALISE.md seção 31.",
       "cenariosLpa": {
-        "multiplo": "9,08x",
+        "multiplo": "11,56x",
         "fundamento": "LPA",
         "base": "R$ 45,85 bi (exercício fechado de 2025)",
         "cenarios": [
@@ -5320,21 +5322,21 @@
             "cenario": "Conservador",
             "crescimento": "+0,0%",
             "lpa": "R$ 4,68",
-            "precoJusto": "R$ 42,51",
+            "precoJusto": "R$ 54,12",
             "premissa": "crescimento ZERO — a empresa repete o resultado-base, sem supor deterioração nem avanço"
           },
           {
             "cenario": "Base",
             "crescimento": "+10,4%",
             "lpa": "R$ 5,17",
-            "precoJusto": "R$ 46,91",
+            "precoJusto": "R$ 59,72",
             "premissa": "lucro de 2026 declarado no relatório — Cenário BASE do relatório de 25/08/2026: crescimento financeiro padrão de 8% a.a. sobre o lucro RECORRENTE de 2025. O conservador (piso do guidance…"
           },
           {
             "cenario": "Otimista",
             "crescimento": "+15,5%",
             "lpa": "R$ 5,41",
-            "precoJusto": "R$ 49,11",
+            "precoJusto": "R$ 62,53",
             "premissa": "a taxa do base vezes 1,5, limitada ao teto de 25% — premissa declarada, não calibração"
           }
         ]
@@ -5627,16 +5629,16 @@
       "criterio": "P/L",
       "metodos": [
         {
-          "metodo": "LPA projetado 2026 R$ 1,71 × P/L 8,89x",
-          "precoJusto": "R$ 15,19"
+          "metodo": "LPA projetado 2026 R$ 1,71 × P/L 7,10x",
+          "precoJusto": "R$ 12,14"
         }
       ],
-      "origemMult": "a média entre o P/L mediano da própria empresa ao longo de 1 anos (9,21x) e o dos 6 pares do grupo UTIL (8,57x)",
-      "precoJusto": "R$ 15,19",
+      "origemMult": "o P/L mediano da própria empresa ao longo de 1 anos (9,21x), ajustado pela rentabilidade (ROE): hoje 17,3% contra 22,5% de mediana do período dá fator 0,77 → múltiplo-alvo 7,10x. Mais rentável que a própria média merece múltiplo maior; menos rentável, menor. O múltiplo do setor NÃO entra desde 14/09/2026.",
+      "precoJusto": "R$ 12,14",
       "verificacao": [],
       "nota": "Método ÚNICO: P/L. O preço justo é o fundamento projetado multiplicado pelo múltiplo que a empresa deve negociar — não é média nem mediana de métodos diferentes. Mesmo número da coluna Preço Justo do Radar, gerado pela mesma fonte (analise/tetos.json). Ver METODOLOGIA_ANALISE.md seção 31.",
       "cenariosLpa": {
-        "multiplo": "8,89x",
+        "multiplo": "7,10x",
         "fundamento": "LPA",
         "base": "R$ 1,46 bi (exercício fechado de 2025)",
         "cenarios": [
@@ -5644,21 +5646,21 @@
             "cenario": "Conservador",
             "crescimento": "+0,0%",
             "lpa": "R$ 2,04",
-            "precoJusto": "R$ 18,17",
+            "precoJusto": "R$ 14,51",
             "premissa": "crescimento ZERO — a empresa repete o resultado-base, sem supor deterioração nem avanço"
           },
           {
             "cenario": "Base",
             "crescimento": "-16,4%",
             "lpa": "R$ 1,71",
-            "precoJusto": "R$ 15,20",
+            "precoJusto": "R$ 12,14",
             "premissa": "CAGR do lucro recorrente por regressão log"
           },
           {
             "cenario": "Otimista",
             "crescimento": "-10,9%",
             "lpa": "R$ 1,82",
-            "precoJusto": "R$ 16,19",
+            "precoJusto": "R$ 12,93",
             "premissa": "a taxa do base vezes 1,5, limitada ao teto de 25% — premissa declarada, não calibração"
           }
         ]
@@ -5957,29 +5959,29 @@
       "criterio": "P/FFO",
       "metodos": [
         {
-          "metodo": "FFO por papel projetado R$ 2,71 × P/FFO 9,43x",
-          "precoJusto": "R$ 25,59"
+          "metodo": "FFO por papel projetado R$ 2,71 × P/FFO 10,53x",
+          "precoJusto": "R$ 28,57"
         }
       ],
-      "origemMult": "o P/FFO mediano da própria empresa ao longo de 5 anos (9,43x) — o grupo SHOP não tem 3 pares para comparar",
-      "precoJusto": "R$ 25,59",
+      "origemMult": "o P/FFO mediano da própria empresa ao longo de 5 anos (9,43x), ajustado pela rentabilidade (FFO ÷ patrimônio): hoje 23,8% contra 21,3% de mediana do período dá fator 1,12 → múltiplo-alvo 10,53x. Mais rentável que a própria média merece múltiplo maior; menos rentável, menor. O múltiplo do setor NÃO entra desde 14/09/2026.",
+      "precoJusto": "R$ 28,57",
       "verificacao": [
         {
-          "metodo": "LPA projetado 2026 R$ 2,42 × P/L 10,13x",
-          "precoJusto": "R$ 24,53"
+          "metodo": "LPA projetado 2026 R$ 2,42 × P/L 11,31x",
+          "precoJusto": "R$ 27,38"
         },
         {
-          "metodo": "VPA R$ 13,44 × P/VP 2,23x",
-          "precoJusto": "R$ 29,97"
+          "metodo": "VPA R$ 13,44 × P/VP 2,49x",
+          "precoJusto": "R$ 33,45"
         },
         {
-          "metodo": "receita R$ 3,2 bi × EV/Receita 6,99x − dívida líquida R$ 4,6 bi, ÷ 520 mi papéis",
-          "precoJusto": "R$ 34,18"
+          "metodo": "receita R$ 3,2 bi × EV/Receita 7,80x − dívida líquida R$ 4,6 bi, ÷ 520 mi papéis",
+          "precoJusto": "R$ 39,17"
         }
       ],
       "nota": "Método ÚNICO: P/FFO. O preço justo é o fundamento projetado multiplicado pelo múltiplo que a empresa deve negociar — não é média nem mediana de métodos diferentes. Os 3 método(s) de verificação abaixo são calculados para comparação e NÃO entram na conta. Mesmo número da coluna Preço Justo do Radar, gerado pela mesma fonte (analise/tetos.json). Ver METODOLOGIA_ANALISE.md seção 31.",
       "cenariosLpa": {
-        "multiplo": "9,43x",
+        "multiplo": "10,53x",
         "fundamento": "FFO por ação",
         "base": "R$ 1,28 bi (FFO do exercício de 2025)",
         "cenarios": [
@@ -5987,21 +5989,21 @@
             "cenario": "Conservador",
             "crescimento": "+0,0%",
             "lpa": "R$ 2,46",
-            "precoJusto": "R$ 23,20",
+            "precoJusto": "R$ 25,91",
             "premissa": "crescimento ZERO — a empresa repete o resultado-base, sem supor deterioração nem avanço"
           },
           {
             "cenario": "Base",
             "crescimento": "+10,3%",
             "lpa": "R$ 2,71",
-            "precoJusto": "R$ 25,59",
+            "precoJusto": "R$ 28,57",
             "premissa": "regressão log do FFO da própria série (shopping não projeta lucro contábil)"
           },
           {
             "cenario": "Otimista",
             "crescimento": "+15,4%",
             "lpa": "R$ 2,84",
-            "precoJusto": "R$ 26,78",
+            "precoJusto": "R$ 29,90",
             "premissa": "a taxa do base vezes 1,5, limitada ao teto de 25% — premissa declarada, não calibração"
           }
         ]
@@ -6298,21 +6300,21 @@
       "criterio": "P/L",
       "metodos": [
         {
-          "metodo": "LPA projetado 2026 R$ 9,82 × P/L 8,70x",
-          "precoJusto": "R$ 85,38"
+          "metodo": "LPA projetado 2026 R$ 9,82 × P/L 8,89x",
+          "precoJusto": "R$ 87,29"
         }
       ],
-      "origemMult": "a média entre o P/L mediano da própria empresa ao longo de 6 anos (8,46x) e o dos 6 pares do grupo FIN (8,94x)",
-      "precoJusto": "R$ 85,38",
+      "origemMult": "o P/L mediano da própria empresa ao longo de 6 anos (8,46x), ajustado pela rentabilidade (ROE): hoje 27,1% contra 25,7% de mediana do período dá fator 1,05 → múltiplo-alvo 8,89x. Mais rentável que a própria média merece múltiplo maior; menos rentável, menor. O múltiplo do setor NÃO entra desde 14/09/2026.",
+      "precoJusto": "R$ 87,29",
       "verificacao": [
         {
-          "metodo": "VPA R$ 26,44 × P/VP 2,90x",
-          "precoJusto": "R$ 76,59"
+          "metodo": "VPA R$ 26,44 × P/VP 3,04x",
+          "precoJusto": "R$ 80,50"
         }
       ],
       "nota": "Método ÚNICO: P/L. O preço justo é o fundamento projetado multiplicado pelo múltiplo que a empresa deve negociar — não é média nem mediana de métodos diferentes. Os 1 método(s) de verificação abaixo são calculados para comparação e NÃO entram na conta. Mesmo número da coluna Preço Justo do Radar, gerado pela mesma fonte (analise/tetos.json). Ver METODOLOGIA_ANALISE.md seção 31.",
       "cenariosLpa": {
-        "multiplo": "8,70x",
+        "multiplo": "8,89x",
         "fundamento": "LPA",
         "base": "R$ 0,64 bi (exercício fechado de 2025)",
         "cenarios": [
@@ -6320,21 +6322,21 @@
             "cenario": "Conservador",
             "crescimento": "+0,0%",
             "lpa": "R$ 6,11",
-            "precoJusto": "R$ 53,13",
+            "precoJusto": "R$ 54,29",
             "premissa": "crescimento ZERO — a empresa repete o resultado-base, sem supor deterioração nem avanço"
           },
           {
             "cenario": "Base",
             "crescimento": "+60,7%",
             "lpa": "R$ 9,82",
-            "precoJusto": "R$ 85,40",
+            "precoJusto": "R$ 87,26",
             "premissa": "lucro de 2026 declarado no relatório — Cenário BASE do relatório de 25/08/2026: ponto médio entre o g financeiro padrão (8%) e o crescimento implícito pela retenção de capital (ROE ×…"
           },
           {
             "cenario": "Otimista",
             "crescimento": "+25,0%",
             "lpa": "R$ 7,63",
-            "precoJusto": "R$ 66,41",
+            "precoJusto": "R$ 67,86",
             "premissa": "a taxa do base vezes 1,5, limitada ao teto de 25% — premissa declarada, não calibração"
           }
         ]

@@ -61,9 +61,13 @@ def num_br(txt):
 # A regra, fixada aqui para todo relatório gerado a partir de 14/09/2026:
 #
 #  1 · REGRA DO MÚLTIPLO. O relatório declara, nesta ordem: (a) qual método decide e POR QUE
-#      esse e não outro — a razão é do NEGÓCIO, não estatística; (b) as duas metades do
-#      múltiplo, a própria série e a dos pares, cada uma com seu número; (c) o múltiplo final
-#      e a conta completa até o preço justo.
+#      esse e não outro — a razão é do NEGÓCIO, não estatística; (b) a ÂNCORA (a mediana do
+#      próprio múltiplo na janela 2021→) e o AJUSTE DE ROE que a corrige, cada um com seu
+#      número; (c) o múltiplo final e a conta completa até o preço justo.
+#      ⚠️ ATUALIZADO EM 14/09/2026: antes eram "as duas metades, a própria série e a dos
+#      pares". O múltiplo do setor saiu da conta por decisão do usuário — a mediana do
+#      segmento mistura empresas com rentabilidade e risco diferentes, e quem passa a trazer
+#      essa informação é o ROE da própria empresa contra a própria média.
 #
 #  2 · LPA EM TRÊS CENÁRIOS. Um número só de LPA esconde que ele é uma projeção. Os três
 #      cenários usam a MESMA base e variam só o crescimento:
@@ -113,8 +117,9 @@ REGRA_METODO = {
              'EV não se aplica: o passivo é a matéria-prima (depósito), não alavancagem.'),
     'SEG':  ('P/L', 'Seguradora ganha na subscrição e no float, e o lucro captura os dois. '
              'Como em banco, EV/EBITDA não se aplica — a provisão técnica é insumo, não dívida. '
-             'Desde 14/09/2026 seguradora tem grupo de pares PRÓPRIO: o ciclo de uma '
-             'seguradora não é o de um banco.'),
+             'A separação entre pares de banco e de seguradora, feita em 13/09/2026, deixou '
+             'de afetar o preço justo em 14/09 — o múltiplo do setor saiu da conta —, mas '
+             'segue valendo para o fallback de quem não tem série própria utilizável.'),
 }
 REGRA_PADRAO = ('P/L',
                 'Caso geral: o lucro é a medida do que o negócio entrega ao acionista, e o '

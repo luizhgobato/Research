@@ -65,6 +65,22 @@ try:
 except Exception:
     PLH = {}
 
+# Resultado do motor. A coluna P/L médio precisa saber QUAL método decidiu o preço justo de
+# cada linha: só quando é P/L é que ela pode se declarar âncora do múltiplo. Em ALOS3 (P/FFO),
+# PETR4 e VALE3 (EV/EBITDA) ou ITSA4 (paridade) a coluna é CONTEXTO, e dizer o contrário seria
+# escrever na tooltip uma conta que não fecha na tela.
+try:
+    TETOS = json.loads((RAIZ / 'analise/tetos.json').read_text())
+except Exception:
+    TETOS = {}
+
+
+def metodo_principal(t):
+    for m in (TETOS.get(t) or {}).get('metodos', []):
+        if m.get('papel') == 'principal':
+            return m.get('chave')
+    return None
+
 
 def pl_serie_longa(t):
     """[(ano, P/L)] da série longa, ou [] quando o ticker não foi coletado."""
@@ -441,63 +457,127 @@ def gerar():
               'se a projeção está dentro do que a empresa costuma pagar.&#10;'
               'Fonte: MCP Partnr (B3/CVM), analise/dy_historico.json.')
 
-        # ── Coluna 14 · P/L MÉDIO DA PRÓPRIA SÉRIE ──────────────────────────────────────
-        # Pedido do usuário: "acrescente uma coluna de P/L médio de 10 anos".
-        # ⚠️ SÃO 6 ANOS, NÃO 10, e a tooltip diz isso em vez de fingir a década: o HIST_SEED
-        # cobre 2021-2026 porque foi assim que a série foi coletada da Partnr. Rotular de
-        # "10 anos" um número de 6 seria o tipo de imprecisão que este projeto vem removendo.
+        # ── Colunas 14 e 16 · P/L MÉDIO e ROE MÉDIO, mesma janela ───────────────────────
+        # JANELA 2021→, fixada pelo usuário em 14/09/2026: "para o P/L médio e ROE médio vamos
+        # manter desde 2021 para cá". É exatamente o HIST_SEED, e é exatamente a janela que o
+        # motor usa para tirar o múltiplo — as três coisas passam a coincidir por construção.
         #
-        # É a METADE PRÓPRIA do múltiplo que produz o Preço Justo (a outra é a mediana dos
-        # pares), então ela também serve de conferência: P/L atual acima deste valor = a ação
-        # está cara contra a própria história.
+        # ⚠️ A SÉRIE LONGA (até 16 anos, analise/pl_historico.json) SAIU DESTA COLUNA, e o
+        # selo azul "10a" com ela. O motivo é medido, não estético: usar 2011-2020 no preço
+        # justo subia TODA empresa entre +12% e +77%, porque naquele intervalo a Selic rodou
+        # perto de 7% e chegou a 2% — o P/L praticado ali descreve outro custo de capital.
+        # A coleta continua no repositório (scripts/coletar_pl_historico.py) e serve para
+        # quem quiser olhar o ciclo inteiro; para valorar hoje, ela desancora.
+        #
+        # As duas colunas são a CONTA DO MÚLTIPLO aberta na tela: múltiplo aplicado =
+        # P/L médio × (ROE atual ÷ ROE médio), limitado a ±30%. O leitor confere a
+        # coluna Múltiplo dividindo duas células que estão na mesma linha.
         val14, q14 = M['anos_validos'](A)
-        longa = pl_serie_longa(t)
-        fonte14 = 'curta'
-        if len(longa) >= 8:
-            # SÉRIE LONGA quando existe. A quebra de série continua respeitada: se houve evento
-            # societário, os anos anteriores descrevem outra empresa e saem fora — foi o que
-            # tornou o P/L de 38,9x da SAUD3 em 2026 incomparável com os 13x dos anos anteriores.
-            pls14 = [(y, v) for y, v in longa if not q14 or y >= q14]
-            fonte14 = 'longa' if len(pls14) >= 8 else 'curta'
-        if fonte14 != 'longa':
-            pls14 = []
-            for y in val14:
-                d = A[y]
-                v14 = d.get('pl')
-                if not v14 and d.get('preco') and d.get('lpa') and d['lpa'] > 0:
-                    v14 = d['preco'] / d['lpa']      # derivado, mesma regra do teto_ep
-                if v14 and 0 < v14 < 60:
-                    pls14.append((y, v14))
+        pls14 = []
+        for y in val14:
+            d = A[y]
+            v14 = d.get('pl')
+            if not v14 and d.get('preco') and d.get('lpa') and d['lpa'] > 0:
+                v14 = d['preco'] / d['lpa']      # derivado, mesma regra do teto_ep
+            if v14 and 0 < v14 < 60:
+                pls14.append((y, v14))
         if len(pls14) >= 2:
-            med14 = st.median([v for _, v in pls14])
-            anos_txt = ' · '.join(f'{y} {br(v,1)}x' for y, v in pls14)
+            # ⚠️ MESMA MEDIANA QUE O MOTOR, regra de tendência incluída. A primeira versão desta
+            # coluna usava st.median() cru sobre os 6 anos e mostrava 7,8x no ITUB3 enquanto o
+            # motor ancorava em 10,0x — porque `faixa_com_tendencia` detecta série que SOBE e
+            # passa a usar só a metade recente. Com o número cru na tela, a conta que a tooltip
+            # promete (P/L médio × ajuste de ROE = Múltiplo) não fechava: 7,8 × 1,16 = 9,1
+            # contra os 11,6x da coluna Múltiplo. Duas definições do mesmo conceito, de novo.
+            vals14 = [v for _, v in pls14]
+            if len(vals14) >= 3:
+                _p25, med14, _p75, nota14 = M['faixa_com_tendencia'](vals14)
+            else:
+                med14, nota14 = st.median(vals14), 'série curta — mediana simples'
             atual14 = pls14[-1][1]
             cor14 = '#059669' if atual14 < med14 else '#dc2626'
-            linhas14 = []
-            for k in range(0, len(pls14), 6):
-                linhas14.append(' · '.join(f'{y} {br(v,1)}x' for y, v in pls14[k:k+6]))
-            cells[14] = cel(f'<span style="color:{cor14};font-weight:600;">{br(med14,1)}x</span>'
-                            + (TAG_10A if fonte14 == 'longa' else ''),
+            linhas14 = [' · '.join(f'{y} {br(v,1)}x' for y, v in pls14[k:k+6])
+                        for k in range(0, len(pls14), 6)]
+            cells[14] = cel(f'<span style="color:{cor14};font-weight:600;">{br(med14,1)}x</span>',
                 f'P/L MEDIANO DA PRÓPRIA EMPRESA — {br(med14,1)}x&#10;&#10;'
                 + '&#10;'.join(linhas14)
-                + f'&#10;&#10;Mediana de {len(pls14)} exercícios'
+                + f'&#10;&#10;Série de {len(pls14)} exercícios ({pls14[0][0]}-{pls14[-1][0]})'
                 + (f', restrito a partir de {q14} por QUEBRA DE SÉRIE' if q14 else '')
-                + '.&#10;'
-                + ('Série longa do MCP Partnr (frequency=TTM, último registro de cada ano). '
-                   'O HIST_SEED cobre só 2021-2026 — para empresa madura isso é pouco para '
-                   'dizer que múltiplo ela costuma negociar.'
-                   if fonte14 == 'longa' else
-                   'Série do HIST_SEED (2021-2026). Esta empresa não tem série longa coletada '
-                   '— ou é recente, ou teve quebra que invalidou os anos anteriores.')
-                + '&#10;&#10;⚠️ O Preço Justo NÃO usa esta mediana: ele usa a dos 6 anos do '
-                  'HIST_SEED, misturada com a dos pares. Comparar as duas mostra se o '
-                  'múltiplo aplicado está dentro do que a empresa negociou na década.')
+                + f'.&#10;{nota14[0].upper()}{nota14[1:]}.'
+                + '&#10;Fonte: MCP Partnr (B3/CVM), HIST_SEED.&#10;&#10;'
+                + ('É a ÂNCORA do múltiplo que produz o Preço Justo — desde 14/09/2026 sozinha, '
+                   'sem mistura com os pares do setor. O que a corrige é o ROE médio duas '
+                   'colunas à direita: múltiplo aplicado = este valor × (ROE atual ÷ ROE médio), '
+                   'limitado a ±30%.'
+                   if metodo_principal(t) == 'P/L' else
+                   f'⚠️ CONTEXTO, não é o múltiplo aplicado: o preço justo desta linha sai por '
+                   f'{metodo_principal(t) or "outro método"}, não por P/L — a coluna Múltiplo '
+                   f'mostra qual régua decidiu. Esta serve para ler o P/L atual ao lado contra '
+                   f'a própria história.') + '&#10;&#10;'
+                + 'JANELA 2021→ por decisão do usuário. O P/L de 2011-2020 saiu: com a Selic '
+                  'entre 2% e 7% naquele intervalo, o múltiplo praticado descreve outro custo '
+                  'de capital e sobe o preço justo de toda a tabela sem que nada no negócio '
+                  'tenha mudado.')
         else:
             cells[14] = cel(VAZIO,
                 'P/L MÉDIO — não calculável&#10;&#10;'
-                f'Menos de 2 exercícios com P/L utilizável na série'
+                f'Menos de 2 exercícios com P/L utilizável na janela 2021→'
                 + (f' (quebra em {q14})' if q14 else '')
-                + '. Sem série própria, o múltiplo do Preço Justo vem inteiro dos pares.')
+                + '.&#10;Sem série própria, o múltiplo do Preço Justo cai no fallback do setor.')
+
+        # ── Coluna 16 · ROE MÉDIO ───────────────────────────────────────────────────────
+        # Pedido do usuário: "acrescente uma coluna de ROE médio — ou seja, teremos P/L atual,
+        # P/L médio, ROE atual e ROE médio".
+        # A série vem de M['serie_roe'], a MESMA função que o motor chama para ajustar o
+        # múltiplo. Reimplementar a conta aqui daria dois números do mesmo conceito com donos
+        # diferentes, que é a origem de quatro bugs já registrados neste arquivo.
+        roe_hj, pares_roe, metrica_roe = M['serie_roe'](t, A)
+        roe_serie = [v for _y, v in pares_roe]
+        if len(roe_serie) >= 2:
+            roe_med = st.median(roe_serie)
+            cor16 = '#059669' if (roe_hj or 0) >= roe_med else '#dc2626'
+            linhas16 = [' · '.join(f'{y} {br(v,1)}%' for y, v in pares_roe[k:k+6])
+                        for k in range(0, len(pares_roe), 6)]
+            if roe_hj and roe_med > 0:
+                bruto16 = roe_hj / roe_med
+                aj16 = max(M['ROE_AJUSTE_MIN'], min(bruto16, M['ROE_AJUSTE_MAX']))
+                mp16 = metodo_principal(t)
+                conta16 = (f'&#10;&#10;AJUSTE DO MÚLTIPLO: {br(roe_hj,1)}% ÷ {br(roe_med,1)}% '
+                           f'= {br(bruto16,2)}'
+                           + (f', limitado a {br(aj16,2)} pelo teto de ±30%'
+                              if abs(bruto16 - aj16) > 1e-9 else '')
+                           + '.&#10;'
+                           + (f'O múltiplo aplicado é o P/L médio × {br(aj16,2)} — confira '
+                              f'dividindo as duas colunas à esquerda.'
+                              if mp16 == 'P/L' else
+                              f'Este fator ajusta o múltiplo de {mp16 or "outro método"}, que é '
+                              f'a régua desta linha — não o P/L médio ao lado.')
+                           + ' Só entra em quem tem 3 anos ou mais de ROE na série; abaixo '
+                             'disso o múltiplo fica na média histórica pura.')
+            else:
+                conta16 = ('&#10;&#10;Sem ROE do exercício corrente, o múltiplo fica na média '
+                           'histórica pura, sem ajuste.')
+            cells[16] = cel(f'<span style="color:{cor16};font-weight:600;">{br(roe_med,1)}%</span>',
+                f'{"FFO ÷ PATRIMÔNIO" if metrica_roe != "ROE" else "ROE"} MEDIANO DA PRÓPRIA '
+                f'EMPRESA — {br(roe_med,1)}%&#10;&#10;'
+                + '&#10;'.join(linhas16)
+                + f'&#10;&#10;Mediana de {len(roe_serie)} exercícios na janela 2021→'
+                + (f', restrito a partir de {q14} por QUEBRA DE SÉRIE' if q14 else '')
+                + '.&#10;Fonte: MCP Partnr (B3/CVM), HIST_SEED.'
+                + conta16
+                + '&#10;&#10;MEDIANA e não média: um ano de prejuízo ou de resultado '
+                  'extraordinário move a média e não move a mediana.'
+                + ('&#10;&#10;⚠️ EM SHOPPING o numerador é o FFO, não o lucro líquido — o '
+                   'usuário pediu FFO em todas as colunas. O patrimônio continua medido a '
+                   'custo histórico, então este retorno lê ALTO por construção e NÃO se compara '
+                   'com o de empresa que não carrega imóvel no balanço. Para o ajuste de '
+                   'múltiplo isso não contamina: ele só usa a razão da empresa contra ela mesma.'
+                   if metrica_roe != 'ROE' else ''))
+        else:
+            cells[16] = cel(VAZIO,
+                'ROE MÉDIO — não calculável&#10;&#10;'
+                'Menos de 2 exercícios com ROE utilizável na janela 2021→.&#10;'
+                'Sem série, o múltiplo fica na média histórica de P/L sem ajuste de rentabilidade.')
+
 
         med10, usados = dy_mediana(t)
         # A tooltip mostra a SÉRIE que gera a mediana — é esse o racional. A versão anterior
@@ -605,4 +685,4 @@ if __name__ == '__main__':
         print(f"{t:8}{(f'{ltm/1e9:.2f}' if ltm else '—'):>10}{(f'{ln/1e9:.2f}' if ln else '—'):>10}"
               f"{(f'{lpa:.2f}' if lpa else '—'):>8}{(f'{po*100:.0f}%' if po is not None else '—'):>6}"
               f"{(f'{dps:.2f}' if dps else '—'):>8}{(f'{dy:.1f}%' if dy else '—'):>8}")
-    print(f"\n{len(log)} linhas regeneradas — colunas 4,5,6,7,8,9,10,11,12,14")
+    print(f"\n{len(log)} linhas regeneradas — colunas 4,5,6,7,8,9,10,11,12,14,16")

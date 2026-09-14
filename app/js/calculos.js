@@ -3,7 +3,7 @@
 // removidas de Ranking/Desvio P/L/P/L Histórico/Preço-Lucro projetado/Retorno Real):
 // 3=Lucro2025, 5=LucroEst, 6=Cresc, 7=LPA, 8=Payout, 9=Div/Ação, 12=P/L atual, 13=ROE,
 // 14=Dív/EBITDA, 15=PreçoTeto, 18=RetornoTotal
-const MOB_HIDE_COLS = [3,5,6,7,8,9,12,13,14,15,18];
+const MOB_HIDE_COLS = [3,5,6,7,8,9,12,13,14,15,16,19];
 function calcCrescimentoLucro() {
   function parseLucroVal(text) {
     let t = text.replace(/R\$\s*/g,'').replace(/\*/g,'').replace(/\s+/g,'');
@@ -115,7 +115,7 @@ function calcularDerivadosRadar() {
   document.querySelectorAll('#tableBody tr[data-ticker]').forEach(row => {
     const cells = row.querySelectorAll('td');
     const dyProj  = parseFloat(row.dataset.dyProj) || 0;
-    const cotacao = parseFloat((cells[19]?.textContent||'').replace(/[^0-9,.]/g,'').replace(',','.')) || 0;
+    const cotacao = parseFloat((cells[20]?.textContent||'').replace(/[^0-9,.]/g,'').replace(',','.')) || 0;
     if (!cotacao) return;
 
     // Div./Ação proj (cell 9) e DY proj (cell 10) — ver atualizarDivDY() acima
@@ -151,7 +151,7 @@ function calcularPrecoJusto(row, cotacaoOverride) {
   const cells   = row.querySelectorAll('td');
   const lpa     = parseFloat((cells[7]?.textContent||'').replace(/[^0-9,.]/g,'').replace(',','.')) || 0;
   const plHist  = parseFloat(row.dataset.plHist) || 0;
-  const cotacao = cotacaoOverride || parseFloat((cells[19]?.textContent||'').replace(/[^0-9,.]/g,'').replace(',','.')) || 0;
+  const cotacao = cotacaoOverride || parseFloat((cells[20]?.textContent||'').replace(/[^0-9,.]/g,'').replace(',','.')) || 0;
   const dyProj  = parseFloat(row.dataset.dyProj) || 0;
   if (!lpa || !plHist || !cotacao) return;
   const pAlvo = lpa * plHist;             // preço-alvo por múltiplo histórico
@@ -159,7 +159,7 @@ function calcularPrecoJusto(row, cotacaoOverride) {
   const desc  = 1 + IPCA + PREMIO_IPCA;   // taxa de desconto exigida
   const justo = (dps + pAlvo) / desc;
   row.dataset.precoJusto = justo.toFixed(2);
-  if (cells[18]) {
+  if (cells[19]) {
     const tip = [
       'PREÇO JUSTO — variáveis','',
       'LPA proj.: ' + _fmtBR(lpa),
@@ -174,12 +174,12 @@ function calcularPrecoJusto(row, cotacaoOverride) {
       'Justo = (DPS + P-alvo) ÷ Desconto',
       '= (' + _fmtBR(dps) + ' + ' + _fmtBR(pAlvo) + ') ÷ ' + _fmtNM(desc, 3) + ' = ' + _fmtBR(justo)
     ].join('\n');
-    cells[18].innerHTML = '';
+    cells[19].innerHTML = '';
     const val = document.createElement('span');
     val.textContent = _fmtBR(justo);
-    cells[18].appendChild(val);
-    cells[18].appendChild(document.createTextNode(' '));
-    cells[18].appendChild(_varTipBtn(tip));
+    cells[19].appendChild(val);
+    cells[19].appendChild(document.createTextNode(' '));
+    cells[19].appendChild(_varTipBtn(tip));
   }
 }
 
@@ -221,8 +221,8 @@ function renderMargemRetorno(cells, margemCell, precoJusto, cotacao, dyProj){
   }
 
   // Retorno Total
-  if (cells[21]) {
-    cells[21].innerHTML = '';
+  if (cells[22]) {
+    cells[22].innerHTML = '';
     const v = document.createElement('span');
     v.textContent = (ret >= 0 ? '+' : '') + ret.toFixed(1) + '%';
     const tipR = [
@@ -236,9 +236,9 @@ function renderMargemRetorno(cells, margemCell, precoJusto, cotacao, dyProj){
       '──────────────',
       'Retorno = Valorização + DY = ' + (ret >= 0 ? '+' : '') + _fmtNM(ret) + '%'
     ].join('\n');
-    cells[21].appendChild(v);
-    cells[21].appendChild(document.createTextNode(' '));
-    cells[21].appendChild(_varTipBtn(tipR));
+    cells[22].appendChild(v);
+    cells[22].appendChild(document.createTextNode(' '));
+    cells[22].appendChild(_varTipBtn(tipR));
   }
 }
 
@@ -313,7 +313,7 @@ function renderMargemRetorno(cells, margemCell, precoJusto, cotacao, dyProj){
 function applyMobileColHide(){
   // No mobile as colunas ficam todas visíveis via CSS (scroll horizontal)
   // Esta função só aplica classes para referência — CSS mobile sobrescreve com display:table-cell
-  const MOB_HIDE_COLS = [3,5,6,7,8,9,12,13,14,15,18];
+  const MOB_HIDE_COLS = [3,5,6,7,8,9,12,13,14,15,16,19];
   document.querySelectorAll('#tableBody tr').forEach(row=>{
     const cells = row.querySelectorAll('td');
     MOB_HIDE_COLS.forEach(i=>{ if(cells[i]) cells[i].classList.add('col-mob-hide'); });

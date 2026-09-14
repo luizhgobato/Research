@@ -152,7 +152,7 @@ def main():
             cel_mult = CEL_MULT_VAZIA
             sem.append(t)
 
-        # ── COLUNA 16 · MÚLTIPLO ────────────────────────────────────────────────────
+        # ── COLUNA 18 · MÚLTIPLO ────────────────────────────────────────────────────
         # Pedido do usuário: "acrescente uma coluna com o múltiplo que o LPA está sendo
         # multiplicado e o tooltip com cálculo". Ela entra ANTES do preço justo, e é gerada
         # aqui de propósito: o múltiplo e o preço saem do mesmo método, na mesma passada.
@@ -160,11 +160,14 @@ def main():
         # corrigindo — dois números do mesmo conceito, escritos por donos diferentes.
         # ⚠️ A MIGRAÇÃO É DETECTADA PELA CONTAGEM DE CÉLULAS, não por procurar a tooltip no
         # texto. A primeira versão procurava 'APLICADO' no bloco e, numa linha que já tinha a
-        # célula 16 vazia (um ticker recém-incluído), inseria em vez de substituir — o BBDC3
+        # célula do múltiplo vazia (um ticker recém-incluído), inseria em vez de substituir — o BBDC3
         # ficou com 23 células e a linha inteira deslocada em relação ao cabeçalho. Contar é
         # a única verificação que não depende do conteúdo ter sido escrito antes.
+        # ⚠️ OS ÍNDICES MUDARAM EM 14/09/2026 com a entrada da coluna ROE médio (16):
+        # Múltiplo 17→18, Preço Justo 18→19, e a linha completa passou de 23 para 24 células.
+        # A conferência continua sendo a contagem — é a que pegou o deslocamento duas vezes.
         tds = [x for x in re.finditer(r'<td\b[^>]*>.*?</td>', bloco, re.S)]
-        if len(tds) == 24:
+        if len(tds) == 25:
             # REPARO. A primeira versão desta migração detectava "já migrado" procurando a
             # tooltip do múltiplo no texto da linha. Nas 6 linhas SEM preço justo não há
             # tooltip nenhuma, então a detecção dizia "ainda não migrou" toda vez e a segunda
@@ -173,14 +176,12 @@ def main():
             # cabeçalho — cotação aparecendo na coluna da margem, e assim por diante.
             # Remove a duplicata e segue. O gerador conserta o arquivo em vez de exigir que
             # alguém edite HTML à mão.
-            bloco = bloco[:tds[17].start()] + bloco[tds[17].end():]
+            bloco = bloco[:tds[18].start()] + bloco[tds[18].end():]
             tds = [x for x in re.finditer(r'<td\b[^>]*>.*?</td>', bloco, re.S)]
-        if len(tds) == 22:
-            bloco = bloco[:tds[17].start()] + cel_mult + bloco[tds[17].start():]   # layout antigo
-        elif len(tds) == 23:
-            bloco = bloco[:tds[17].start()] + cel_mult + bloco[tds[17].end():]     # já migrado
+        if len(tds) == 24:
+            bloco = bloco[:tds[18].start()] + cel_mult + bloco[tds[18].end():]
         else:
-            raise SystemExit(f'{t}: {len(tds)} células — esperado 22 (a migrar) ou 23')
+            raise SystemExit(f'{t}: {len(tds)} células — esperado 24')
 
         # A CÉLULA DO PREÇO JUSTO — identificada pela tooltip, que é única na linha.
         novo, n = re.subn(
@@ -190,15 +191,15 @@ def main():
             lambda m: cel, bloco, count=1)
         if n != 1:
             # LINHA NOVA, ainda sem tooltip de preço justo (é assim que um ticker recém-
-            # incluído chega aqui — o BBDC3 em 13/09/2026). Cai para a posição: a célula 17 é
-            # o Preço Justo no layout de 22 colunas. Levantar erro obrigaria quem inclui um
+            # incluído chega aqui — o BBDC3 em 13/09/2026). Cai para a posição: a célula 19 é
+            # o Preço Justo no layout de 24 colunas. Levantar erro obrigaria quem inclui um
             # ativo a colar a tooltip à mão antes de rodar o gerador, que é exatamente o
             # trabalho manual que estes scripts existem para eliminar.
             tds2 = [x for x in re.finditer(r'<td\b[^>]*>.*?</td>', novo, re.S)]
-            if len(tds2) > 18:
-                novo = novo[:tds2[18].start()] + cel + novo[tds2[18].end():]
+            if len(tds2) > 19:
+                novo = novo[:tds2[19].start()] + cel + novo[tds2[19].end():]
             else:
-                raise SystemExit(f'{t}: linha com {len(tds2)} células, esperado 23')
+                raise SystemExit(f'{t}: linha com {len(tds2)} células, esperado 24')
 
         # O ATRIBUTO — a fonte que o JS lê. Tem que sair junto ou volta a divergir da célula.
         # Escrito DEPOIS do data-ticker, para o corte acima continuar funcionando na próxima
