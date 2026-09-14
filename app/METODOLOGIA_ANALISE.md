@@ -3174,3 +3174,91 @@ que o fator é só leitura da rentabilidade, e por quê.
 mediana do período 4,5%, fator 1,00. A rentabilidade despencou tanto e há tanto tempo que a
 mediana da janela 2021→ já está no chão junto com ela — o ajuste não tem contra o que comparar
 e some exatamente onde deveria morder.
+
+---
+
+## 38. Banco do Brasil entra no Radar, e o P/L da coluna também vinha inflado (14/09/2026)
+
+> "Inclua Banco do Brasil no Radar."
+
+O BBAS3 é posição das duas carteiras (Luiz 367 · Flávia 1.380) e não tinha cobertura nenhuma.
+
+### 38.1 A coleta
+
+Série 2021-2026 montada da Partnr, campo a campo, **sem nenhum número de memória**:
+
+| dado | origem |
+|---|---|
+| lucro, receita, custos, bruto, imposto | `companies_reports` INCOME_STATEMENT ANNUAL (2021-25) e soma de 4 trimestres (2026 LTM) |
+| patrimônio e VPA | `companies_reports` BALANCE_SHEET QUARTERLY, `CONTROLLING_SHAREHOLDERS_EQUITY` |
+| preço | `stocks_quotes` — fechamento do último pregão de cada ano, 11 chamadas verificadas |
+| proventos | `companies_cashCorporateActionsByCompany`, somados por data-ex |
+| P/L, P/VP, ROE, DY | **derivados** — a série de valuation do Partnr só sai em TTM |
+
+| ano | lucro | ações | LPA | VPA | preço | P/L | P/VP | ROE | DY |
+|---|---|---|---|---|---|---|---|---|---|
+| 2021 | 18,34 bi | 2.865 mi | 6,40 | 49,82 | 28,85 | 4,51x | 0,58 | 12,9% | 7,9% |
+| 2022 | 27,63 bi | 2.865 mi | 9,64 | 55,47 | 34,67 | 3,60x | 0,62 | 17,4% | 12,0% |
+| 2023 | 29,86 bi | 2.865 mi | 10,42 | 59,06 | 55,39 | 5,32x | 0,94 | 17,6% | 8,3% |
+| 2024 | 26,36 bi | 5.731 mi | 4,60 | 31,34 | 24,11 | 5,24x | 0,77 | 14,7% | 13,5% |
+| 2025 | 13,70 bi | 5.731 mi | 2,39 | 33,02 | 21,72 | 9,09x | 0,66 | 7,2% | 5,5% |
+| 2026 LTM | 12,27 bi | 5.731 mi | 2,14 | 32,47 | 22,09 | 10,32x | 0,68 | 6,6% | 2,6% |
+
+**Desdobramento 2:1 em 2024** (VPA 59,06 → 31,34, ações 2.865 → 5.731 mi). O `_cosmetico`
+classificou certo: ações +100% com receita +3% é evento cosmético, os múltiplos atravessam e a
+série de 6 anos fica inteira. Era exatamente para isto que ele foi escrito (seção 12).
+
+### 38.2 ⚠️ O preço justo sai R$ 5,36 contra cotação de R$ 22,09
+
+E isso **não é resultado, é sintoma.** O BBAS3 é o caso extremo do efeito quadrático que a
+seção 35.4 previu:
+
+```
+ROE hoje 6,6%  ÷  ROE mediano 13,8%  =  fator 0,48
+múltiplo = 5,28x × 0,48 = 2,53x
+LPA projetado = R$ 2,12  (regressão log sobre lucro caindo: −11,4%)
+preço justo = 2,12 × 2,53 = R$ 5,36
+```
+
+O colapso de rentabilidade (provisão do agro: lucro de R$ 29,9 bi em 2023 para R$ 12,3 bi no
+LTM) **derruba o preço duas vezes** — uma pelo LPA, outra pelo múltiplo. Um banco a **2,5x
+lucro** não é avaliação, é artefato. O motor marca "⚠️ MARGEM EXTREMA" e o próprio texto dessa
+trava diz: *"nas 5 vezes em que isso aconteceu neste projeto, era o motor"*.
+
+Três saídas, e a escolha é do usuário:
+
+1. **Reinstaurar um teto no ajuste de ROE.** Com os ±30% que saíram em 14/09 a pedido dele, o
+   múltiplo seria 5,28 × 0,70 = 3,70x → R$ 7,84. Melhor, ainda baixo.
+2. **Declarar lucro normalizado**, como já é feito no IRBR3 (média de ciclo) e na RANI3
+   (EV/EBITDA de meio de ciclo). É o tratamento que o projeto dá a resultado em vale de ciclo.
+3. **Deixar como está**, com o aviso — o mercado paga 0,68x patrimônio, o motor diz 0,16x.
+
+Enquanto não houver decisão, a linha fica com o aviso na tooltip e **sem relatório**.
+
+### 38.3 O P/L da COLUNA ainda vinha inflado — o mesmo bug de novo
+
+A correção de fator de unit (seção 36.1) entrou em `pl_ano` e foi ligada a `teto_ep` e
+`pl_setorial`. **A coluna P/L mediano reimplementava a leitura** e ficou de fora:
+
+| ticker | coluna mostrava | motor usava |
+|---|---|---|
+| BPAC11 | **39,4x** | 13,15x |
+| SANB11 | **15,7x** | 7,85x |
+
+Ou seja: o número que o usuário viu quando disse *"o P/L mediano do BTG está errado"* continuou
+errado na tela mesmo depois de eu consertar o motor. A coluna agora chama `M['pl_ano']`.
+
+Junto, um segundo desalinho da mesma natureza: a coluna usava `faixa_com_tendencia` com
+truncagem enquanto o motor passou a usar `truncar=False` (seção 35.2). O BBAS3 expôs — coluna
+9,1x contra âncora de 5,28x.
+
+### 38.4 A coluna ROE atual não é a do motor, e a tooltip parou de fingir que é
+
+A célula de ROE (coluna 15) é **reescrita em tempo de execução** por `js/fundamentos.js` a
+partir da API; o motor lê o HIST_SEED. Quase sempre batem, mas não sempre — e no **LEVE3** a
+diferença é de outra ordem: **73,7% no seed contra 22,5% da API**. O seed é internamente
+coerente (P/VP 4,55 ÷ P/L 6,31 = 72%), então não é erro de digitação: são definições
+diferentes de ROE.
+
+A tooltip mandava *"confira dividindo as duas colunas à esquerda"*. Agora ela imprime os dois
+números que o motor de fato usou e diz que a coluna ao lado pode divergir, e por quê.

@@ -172,7 +172,7 @@ MOTOR = {
     # e carrega risco de inadimplência; seguradora ganha no resultado de subscrição e no
     # float, e o ciclo de uma não é o da outra. Também alinha o grupo de pares ao segmento
     # que a tabela exibe desde 13/09 (Bancos e Seguros são chips separados).
-    **{t: 'FIN' for t in ['BBDC3','ITUB3','BMEB4','BRSR6','SANB11','BPAC11','ROXO34']},
+    **{t: 'FIN' for t in ['BBAS3', 'BBDC3','ITUB3','BMEB4','BRSR6','SANB11','BPAC11','ROXO34']},
     **{t: 'SEG' for t in ['BBSE3','CXSE3','PSSA3','IRBR3','SAUD3']},
     # holdings puras → NAV (mantidos manuais: exigem valor de mercado das investidas)
     **{t: 'NAV' for t in ['ITSA4','BRAP4']},
