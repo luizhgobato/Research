@@ -541,16 +541,28 @@ def gerar():
                 bruto16 = roe_hj / roe_med
                 aj16 = bruto16          # proporção direta, sem teto — regra do usuário (14/09/2026)
                 mp16 = metodo_principal(t)
+                # ⚠️ MÚLTIPLO DECLARADO NÃO RECEBE O AJUSTE. A RANI3 expôs isto em 14/09/2026:
+                # ROE de hoje 8,9% contra 27,0% de mediana dá fator 0,33, e a tooltip dizia
+                # "este fator ajusta o múltiplo de EV/EBITDA". Não ajusta — o EV/EBITDA dela é
+                # 5,50x DECLARADO no relatório, e declaração vence a estatística inteira
+                # (alvo_com_pares devolve antes de chegar ao ROE). A célula prometia uma conta
+                # que o motor não faz.
+                _decl16 = M['MULTIPLO_DECLARADO'].get(t)
                 conta16 = (f'&#10;&#10;AJUSTE DO MÚLTIPLO: {br(roe_hj,1)}% ÷ {br(roe_med,1)}% '
                            f'= {br(bruto16,2)}'
                            + '.&#10;'
-                           + (f'O múltiplo aplicado é o P/L mediano × {br(aj16,2)} — confira '
+                           + (f'⚠️ NÃO É APLICADO nesta linha: o múltiplo de '
+                              f'{_decl16[0]} é DECLARADO no relatório ({_decl16[1]:.2f}x) e '
+                              f'vence a estatística, ajuste de ROE incluído. O fator acima é '
+                              f'só leitura da rentabilidade contra a própria média.'
+                              if _decl16 else
+                              f'O múltiplo aplicado é o P/L mediano × {br(aj16,2)} — confira '
                               f'dividindo as duas colunas à esquerda.'
                               if mp16 == 'P/L' else
                               f'Este fator ajusta o múltiplo de {mp16 or "outro método"}, que é '
                               f'a régua desta linha — não o P/L mediano ao lado.')
                            + ' Só entra em quem tem 3 anos ou mais de ROE na série; abaixo '
-                             'disso o múltiplo fica na média histórica pura.')
+                             'disso o múltiplo fica na mediana histórica pura.')
             else:
                 conta16 = ('&#10;&#10;Sem ROE do exercício corrente, o múltiplo fica na média '
                            'histórica pura, sem ajuste.')

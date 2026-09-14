@@ -954,32 +954,51 @@ CRESC_CAP = 25.0
 # num horizonte de 3 anos (TIMS3, LEVE3) — converter qualquer um desses em lucro de 2026 exigiria
 # premissa minha sobre depreciação, papéis ou cronograma, e premissa minha disfarçada de
 # guidance é pior que estimativa assumida. Esses continuam no motor estatístico.
+# ⚠️ TERCEIRO ELEMENTO, opcional, desde 14/09/2026: como o número foi construído. Quem lê é
+# `scripts/checar_lucro_declarado.py`, e sem isso ele usa a régua errada.
+#
+#   ('projecao',)          → é uma projeção do EXERCÍCIO de 2026. Confere contra o run-rate:
+#                            1S anualizado e LTM. Afastar-se dos dois na mesma direção é erro.
+#   ('ciclo', ini, fim)    → é a MÉDIA DE UM CICLO, e ignora o run-rate de propósito. Confere
+#                            recalculando a média daqueles exercícios com o dado publicado.
+#
+# A distinção nasceu de um falso positivo meu: o verificador acusou o IRBR3 de divergir 1,83x
+# do 1S26 anualizado. Divergia mesmo — e ESTÁ CERTO assim. O número é a média de 2023-2025
+# (−218 mi, +806 mi, +391 mi → média 326 mi contra os 330 declarados), escolhida porque o
+# próprio relatório se recusa a projetar 2026 com a contabilidade IFRS e a gerencial
+# divergindo de sinal. Comparar média de ciclo com run-rate é comparar coisas diferentes.
 LUCRO_2026_DECLARADO = {
     'BBSE3': (8.65e9,
               'Cenário BASE do relatório de 25/08/2026, que usa o guidance oficial da companhia '
               '(resultado operacional consolidado −7% a −3% para 2026; o base é o meio, −5%) e '
-              'coincide com o consenso de mercado de R$ 8,65-8,69 bi.'),
+              'coincide com o consenso de mercado de R$ 8,65-8,69 bi.',
+              ('projecao',)),
     'ITUB3': (50.6e9,
               'Cenário BASE do relatório de 25/08/2026: crescimento financeiro padrão de 8% a.a. '
               'sobre o lucro RECORRENTE de 2025. O conservador (piso do guidance de carteira, '
-              '+5,5%) dá R$ 49,2 bi e o otimista (ritmo do 2T26, +9,6%) dá R$ 52,5 bi.'),
+              '+5,5%) dá R$ 49,2 bi e o otimista (ritmo do 2T26, +9,6%) dá R$ 52,5 bi.',
+              ('projecao',)),
     'CXSE3': (4.64e9,
               'Cenário BASE do relatório de 25/08/2026: crescimento financeiro de 8% a.a. sem '
               'novo choque regulatório. ⚠️ Não há guidance numérico oficial da companhia — o '
-              'conservador (+3%, prestamista não recupera) dá R$ 4,43 bi.'),
+              'conservador (+3%, prestamista não recupera) dá R$ 4,43 bi.',
+              ('projecao',)),
     'BMEB4': (1.03e9,
               'Cenário BASE do relatório de 25/08/2026: ponto médio entre o g financeiro padrão '
               '(8%) e o crescimento implícito pela retenção de capital (ROE × retenção ≈ 19,3%). '
-              '⚠️ Sem guidance oficial; o otimista replica a projeção do Safra (R$ 1,20 bi).'),
+              '⚠️ Sem guidance oficial; o otimista replica a projeção do Safra (R$ 1,20 bi).',
+              ('projecao',)),
     'FIQE3': (218e6,
               'Cenário BASE do relatório de 24/08/2026 (LPA R$ 0,55). A faixa vai de R$ 205 mi '
-              '(conservador) a R$ 232 mi (otimista).'),
+              '(conservador) a R$ 232 mi (otimista).',
+              ('projecao',)),
     'IRBR3': (330e6,
               'Cenário CONSERVADOR do relatório de 25/08/2026 — e é o único disponível: o próprio '
               'relatório se recusa a publicar um cenário base, porque a divergência entre lucro '
               'contábil (IFRS) e gerencial inverteu de sinal no 2T26. É o lucro médio de ciclo '
               '2023-2025, tratando o trimestre como ruído. O otimista, sobre o run-rate gerencial '
-              'do 2T26, daria R$ 740 mi — mais que o dobro.'),
+              'do 2T26, daria R$ 740 mi — mais que o dobro.',
+              ('ciclo', 2023, 2025)),
 }
 
 # Múltiplo-alvo declarado. Vence a mediana da própria série e o ajuste de ROE (14/09/2026).
