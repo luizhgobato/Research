@@ -99,7 +99,15 @@ MOTOR = {
     # O motor E/P devolvia teto de R$3,71 contra cotação de R$14,60 (−294%), e o fallback
     # setorial piorava para R$1,80 porque o único par sem quebra no grupo era a LEVE3
     # (autopeças). Reclassificada para FIN, que é o motor de capital alocado.
-    **{t: 'FIN' for t in ['BBDC3','ITUB3','BBSE3','CXSE3','BMEB4','BRSR6','PSSA3','SANB11','BPAC11','IRBR3','ROXO34','SAUD3']},
+    # ⚠️ FIN FOI PARTIDO EM DOIS em 14/09/2026. Antes banco e seguradora dividiam o mesmo
+    # grupo de pares, e o múltiplo de um virava régua do outro — a SAUD3 (Bradsaúde, saúde
+    # suplementar) recebia o P/L mediano de 8,6x dos bancos enquanto a própria série dela
+    # rodava entre 10,9x e 15,2x. São negócios diferentes: banco ganha no spread de crédito
+    # e carrega risco de inadimplência; seguradora ganha no resultado de subscrição e no
+    # float, e o ciclo de uma não é o da outra. Também alinha o grupo de pares ao segmento
+    # que a tabela exibe desde 13/09 (Bancos e Seguros são chips separados).
+    **{t: 'FIN' for t in ['BBDC3','ITUB3','BMEB4','BRSR6','SANB11','BPAC11','ROXO34']},
+    **{t: 'SEG' for t in ['BBSE3','CXSE3','PSSA3','IRBR3','SAUD3']},
     # holdings puras → NAV (mantidos manuais: exigem valor de mercado das investidas)
     **{t: 'NAV' for t in ['ITSA4','BRAP4']},
     # cíclicas de commodity → EV/EBITDA meio-de-ciclo
@@ -751,6 +759,11 @@ def teto_ev(t, A, ciclico):
     # _sanidade suprimia o teto de compra de KLBN11, PETR4, VALE3 e RANI3 por "método único
     # sem série para formar faixa", quando a série existia e era justamente a do múltiplo.
     p25, p50, p75, nota_fx = faixa_com_tendencia(mult, limiar_rel=0.12)
+    decl_m = MULTIPLO_DECLARADO.get(t)
+    if decl_m and decl_m[0] == 'EV/EBITDA':
+        alvo_decl = decl_m[1]
+    else:
+        alvo_decl = None
     if ciclico:
         # Cíclica não corta a série pela metade: o ciclo inteiro É a amostra, e a metade
         # recente descreve só onde o ciclo estava. Percentis da série toda.
@@ -761,6 +774,10 @@ def teto_ev(t, A, ciclico):
         nota_fx = f'percentis dos {len(mult)} anos, série inteira'
     else:
         alvo, nota_alvo = mediana_com_tendencia(mult, limiar_rel=0.12)
+    if alvo_decl is not None:
+        nota_alvo = (f'DECLARADO no relatório ({alvo_decl:.2f}x, contra {alvo:.2f}x da própria '
+                     f'série). {decl_m[2]}')
+        alvo = alvo_decl
     ebitda = st.mean(eb) if ciclico else eb[-1]
     pap = papeis(t, A)
     if not pap: return None
@@ -775,10 +792,12 @@ def teto_ev(t, A, ciclico):
     return dict(justo=justo, conv=conv, chave='EV/EBITDA', faixa=fx,
         conta=(f'{base} × EV/EBITDA {alvo:.2f}x − dívida líquida R$ {dl/1e9:.1f} bi, '
                f'÷ {papeis_txt(pap)}'),
-        origem_mult=(f'o EV/EBITDA mediano da própria empresa ao longo de {len(mult)} anos '
-                     f'({alvo:.2f}x; a série foi de {min(mult):.1f}x a {max(mult):.1f}x)'
-                     + (' — em cíclica a janela cobre pico e fundo do ciclo de propósito'
-                        if ciclico else '')),
+        origem_mult=((f'o múltiplo DECLARADO no relatório ({alvo:.2f}x), contra a mediana de '
+                      f'{len(mult)} anos da própria série. {decl_m[2]}') if alvo_decl is not None
+                     else (f'o EV/EBITDA mediano da própria empresa ao longo de {len(mult)} anos '
+                           f'({alvo:.2f}x; a série foi de {min(mult):.1f}x a {max(mult):.1f}x)'
+                           + (' — em cíclica a janela cobre pico e fundo do ciclo de propósito'
+                              if ciclico else ''))),
         motor=f'EV/EBITDA {alvo:.2f}x sobre {base}',
         nota=f'Múltiplo-alvo {alvo:.2f}x = {nota_alvo} do próprio histórico ({len(mult)} anos: {min(mult):.1f}x a {max(mult):.1f}x), não de pares. '
              f'Faixa {p25:.2f}x a {p75:.2f}x ({nota_fx}). '
@@ -825,6 +844,64 @@ def teto_bazin(t, A):
 # que lê motor_teto: o mesmo ciclo de cache que congelou o lucro normalizado da TIM.
 CRESC_CAP = 25.0
 
+# ══════════════════════════════════════════════════════════════════════════════════════════
+# O QUE O RELATÓRIO SABE E O MOTOR NÃO — lucro de 2026 e múltiplo, declarados
+# ══════════════════════════════════════════════════════════════════════════════════════════
+# O usuário: "para o nosso motor as variáveis mais importantes são o lucro estimado 2026 e o
+# múltiplo a qual a empresa está sendo valorada, então precisamos ser assertivos nessas
+# métricas — o relatório detalhado de cada empresa deve nos dar insumos para definirmos esses
+# critérios de forma assertiva".
+#
+# Ele está certo: preço justo = LPA projetado × múltiplo, então a precisão do motor inteiro
+# mora nessas duas variáveis, e as duas saíam de regressão estatística sobre o histórico —
+# nenhuma olhava a empresa. Guidance da companhia, consenso de mercado e projeção de casa de
+# análise são informação que a regressão não tem como capturar.
+#
+# REGRA: o declarado VENCE o estimado, e a tooltip diz de onde veio. Mesmo princípio que
+# POLITICA já aplica ao payout desde 06/09.
+#
+# ⚠️ SÓ ENTRA AQUI O QUE O RELATÓRIO DÁ EM NÚMERO ABSOLUTO DE LUCRO DE 2026. Oito dos catorze
+# relatórios projetam EBITDA (PASS3), NOI (ALOS3, MULT3), LPA em 2031 (CPFE3, ROXO34) ou lucro
+# num horizonte de 3 anos (TIMS3, LEVE3) — converter qualquer um desses em lucro de 2026 exigiria
+# premissa minha sobre depreciação, papéis ou cronograma, e premissa minha disfarçada de
+# guidance é pior que estimativa assumida. Esses continuam no motor estatístico.
+LUCRO_2026_DECLARADO = {
+    'BBSE3': (8.65e9,
+              'Cenário BASE do relatório de 25/08/2026, que usa o guidance oficial da companhia '
+              '(resultado operacional consolidado −7% a −3% para 2026; o base é o meio, −5%) e '
+              'coincide com o consenso de mercado de R$ 8,65-8,69 bi.'),
+    'ITUB3': (50.6e9,
+              'Cenário BASE do relatório de 25/08/2026: crescimento financeiro padrão de 8% a.a. '
+              'sobre o lucro RECORRENTE de 2025. O conservador (piso do guidance de carteira, '
+              '+5,5%) dá R$ 49,2 bi e o otimista (ritmo do 2T26, +9,6%) dá R$ 52,5 bi.'),
+    'CXSE3': (4.64e9,
+              'Cenário BASE do relatório de 25/08/2026: crescimento financeiro de 8% a.a. sem '
+              'novo choque regulatório. ⚠️ Não há guidance numérico oficial da companhia — o '
+              'conservador (+3%, prestamista não recupera) dá R$ 4,43 bi.'),
+    'BMEB4': (1.03e9,
+              'Cenário BASE do relatório de 25/08/2026: ponto médio entre o g financeiro padrão '
+              '(8%) e o crescimento implícito pela retenção de capital (ROE × retenção ≈ 19,3%). '
+              '⚠️ Sem guidance oficial; o otimista replica a projeção do Safra (R$ 1,20 bi).'),
+    'FIQE3': (218e6,
+              'Cenário BASE do relatório de 24/08/2026 (LPA R$ 0,55). A faixa vai de R$ 205 mi '
+              '(conservador) a R$ 232 mi (otimista).'),
+    'IRBR3': (330e6,
+              'Cenário CONSERVADOR do relatório de 25/08/2026 — e é o único disponível: o próprio '
+              'relatório se recusa a publicar um cenário base, porque a divergência entre lucro '
+              'contábil (IFRS) e gerencial inverteu de sinal no 2T26. É o lucro médio de ciclo '
+              '2023-2025, tratando o trimestre como ruído. O otimista, sobre o run-rate gerencial '
+              'do 2T26, daria R$ 740 mi — mais que o dobro.'),
+}
+
+# Múltiplo-alvo declarado. Vence a média entre a própria série e os pares.
+MULTIPLO_DECLARADO = {
+    'RANI3': ('EV/EBITDA', 5.5,
+              'Relatório de 24/08/2026: EV/EBITDA de MEIO DE CICLO, faixa sensibilizada de 5,0x '
+              '(ciclo de papel/celulose enfraquece) a 6,0x (nova capacidade amadurece). O motor '
+              'estatístico usava a mediana da própria série, que mede onde o ciclo esteve, não '
+              'onde ele normaliza.'),
+}
+
 CRESCIMENTO_DECLARADO = {
     'BBSE3': (-5.0,
               'Consenso de mercado para 2026: lucro de R$ 8,6 bi, −5,4% sobre 2025. O guidance '
@@ -864,6 +941,49 @@ def _recorrente(t):
             _FLUXO = {}
     h = (_FLUXO.get(t) or {}).get('lucro_recorrente_hist') or {}
     return _reg_log([(int(y), v) for y, v in h.items() if v is not None])
+
+
+def base_projecao(t, A):
+    """(lucro-base do exercício, rótulo) para projetar 2026. Normalmente o ano de 2025.
+
+    ⚠️ EXCEÇÃO QUE CORRIGE DOIS PREÇOS JUSTOS ERRADOS, 14/09/2026. Quando houve QUEBRA DE
+    SÉRIE em 2025 ou depois, o exercício de 2025 não é base limpa: o lucro é de antes do
+    evento societário e a contagem de papéis é de depois. Dividir um pelo outro mistura duas
+    empresas e o LPA sai pela metade.
+
+      AXIA3 · quebra 2025 · lucro 2025 R$ 6,56 bi contra LTM R$ 12,06 bi (+84%)
+              LPA saía R$ 2,24 quando o run-rate já era R$ 4,12
+      SAUD3 · quebra 2026 · lucro 2025 R$ 0,58 bi contra LTM R$ 1,05 bi (+81%)
+              LPA saía R$ 0,20 quando o run-rate já era R$ 0,36
+
+    Nesses casos a base passa a ser o LUCRO DOS ÚLTIMOS 12 MESES, que já é pós-evento e
+    reconcilia com a contagem de papéis atual. É menos estável que um exercício fechado —
+    e por isso a nota diz que a base mudou — mas é a única que descreve a empresa de hoje.
+    """
+    # O lucro de 2026 DECLARADO pelo relatório dispensa base e crescimento: ele já É o alvo.
+    if t in LUCRO_2026_DECLARADO:
+        return None, 'declarado'
+    q = ano_quebra(A)
+    ltm = A[max(A)].get('lucrolin')
+    if q and q >= 2025 and ltm and ltm > 0:
+        return ltm, (f'LUCRO LTM (não o exercício de 2025): houve quebra de série em {q}, '
+                     f'então o lucro de 2025 é de antes do evento societário e os papéis são '
+                     f'de depois — dividir um pelo outro mistura duas empresas')
+    l25 = (A.get(2025) or {}).get('lucrolin')
+    if (not l25 or l25 <= 0) and (not ltm or ltm <= 0):
+        # ROXO34: a base não traz lucro em reais, só o LPA lido à mão de um release. O motor
+        # já reconstituía o lucro por LPA × papéis lá dentro do teto_ep; a tabela mostrava "—".
+        c = A[max(A)]
+        pap = papeis(t, A)
+        if c.get('lpa') and c['lpa'] > 0 and pap:
+            return c['lpa'] * pap, ('LPA × papéis — a base não traz lucro em reais para esta '
+                                    'empresa, só o lucro por ação')
+    if (not l25 or l25 <= 0) and ltm and ltm > 0:
+        # ASAI3 e ROXO34: a base não tem exercício de 2025 (a DRE anual da Partnr não cobre a
+        # empresa). O motor já caía no LTM aqui dentro do teto_ep; a tabela não, e mostrava
+        # "—" na coluna de lucro enquanto o preço justo usava um número. Uma definição só.
+        return ltm, 'LUCRO LTM — a base não tem o exercício de 2025 fechado para esta empresa'
+    return l25, 'exercício fechado de 2025'
 
 
 def crescimento(t, A, H=None):
@@ -997,13 +1117,25 @@ def teto_ep(t, A, pl_setor=None, com_pares=True):
                                       else (alvo, '', f'o E/P mediano da própria empresa ({alvo:.2f}x)'))
     if faixa_mult:
         faixa_mult = recentrar(faixa_mult[0], mediana_propria, faixa_mult[1], alvo)
-    l25 = (A.get(2025) or {}).get('lucrolin')
     pap_ep = papeis(t, A)
-    if l25 and l25 > 0 and pap_ep:
+    decl = LUCRO_2026_DECLARADO.get(t)
+    if decl and pap_ep:
+        # Lucro de 2026 vindo do relatório: não há projeção a fazer, só dividir por papéis.
+        lpa_unit = decl[0] / pap_ep
+        g = None
+        nota_g = (f' LPA projetado R$ {lpa_unit:.2f} = lucro de 2026 R$ {decl[0]/1e9:.2f} bi '
+                  f'DECLARADO ÷ {pap_ep/1e6:.0f} mi papéis. {decl[1]}')
+        l25 = decl[0]
+    else:
+        l25, rot_base = base_projecao(t, A)
+    if decl and pap_ep:
+        pass
+    elif l25 and l25 > 0 and pap_ep:
         base_lpa, g, fonte_g = projetar(t, A, l25, H_GLOBAL)
         lpa_unit = base_lpa / pap_ep
-        nota_g = (f' LPA projetado R$ {lpa_unit:.2f} = lucro de 2025 R$ {l25/1e9:.2f} bi '
-                  f'× (1{g:+.1f}%) ÷ {pap_ep/1e6:.0f} mi papéis, {fonte_g}.' if g is not None else '')
+        nota_g = (f' LPA projetado R$ {lpa_unit:.2f} = lucro base R$ {l25/1e9:.2f} bi '
+                  f'({rot_base}) × (1{g:+.1f}%) ÷ {pap_ep/1e6:.0f} mi papéis, {fonte_g}.'
+                  if g is not None else '')
     else:
         lpa_unit = lpa * FATOR_UNIT.get(t, 1)
         g, nota_g = None, ' ⚠️ Sem lucro de 2025 positivo: usa o LPA dos últimos 12 meses.'
@@ -1209,7 +1341,18 @@ def teto_ffo(t, A, com_pares=True):
         f, pr = _ffo_pap(y), A[y].get('preco')
         if f and pr:
             pfs.append(pr / f)
-    atual = _ffo_pap(max(A))
+    # ⚠️ O FFO POR PAPEL DO ANO CORRENTE USA papeis(), não a contagem implícita. A série
+    # histórica continua na contagem implícita de cada ano (é o certo: o múltiplo de 2022 tem
+    # que ser medido com os papéis de 2022), mas o número que vai ser MULTIPLICADO pelo
+    # múltiplo precisa ser o mesmo que a coluna da tabela exibe — senão ALOS3 mostra FFO/ação
+    # de R$ 3,37 na tela e o preço justo usa R$ 3,54. Mesma convenção do teto_ep, que também
+    # projeta o LPA sobre papeis().
+    pap_ffo = papeis(t, A)
+    # ANO-BASE 2025, igual ao resto da tabela. Usar o LTM aqui fazia a coluna "FFO projetado
+    # 2026" mostrar R$ 3,37 na ALOS3 enquanto o preço justo multiplicava R$ 3,54 — o mesmo
+    # conceito com dois números na mesma linha.
+    f_hoje = ffo_ano(t, A, 2025) or ffo_ano(t, A, max(A))
+    atual = (f_hoje / pap_ffo * fator) if (f_hoje and pap_ffo) else _ffo_pap(max(A))
     if len(pfs) < 3 or not atual:
         return None
     p25, alvo, p75, nfx = faixa_com_tendencia(pfs, limiar_rel=0.15)
@@ -1789,6 +1932,14 @@ def alvo_com_pares(t, chave, alvo_proprio, n_anos=None):
     # O usuário leu "mediana da própria série" e entendeu mediana DE MÉTODOS — que é
     # exatamente o que esta mudança de arquitetura veio eliminar. Como a palavra carrega o
     # mal-entendido, a frase diz o que está sendo medido: o múltiplo, ao longo de N anos.
+    # O MÚLTIPLO DECLARADO pelo relatório vence a média com os pares — mesma hierarquia do
+    # lucro declarado e do payout por política. `alvo_proprio` continua sendo devolvido na
+    # nota para dar para conferir o quanto o relatório se afasta do que a série mostra.
+    d = MULTIPLO_DECLARADO.get(t)
+    if d and d[0] == chave:
+        return d[1], f'{d[1]:.2f}x DECLARADO', (
+            f'o múltiplo-alvo DECLARADO no relatório ({d[1]:.2f}x, contra '
+            f'{alvo_proprio:.2f}x da própria série). {d[2]}')
     g = MOTOR.get(t)
     janela = f' ao longo de {n_anos} anos' if n_anos else ''
     # `chave` é o nome INTERNO do método; 'E/P' é o inverso do múltiplo que a conta exibe.
