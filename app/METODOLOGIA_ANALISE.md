@@ -2833,3 +2833,50 @@ Quando o método que decide **não** é P/L (P/FFO em shopping, EV/EBITDA em cí
 holding), a tooltip da coluna 14 diz que ali ela é **contexto**, não o múltiplo aplicado — e aponta
 para a coluna Múltiplo. Prometer uma conta que não fecha naquela linha seria o mesmo defeito com
 outra roupa.
+
+### 34.7 A detecção de tendência passa a comparar medianas (14/09/2026)
+
+> "Troca média por mediana do P/L."
+
+O **valor** já era mediana: `faixa_com_tendencia` devolve o percentil 50, e `pl_setorial` e
+`multiplos_pares` usam `st.median`. A média sobrevivia em um lugar só — o **teste que decide se a
+série tem tendência**:
+
+```python
+d   = st.mean(novo) - st.mean(velho)          # antes
+lim = abs(st.mean(velho)) * limiar_rel
+```
+
+Isso era incoerente com o próprio método. Um único ano de pânico ou euforia move a média de uma
+metade de 3 pontos e **liga ou desliga o truncamento da série inteira** — exatamente o que a
+mediana existe para evitar, e a mesma razão que já tinha tirado a média do valor reportado
+(seção 19). Agora as duas metades são comparadas pela mediana.
+
+Efeito: **5 das 33 linhas** mudaram. O detector passou a disparar em três casos onde o outlier
+inflava a média da metade antiga e escondia a tendência.
+
+| Ativo | Múltiplo | Justo | Δ | O que mudou |
+|---|---|---|---|---|
+| BRSR6 | 5,80x → 4,51x | R$ 26,11 → R$ 20,31 | **−22%** | passou a detectar queda (−1,1), usa só 2024-2026 |
+| SHUL4 | 5,66x → 5,03x | R$ 4,44 → R$ 3,95 | −11% | passou a detectar queda (−1,6) |
+| PSSA3 | 10,81x → 11,53x | R$ 67,41 → R$ 71,93 | +7% | passou a detectar alta (+1,3) |
+| TIMS3 | 18,56x → 18,85x | R$ 38,18 → R$ 38,77 | +1,5% | mesma direção, faixa mais estreita |
+| SANB11 | 15,70x → 15,88x | R$ 53,84 → R$ 54,46 | +1,1% | mesma direção, faixa mais estreita |
+
+As duas quedas grandes vão na direção conservadora — o motor passou a enxergar deterioração que a
+média escondia.
+
+**Uma média continua no motor, de propósito**, e é a de `mediana_com_tendencia` quando a metade
+recente tem menos de 5 pontos (`est = st.median(novo) if len(novo) >= 5 else st.mean(novo)`). Ela
+não toca o P/L — vale para P/VP, EV/Receita, ROE e paridade — e existe porque a **mediana de 3
+pontos é só escolher um deles**: descarta 2 de 3 observações e devolve dado cru. Foi o defeito que
+o usuário encontrou em 13/09 ("o lucro normalizado está quase igual ao de 2025 em todos"), e trocar
+de volta o reintroduziria.
+
+### 34.8 Os rótulos passam a dizer "mediano"
+
+A tela dizia "P/L médio" e "ROE médio" para números que sempre foram medianas. Corrigido no
+cabeçalho das colunas 14 e 16, nas tooltips e no texto do motor. As ocorrências de "média" que
+**permanecem** são as que descrevem médias de verdade: a média do ciclo no EV/EBITDA de cíclica, a
+média própria+pares que o `backtest_pares` mediu (história, não método vigente) e a citação
+literal do pedido do usuário.
