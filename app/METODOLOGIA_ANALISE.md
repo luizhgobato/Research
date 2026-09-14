@@ -2569,3 +2569,56 @@ corrigidas no caminho:
   R$ 3,37 na ALOS3). Agora as duas partem de 2025.
 - **ASAI3 e ROXO34** — a coluna punha "—" quando não havia taxa de crescimento ou lucro em reais,
   enquanto o motor usava um número lá dentro.
+
+### 32.5 P/L de até 16 anos para empresa madura (14/09/2026)
+
+> "Eu gostaria do P/L de 10 anos para empresas maduras, mesmo que tenhamos que pegar de outra
+> fonte."
+
+**Não precisou de outra fonte.** A Partnr tem a série longa em `companies_valuationRatios` com
+`frequency=TTM` — o que ela não tem é `ANNUAL` nem `QUARTERLY` (404 nas duas). O TTM devolve uma
+revisão por DIA, o que dá respostas de 0,2 a 2,7 MB por empresa e estoura o limite da ferramenta.
+
+`scripts/coletar_pl_historico.py` resolve: cada resposta é salva em disco pelo harness, o script
+lê os arquivos, extrai o último registro de cada ano civil e grava `analise/pl_historico.json`.
+O conteúdo gigante nunca entra no contexto. **23 empresas coletadas, até 16 anos (2011-2026).**
+
+Três armadilhas que o coletor trata, e que só apareceram porque a primeira versão caiu em todas:
+
+- **Identificação por conteúdo não funciona.** A primeira versão tentava descobrir de quem era
+  cada arquivo casando o P/L com o HIST_SEED. A VIVA3 (um único ano de P/L na base) reivindicou a
+  série da BBSE3, que começava em 2013 — seis anos antes do IPO da Vivara; a série `_PS` do
+  arquivo do ITUB (que é a ITUB4, nem está no Radar) foi atribuída à MULT3. Séries de P/L se
+  parecem demais. O ticker passou a ser **informado**, não inferido.
+- **Classe de ação.** A resposta traz `_CS` (ordinária), `_PS` (preferencial), `_UNIT` e `_PSB`.
+  Escolher errado põe o múltiplo da PN sobre o preço da ON. Isso **sim** é decidido por conteúdo:
+  fica a série cujo P/L reproduz o que o HIST_SEED registra para aquele ticker.
+- **Âncora no ano fechado.** Casar por 2026 reprovava a série certa do PETR4 (11% de diferença),
+  porque o HIST_SEED usa o fechamento do ano e a série TTM de 2026 tem data-base 30/06. Em 2025 os
+  dois batem na casa decimal (5,41x).
+
+A coluna P/L médio passa a usar a série longa quando há 8+ anos, com selo azul **10a**, e a
+tooltip lista todos os anos. Quebra de série continua respeitada: anos anteriores ao evento
+descrevem outra empresa e saem fora.
+
+### 32.6 Por que o preço justo NÃO passou a usar a série longa
+
+Medi o efeito antes de mexer, e ele é sistemático e para cima:
+
+| | 6 anos | série longa | preço justo | com a longa |
+|---|---|---|---|---|
+| LEVE3 | 6,7x | 11,8x | R$ 33,37 | R$ 59,21 (**+77%**) |
+| CPFE3 | 7,9x | 12,8x | R$ 42,69 | R$ 55,35 (+30%) |
+| BBSE3 | 8,6x | 12,2x | R$ 37,04 | R$ 44,57 (+20%) |
+| CLSC4 | 4,5x | 6,3x | R$ 139,81 | R$ 159,00 (+14%) |
+| ITUB3 | 7,8x | 9,8x | R$ 46,93 | R$ 52,73 (+12%) |
+
+**Todas sobem, e a razão é uma só: juro.** A janela de 2011-2020 tem Selic média perto de 7% e
+fundo de 2% em 2020; a de 2021-2026 tem Selic de 13% a 15%. Múltiplo é o inverso de uma taxa de
+desconto — a década inteira embute dinheiro barato que não existe hoje, e o ITUB3 negociando a
+16,1x em 2020 não é referência para 2026.
+
+Por isso a série longa entra como **contexto na coluna**, e o preço justo continua na janela de 6
+anos, que cobre o regime de juro atual. A tooltip diz isso explicitamente, para a comparação entre
+as duas colunas ser a informação — se o múltiplo aplicado está dentro ou fora do que a empresa
+negociou na década.
