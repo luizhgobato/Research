@@ -366,10 +366,17 @@ def faixa_com_tendencia(vals, limiar_rel=0.12, limiar_abs=None):
     base = sorted(vals)
     nota = f'percentis de {len(vals)} anos'
     if len(vals) >= 5:
+        # ⚠️ 14/09/2026 — A DETECÇÃO DE TENDÊNCIA COMPARA MEDIANAS, NÃO MÉDIAS.
+        # Pedido do usuário: "troca média por mediana do P/L". O valor que esta função devolve
+        # já era mediana (percentil 50); a média sobrevivia só aqui, no teste que decide se a
+        # série tem tendência — e era incoerente com o resto do método. Um único ano de pânico
+        # ou euforia move a média de uma metade de 3 pontos e liga (ou desliga) o truncamento
+        # da série inteira; é exatamente o que a mediana existe para evitar, e é a mesma razão
+        # que já tinha tirado a média do valor reportado na seção 19.
         meio = len(vals) // 2
         velho, novo = vals[:meio], vals[meio:]
-        d = st.mean(novo) - st.mean(velho)
-        lim = limiar_abs if limiar_abs is not None else abs(st.mean(velho)) * limiar_rel
+        d = st.median(novo) - st.median(velho)
+        lim = limiar_abs if limiar_abs is not None else abs(st.median(velho)) * limiar_rel
         if abs(d) > lim and len(novo) >= 3:
             base = sorted(novo)
             nota = (f'TENDÊNCIA {d:+.1f} entre as metades → faixa só dos {len(novo)} anos recentes')
@@ -893,7 +900,7 @@ LUCRO_2026_DECLARADO = {
               'do 2T26, daria R$ 740 mi — mais que o dobro.'),
 }
 
-# Múltiplo-alvo declarado. Vence a média entre a própria série e os pares.
+# Múltiplo-alvo declarado. Vence a mediana da própria série e o ajuste de ROE (14/09/2026).
 # (chave, múltiplo-alvo, (piso, teto) da sensibilidade do relatório, justificativa)
 # ⚠️ A FAIXA NÃO É ENFEITE: é ela que alimenta os três cenários do relatório. Sem ela, os
 # cenários caíam no percentil 25/75 da própria série — e na RANI3 o múltiplo declarado (5,5x)
@@ -1933,7 +1940,7 @@ def serie_roe(t, A):
     """(roe_hoje, [(ano, roe) dos anos comparáveis], rótulo da métrica) — a rentabilidade.
 
     UMA DEFINIÇÃO, DOIS CONSUMIDORES, e é de propósito: quem ajusta o múltiplo em
-    `alvo_com_pares` e quem preenche a coluna ROE médio do Radar (scripts/gerar_colunas.py)
+    `alvo_com_pares` e quem preenche a coluna ROE mediano do Radar (scripts/gerar_colunas.py)
     têm que ler o MESMO número. Se a coluna mostrasse uma série e o motor usasse outra, o
     leitor faria a divisão na tela e não bateria com o fator que a tooltip do Múltiplo declara
     — que é o defeito que este projeto já pagou quatro vezes em campos diferentes.
@@ -1969,7 +1976,7 @@ def serie_roe(t, A):
 
 
 def alvo_com_pares(t, chave, alvo_proprio, n_anos=None, A=None):
-    """Múltiplo-alvo: a MÉDIA HISTÓRICA DA PRÓPRIA EMPRESA, ajustada pela rentabilidade.
+    """Múltiplo-alvo: a MEDIANA HISTÓRICA DA PRÓPRIA EMPRESA, ajustada pela rentabilidade.
     Devolve (alvo, nota, origem).
 
     ══ MUDANÇA DE 14/09/2026, pedida pelo usuário ══
@@ -1983,7 +1990,7 @@ def alvo_com_pares(t, chave, alvo_proprio, n_anos=None, A=None):
         mediu a média (própria + pares) em +14,1 p.p. contra as duas pontas isoladas, com
         p=0,040 em 54 observações; a âncora própria SOZINHA foi a que deu negativo
         (−1,8 p.p., p=0,549).
-        ⚠️ O QUE ISSO CUSTA: a média histórica própria prende a empresa no patamar em que ela
+        ⚠️ O QUE ISSO CUSTA: a mediana histórica própria prende a empresa no patamar em que ela
         já negociou e nunca enxerga re-rating. A evidência apontava para o outro lado.
         O QUE A DECISÃO GANHA, e é o argumento do usuário: a mediana do setor mistura empresas
         com rentabilidade e risco distintos. O BPAC11 mostra o custo do peer comp — P/L próprio
@@ -1991,19 +1998,19 @@ def alvo_com_pares(t, chave, alvo_proprio, n_anos=None, A=None):
         nada no negócio justificasse o corte.
 
     2 · O ROE ENTRA COMO AJUSTE, e é ele que substitui a informação que os pares traziam.
-        Média histórica pura ignora que a empresa pode estar mais (ou menos) rentável hoje do
+        Mediana histórica pura ignora que a empresa pode estar mais (ou menos) rentável hoje do
         que foi na média do período. Pela relação de Gordon, P/L = payout ÷ (Ke − g) e
         g = ROE × retenção: mais ROE significa mais crescimento sustentável e, com tudo o mais
         constante, múltiplo justificadamente maior.
 
-            ajuste = ROE atual ÷ ROE mediano do período,   limitado a [0,70 ; 1,30]
+            ajuste = ROE atual ÷ ROE MEDIANO do período,   limitado a [0,70 ; 1,30]
 
         ⚠️ O LIMITE DE ±30% É PREMISSA DECLARADA, não calibração. A relação entre ROE e P/L
         justo é não-linear e depende de payout e de Ke — nenhum dos dois observável sem
         premissa, e o Ke variável saiu do motor em 13/09 justamente por isso (seção 30).
         Proporção direta sem limite faria o múltiplo dobrar quando o ROE dobrasse, o que a
         teoria não sustenta. O limite deixa o ajuste MOVER o múltiplo sem deixá-lo DOMINAR a
-        média histórica, que continua sendo a âncora.
+        mediana histórica, que continua sendo a âncora.
     """
     janela = f' ao longo de {n_anos} anos' if n_anos else ''
     nome = {'E/P': 'P/L'}.get(chave, chave)

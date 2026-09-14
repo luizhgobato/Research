@@ -457,7 +457,7 @@ def gerar():
               'se a projeção está dentro do que a empresa costuma pagar.&#10;'
               'Fonte: MCP Partnr (B3/CVM), analise/dy_historico.json.')
 
-        # ── Colunas 14 e 16 · P/L MÉDIO e ROE MÉDIO, mesma janela ───────────────────────
+        # ── Colunas 14 e 16 · P/L MEDIANO e ROE MEDIANO, mesma janela ───────────────────────
         # JANELA 2021→, fixada pelo usuário em 14/09/2026: "para o P/L médio e ROE médio vamos
         # manter desde 2021 para cá". É exatamente o HIST_SEED, e é exatamente a janela que o
         # motor usa para tirar o múltiplo — as três coisas passam a coincidir por construção.
@@ -470,7 +470,7 @@ def gerar():
         # quem quiser olhar o ciclo inteiro; para valorar hoje, ela desancora.
         #
         # As duas colunas são a CONTA DO MÚLTIPLO aberta na tela: múltiplo aplicado =
-        # P/L médio × (ROE atual ÷ ROE médio), limitado a ±30%. O leitor confere a
+        # P/L médio × (ROE atual ÷ ROE mediano), limitado a ±30%. O leitor confere a
         # coluna Múltiplo dividindo duas células que estão na mesma linha.
         val14, q14 = M['anos_validos'](A)
         pls14 = []
@@ -505,8 +505,8 @@ def gerar():
                 + f'.&#10;{nota14[0].upper()}{nota14[1:]}.'
                 + '&#10;Fonte: MCP Partnr (B3/CVM), HIST_SEED.&#10;&#10;'
                 + ('É a ÂNCORA do múltiplo que produz o Preço Justo — desde 14/09/2026 sozinha, '
-                   'sem mistura com os pares do setor. O que a corrige é o ROE médio duas '
-                   'colunas à direita: múltiplo aplicado = este valor × (ROE atual ÷ ROE médio), '
+                   'sem mistura com os pares do setor. O que a corrige é o ROE mediano duas '
+                   'colunas à direita: múltiplo aplicado = este valor × (ROE atual ÷ ROE mediano), '
                    'limitado a ±30%.'
                    if metodo_principal(t) == 'P/L' else
                    f'⚠️ CONTEXTO, não é o múltiplo aplicado: o preço justo desta linha sai por '
@@ -519,7 +519,7 @@ def gerar():
                   'tenha mudado.')
         else:
             cells[14] = cel(VAZIO,
-                'P/L MÉDIO — não calculável&#10;&#10;'
+                'P/L MEDIANO — não calculável&#10;&#10;'
                 f'Menos de 2 exercícios com P/L utilizável na janela 2021→'
                 + (f' (quebra em {q14})' if q14 else '')
                 + '.&#10;Sem série própria, o múltiplo do Preço Justo cai no fallback do setor.')
@@ -546,11 +546,11 @@ def gerar():
                            + (f', limitado a {br(aj16,2)} pelo teto de ±30%'
                               if abs(bruto16 - aj16) > 1e-9 else '')
                            + '.&#10;'
-                           + (f'O múltiplo aplicado é o P/L médio × {br(aj16,2)} — confira '
+                           + (f'O múltiplo aplicado é o P/L mediano × {br(aj16,2)} — confira '
                               f'dividindo as duas colunas à esquerda.'
                               if mp16 == 'P/L' else
                               f'Este fator ajusta o múltiplo de {mp16 or "outro método"}, que é '
-                              f'a régua desta linha — não o P/L médio ao lado.')
+                              f'a régua desta linha — não o P/L mediano ao lado.')
                            + ' Só entra em quem tem 3 anos ou mais de ROE na série; abaixo '
                              'disso o múltiplo fica na média histórica pura.')
             else:
@@ -574,9 +574,9 @@ def gerar():
                    if metrica_roe != 'ROE' else ''))
         else:
             cells[16] = cel(VAZIO,
-                'ROE MÉDIO — não calculável&#10;&#10;'
+                'ROE MEDIANO — não calculável&#10;&#10;'
                 'Menos de 2 exercícios com ROE utilizável na janela 2021→.&#10;'
-                'Sem série, o múltiplo fica na média histórica de P/L sem ajuste de rentabilidade.')
+                'Sem série, o múltiplo fica na mediana histórica de P/L sem ajuste de rentabilidade.')
 
 
         med10, usados = dy_mediana(t)
