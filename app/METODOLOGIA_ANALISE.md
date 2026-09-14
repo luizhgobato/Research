@@ -3262,3 +3262,133 @@ diferentes de ROE.
 
 A tooltip mandava *"confira dividindo as duas colunas à esquerda"*. Agora ela imprime os dois
 números que o motor de fato usou e diz que a coluna ao lado pode divergir, e por quê.
+
+---
+
+## 39. O modelo novo de relatório, prototipado na ALOS3 (14/09/2026)
+
+> "Não acho que o relatório da empresa ainda está bom... precisamos evoluir. Para isso vamos
+> editar somente 1 até fecharmos o modelo, depois replicaremos."
+
+Nove pedidos, um a um, e onde cada um foi atendido.
+
+### 39.1 De 15 blocos para 7
+
+> "Temos muitos blocos" · "tem itens que são parecidos e podem ser melhor organizados:
+> projeção de lucro, valuation, a regra, quanto posso ganhar"
+
+Os quatro que ele citou eram **quatro caixas contando a mesma história em pedaços**. Viraram duas.
+
+| antes (15) | agora (7 + veredicto) |
+|---|---|
+| 2 Tese/riscos · 2b Leitura · 3 Encaixe · 4 Classificação | **2 · A tese** (+ análise qualitativa nova) |
+| — | **3 · Como ela se compara com os concorrentes** (novo) |
+| 8b A regra (uma linha de observação) | **4 · O múltiplo** (seção própria, com destaque) |
+| 7 Projeção de lucro · 8 Valuation | **5 · Do lucro projetado ao preço justo** |
+| dentro de 8b | **6 · Cenários** |
+| 9 Quanto posso ganhar | **7 · Quanto posso ganhar** |
+| 10 Dividendos | **8 · Projeção de dividendos** |
+| 5 Contexto · 6 Descobertas · 11 Receita · 12 Payout · 13 Dados | **9 · Testes e dados** (acordeão) |
+
+⚠️ **Só a ALOS3 entra no modelo novo.** O gate em `renderReportV2` é a presença de
+`valuation.serieMultiplo`, que só existe quando o gerador roda com argumento
+(`gerar_relatorio_valuation.py ALOS3`). Os outros 13 continuam byte a byte como estavam, para
+dar para comparar os dois lado a lado antes de replicar.
+
+### 39.2 O múltiplo virou seção, não rodapé
+
+> "O racional do múltiplo está pequeno como uma observação, mas é uma informação extremamente
+> relevante... precisamos dar mais ênfase a ela."
+
+Ganhou seção própria, caixa de destaque com a conta em 18px, e o **porquê do método** em corpo
+de texto. É a variável que, junto com o lucro projetado, define o preço justo inteiro.
+
+### 39.3 A série ano a ano, que antes o leitor tinha que aceitar de fé
+
+> "Quero acrescentar o ROE e P/L histórico que está sendo utilizado, quebrado por ano."
+
+O relatório dizia *"o P/FFO mediano ao longo de 3 anos (8,13x)"* e pronto. Agora:
+
+| Exercício | Preço | FFO | P/FFO | FFO ÷ patrimônio |
+|---|---|---|---|---|
+| 2024 | R$ 18,11 | R$ 1,43 bi | 6,85x | 9,7% |
+| 2025 | R$ 28,37 | R$ 1,58 bi | 9,08x | 11,2% |
+| 2026 | R$ 26,74 | R$ 1,66 bi | 8,13x | 12,3% |
+| **Mediana** | | | **8,13x** | **11,2%** |
+
+A mediana da tabela **tem** que bater com a do motor, e por um tempo não bateu: 8,14x contra
+8,13x, porque a tabela dividia pelo número de papéis ATUAL e o motor pela contagem implícita de
+cada ano. `pffo_ano(t, A, y)` virou função de módulo em `motor_teto.py` — uma definição, dois
+consumidores. Quarta vez que reimplementar a mesma conta custa um número divergente na tela.
+
+### 39.4 Cenários: de 12% para 60% de amplitude
+
+> "Os cenários conservador, base e otimista estão muito próximos um do outro" · "dois centavos
+> de diferença entre um e outro não faz diferença, precisamos ser mais agressivos"
+
+O defeito era estrutural: os três cenários variavam **só o crescimento** e mantinham o múltiplo
+fixo. Só que **preço justo = fundamento × múltiplo**, e são DUAS variáveis.
+
+Agora os três movem as duas juntas, porque é assim que o mercado se move — múltiplo comprime
+justamente quando o resultado decepciona. E o conservador **encolhe** em vez de ficar parado:
+crescimento zero é o cenário neutro, não o pessimista.
+
+| | crescimento | FFO/ação | múltiplo | preço justo |
+|---|---|---|---|---|
+| Conservador | −7,7% | R$ 2,88 | 7,52x (p25) | **R$ 21,70** |
+| Base | +7,7% | R$ 3,37 | 8,93x | **R$ 30,07** |
+| Otimista | +11,6% | R$ 3,49 | 9,96x (p75) | **R$ 34,75** |
+
+**As pontas do múltiplo não são inventadas**: são o percentil 25 e 75 do que a própria empresa
+já negociou — a mesma faixa que o motor publica na coluna Preço Justo.
+
+Os cenários de **dividendo** tinham o mesmo defeito (R$ 2,30 · 2,38 · 2,45, amplitude de 6%),
+porque variavam só o NOI. Passaram a variar também o **payout**, que é a incerteza real que o
+próprio alerta da seção descreve: R$ 1,93 (75% do AFFO) · R$ 2,38 (90%) · R$ 2,69 (100%) —
+amplitude de 39%.
+
+### 39.5 Análise qualitativa e comparação com pares
+
+> "Sinto falta de uma análise qualitativa, já havia pedido, e também comparação com os
+> concorrentes."
+
+A qualitativa é **escrita**, cinco blocos, e cada afirmação ancorada em número que está no
+relatório: de onde vem o resultado e por que o lucro contábil engana em shopping; o que a série
+de três anos mostra sobre a fusão; por que negocia com desconto para a MULT3 e **quanto desse
+desconto é artefato contábil**; alocação de capital; e o que invalidaria a tese.
+
+A comparação de pares é **derivada** (`comparacao_pares`), com a rentabilidade na mesma
+definição para os dois:
+
+| Ativo | Múltiplo | FFO÷patrimônio | mediano | Margem líq. | Dív/EBITDA | Valor de mercado |
+|---|---|---|---|---|---|---|
+| **ALOS3** | 8,93x | 12,3% | 11,2% | 35,6% | 1,71x | R$ 13,5 bi |
+| MULT3 | 12,22x | 23,8% | 21,3% | 43,4% | 1,93x | R$ 14,5 bi |
+
+Sem coluna de preço justo **de propósito**: cada empresa tem o seu, calculado sobre um
+fundamento diferente, e comparar dois desses números não diz nada.
+
+### 39.6 Tipografia
+
+> "As letras estão pequenas, quase não dá para enxergar, principalmente o que é observação que
+> você escreveu, que tem um monte por sinal."
+
+`.rp-note` era **11px, #aaa e itálico** — cinza-claro itálico em 11px é formatação de rodapé
+legal, não do racional de uma conta de valuation. E o relatório vive de observação: é ali que
+mora o porquê de cada número. Agora 13px, #4a4a4a, sem itálico. Tabelas 12px → 14px, corpo de
+texto 12px → 14px, títulos de seção 11px → 13px. Tudo escopado em `#page-report` para não
+afetar as páginas de carteira.
+
+### 39.7 Três bugs encontrados no caminho
+
+1. **`"ticker"` como chave na tabela de pares** quebrou o próprio gerador: `main` delimita cada
+   relatório procurando `"ticker": "XXX",` e as linhas da tabela criaram fronteiras FANTASMA
+   dentro do objeto `valuation` — o script via 16 relatórios onde há 14. Virou `"ativo"`.
+2. **Dois preços justos na mesma tela.** O cabeçalho anunciava R$ 31,53 e o card do veredicto
+   R$ 30,07: a regex do gerador só atualizava o campo antigo `precoTeto`, então quem já tinha
+   sido convertido ficava congelado no valor do dia da conversão.
+3. **A correção do item 2, mal escrita, quebrou os cenários.** `re.sub` com `^` e `re.M`
+   reescreveu TODOS os `"precoJusto"` do arquivo, inclusive os de dentro do array de cenários:
+   conservador, base e otimista saíram os três com R$ 30,07, cada um com o seu múltiplo e o seu
+   FFO ao lado, sem que a multiplicação fechasse. Agora ancorado no recuo do nível de topo, com
+   `count=1`.

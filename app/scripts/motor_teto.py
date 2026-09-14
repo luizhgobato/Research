@@ -1390,6 +1390,26 @@ def ffo_ano(t, A, y):
     return v if v > 0 else None
 
 
+def pffo_ano(t, A, y):
+    """P/FFO do exercício `y`. UMA definição, dois consumidores — `teto_ffo` e a tabela
+    ano a ano do relatório (scripts/gerar_relatorio_valuation.py).
+
+    ⚠️ Nasceu em 14/09/2026 de um desencontro de 0,01x: a tabela do relatório publicava
+    mediana de 8,14x e o motor usava 8,13x, porque a tabela dividia pelo número de papéis
+    ATUAL e o motor pela contagem IMPLÍCITA de cada ano (lucro ÷ LPA). A contagem implícita
+    é a correta na série histórica — o múltiplo de 2024 tem que usar os papéis de 2024 —,
+    e um centavo de divergência entre dois números da mesma conta na mesma tela é
+    exatamente o defeito que este projeto vem eliminando desde a seção 31.
+    """
+    d = A.get(y) or {}
+    li, lpa, pr = d.get('lucrolin'), d.get('lpa'), d.get('preco')
+    f = ffo_ano(t, A, y)
+    if not f or not li or not lpa or lpa == 0 or li <= 0 or not pr:
+        return None
+    ffo_pap = f / (li / lpa) * FATOR_UNIT.get(t, 1)
+    return pr / ffo_pap if ffo_pap else None
+
+
 def serie_ffo(t, A, respeitar_quebra=True):
     """[(ano, FFO)] dos exercícios comparáveis."""
     ys, _q = anos_validos(A) if respeitar_quebra else (sorted(A), None)

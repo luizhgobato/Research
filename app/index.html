@@ -1104,13 +1104,38 @@
 <!-- REPORTS DATA -->
 <script id="reportsData" type="application/json">{
   "ALOS3": {
+    "qualitativa": {
+        "resumo": "Maior operadora de shoppings do Brasil por ABL, nascida da fusão Aliansce Sonae + BR Malls em 2023. A tese não é crescimento: é um ativo imobiliário maduro sendo negociado abaixo do que o mercado privado paga pelo mesmo tijolo, enquanto a rentabilidade operacional sobe ano a ano e a alavancagem fica baixa.",
+        "blocos": [
+            {
+                "titulo": "De onde vem o resultado, e por que o lucro contábil engana aqui",
+                "texto": "Shopping ganha aluguel, estacionamento e cessão de espaço — receita contratada, reajustada por índice e com inadimplência baixa. A margem líquida de 35,6% descreve isso. O problema é que o IFRS manda depreciar o imóvel como se ele se desgastasse, e a ALOS3 carrega os shoppings a CUSTO: a depreciação come 29% do EBITDA. É despesa que não sai caixa e não corresponde a perda de valor — shopping bem administrado se valoriza. Por isso o motor usa FFO (lucro + depreciação) e não lucro líquido. A diferença não é detalhe: o FFO do LTM é R$ 1,66 bi contra R$ 1,03 bi de lucro contábil."
+            },
+            {
+                "titulo": "A fusão está entregando — a série de três anos mostra",
+                "texto": "O FFO saiu de R$ 1,43 bi (2024) para R$ 1,58 bi (2025) e R$ 1,66 bi no LTM, e a rentabilidade sobre o patrimônio subiu junto: 9,7% → 11,2% → 12,3%. São só três exercícios porque a fusão de 2023 quebrou a série — antes dela era outra empresa, com outra base acionária. Três pontos é pouco para tirar tendência, mas os três apontam para o mesmo lado, e é sinergia de integração aparecendo em caixa, não em slide."
+            },
+            {
+                "titulo": "Por que negocia com desconto para a MULT3 — e quanto do desconto é contábil",
+                "texto": "A Multiplan aplica 12,22x de P/FFO contra 8,93x da ALOS3, com rentabilidade de 23,8% contra 12,3%. Parte real: a MULT3 tem portfólio mais concentrado em shoppings dominantes e margem líquida maior (43,4% contra 35,6%). Parte é ARTEFATO CONTÁBIL: a MULT3 marca os imóveis a valor justo e deprecia só 6% do EBITDA, então o denominador do retorno dela é outro. Comparar as duas rentabilidades de frente exagera a distância. O que se compara com segurança é a trajetória de cada uma contra ela mesma — e é isso que o motor faz desde 14/09/2026."
+            },
+            {
+                "titulo": "Alocação de capital: o ponto que decide a tese",
+                "texto": "Alavancagem de 1,71x EBITDA é confortável para o setor e o custo da dívida caiu para CDI+0,57%, sem vencimento relevante até 2028 — não há pressão de refinanciamento. O que falta é o gatilho: o cap rate implícito no preço é de 13,84% contra 9,2%–9,6% que transações reais praticaram. Ou seja, comprando a ação você paga ~45% menos pelo tijolo do que o comprador privado paga. Esse desconto só vira dinheiro se a companhia VENDER ativo maduro a preço de mercado e devolver — é exatamente o que o Kinea ALLOS Malls FII (captação de até R$ 2 bi) se propõe a fazer. Sem execução, o desconto pode continuar descontado por anos."
+            },
+            {
+                "titulo": "O que invalidaria a tese",
+                "texto": "Três coisas, em ordem de gravidade: (1) a reciclagem de portfólio não sair do papel, deixando o desconto de cap rate como número de planilha; (2) o payout de ~100% encontrar um ano de FFO fraco — distribuindo tudo, não há folga para absorver queda sem cortar dividendo ou tomar dívida; (3) juro longo subir de novo, porque ativo imobiliário com fluxo contratado é o que mais sofre reprecificação quando a curva abre. Nenhuma das três é risco de operação — a operação está melhorando. São riscos de alocação e de taxa."
+            }
+        ]
+    },
     "ticker": "ALOS3",
     "nome": "Allos S.A.",
     "segmento": "Shoppings/Imobiliário",
     "data": "15/08/2026",
     "fontes": "Release 2T26, StatusInvest, cálculo próprio",
     "cotacao": "R$ 26,02",
-    "precoJusto": "R$ 31,53",
+    "precoJusto": "R$ 30,07",
     "max52": "R$ 33,15",
     "min52": "R$ 21,11",
     "classificacao": {
@@ -1380,31 +1405,95 @@
         }
       ],
       "nota": "Método ÚNICO: P/FFO. O preço justo é o fundamento projetado multiplicado pelo múltiplo que a empresa deve negociar — não é média nem mediana de métodos diferentes. Os 4 método(s) de verificação abaixo são calculados para comparação e NÃO entram na conta. Mesmo número da coluna Preço Justo do Radar, gerado pela mesma fonte (analise/tetos.json). Ver METODOLOGIA_ANALISE.md seção 31.",
+      "serieMultiplo": {
+        "metrica": "P/FFO",
+        "metricaRoe": "FFO ÷ patrimônio",
+        "linhas": [
+          {
+            "ano": "2024",
+            "multiplo": "6,85x",
+            "roe": "9,7%",
+            "fundamento": "R$ 1,43 bi",
+            "preco": "R$ 18,11"
+          },
+          {
+            "ano": "2025",
+            "multiplo": "9,08x",
+            "roe": "11,2%",
+            "fundamento": "R$ 1,58 bi",
+            "preco": "R$ 28,37"
+          },
+          {
+            "ano": "2026",
+            "multiplo": "8,13x",
+            "roe": "12,3%",
+            "fundamento": "R$ 1,66 bi",
+            "preco": "R$ 26,74"
+          }
+        ],
+        "mediana": "8,13x",
+        "roeMediano": "11,2%",
+        "roeHoje": "12,3%",
+        "quebra": "Série restrita a partir de 2023 por QUEBRA DE SÉRIE — os anos anteriores descrevem outra empresa (evento societário) e não servem de âncora."
+      },
+      "pares": {
+        "grupo": "SHOP",
+        "metricaRoe": "FFO ÷ patrimônio",
+        "linhas": [
+          {
+            "ativo": "ALOS3",
+            "eu": true,
+            "metodo": "P/FFO",
+            "multiplo": "8,93x",
+            "roe": "12,3%",
+            "roeMed": "11,2%",
+            "mgLiq": "35,6%",
+            "valorMercado": "R$ 13,5 bi",
+            "divEbitda": "1,71x"
+          },
+          {
+            "ativo": "MULT3",
+            "eu": false,
+            "metodo": "P/FFO",
+            "multiplo": "12,22x",
+            "roe": "23,8%",
+            "roeMed": "21,3%",
+            "mgLiq": "43,4%",
+            "valorMercado": "R$ 14,5 bi",
+            "divEbitda": "1,93x"
+          }
+        ]
+      },
       "cenariosLpa": {
         "multiplo": "8,93x",
         "fundamento": "FFO por ação",
         "base": "R$ 1,58 bi (FFO do exercício de 2025)",
+        "amplitude": "60%",
+        "variaMultiplo": true,
         "cenarios": [
           {
             "cenario": "Conservador",
-            "crescimento": "+0,0%",
-            "lpa": "R$ 3,13",
-            "precoJusto": "R$ 27,91",
-            "premissa": "crescimento ZERO — a empresa repete o resultado-base, sem supor deterioração nem avanço"
+            "crescimento": "-7,7%",
+            "multiplo": "7,52x",
+            "lpa": "R$ 2,88",
+            "precoJusto": "R$ 21,70",
+            "premissa": "o fundamento ENCOLHE 7,7% — a mesma distância do base, para baixo e múltiplo de 7,52x (percentil 25 da própria série). As duas pontas pioram juntas, que é como o mercado se move de fato: múltiplo comprime justamente quando o resultado decepciona"
           },
           {
             "cenario": "Base",
             "crescimento": "+7,7%",
+            "multiplo": "8,93x",
             "lpa": "R$ 3,37",
             "precoJusto": "R$ 30,07",
-            "premissa": "regressão log do FFO da própria série (shopping não projeta lucro contábil)"
+            "premissa": "regressão log do FFO da própria série (shopping não projeta lucro contábil) e o múltiplo que o preço justo aplica (8,93x)"
           },
           {
             "cenario": "Otimista",
             "crescimento": "+11,6%",
+            "multiplo": "9,96x",
             "lpa": "R$ 3,49",
-            "precoJusto": "R$ 31,14",
-            "premissa": "a taxa do base vezes 1,5, limitada ao teto de 25% — premissa declarada, não calibração"
+            "precoJusto": "R$ 34,75",
+            "premissa": "a taxa do base vezes 1,5, limitada ao teto de 25% e múltiplo de 9,96x (percentil 75 da própria série). Premissa declarada, não calibração — mas as duas pontas do múltiplo são a faixa que a empresa JÁ negociou, não número inventado"
           }
         ]
       },
@@ -1554,7 +1643,7 @@
       "class": "green",
       "conviccao": "★★☆☆☆",
       "cotacao": "R$ 26,02",
-      "precoJusto": "R$ 31,53",
+      "precoJusto": "R$ 30,07",
       "margem": "+13,5%",
       "premioSelic": "+13,9 p.p.",
       "gatilhos": [
@@ -1582,21 +1671,21 @@
       "cenarios": [
         {
           "nome": "Conservador",
-          "divAcao": "R$ 2,30",
-          "sub": "Payout normalizado ~90% AFFO · cenário NOI +3% a.a.",
-          "dy": "DY ~8,8% (cotação R$ 26,02)"
+          "divAcao": "R$ 1,93",
+          "sub": "Corte mais fundo: payout 75% do AFFO · NOI +2% a.a.",
+          "dy": "DY ~7,4% (cotação R$ 26,02)"
         },
         {
           "nome": "Base",
           "divAcao": "R$ 2,38",
-          "sub": "Payout normalizado ~90% AFFO · cenário NOI +5% a.a.",
+          "sub": "Payout normalizado 90% do AFFO · NOI +5% a.a.",
           "dy": "DY ~9,1% (cotação R$ 26,02)"
         },
         {
           "nome": "Otimista",
-          "divAcao": "R$ 2,45",
-          "sub": "Payout normalizado ~90% AFFO · cenário NOI +6% a.a.",
-          "dy": "DY ~9,4% (cotação R$ 26,02)"
+          "divAcao": "R$ 2,69",
+          "sub": "Payout 100% do AFFO sustentado · NOI +7% a.a.",
+          "dy": "DY ~10,3% (cotação R$ 26,02)"
         }
       ],
       "tabela": {
