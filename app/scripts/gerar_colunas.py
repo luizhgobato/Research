@@ -174,6 +174,12 @@ VAZIO = '<span class="muted">—</span>'
 # mostrariam outra grandeza sem avisar — que é o tipo de coisa que só se descobre conferindo.
 TAG_FFO = ('<span style="font-size:9px;font-weight:700;color:#7c3aed;background:#f3e8ff;'
            'border-radius:3px;padding:1px 4px;margin-left:4px;vertical-align:middle;">FFO</span>')
+# Selo de ORIGEM. O usuário precisa ver de relance quais linhas vêm de guidance/consenso e
+# quais são extrapolação estatística — são coisas de confiabilidade muito diferente na mesma
+# coluna, e sem marca visual as duas se parecem.
+TAG_DECL = ('<span style="font-size:9px;font-weight:700;color:#0a5c35;background:#dcfce7;'
+            'border-radius:3px;padding:1px 4px;margin-left:4px;vertical-align:middle;"'
+            ' title="lucro declarado no relatório">REL</span>')
 
 
 def cel(txt, tip):
@@ -216,7 +222,15 @@ def gerar():
         ln, motor, fonte = normalizado(t, A)   # segue alimentando a TIR; não é mais coluna
         pap = M['papeis'](t, A)
         po, npo, pf = M['payout_final'](t, A, H)
-        l25 = _val(2025)
+        # ⚠️ A COLUNA TEM QUE MOSTRAR O MESMO LUCRO QUE O PREÇO JUSTO USA. O motor passou a
+        # aceitar lucro de 2026 declarado no relatório (LUCRO_2026_DECLARADO) e base de
+        # projeção corrigida por quebra de série (base_projecao); se a tabela continuasse
+        # projetando por conta própria, a coluna "Lucro Projetado 2026" e o fundamento dentro
+        # do preço justo divergiriam na MESMA LINHA — o defeito que esta sessão passou o dia
+        # corrigindo. As duas leem a mesma fonte agora.
+        decl26 = M['LUCRO_2026_DECLARADO'].get(t) if not ffo_shop else None
+        l25, rot_base = (M['base_projecao'](t, A) if not ffo_shop
+                         else (_val(2025), 'exercício fechado de 2025'))
         # Payout sobre FFO = payout sobre lucro × (lucro ÷ FFO). O FFO é maior que o lucro,
         # então o payout sobre FFO é MENOR — e é a leitura certa: mede quanto do caixa da
         # operação vira dividendo, não quanto do lucro contábil.
@@ -224,7 +238,13 @@ def gerar():
         if ffo_shop and po and lucro25 and l25:
             po = min(po * (lucro25 / l25), 1.5)
         g, (origem_g, g_bruto) = crescimento(t)
-        proj = l25 * (1 + g/100) if (l25 and l25 > 0 and g is not None) else None
+        # Sem taxa utilizável, o projetado é o próprio lucro-base — é o que projetar() faz no
+        # motor. A tabela punha "—" e as duas versavam sobre o mesmo número (ASAI3, ROXO34).
+        proj = (l25 * (1 + g/100) if g is not None else l25) if (l25 and l25 > 0) else None
+        if decl26:
+            proj = decl26[0]
+            g = ((proj / l25 - 1) * 100) if (l25 and l25 > 0) else None
+            origem_g = 'lucro de 2026 DECLARADO no relatório — a taxa é consequência, não premissa'
 
         # ⚠️ 13/09/2026 — O LPA PASSOU A SAIR DO LUCRO PROJETADO, não do normalizado.
         # O usuário: "o LPA você está utilizando o lucro normalizado mas não tem mais essa
@@ -239,6 +259,14 @@ def gerar():
         # suavizá-la. Para dividendo de UM ano isso é defensável — empresa no fundo do ciclo
         # paga menos mesmo —, mas quem ler o DY da VALE3 está lendo fundo de ciclo, não média.
         lpa = (proj/pap) if (proj and pap and proj > 0) else None
+        # ROXO34: BDR sem lucro em reais e sem contagem de papéis na base — só o LPA, lido à
+        # mão de um release. É exatamente o que o teto_ep usa lá dentro; sem este espelho a
+        # coluna mostrava "—" enquanto o preço justo multiplicava R$ 0,75.
+        lpa_fallback = None
+        if lpa is None and c.get('lpa') and c['lpa'] > 0:
+            lpa = c['lpa'] * M['FATOR_UNIT'].get(t, 1)
+            lpa_fallback = ('LPA lido direto da base (a empresa não tem lucro em reais nem '
+                            'contagem de papéis na série) — sem projeção de crescimento.')
         dps = (lpa*po) if (lpa and po) else None
         preco = c.get('preco')
         dy = (dps/preco*100) if (dps and preco) else None
@@ -268,11 +296,18 @@ def gerar():
         # ── Coluna 5 · LUCRO PROJETADO 2026 ─────────────────────────────────────────────
         origem, bruto = origem_g, g_bruto
         cortado = (g is not None and bruto is not None and abs(bruto - g) > 0.05)
-        cells[5] = cel((dinheiro(proj) + (TAG_FFO if ffo_shop else '')) if proj else VAZIO,
-            (f'{"FFO" if ffo_shop else "LUCRO"} PROJETADO 2026 — {dinheiro(proj)}&#10;&#10;'
-             f'{"FFO" if ffo_shop else "Lucro"} 2025 {dinheiro(l25)} × '
-             f'(1 {"+" if g >= 0 else "−"} {br(abs(g),1)}%)&#10;&#10;'
-             f'A taxa e a origem dela estão na coluna ao lado.'
+        cells[5] = cel((dinheiro(proj) + (TAG_DECL if decl26 else (TAG_FFO if ffo_shop else ''))) if proj else VAZIO,
+            (f'LUCRO DE 2026 DECLARADO — {dinheiro(proj)}&#10;&#10;{decl26[1]}&#10;&#10;'
+             f'É este número que o Preço Justo multiplica pelo múltiplo. Não é projeção do '
+             f'motor: vem do relatório detalhado desta empresa.'
+             if decl26 else
+             f'{"FFO" if ffo_shop else "LUCRO"} PROJETADO 2026 — {dinheiro(proj)}&#10;&#10;'
+             + (f'{"FFO" if ffo_shop else "Lucro"} base {dinheiro(l25)} ({rot_base}) × '
+                f'(1 {"+" if g >= 0 else "−"} {br(abs(g),1)}%)&#10;&#10;'
+                f'A taxa e a origem dela estão na coluna ao lado.' if g is not None else
+                f'{"FFO" if ffo_shop else "Lucro"} base {dinheiro(l25)} ({rot_base}), SEM '
+                f'crescimento aplicado: a base não tem série utilizável para estimar a taxa. '
+                f'O projetado repete o lucro-base em vez de inventar uma tendência.')
              if proj else
              'LUCRO PROJETADO 2026 — não calculável&#10;&#10;'
              + ('Sem taxa de crescimento utilizável na base.' if (l25 and l25 > 0) else
@@ -300,7 +335,9 @@ def gerar():
              f'{pap/1e6:.0f} mi papéis&#10;&#10;'
              f'Papéis negociados, units já resolvidas — mesma base do preço e do dividendo.'
              + ('&#10;&#10;É este número que o preço justo multiplica pelo P/FFO.' if ffo_shop else '')
-             if lpa else f'{"FFO" if ffo_shop else "LUCRO"} POR AÇÃO — sem projeção para 2026'))
+             if (lpa and not lpa_fallback) else
+             (f'LUCRO POR AÇÃO — R$ {br(lpa)}&#10;&#10;{lpa_fallback}' if lpa_fallback else
+              f'{"FFO" if ffo_shop else "LUCRO"} POR AÇÃO — sem projeção para 2026')))
 
         # ── Coluna 8 · PAYOUT ───────────────────────────────────────────────────────────
         # ⚠️ ÚLTIMA COLUNA MANUAL DA TABELA, e ela estava divergindo em silêncio: o motor

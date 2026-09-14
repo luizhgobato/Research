@@ -2497,3 +2497,75 @@ década. É a metade PRÓPRIA do múltiplo do Preço Justo; a outra é a mediana
 **Auditoria do Dív.Líq./EBITDA.** Conferido linha a linha contra `dívida líquida ÷ EBITDA` do
 HIST_SEED: bate em **todas as 24 empresas** onde a métrica se aplica. As 9 financeiras mostram
 "—" por decisão de método (em banco o passivo é matéria-prima, não alavancagem).
+
+## 32. O relatório alimenta o motor — lucro de 2026 e múltiplo declarados (14/09/2026)
+
+> "Para o nosso motor as variáveis mais importantes são o lucro estimado 2026 e o múltiplo a
+> qual a empresa está sendo valorada, então precisamos ser assertivos nessas métricas — o
+> relatório detalhado de cada empresa deve nos dar insumos para definirmos esses critérios de
+> forma assertiva."
+
+Preço justo = LPA projetado × múltiplo. A precisão do motor inteiro mora nessas duas variáveis, e
+as duas saíam de regressão estatística sobre o histórico — **nenhuma olhava a empresa**. Guidance
+da companhia, consenso de mercado e projeção de casa de análise são informação que a regressão não
+tem como capturar.
+
+### 32.1 Dois dicionários, e a regra da hierarquia
+
+`LUCRO_2026_DECLARADO` e `MULTIPLO_DECLARADO` em `motor_teto.py`. O declarado **vence** o estimado
+e a tooltip diz de onde veio — mesmo princípio que `POLITICA` já aplica ao payout desde 06/09.
+
+| ticker | lucro 2026E | origem |
+|---|---|---|
+| BBSE3 | R$ 8,65 bi | **guidance oficial** (−7% a −3%; base é o meio) + consenso R$ 8,65-8,69 bi |
+| ITUB3 | R$ 50,60 bi | g financeiro 8% sobre o lucro RECORRENTE de 2025 |
+| CXSE3 | R$ 4,64 bi | g financeiro 8%, sem novo choque regulatório ⚠️ sem guidance oficial |
+| BMEB4 | R$ 1,03 bi | ponto médio entre g padrão (8%) e ROE × retenção (19,3%) |
+| FIQE3 | R$ 218 mi | cenário base do relatório (LPA R$ 0,55) |
+| IRBR3 | R$ 330 mi | cenário **conservador** — o relatório se recusa a publicar um base |
+
+E um múltiplo: **RANI3 · EV/EBITDA 5,5x** de meio de ciclo (faixa 5,0x-6,0x), contra a mediana da
+própria série que mede onde o ciclo esteve, não onde ele normaliza. Preço justo R$ 8,06 → R$ 9,21.
+
+⚠️ **Oito dos catorze relatórios não entraram, e é de propósito.** Eles projetam EBITDA (PASS3),
+NOI (ALOS3, MULT3), LPA em 2031 (CPFE3, ROXO34) ou lucro num horizonte de 3 anos (TIMS3, LEVE3).
+Converter qualquer um desses em lucro de 2026 exigiria premissa minha sobre depreciação, papéis ou
+cronograma — e **premissa minha disfarçada de guidance é pior que estimativa assumida**.
+
+Na tabela, um selo verde **REL** marca as linhas cujo lucro veio do relatório. Guidance e
+extrapolação estatística têm confiabilidade muito diferente e, sem marca, se parecem.
+
+### 32.2 Dois preços justos que estavam errados por quebra de série
+
+Quando houve evento societário em 2025 ou depois, o exercício de 2025 **não é base limpa**: o lucro
+é de antes do evento e a contagem de papéis é de depois. Dividir um pelo outro mistura duas
+empresas e o LPA sai pela metade.
+
+| | lucro 2025 | LTM | LPA antes → depois | preço justo |
+|---|---|---|---|---|
+| AXIA3 | R$ 6,56 bi | R$ 12,06 bi (+84%) | R$ 2,24 → **R$ 4,53** | R$ 21,89 → **R$ 40,25** |
+| SAUD3 | R$ 0,58 bi | R$ 1,05 bi (+81%) | R$ 0,20 → **R$ 0,38** | R$ 1,88 → R$ 3,36 |
+
+`base_projecao()` passa a usar o LTM nesses casos, e também quando a base não tem o exercício de
+2025 fechado (ASAI3) ou não traz lucro em reais, só LPA (ROXO34).
+
+### 32.3 Seguradora sai do grupo dos bancos
+
+`FIN` virou **FIN** (7 bancos) e **SEG** (5 seguradoras). Banco e seguradora dividiam o mesmo grupo
+de pares e o múltiplo de um virava régua do outro: a SAUD3 recebia o P/L mediano de 8,6x dos bancos
+enquanto a própria série rodava entre 10,9x e 15,2x. São negócios diferentes — banco ganha no
+spread de crédito, seguradora na subscrição e no float — e o ciclo de um não é o do outro. O P/L
+dos pares separou em **7,5x (bancos)** contra **9,1x (seguradoras)**.
+
+### 32.4 A tabela e o motor lendo a mesma fonte
+
+O motor passou a aceitar lucro declarado e base corrigida; se a tabela continuasse projetando por
+conta própria, a coluna "Lucro Projetado 2026" e o fundamento dentro do preço justo divergiriam **na
+mesma linha**. Auditoria de reconciliação criada e rodada: **as 26 linhas com preço justo batem**,
+LPA da tabela contra LPA dentro da conta do preço justo. Quatro divergências foram encontradas e
+corrigidas no caminho:
+
+- **ALOS3 e MULT3** — `teto_ffo` projetava do LTM e a coluna projetava de 2025 (R$ 3,54 contra
+  R$ 3,37 na ALOS3). Agora as duas partem de 2025.
+- **ASAI3 e ROXO34** — a coluna punha "—" quando não havia taxa de crescimento ou lucro em reais,
+  enquanto o motor usava um número lá dentro.
