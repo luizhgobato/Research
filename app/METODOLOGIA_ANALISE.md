@@ -3084,3 +3084,93 @@ SE (320) e Pixel 5 (393), e por varredura de 320px a 1920px: **em toda largura a
 tela inteira E os 10 chips ficam dentro dela**. Clique no último chip filtra a tabela; a barra
 continua ancorada em `left:0` depois de rolar 800px para a direita. Zero erro de console,
 desktop sem regressão (24 col == 24 th == 24 td, zero desalinho).
+
+---
+
+## 37. Auditoria da carteira: o lucro declarado passa a ser conferido contra o trimestre (14/09/2026)
+
+> "Vamos refazer os relatórios detalhados das empresas da minha carteira considerando as
+> métricas atuais. Quero garantir que estamos estimando o lucro projetado certo e que o
+> múltiplo também está certo."
+
+A carteira (Luiz + Flávia) tem **IRBR3, BBSE3, CXSE3, ITUB3, RANI3, ALOS3 e FIQE3** com
+relatório, mais **GMAT3 e BBAS3 que não estão no Radar** e LFTB11 (ETF de LFT, não é ação).
+
+### 37.1 O buraco: constante digitada não avisa quando o fato muda
+
+`LUCRO_2026_DECLARADO` é digitado a partir do relatório de cada empresa. Não havia **nenhum**
+mecanismo ligando esse número ao trimestre publicado depois. Dois scripts fecham isso:
+
+- **`scripts/coletar_trimestrais.py`** consolida o lucro trimestral do MCP Partnr em
+  `analise/trimestrais.json` (8 tickers, até 62 trimestres). O ticker é informado por fora,
+  nunca deduzido do payload — lição do coletor de P/L (seção 33).
+- **`scripts/checar_lucro_declarado.py`** confronta cada declaração com o dado publicado e
+  **sai com código != 0** se alguma divergir.
+
+### 37.2 Duas réguas, porque a régua errada cria falso positivo
+
+A primeira versão do verificador comparava tudo contra o run-rate (1S anualizado e LTM) e
+acusou o IRBR3 de divergir **1,83×**. Divergia mesmo — **e está certo assim.**
+
+O número do IRBR3 não é uma projeção de 2026: é a **média do ciclo 2023-2025**, escolhida
+porque o próprio relatório se recusa a projetar o exercício com a contabilidade IFRS e a
+gerencial divergindo de sinal no 2T26. Comparar média de ciclo com run-rate é comparar coisas
+diferentes.
+
+`LUCRO_2026_DECLARADO` ganhou um **terceiro elemento** dizendo como o número foi construído, e
+o verificador aplica a régua certa:
+
+| tipo | régua | alerta quando |
+|---|---|---|
+| `('projecao',)` | 1S anualizado **e** LTM | as **duas** se afastam >15% na mesma direção |
+| `('ciclo', ini, fim)` | recalcula a média daqueles exercícios | a média recalculada difere >15% |
+
+Alerta só com as duas réguas do mesmo lado: longe de uma e perto da outra é sazonalidade ou
+virada recente, e aí o julgamento é humano, não do script.
+
+### 37.3 Resultado — as seis declarações batem
+
+| ticker | tipo | declarado | referência | razão | situação |
+|---|---|---|---|---|---|
+| BBSE3 | projeção | R$ 8,65 bi | 1S26 anual. 9,10 · LTM 9,19 | 0,95× / 0,94× | ok (conservador) |
+| CXSE3 | projeção | R$ 4,64 bi | 4,62 · 4,52 | 1,00× / 1,03× | ok |
+| FIQE3 | projeção | R$ 218 mi | 193 · 224 | 1,13× / 0,97× | ok |
+| ITUB3 | projeção | R$ 50,60 bi | 47,23 · 46,83 | 1,07× / 1,08× | ok (otimista no limite) |
+| BMEB4 | projeção | R$ 1,03 bi | 1,12 · 0,83 | 0,92× / 1,24× | **atenção** — réguas discordam |
+| **IRBR3** | **ciclo 23-25** | **R$ 330 mi** | média recalculada **R$ 326 mi** | **1,01×** | **ok** |
+
+O IRBR3 recalculado: `2023 −218 mi · 2024 +806 mi · 2025 +391 mi` → média R$ 326 mi contra os
+R$ 330 declarados. A célula agora imprime, como **contexto e não como critério**, que o 1S26
+anualizado é R$ 181 mi e o LTM R$ 241 mi — a média de ciclo ignora isso de propósito, e quem
+lê precisa saber que está ignorando.
+
+⚠️ **O que o dado publicado mostra e o relatório de 25/08 ainda não continha:** o **2T26 do
+IRBR3 veio NEGATIVO (−R$ 3,3 mi)** e o semestre fechou em R$ 90 mi. A média de ciclo é um
+método legítimo, mas ela exclui o exercício corrente justamente quando o exercício corrente
+roda abaixo dos três que compõem a média. Isso é decisão de quem lê, não do motor — e agora
+está na tela.
+
+### 37.4 Múltiplo declarado não recebe ajuste de ROE
+
+A RANI3 expôs um texto falso: ROE de hoje 8,9% contra 27,0% de mediana dá fator **0,33**, e a
+tooltip dizia *"este fator ajusta o múltiplo de EV/EBITDA"*. **Não ajusta** — o EV/EBITDA dela
+é 5,50x DECLARADO no relatório, e declaração vence a estatística inteira (`alvo_com_pares`
+devolve antes de chegar ao ROE). A célula prometia uma conta que o motor não faz. Agora ela diz
+que o fator é só leitura da rentabilidade, e por quê.
+
+### 37.5 Os múltiplos da carteira, conferidos
+
+| ticker | método | âncora 2021→ | ROE hoje / mediano | fator | aplicado |
+|---|---|---|---|---|---|
+| ITUB3 | P/L | 7,80x | 21,0% / 18,2% | 1,16 | **9,03x** |
+| BBSE3 | P/L | 8,64x | 78,6% / 78,8% | 1,00 | 8,62x |
+| CXSE3 | P/L | 11,62x | 33,1% / 29,1% | 1,14 | 13,23x |
+| IRBR3 | P/L | 8,25x | 4,5% / 4,5% | 1,00 | 8,25x |
+| ALOS3 | P/FFO | 8,13x | 12,3% / 11,2% | 1,10 | 8,93x |
+| RANI3 | EV/EBITDA | — | 8,9% / 27,0% | *inerte* | **5,50x declarado** |
+| FIQE3 | P/L | 8,93x | 18,9% / 15,1% | 1,25 | 11,15x |
+
+⚠️ **O IRBR3 é o caso de auto-neutralização da seção 35.5 em forma pura:** ROE de hoje 4,5% e
+mediana do período 4,5%, fator 1,00. A rentabilidade despencou tanto e há tanto tempo que a
+mediana da janela 2021→ já está no chão junto com ela — o ajuste não tem contra o que comparar
+e some exatamente onde deveria morder.
