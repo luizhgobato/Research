@@ -776,7 +776,7 @@ def teto_ev(t, A, ciclico):
         alvo, nota_alvo = mediana_com_tendencia(mult, limiar_rel=0.12)
     if alvo_decl is not None:
         nota_alvo = (f'DECLARADO no relatório ({alvo_decl:.2f}x, contra {alvo:.2f}x da própria '
-                     f'série). {decl_m[2]}')
+                     f'série). {decl_m[3]}')
         alvo = alvo_decl
     ebitda = st.mean(eb) if ciclico else eb[-1]
     pap = papeis(t, A)
@@ -793,7 +793,7 @@ def teto_ev(t, A, ciclico):
         conta=(f'{base} × EV/EBITDA {alvo:.2f}x − dívida líquida R$ {dl/1e9:.1f} bi, '
                f'÷ {papeis_txt(pap)}'),
         origem_mult=((f'o múltiplo DECLARADO no relatório ({alvo:.2f}x), contra a mediana de '
-                      f'{len(mult)} anos da própria série. {decl_m[2]}') if alvo_decl is not None
+                      f'{len(mult)} anos da própria série. {decl_m[3]}') if alvo_decl is not None
                      else (f'o EV/EBITDA mediano da própria empresa ao longo de {len(mult)} anos '
                            f'({alvo:.2f}x; a série foi de {min(mult):.1f}x a {max(mult):.1f}x)'
                            + (' — em cíclica a janela cobre pico e fundo do ciclo de propósito'
@@ -894,8 +894,12 @@ LUCRO_2026_DECLARADO = {
 }
 
 # Múltiplo-alvo declarado. Vence a média entre a própria série e os pares.
+# (chave, múltiplo-alvo, (piso, teto) da sensibilidade do relatório, justificativa)
+# ⚠️ A FAIXA NÃO É ENFEITE: é ela que alimenta os três cenários do relatório. Sem ela, os
+# cenários caíam no percentil 25/75 da própria série — e na RANI3 o múltiplo declarado (5,5x)
+# é MAIOR que o p75 da série (5,41x), o que punha o cenário otimista ABAIXO do base.
 MULTIPLO_DECLARADO = {
-    'RANI3': ('EV/EBITDA', 5.5,
+    'RANI3': ('EV/EBITDA', 5.5, (5.0, 6.0),
               'Relatório de 24/08/2026: EV/EBITDA de MEIO DE CICLO, faixa sensibilizada de 5,0x '
               '(ciclo de papel/celulose enfraquece) a 6,0x (nova capacidade amadurece). O motor '
               'estatístico usava a mediana da própria série, que mede onde o ciclo esteve, não '
@@ -1941,7 +1945,7 @@ def alvo_com_pares(t, chave, alvo_proprio, n_anos=None):
     if d and d[0] == chave:
         return d[1], f'{d[1]:.2f}x DECLARADO', (
             f'o múltiplo-alvo DECLARADO no relatório ({d[1]:.2f}x, contra '
-            f'{alvo_proprio:.2f}x da própria série). {d[2]}')
+            f'{alvo_proprio:.2f}x da própria série). {d[3]}')
     g = MOTOR.get(t)
     janela = f' ao longo de {n_anos} anos' if n_anos else ''
     # `chave` é o nome INTERNO do método; 'E/P' é o inverso do múltiplo que a conta exibe.

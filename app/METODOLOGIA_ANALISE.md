@@ -2645,3 +2645,63 @@ cobrir. O `.teto-tip` virou um marcador de tamanho zero, igual ao `.col-tip`.
 
 Varredura de verificação nas 33 linhas: **559 tooltips abertos, zero spans escapando da célula,
 zero títulos repetidos dentro da mesma linha, zero células com marcador que não abrem.**
+
+## 33. A receita do relatório — múltiplo, três cenários e leitura dos dados (14/09/2026)
+
+> "Nos relatórios das empresas eu quero ver o cálculo de múltiplo e a regra que adotamos para cada
+> empresa, e também um detalhamento do LPA projetado considerando 3 cenários. Deixe essa regra bem
+> estabelecida para o momento de gerar cada relatório. Além disso quero uma análise qualitativa."
+
+A regra está escrita no topo de `scripts/gerar_relatorio_valuation.py` e vale para todo relatório
+gerado daqui em diante. O renderizador só exibe o que o gerador produziu — não há duas definições
+da mesma coisa.
+
+### 33.1 Seção 8b · A regra desta empresa
+
+Declara, nesta ordem: **qual método decide e por quê** — e a razão é sempre do NEGÓCIO, nunca "o
+backtest gostou mais" —, as **duas metades do múltiplo** (a própria série e a dos pares, cada uma
+com seu número) e a **conta completa** até o preço justo.
+
+| grupo | método | a razão, em uma linha |
+|---|---|---|
+| SHOP | P/FFO | o imóvel entra a custo e é depreciado; a ALOS3 deprecia 29% do EBITDA e a MULT3 6% |
+| CICL | EV/EBITDA do ciclo | o lucro de um ano é fundo ou pico — a KLBN11 saiu com LPA de R$ 0,09 |
+| NAV | paridade | o lucro da holding é equivalência patrimonial, herda o ciclo amplificado |
+| FIN | P/L | banco ganha no spread; o passivo é matéria-prima, não alavancagem |
+| SEG | P/L | seguradora ganha na subscrição e no float; grupo de pares próprio desde 14/09 |
+
+### 33.2 Três cenários — e o fundamento não é sempre o LPA
+
+Um número só de LPA esconde que ele é projeção. Os três cenários usam a **mesma base** e variam
+só o crescimento: **conservador** = crescimento zero (a empresa repete o que acabou de fazer — é
+o piso sem premissa nenhuma); **base** = a taxa do motor, ou o lucro declarado no relatório;
+**otimista** = a taxa do base × 1,5, limitada ao teto de 25%. O fator 1,5 é **premissa declarada,
+não calibração** — com 6 anos não há amostra para calibrar dispersão de crescimento.
+
+⚠️ **Duas correções que só apareceram testando fora do P/L:**
+
+- **O fundamento muda com o método.** A primeira versão assumia "LPA × múltiplo" para todos e
+  produziu R$ 15,20 de preço justo para a ALOS3 contra R$ 27,39 no Radar — dividia o LUCRO por
+  papéis num método que multiplica o FFO. Agora são três famílias: por ação × múltiplo (P/L,
+  P/FFO), `(múltiplo × EBITDA − dívida) ÷ papéis` (EV/EBITDA) e `preço justo da investida × razão`
+  (paridade).
+- **Em cíclica a sensibilidade é no MÚLTIPLO, não no crescimento.** O método já usa o EBITDA médio
+  de seis anos, um número que atravessa o ciclo de propósito; aplicar taxa de crescimento sobre ele
+  é projetar a média. A primeira versão fez isso e pôs o cenário base da RANI3 **abaixo** do
+  conservador (crescimento de −14,6%, que é a queda até o fundo do ciclo). Agora varia o múltiplo,
+  usando a faixa que o próprio relatório sensibilizou quando existe — a RANI3 tem 5,0x a 6,0x
+  declarados, e por isso `MULTIPLO_DECLARADO` ganhou um campo de faixa.
+
+### 33.3 Seção 2b · Leitura dos dados — o que ela NÃO é
+
+Rentabilidade, tendência do ROE, alavancagem, consistência do lucro, sustentabilidade do payout e
+quebra de série, traduzidos para frase a partir do HIST_SEED. **Não é tese de analista, e o rótulo
+na tela diz isso.**
+
+⚠️ **O que não se faz: inventar tese para empresa sem relatório.** Dezenove das trinta e três não
+têm análise escrita. Elas recebem a leitura derivada, não um texto plausível gerado do nada — que
+é o mais fácil de produzir e o mais perigoso de ler.
+
+Quando o fundamento não fecha com a contagem de papéis (ROXO34, BDR sem lucro em reais na base), os
+três cenários **não são exibidos** e a seção diz por quê, em vez de mostrar três preços com
+aparência de precisão.

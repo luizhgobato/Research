@@ -50,12 +50,308 @@ def num_br(txt):
     except ValueError: return None
 
 
-def bloco_valuation(t, r):
+# ══════════════════════════════════════════════════════════════════════════════════════════
+# A REGRA DO RELATÓRIO — o que cada um tem que mostrar, e por quê
+# ══════════════════════════════════════════════════════════════════════════════════════════
+# Pedido do usuário: "nos relatórios das empresas eu quero ver o cálculo de múltiplo e a regra
+# que adotamos para cada empresa, e também um detalhamento do LPA projetado considerando 3
+# cenários — deixe essa regra bem estabelecida para o momento de gerar cada relatório. Além
+# disso quero uma análise qualitativa da empresa".
+#
+# A regra, fixada aqui para todo relatório gerado a partir de 14/09/2026:
+#
+#  1 · REGRA DO MÚLTIPLO. O relatório declara, nesta ordem: (a) qual método decide e POR QUE
+#      esse e não outro — a razão é do NEGÓCIO, não estatística; (b) as duas metades do
+#      múltiplo, a própria série e a dos pares, cada uma com seu número; (c) o múltiplo final
+#      e a conta completa até o preço justo.
+#
+#  2 · LPA EM TRÊS CENÁRIOS. Um número só de LPA esconde que ele é uma projeção. Os três
+#      cenários usam a MESMA base e variam só o crescimento:
+#        · CONSERVADOR — crescimento ZERO. A empresa repete o que acabou de fazer. É o piso
+#          defensável sem premissa nenhuma: não supõe deterioração, só ausência de avanço.
+#        · BASE — a taxa que o motor usa (ou o lucro declarado no relatório, quando existe).
+#        · OTIMISTA — a taxa do base vezes 1,5, limitada ao CRESC_CAP de 25%.
+#      O fator 1,5 é PREMISSA DECLARADA, não calibração: com 6 anos de série não há amostra
+#      para calibrar dispersão de crescimento, e fingir que há seria o superajuste que o teste
+#      de permutação existe para denunciar (mesma prateleira do juro real de 5,5%, seção 25.3).
+#      Cada cenário mostra também o PREÇO JUSTO correspondente, que é o que decide.
+#
+#  3 · ANÁLISE QUALITATIVA. Duas origens, sempre separadas e rotuladas:
+#        · A TESE ESCRITA, quando o relatório tem — análise com data e fontes declaradas.
+#        · A LEITURA DERIVADA DOS DADOS, gerada aqui: rentabilidade, alavancagem,
+#          consistência do lucro, sustentabilidade do dividendo e quebra de série. São fatos
+#          do HIST_SEED traduzidos para frase, e o rótulo diz isso — nunca se passa por
+#          análise fundamentalista escrita por alguém.
+#      ⚠️ O que NÃO se faz: inventar tese para empresa sem relatório. Dezenove das trinta e
+#      três não têm análise escrita; elas recebem a leitura derivada e um aviso de que a tese
+#      está pendente, não um texto plausível gerado do nada.
+
+CRESC_OTIMISTA = 1.5     # multiplicador do cenário otimista sobre a taxa base — ver regra 2
+
+# POR QUE ESTE MÉTODO E NÃO OUTRO, por grupo. A razão é sempre do NEGÓCIO — o que a
+# contabilidade daquele setor distorce —, nunca "o backtest gostou mais".
+REGRA_METODO = {
+    'SHOP': ('P/FFO',
+             'Shopping registra o imóvel a CUSTO e o deprecia como se ele se desgastasse. Só '
+             'que shopping bem administrado não perde valor, ganha — e o peso dessa depreciação '
+             'depende de política contábil (a ALOS3 deprecia 29% do EBITDA, a MULT3 6%, porque '
+             'a MULT3 usa valor justo). Lucro líquido de shopping mede contabilidade junto com '
+             'operação. FFO = lucro + depreciação devolve a despesa que não sai caixa.'),
+    'CICL': ('EV/EBITDA sobre a média do ciclo',
+             'Cíclica de commodity tem lucro de UM ano que é fundo ou pico, nunca capacidade '
+             'normal — a KLBN11 saiu com LPA de R$ 0,09 no fundo da celulose. Multiplicar isso '
+             'por um múltiplo trata ano ruim como normalidade. O EBITDA médio de seis anos '
+             'atravessa o ciclo, e o EV inclui a dívida, que em cíclica alavancada é metade '
+             'da história.'),
+    'NAV':  ('Paridade com a investida',
+             'O "lucro" de uma holding é equivalência patrimonial: ele herda o ciclo da '
+             'controlada amplificado. A BRAP4 teve lucro caindo de R$ 8,1 bi para R$ 0,6 bi '
+             'acompanhando o minério, e nenhum múltiplo sobre esse lucro descreve o valor de '
+             'uma participação na Vale. A razão entre os dois preços mede o desconto de '
+             'holding que o mercado de fato pratica.'),
+    'FIN':  ('P/L', 'Banco ganha no spread de crédito e o lucro é a medida direta disso. '
+             'EV não se aplica: o passivo é a matéria-prima (depósito), não alavancagem.'),
+    'SEG':  ('P/L', 'Seguradora ganha na subscrição e no float, e o lucro captura os dois. '
+             'Como em banco, EV/EBITDA não se aplica — a provisão técnica é insumo, não dívida. '
+             'Desde 14/09/2026 seguradora tem grupo de pares PRÓPRIO: o ciclo de uma '
+             'seguradora não é o de um banco.'),
+}
+REGRA_PADRAO = ('P/L',
+                'Caso geral: o lucro é a medida do que o negócio entrega ao acionista, e o '
+                'P/L é o preço que o mercado paga por ele. Os múltiplos de EV entram só onde '
+                'a dívida financia o ativo operacional e distorce a comparação por lucro.')
+
+
+def cenarios_lpa(t, r, M, A):
+    """Três cenários do FUNDAMENTO e o preço justo de cada um. Ver a regra 2 acima.
+
+    ⚠️ O FUNDAMENTO NÃO É SEMPRE O LPA, e a conta até o preço justo não é sempre uma
+    multiplicação. A primeira versão assumia "LPA × múltiplo" para todo mundo e produziu
+    R$ 15,20 de preço justo para a ALOS3 no cenário conservador, contra R$ 27,39 no Radar —
+    porque dividia o LUCRO por papéis num método que multiplica o FFO. Três famílias:
+
+      P/L e P/FFO  → fundamento POR AÇÃO × múltiplo
+      EV/EBITDA    → (múltiplo × EBITDA − dívida líquida) ÷ papéis
+      Paridade     → preço justo da investida × a razão histórica
+
+    Em EV/EBITDA e Paridade o cenário varia o fundamento (EBITDA, preço justo do pai) e o
+    preço justo sai pela fórmula da família — não por multiplicação direta.
+    """
+    met = (r.get('metodos') or [{}])[0]
+    chave = met.get('chave') or ''
+    conta = met.get('conta') or ''
+    grupo = M['MOTOR'].get(t)
+    pap = M['papeis'](t, A)
+    c = A[max(A)]
+
+    m = re.search(r'×\s*(?:[A-Za-z/]+\s+)?([\d.,]+)x', conta)
+    mult = float(m.group(1).replace(',', '.')) if m else None
+    if chave == 'Paridade':
+        m = re.search(r'×\s*paridade\s*([\d.,]+)', conta)
+        mult = float(m.group(1).replace(',', '.')) if m else None
+    if not mult:
+        return None
+
+    cap = M['CRESC_CAP']
+    decl = M['LUCRO_2026_DECLARADO'].get(t)
+    g_base, fonte_g = M['crescimento'](t, A, M['H_GLOBAL'])
+
+    # ── qual fundamento, e como ele vira preço ────────────────────────────────────────────
+    if chave == 'P/FFO':
+        base_val = M['ffo_ano'](t, A, 2025) or M['ffo_ano'](t, A, max(A))
+        rot_base = 'FFO do exercício de 2025'
+        nome_fund = 'FFO por ação'
+        preco = lambda v: (v / pap) * mult if pap else None
+        por_acao = lambda v: v / pap if pap else None
+    elif chave == 'EV/EBITDA':
+        eb = M['serie'](A, 'ebitda')
+        base_val = (sum(eb) / len(eb)) if (grupo == 'CICL' and eb) else c.get('ebitda')
+        rot_base = ('EBITDA médio de %d anos do ciclo' % len(eb)) if (grupo == 'CICL' and eb) \
+                   else 'EBITDA dos últimos 12 meses'
+        nome_fund = 'EBITDA'
+        dl = c.get('divliq') or 0
+        preco = lambda v: (mult * v - dl) / pap if pap else None
+        por_acao = lambda v: v / 1e9
+    elif chave == 'Paridade':
+        pai = M['PARENT'].get(t)
+        rp = M['H_GLOBAL'] and pai and M['calcular'](pai, M['H_GLOBAL'][pai])
+        base_val = rp.get('justo') if rp else None
+        rot_base = f'preço justo de {pai}'
+        nome_fund = f'preço justo de {pai}'
+        preco = lambda v: v * mult
+        por_acao = lambda v: v
+    else:
+        base_val, rot_base = M['base_projecao'](t, A)
+        nome_fund = 'LPA'
+        preco = lambda v: (v / pap) * mult if pap else None
+        por_acao = lambda v: v / pap if pap else None
+
+    if not base_val or base_val <= 0 or (chave != 'Paridade' and not pap):
+        return None
+
+    if decl and chave in ('E/P', 'P/L'):
+        g_eff = (decl[0] / base_val - 1) * 100
+        _d = decl[1]
+        if len(_d) > 150:
+            _d = _d[:150].rsplit(' ', 1)[0] + '…'
+        premissa_base = f'lucro de 2026 declarado no relatório — {_d}'
+    else:
+        g_eff = g_base if g_base is not None else 0.0
+        premissa_base = fonte_g or 'sem taxa utilizável na base'
+
+    # ⚠️ EM CÍCLICA A SENSIBILIDADE É NO MÚLTIPLO, NÃO NO CRESCIMENTO. O método já usa o
+    # EBITDA MÉDIO DE SEIS ANOS — um número que atravessa o ciclo de propósito —, então
+    # aplicar taxa de crescimento sobre ele contradiz a escolha: seria projetar a média.
+    # A primeira versão fez isso e produziu um cenário "base" ABAIXO do conservador na RANI3
+    # (crescimento de −14,6%, que é a queda até o fundo do ciclo). O que varia aqui é o
+    # múltiplo, entre o percentil 25 e o 75 da própria série — é o que o relatório da RANI3
+    # já fazia à mão ("faixa sensibilizada de 5,0x a 6,0x").
+    if chave == 'EV/EBITDA':
+        decl_m = M['MULTIPLO_DECLARADO'].get(t)
+        if decl_m and decl_m[0] == 'EV/EBITDA' and decl_m[2]:
+            # faixa que o PRÓPRIO relatório sensibilizou — vence os percentis da série
+            p25, p75 = decl_m[2]
+            por_que = ('a faixa sensibilizada no relatório desta empresa', 'do relatório')
+        else:
+            mult_s = M['serie'](A, 'evEbitda')
+            if len(mult_s) >= 4:
+                p25, _p50, p75, _n = M['faixa_com_tendencia'](mult_s, limiar_rel=0.12)
+            else:
+                p25, p75 = (min(mult_s) if mult_s else mult), (max(mult_s) if mult_s else mult)
+            por_que = ('o percentil 25 e o 75 da própria série', 'da própria série')
+        # garante a ordem: um cenário otimista abaixo do base é sinal de faixa incoerente
+        p25, p75 = min(p25, mult), max(p75, mult)
+        trio = [('Conservador', p25, f'múltiplo de {ptbr(f"{p25:.2f}")}x — {por_que[0]}, '
+                 f'ponta baixa: o ciclo comprime e o mercado paga menos pelo mesmo EBITDA'),
+                ('Base', mult, f'o múltiplo que o preço justo usa ({ptbr(f"{mult:.2f}")}x)'),
+                ('Otimista', p75, f'múltiplo de {ptbr(f"{p75:.2f}")}x — {por_que[0]}, '
+                 f'ponta alta: o ciclo vira e o mercado paga o topo do que já pagou')]
+        dl0 = c.get('divliq') or 0
+        return {
+            'multiplo': f'{ptbr(f"{mult:.2f}")}x',
+            'fundamento': 'EBITDA (fixo)',
+            'base': f'R$ {ptbr(f"{base_val/1e9:.2f}")} bi ({rot_base}) — NÃO é projetado: '
+                    f'a média do ciclo já atravessa pico e fundo',
+            'cenarios': [{'cenario': nome,
+                          'crescimento': f'{ptbr(f"{mx:.2f}")}x',
+                          'lpa': f'R$ {ptbr(f"{base_val/1e9:.2f}")} bi',
+                          'precoJusto': brl((mx * base_val - dl0) / pap),
+                          'premissa': prem} for nome, mx, prem in trio],
+        }
+
+    g_otim = max(-cap, min(g_eff * CRESC_OTIMISTA, cap)) if g_eff >= 0 else g_eff / CRESC_OTIMISTA
+    linhas = [
+        ('Conservador', 0.0,
+         'crescimento ZERO — a empresa repete o resultado-base, sem supor deterioração '
+         'nem avanço'),
+        ('Base', g_eff, premissa_base),
+        ('Otimista', g_otim,
+         f'a taxa do base vezes {CRESC_OTIMISTA:g}'.replace('.', ',') +
+         f', limitada ao teto de {cap:.0f}% — premissa declarada, não calibração'),
+    ]
+    fmt_f = (lambda v: brl(v)) if chave != 'EV/EBITDA' else (lambda v: f'R$ {ptbr(f"{v:.2f}")} bi')
+    saida = []
+    for nome, g, prem in linhas:
+        v = base_val * (1 + g / 100)
+        pj = preco(v)
+        if pj is None:
+            return None
+        saida.append({'cenario': nome,
+                      'crescimento': f'{g:+.1f}%'.replace('.', ','),
+                      'lpa': fmt_f(por_acao(v)),
+                      'precoJusto': brl(pj),
+                      'premissa': prem})
+    return {
+        'multiplo': (f'{ptbr(f"{mult:.3f}")}' if chave == 'Paridade' else f'{ptbr(f"{mult:.2f}")}x'),
+        'fundamento': nome_fund,
+        'base': (f'R$ {ptbr(f"{base_val/1e9:.2f}")} bi ({rot_base})' if chave != 'Paridade'
+                 else f'{brl(base_val)} ({rot_base})'),
+        'cenarios': saida,
+    }
+
+
+def leitura_qualitativa(t, M, A):
+    """Leitura derivada dos DADOS — nunca se passa por tese escrita. Ver a regra 3 acima."""
+    c = A[max(A)]
+    pontos = []
+    val, q = M['anos_validos'](A)
+
+    roes = [A[y]['roe'] for y in val if A[y].get('roe') is not None]
+    if roes:
+        med = sorted(roes)[len(roes) // 2]
+        if med >= 20:
+            pontos.append(f'Rentabilidade ALTA: ROE mediano de {med:.1f}% em {len(roes)} '
+                          f'exercícios. Retorno sobre capital nesse patamar costuma indicar '
+                          f'vantagem competitiva ou alavancagem — vale distinguir qual.')
+        elif med >= 12:
+            pontos.append(f'Rentabilidade razoável: ROE mediano de {med:.1f}%.')
+        else:
+            pontos.append(f'⚠️ Rentabilidade BAIXA: ROE mediano de {med:.1f}% em {len(roes)} '
+                          f'exercícios — abaixo do custo de capital de boa parte do mercado.')
+        if len(roes) >= 4:
+            recente, antigo = roes[-2:], roes[:2]
+            d = sum(recente)/len(recente) - sum(antigo)/len(antigo)
+            if abs(d) >= 3:
+                pontos.append(f'ROE em {"MELHORA" if d > 0 else "DETERIORAÇÃO"} de '
+                              f'{abs(d):.1f} p.p. entre o início e o fim da série.')
+
+    dl, eb = c.get('divliq'), c.get('ebitda')
+    if dl is not None and eb and eb > 0:
+        x = dl / eb
+        if x < 0:
+            pontos.append(f'CAIXA LÍQUIDO: a empresa tem mais caixa que dívida ({x:.1f}x EBITDA).')
+        elif x <= 2:
+            pontos.append(f'Alavancagem confortável: {x:.1f}x EBITDA.')
+        elif x <= 3.5:
+            pontos.append(f'Alavancagem moderada: {x:.1f}x EBITDA — acompanhar.')
+        else:
+            pontos.append(f'⚠️ Alavancagem ALTA: {x:.1f}x EBITDA. Dívida desse tamanho consome '
+                          f'o resultado no juro e limita a distribuição.')
+    elif M['MOTOR'].get(t) in ('FIN', 'SEG'):
+        pontos.append('Alavancagem não se aplica: em banco e seguradora o passivo é a '
+                      'matéria-prima do negócio, não dívida.')
+
+    lucros = [(y, A[y].get('lucrolin')) for y in val if A[y].get('lucrolin') is not None]
+    neg = [y for y, v in lucros if v <= 0]
+    if neg:
+        pontos.append(f'⚠️ PREJUÍZO em {len(neg)} exercício(s) da série ({", ".join(map(str, neg))}). '
+                      f'Múltiplo sobre lucro não descreve empresa que já deu prejuízo na janela.')
+    elif len(lucros) >= 4:
+        vals = [v for _, v in lucros]
+        if all(b >= a * 0.95 for a, b in zip(vals, vals[1:])):
+            pontos.append(f'Lucro CRESCENTE ou estável em todos os {len(vals)} exercícios da série.')
+
+    po, npo, pf = M['payout_final'](t, A, M['H_GLOBAL'])
+    if po is not None:
+        if po >= 0.95:
+            pontos.append(f'⚠️ Payout de {po*100:.0f}%: distribui praticamente todo o lucro. '
+                          f'Sobra pouco para reinvestir, e o dividendo fica sem folga.')
+        elif po >= 0.6:
+            pontos.append(f'Payout alto ({po*100:.0f}%) — perfil de renda, crescimento limitado '
+                          f'pela retenção baixa.')
+        elif po <= 0.25:
+            pontos.append(f'Payout baixo ({po*100:.0f}%): retém para crescer. O retorno tem que '
+                          f'vir da valorização, não do dividendo.')
+
+    if q:
+        pontos.append(f'⚠️ QUEBRA DE SÉRIE em {q}: houve evento societário, e os exercícios '
+                      f'anteriores descrevem uma empresa com outra base acionária. Toda média '
+                      f'histórica desta linha usa só os anos a partir dali.')
+    # vírgula decimal em tudo — a leitura fica ao lado de uma tabela toda em formato brasileiro
+    return [ptbr(x) for x in pontos]
+
+
+def bloco_valuation(t, r, M=None, A=None):
     """O novo `valuation`: UM método que decide, os outros como verificação declarada."""
     met = (r.get('metodos') or [{}])[0]
     justo = r['justo']
     verif = [m for m in (r.get('metodos') or [])[1:] if m.get('justo')]
+    grupo = M['MOTOR'].get(t) if M else None
+    nome_regra, porque = REGRA_METODO.get(grupo, REGRA_PADRAO)
     return {
+        'regraMetodo': nome_regra,
+        'regraPorque': porque,
+        'regraGrupo': grupo or '—',
         'criterio': met.get('chave') or '—',
         'metodos': [{'metodo': ptbr(met.get('conta') or met.get('motor') or ''),
                      'precoJusto': brl(justo)}],
@@ -77,6 +373,13 @@ def bloco_valuation(t, r):
 
 def main():
     tetos = json.load(open(TETOS, encoding='utf-8'))
+    src = (RAIZ / 'scripts/motor_teto.py').read_text(encoding='utf-8')
+    M = {}
+    exec(src[:src.index('if __name__')], M)
+    H = M['carregar']()
+    M['H_GLOBAL'] = H
+    M['PL_SETOR'].update(M['pl_setorial'](H))
+    M['MULT_PARES'].update(M['multiplos_pares'](H))
     s = HTML.read_text(encoding='utf-8')
     feitos, sem = [], []
 
@@ -102,7 +405,12 @@ def main():
             sem.append(f'{t} (valuation nao delimitado)'); continue
         ind = mv.group(2)
         if justo and justo > 0:
-            obj = bloco_valuation(t, r)
+            obj = bloco_valuation(t, r, M, H.get(t))
+            cen = cenarios_lpa(t, r, M, H[t]) if t in H else None
+            if cen:
+                obj['cenariosLpa'] = cen
+            if t in H:
+                obj['leituraDados'] = leitura_qualitativa(t, M, H[t])
         else:
             motivo = (r.get('nota') or 'sem motor aplicavel').split('||')[0].strip()
             obj = {'criterio': '—', 'metodos': [], 'origemMult': '', 'precoJusto': None,

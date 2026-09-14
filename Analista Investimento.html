@@ -2169,6 +2169,9 @@ tbody tr:nth-child(n){animation-delay:calc(var(--i,0)*0.02s);}
       "nota": "Lucro contábil não é o motor central em shoppings — a projeção relevante é de NOI, insumo do cap rate (seção 5)."
     },
     "valuation": {
+      "regraMetodo": "P/FFO",
+      "regraPorque": "Shopping registra o imóvel a CUSTO e o deprecia como se ele se desgastasse. Só que shopping bem administrado não perde valor, ganha — e o peso dessa depreciação depende de política contábil (a ALOS3 deprecia 29% do EBITDA, a MULT3 6%, porque a MULT3 usa valor justo). Lucro líquido de shopping mede contabilidade junto com operação. FFO = lucro + depreciação devolve a despesa que não sai caixa.",
+      "regraGrupo": "SHOP",
       "criterio": "P/FFO",
       "metodos": [
         {
@@ -2196,7 +2199,41 @@ tbody tr:nth-child(n){animation-delay:calc(var(--i,0)*0.02s);}
           "precoJusto": "R$ 32,60"
         }
       ],
-      "nota": "Método ÚNICO: P/FFO. O preço justo é o fundamento projetado multiplicado pelo múltiplo que a empresa deve negociar — não é média nem mediana de métodos diferentes. Os 4 método(s) de verificação abaixo são calculados para comparação e NÃO entram na conta. Mesmo número da coluna Preço Justo do Radar, gerado pela mesma fonte (analise/tetos.json). Ver METODOLOGIA_ANALISE.md seção 31."
+      "nota": "Método ÚNICO: P/FFO. O preço justo é o fundamento projetado multiplicado pelo múltiplo que a empresa deve negociar — não é média nem mediana de métodos diferentes. Os 4 método(s) de verificação abaixo são calculados para comparação e NÃO entram na conta. Mesmo número da coluna Preço Justo do Radar, gerado pela mesma fonte (analise/tetos.json). Ver METODOLOGIA_ANALISE.md seção 31.",
+      "cenariosLpa": {
+        "multiplo": "8,13x",
+        "fundamento": "FFO por ação",
+        "base": "R$ 1,58 bi (FFO do exercício de 2025)",
+        "cenarios": [
+          {
+            "cenario": "Conservador",
+            "crescimento": "+0,0%",
+            "lpa": "R$ 3,13",
+            "precoJusto": "R$ 25,41",
+            "premissa": "crescimento ZERO — a empresa repete o resultado-base, sem supor deterioração nem avanço"
+          },
+          {
+            "cenario": "Base",
+            "crescimento": "+7,7%",
+            "lpa": "R$ 3,37",
+            "precoJusto": "R$ 27,37",
+            "premissa": "regressão log do FFO da própria série (shopping não projeta lucro contábil)"
+          },
+          {
+            "cenario": "Otimista",
+            "crescimento": "+11,6%",
+            "lpa": "R$ 3,49",
+            "precoJusto": "R$ 28,35",
+            "premissa": "a taxa do base vezes 1,5, limitada ao teto de 25% — premissa declarada, não calibração"
+          }
+        ]
+      },
+      "leituraDados": [
+        "⚠️ Rentabilidade BAIXA: ROE mediano de 6,7% em 3 exercícios — abaixo do custo de capital de boa parte do mercado.",
+        "Alavancagem confortável: 1,7x EBITDA.",
+        "⚠️ Payout de 100%: distribui praticamente todo o lucro. Sobra pouco para reinvestir, e o dividendo fica sem folga.",
+        "⚠️ QUEBRA DE SÉRIE em 2023: houve evento societário, e os exercícios anteriores descrevem uma empresa com outra base acionária. Toda média histórica desta linha usa só os anos a partir dali."
+      ]
     },
     "retornoTotal": {
       "doze": {
@@ -2673,6 +2710,9 @@ tbody tr:nth-child(n){animation-delay:calc(var(--i,0)*0.02s);}
       "nota": "Projeção de lucro 2026E — não há série histórica completa (2021-2025) confirmada para esta empresa ainda; enviar ITRs anteriores fecha o cálculo com mais precisão."
     },
     "valuation": {
+      "regraMetodo": "P/L",
+      "regraPorque": "Caso geral: o lucro é a medida do que o negócio entrega ao acionista, e o P/L é o preço que o mercado paga por ele. Os múltiplos de EV entram só onde a dívida financia o ativo operacional e distorce a comparação por lucro.",
+      "regraGrupo": "UTIL",
       "criterio": "P/L",
       "metodos": [
         {
@@ -2696,7 +2736,42 @@ tbody tr:nth-child(n){animation-delay:calc(var(--i,0)*0.02s);}
           "precoJusto": "R$ 7,11"
         }
       ],
-      "nota": "Método ÚNICO: P/L. O preço justo é o fundamento projetado multiplicado pelo múltiplo que a empresa deve negociar — não é média nem mediana de métodos diferentes. Os 3 método(s) de verificação abaixo são calculados para comparação e NÃO entram na conta. Mesmo número da coluna Preço Justo do Radar, gerado pela mesma fonte (analise/tetos.json). Ver METODOLOGIA_ANALISE.md seção 31."
+      "nota": "Método ÚNICO: P/L. O preço justo é o fundamento projetado multiplicado pelo múltiplo que a empresa deve negociar — não é média nem mediana de métodos diferentes. Os 3 método(s) de verificação abaixo são calculados para comparação e NÃO entram na conta. Mesmo número da coluna Preço Justo do Radar, gerado pela mesma fonte (analise/tetos.json). Ver METODOLOGIA_ANALISE.md seção 31.",
+      "cenariosLpa": {
+        "multiplo": "8,49x",
+        "fundamento": "LPA",
+        "base": "R$ 0,21 bi (exercício fechado de 2025)",
+        "cenarios": [
+          {
+            "cenario": "Conservador",
+            "crescimento": "+0,0%",
+            "lpa": "R$ 0,57",
+            "precoJusto": "R$ 4,88",
+            "premissa": "crescimento ZERO — a empresa repete o resultado-base, sem supor deterioração nem avanço"
+          },
+          {
+            "cenario": "Base",
+            "crescimento": "+4,3%",
+            "lpa": "R$ 0,60",
+            "precoJusto": "R$ 5,09",
+            "premissa": "lucro de 2026 declarado no relatório — Cenário BASE do relatório de 24/08/2026 (LPA R$ 0,55). A faixa vai de R$ 205 mi (conservador) a R$ 232 mi (otimista)."
+          },
+          {
+            "cenario": "Otimista",
+            "crescimento": "+6,5%",
+            "lpa": "R$ 0,61",
+            "precoJusto": "R$ 5,19",
+            "premissa": "a taxa do base vezes 1,5, limitada ao teto de 25% — premissa declarada, não calibração"
+          }
+        ]
+      },
+      "leituraDados": [
+        "Rentabilidade razoável: ROE mediano de 15,1%.",
+        "ROE em MELHORA de 4,6 p.p. entre o início e o fim da série.",
+        "Alavancagem confortável: 0,5x EBITDA.",
+        "Lucro CRESCENTE ou estável em todos os 5 exercícios da série.",
+        "⚠️ QUEBRA DE SÉRIE em 2022: houve evento societário, e os exercícios anteriores descrevem uma empresa com outra base acionária. Toda média histórica desta linha usa só os anos a partir dali."
+      ]
     },
     "retornoTotal": {
       "doze": {
@@ -3060,6 +3135,9 @@ tbody tr:nth-child(n){animation-delay:calc(var(--i,0)*0.02s);}
       "nota": "Lucro Estimado da tabela do Radar foi deixado como \"—\" (não travado num número único) porque a divergência entre o guidance de dividendos e o run-rate de lucro normalizado (Teste 3) torna qualquer projeção pontual de lucro 2026 prematura sem o fechamento do 3T26/4T26. Preferimos expor a faixa de cenários a inventar um ponto único."
     },
     "valuation": {
+      "regraMetodo": "P/L",
+      "regraPorque": "Caso geral: o lucro é a medida do que o negócio entrega ao acionista, e o P/L é o preço que o mercado paga por ele. Os múltiplos de EV entram só onde a dívida financia o ativo operacional e distorce a comparação por lucro.",
+      "regraGrupo": "UTIL",
       "criterio": "P/L",
       "metodos": [
         {
@@ -3087,7 +3165,41 @@ tbody tr:nth-child(n){animation-delay:calc(var(--i,0)*0.02s);}
           "precoJusto": "R$ 24,06"
         }
       ],
-      "nota": "Método ÚNICO: P/L. O preço justo é o fundamento projetado multiplicado pelo múltiplo que a empresa deve negociar — não é média nem mediana de métodos diferentes. Os 4 método(s) de verificação abaixo são calculados para comparação e NÃO entram na conta. Mesmo número da coluna Preço Justo do Radar, gerado pela mesma fonte (analise/tetos.json). Ver METODOLOGIA_ANALISE.md seção 31."
+      "nota": "Método ÚNICO: P/L. O preço justo é o fundamento projetado multiplicado pelo múltiplo que a empresa deve negociar — não é média nem mediana de métodos diferentes. Os 4 método(s) de verificação abaixo são calculados para comparação e NÃO entram na conta. Mesmo número da coluna Preço Justo do Radar, gerado pela mesma fonte (analise/tetos.json). Ver METODOLOGIA_ANALISE.md seção 31.",
+      "cenariosLpa": {
+        "multiplo": "11,16x",
+        "fundamento": "LPA",
+        "base": "R$ 4,31 bi (exercício fechado de 2025)",
+        "cenarios": [
+          {
+            "cenario": "Conservador",
+            "crescimento": "+0,0%",
+            "lpa": "R$ 1,78",
+            "precoJusto": "R$ 19,86",
+            "premissa": "crescimento ZERO — a empresa repete o resultado-base, sem supor deterioração nem avanço"
+          },
+          {
+            "cenario": "Base",
+            "crescimento": "+15,5%",
+            "lpa": "R$ 2,06",
+            "precoJusto": "R$ 22,95",
+            "premissa": "CAGR do lucro recorrente por regressão log"
+          },
+          {
+            "cenario": "Otimista",
+            "crescimento": "+23,3%",
+            "lpa": "R$ 2,19",
+            "precoJusto": "R$ 24,50",
+            "premissa": "a taxa do base vezes 1,5, limitada ao teto de 25% — premissa declarada, não calibração"
+          }
+        ]
+      },
+      "leituraDados": [
+        "Rentabilidade razoável: ROE mediano de 12,3%.",
+        "ROE em MELHORA de 8,1 p.p. entre o início e o fim da série.",
+        "CAIXA LÍQUIDO: a empresa tem mais caixa que dívida (-0,1x EBITDA).",
+        "Payout alto (80%) — perfil de renda, crescimento limitado pela retenção baixa."
+      ]
     },
     "retornoTotal": {
       "doze": {
@@ -3424,6 +3536,9 @@ tbody tr:nth-child(n){animation-delay:calc(var(--i,0)*0.02s);}
       "nota": "Todos os cenários assumem câmbio USD/BRL constante — risco relevante não capturado (ver Riscos)."
     },
     "valuation": {
+      "regraMetodo": "P/L",
+      "regraPorque": "Banco ganha no spread de crédito e o lucro é a medida direta disso. EV não se aplica: o passivo é a matéria-prima (depósito), não alavancagem.",
+      "regraGrupo": "FIN",
       "criterio": "P/L",
       "metodos": [
         {
@@ -3434,7 +3549,12 @@ tbody tr:nth-child(n){animation-delay:calc(var(--i,0)*0.02s);}
       "origemMult": "a média entre o P/L mediano da própria empresa ao longo de 1 anos (7,50x) e o dos 6 pares do grupo FIN (9,23x)",
       "precoJusto": "R$ 6,27",
       "verificacao": [],
-      "nota": "Método ÚNICO: P/L. O preço justo é o fundamento projetado multiplicado pelo múltiplo que a empresa deve negociar — não é média nem mediana de métodos diferentes. Mesmo número da coluna Preço Justo do Radar, gerado pela mesma fonte (analise/tetos.json). Ver METODOLOGIA_ANALISE.md seção 31."
+      "nota": "Método ÚNICO: P/L. O preço justo é o fundamento projetado multiplicado pelo múltiplo que a empresa deve negociar — não é média nem mediana de métodos diferentes. Mesmo número da coluna Preço Justo do Radar, gerado pela mesma fonte (analise/tetos.json). Ver METODOLOGIA_ANALISE.md seção 31.",
+      "leituraDados": [
+        "Rentabilidade ALTA: ROE mediano de 33,0% em 1 exercícios. Retorno sobre capital nesse patamar costuma indicar vantagem competitiva ou alavancagem — vale distinguir qual.",
+        "Alavancagem não se aplica: em banco e seguradora o passivo é a matéria-prima do negócio, não dívida.",
+        "Payout baixo (0%): retém para crescer. O retorno tem que vir da valorização, não do dividendo."
+      ]
     },
     "retornoTotal": {
       "doze": {
@@ -3716,6 +3836,9 @@ tbody tr:nth-child(n){animation-delay:calc(var(--i,0)*0.02s);}
       "nota": "LPA base 2025 = R$4,98 (R$5,74bi ÷ 1.152.254.440 ações)."
     },
     "valuation": {
+      "regraMetodo": "P/L",
+      "regraPorque": "Caso geral: o lucro é a medida do que o negócio entrega ao acionista, e o P/L é o preço que o mercado paga por ele. Os múltiplos de EV entram só onde a dívida financia o ativo operacional e distorce a comparação por lucro.",
+      "regraGrupo": "UTIL",
       "criterio": "P/L",
       "metodos": [
         {
@@ -3743,7 +3866,42 @@ tbody tr:nth-child(n){animation-delay:calc(var(--i,0)*0.02s);}
           "precoJusto": "R$ 47,52"
         }
       ],
-      "nota": "Método ÚNICO: P/L. O preço justo é o fundamento projetado multiplicado pelo múltiplo que a empresa deve negociar — não é média nem mediana de métodos diferentes. Os 4 método(s) de verificação abaixo são calculados para comparação e NÃO entram na conta. Mesmo número da coluna Preço Justo do Radar, gerado pela mesma fonte (analise/tetos.json). Ver METODOLOGIA_ANALISE.md seção 31."
+      "nota": "Método ÚNICO: P/L. O preço justo é o fundamento projetado multiplicado pelo múltiplo que a empresa deve negociar — não é média nem mediana de métodos diferentes. Os 4 método(s) de verificação abaixo são calculados para comparação e NÃO entram na conta. Mesmo número da coluna Preço Justo do Radar, gerado pela mesma fonte (analise/tetos.json). Ver METODOLOGIA_ANALISE.md seção 31.",
+      "cenariosLpa": {
+        "multiplo": "8,31x",
+        "fundamento": "LPA",
+        "base": "R$ 5,74 bi (exercício fechado de 2025)",
+        "cenarios": [
+          {
+            "cenario": "Conservador",
+            "crescimento": "+0,0%",
+            "lpa": "R$ 4,98",
+            "precoJusto": "R$ 41,42",
+            "premissa": "crescimento ZERO — a empresa repete o resultado-base, sem supor deterioração nem avanço"
+          },
+          {
+            "cenario": "Base",
+            "crescimento": "+3,1%",
+            "lpa": "R$ 5,14",
+            "precoJusto": "R$ 42,71",
+            "premissa": "CAGR do lucro recorrente por regressão log"
+          },
+          {
+            "cenario": "Otimista",
+            "crescimento": "+4,7%",
+            "lpa": "R$ 5,22",
+            "precoJusto": "R$ 43,36",
+            "premissa": "a taxa do base vezes 1,5, limitada ao teto de 25% — premissa declarada, não calibração"
+          }
+        ]
+      },
+      "leituraDados": [
+        "Rentabilidade ALTA: ROE mediano de 28,5% em 6 exercícios. Retorno sobre capital nesse patamar costuma indicar vantagem competitiva ou alavancagem — vale distinguir qual.",
+        "ROE em DETERIORAÇÃO de 6,1 p.p. entre o início e o fim da série.",
+        "Alavancagem moderada: 2,0x EBITDA — acompanhar.",
+        "Lucro CRESCENTE ou estável em todos os 6 exercícios da série.",
+        "Payout alto (69%) — perfil de renda, crescimento limitado pela retenção baixa."
+      ]
     },
     "retornoTotal": {
       "doze": {
@@ -4048,6 +4206,9 @@ tbody tr:nth-child(n){animation-delay:calc(var(--i,0)*0.02s);}
       "nota": "Cenário base usado nos cálculos de retorno de 5 anos (g=5%/ano) é conservador frente ao ROE histórico da empresa, para não embutir continuidade automática do pico do ciclo."
     },
     "valuation": {
+      "regraMetodo": "P/L",
+      "regraPorque": "Caso geral: o lucro é a medida do que o negócio entrega ao acionista, e o P/L é o preço que o mercado paga por ele. Os múltiplos de EV entram só onde a dívida financia o ativo operacional e distorce a comparação por lucro.",
+      "regraGrupo": "IND",
       "criterio": "P/L",
       "metodos": [
         {
@@ -4075,7 +4236,41 @@ tbody tr:nth-child(n){animation-delay:calc(var(--i,0)*0.02s);}
           "precoJusto": "R$ 36,09"
         }
       ],
-      "nota": "Método ÚNICO: P/L. O preço justo é o fundamento projetado multiplicado pelo múltiplo que a empresa deve negociar — não é média nem mediana de métodos diferentes. Os 4 método(s) de verificação abaixo são calculados para comparação e NÃO entram na conta. Mesmo número da coluna Preço Justo do Radar, gerado pela mesma fonte (analise/tetos.json). Ver METODOLOGIA_ANALISE.md seção 31."
+      "nota": "Método ÚNICO: P/L. O preço justo é o fundamento projetado multiplicado pelo múltiplo que a empresa deve negociar — não é média nem mediana de métodos diferentes. Os 4 método(s) de verificação abaixo são calculados para comparação e NÃO entram na conta. Mesmo número da coluna Preço Justo do Radar, gerado pela mesma fonte (analise/tetos.json). Ver METODOLOGIA_ANALISE.md seção 31.",
+      "cenariosLpa": {
+        "multiplo": "7,41x",
+        "fundamento": "LPA",
+        "base": "R$ 0,61 bi (exercício fechado de 2025)",
+        "cenarios": [
+          {
+            "cenario": "Conservador",
+            "crescimento": "+0,0%",
+            "lpa": "R$ 4,49",
+            "precoJusto": "R$ 33,28",
+            "premissa": "crescimento ZERO — a empresa repete o resultado-base, sem supor deterioração nem avanço"
+          },
+          {
+            "cenario": "Base",
+            "crescimento": "+0,3%",
+            "lpa": "R$ 4,50",
+            "precoJusto": "R$ 33,37",
+            "premissa": "CAGR do lucro recorrente por regressão log"
+          },
+          {
+            "cenario": "Otimista",
+            "crescimento": "+0,4%",
+            "lpa": "R$ 4,51",
+            "precoJusto": "R$ 33,42",
+            "premissa": "a taxa do base vezes 1,5, limitada ao teto de 25% — premissa declarada, não calibração"
+          }
+        ]
+      },
+      "leituraDados": [
+        "Rentabilidade ALTA: ROE mediano de 54,3% em 6 exercícios. Retorno sobre capital nesse patamar costuma indicar vantagem competitiva ou alavancagem — vale distinguir qual.",
+        "ROE em MELHORA de 38,0 p.p. entre o início e o fim da série.",
+        "Alavancagem confortável: 1,0x EBITDA.",
+        "Payout alto (86%) — perfil de renda, crescimento limitado pela retenção baixa."
+      ]
     },
     "retornoTotal": {
       "doze": {
@@ -4369,6 +4564,9 @@ tbody tr:nth-child(n){animation-delay:calc(var(--i,0)*0.02s);}
       "nota": "Faixa de sensibilidade de múltiplo (5,0x-6,0x) mantida explicitamente como resultado, em vez de um número único — dispersão de 35,1% está no limite superior do que a metodologia considera 'convergência moderada', beirando 'alta divergência'."
     },
     "valuation": {
+      "regraMetodo": "EV/EBITDA sobre a média do ciclo",
+      "regraPorque": "Cíclica de commodity tem lucro de UM ano que é fundo ou pico, nunca capacidade normal — a KLBN11 saiu com LPA de R$ 0,09 no fundo da celulose. Multiplicar isso por um múltiplo trata ano ruim como normalidade. O EBITDA médio de seis anos atravessa o ciclo, e o EV inclui a dívida, que em cíclica alavancada é metade da história.",
+      "regraGrupo": "CICL",
       "criterio": "EV/EBITDA",
       "metodos": [
         {
@@ -4396,7 +4594,40 @@ tbody tr:nth-child(n){animation-delay:calc(var(--i,0)*0.02s);}
           "precoJusto": "R$ 8,84"
         }
       ],
-      "nota": "Método ÚNICO: EV/EBITDA. O preço justo é o fundamento projetado multiplicado pelo múltiplo que a empresa deve negociar — não é média nem mediana de métodos diferentes. Os 4 método(s) de verificação abaixo são calculados para comparação e NÃO entram na conta. Mesmo número da coluna Preço Justo do Radar, gerado pela mesma fonte (analise/tetos.json). Ver METODOLOGIA_ANALISE.md seção 31."
+      "nota": "Método ÚNICO: EV/EBITDA. O preço justo é o fundamento projetado multiplicado pelo múltiplo que a empresa deve negociar — não é média nem mediana de métodos diferentes. Os 4 método(s) de verificação abaixo são calculados para comparação e NÃO entram na conta. Mesmo número da coluna Preço Justo do Radar, gerado pela mesma fonte (analise/tetos.json). Ver METODOLOGIA_ANALISE.md seção 31.",
+      "cenariosLpa": {
+        "multiplo": "5,50x",
+        "fundamento": "EBITDA (fixo)",
+        "base": "R$ 0,60 bi (EBITDA médio de 6 anos do ciclo) — NÃO é projetado: a média do ciclo já atravessa pico e fundo",
+        "cenarios": [
+          {
+            "cenario": "Conservador",
+            "crescimento": "5,00x",
+            "lpa": "R$ 0,60 bi",
+            "precoJusto": "R$ 7,96",
+            "premissa": "múltiplo de 5,00x — a faixa sensibilizada no relatório desta empresa, ponta baixa: o ciclo comprime e o mercado paga menos pelo mesmo EBITDA"
+          },
+          {
+            "cenario": "Base",
+            "crescimento": "5,50x",
+            "lpa": "R$ 0,60 bi",
+            "precoJusto": "R$ 9,21",
+            "premissa": "o múltiplo que o preço justo usa (5,50x)"
+          },
+          {
+            "cenario": "Otimista",
+            "crescimento": "6,00x",
+            "lpa": "R$ 0,60 bi",
+            "precoJusto": "R$ 10,46",
+            "premissa": "múltiplo de 6,00x — a faixa sensibilizada no relatório desta empresa, ponta alta: o ciclo vira e o mercado paga o topo do que já pagou"
+          }
+        ]
+      },
+      "leituraDados": [
+        "Rentabilidade ALTA: ROE mediano de 30,4% em 6 exercícios. Retorno sobre capital nesse patamar costuma indicar vantagem competitiva ou alavancagem — vale distinguir qual.",
+        "ROE em DETERIORAÇÃO de 20,4 p.p. entre o início e o fim da série.",
+        "Alavancagem confortável: 2,0x EBITDA."
+      ]
     },
     "retornoTotal": {
       "doze": {
@@ -4798,6 +5029,9 @@ tbody tr:nth-child(n){animation-delay:calc(var(--i,0)*0.02s);}
       "nota": "⚠️ Não há guidance numérico oficial da empresa nem consenso de mercado formal (Bloomberg/Refinitiv) localizado nesta pesquisa — os três cenários são estimativa própria a partir do lucro gerencial de 2025 (R$4,3bi) e do crescimento financeiro padrão da metodologia (g=8%), sensibilizado para cima/baixo pelo risco regulatório do Bloco 8."
     },
     "valuation": {
+      "regraMetodo": "P/L",
+      "regraPorque": "Seguradora ganha na subscrição e no float, e o lucro captura os dois. Como em banco, EV/EBITDA não se aplica — a provisão técnica é insumo, não dívida. Desde 14/09/2026 seguradora tem grupo de pares PRÓPRIO: o ciclo de uma seguradora não é o de um banco.",
+      "regraGrupo": "SEG",
       "criterio": "P/L",
       "metodos": [
         {
@@ -4817,7 +5051,42 @@ tbody tr:nth-child(n){animation-delay:calc(var(--i,0)*0.02s);}
           "precoJusto": "R$ 20,47"
         }
       ],
-      "nota": "Método ÚNICO: P/L. O preço justo é o fundamento projetado multiplicado pelo múltiplo que a empresa deve negociar — não é média nem mediana de métodos diferentes. Os 2 método(s) de verificação abaixo são calculados para comparação e NÃO entram na conta. Mesmo número da coluna Preço Justo do Radar, gerado pela mesma fonte (analise/tetos.json). Ver METODOLOGIA_ANALISE.md seção 31."
+      "nota": "Método ÚNICO: P/L. O preço justo é o fundamento projetado multiplicado pelo múltiplo que a empresa deve negociar — não é média nem mediana de métodos diferentes. Os 2 método(s) de verificação abaixo são calculados para comparação e NÃO entram na conta. Mesmo número da coluna Preço Justo do Radar, gerado pela mesma fonte (analise/tetos.json). Ver METODOLOGIA_ANALISE.md seção 31.",
+      "cenariosLpa": {
+        "multiplo": "9,98x",
+        "fundamento": "LPA",
+        "base": "R$ 4,29 bi (exercício fechado de 2025)",
+        "cenarios": [
+          {
+            "cenario": "Conservador",
+            "crescimento": "+0,0%",
+            "lpa": "R$ 1,43",
+            "precoJusto": "R$ 14,25",
+            "premissa": "crescimento ZERO — a empresa repete o resultado-base, sem supor deterioração nem avanço"
+          },
+          {
+            "cenario": "Base",
+            "crescimento": "+8,1%",
+            "lpa": "R$ 1,54",
+            "precoJusto": "R$ 15,41",
+            "premissa": "lucro de 2026 declarado no relatório — Cenário BASE do relatório de 25/08/2026: crescimento financeiro de 8% a.a. sem novo choque regulatório. ⚠️ Não há guidance numérico oficial da…"
+          },
+          {
+            "cenario": "Otimista",
+            "crescimento": "+12,2%",
+            "lpa": "R$ 1,60",
+            "precoJusto": "R$ 15,99",
+            "premissa": "a taxa do base vezes 1,5, limitada ao teto de 25% — premissa declarada, não calibração"
+          }
+        ]
+      },
+      "leituraDados": [
+        "Rentabilidade ALTA: ROE mediano de 29,2% em 6 exercícios. Retorno sobre capital nesse patamar costuma indicar vantagem competitiva ou alavancagem — vale distinguir qual.",
+        "ROE em MELHORA de 10,0 p.p. entre o início e o fim da série.",
+        "CAIXA LÍQUIDO: a empresa tem mais caixa que dívida (-0,3x EBITDA).",
+        "Lucro CRESCENTE ou estável em todos os 6 exercícios da série.",
+        "Payout alto (80%) — perfil de renda, crescimento limitado pela retenção baixa."
+      ]
     },
     "retornoTotal": {
       "doze": {
@@ -5132,6 +5401,9 @@ tbody tr:nth-child(n){animation-delay:calc(var(--i,0)*0.02s);}
       "nota": "Os 3 cenários usam diretamente o guidance oficial da empresa (resultado operacional consolidado -7% a -3% para 2026) — o cenário base coincide com o consenso de mercado informal (AUVP Analítica), o que dá razoável confiança a esta faixa."
     },
     "valuation": {
+      "regraMetodo": "P/L",
+      "regraPorque": "Seguradora ganha na subscrição e no float, e o lucro captura os dois. Como em banco, EV/EBITDA não se aplica — a provisão técnica é insumo, não dívida. Desde 14/09/2026 seguradora tem grupo de pares PRÓPRIO: o ciclo de uma seguradora não é o de um banco.",
+      "regraGrupo": "SEG",
       "criterio": "P/L",
       "metodos": [
         {
@@ -5147,7 +5419,42 @@ tbody tr:nth-child(n){animation-delay:calc(var(--i,0)*0.02s);}
           "precoJusto": "R$ 34,69"
         }
       ],
-      "nota": "Método ÚNICO: P/L. O preço justo é o fundamento projetado multiplicado pelo múltiplo que a empresa deve negociar — não é média nem mediana de métodos diferentes. Os 1 método(s) de verificação abaixo são calculados para comparação e NÃO entram na conta. Mesmo número da coluna Preço Justo do Radar, gerado pela mesma fonte (analise/tetos.json). Ver METODOLOGIA_ANALISE.md seção 31."
+      "nota": "Método ÚNICO: P/L. O preço justo é o fundamento projetado multiplicado pelo múltiplo que a empresa deve negociar — não é média nem mediana de métodos diferentes. Os 1 método(s) de verificação abaixo são calculados para comparação e NÃO entram na conta. Mesmo número da coluna Preço Justo do Radar, gerado pela mesma fonte (analise/tetos.json). Ver METODOLOGIA_ANALISE.md seção 31.",
+      "cenariosLpa": {
+        "multiplo": "8,56x",
+        "fundamento": "LPA",
+        "base": "R$ 9,02 bi (exercício fechado de 2025)",
+        "cenarios": [
+          {
+            "cenario": "Conservador",
+            "crescimento": "+0,0%",
+            "lpa": "R$ 4,51",
+            "precoJusto": "R$ 38,59",
+            "premissa": "crescimento ZERO — a empresa repete o resultado-base, sem supor deterioração nem avanço"
+          },
+          {
+            "cenario": "Base",
+            "crescimento": "-4,1%",
+            "lpa": "R$ 4,32",
+            "precoJusto": "R$ 37,02",
+            "premissa": "lucro de 2026 declarado no relatório — Cenário BASE do relatório de 25/08/2026, que usa o guidance oficial da companhia (resultado operacional consolidado −7% a −3% para 2026; o base é o…"
+          },
+          {
+            "cenario": "Otimista",
+            "crescimento": "-2,7%",
+            "lpa": "R$ 4,39",
+            "precoJusto": "R$ 37,54",
+            "premissa": "a taxa do base vezes 1,5, limitada ao teto de 25% — premissa declarada, não calibração"
+          }
+        ]
+      },
+      "leituraDados": [
+        "Rentabilidade ALTA: ROE mediano de 79,1% em 6 exercícios. Retorno sobre capital nesse patamar costuma indicar vantagem competitiva ou alavancagem — vale distinguir qual.",
+        "ROE em MELHORA de 15,7 p.p. entre o início e o fim da série.",
+        "Alavancagem não se aplica: em banco e seguradora o passivo é a matéria-prima do negócio, não dívida.",
+        "Lucro CRESCENTE ou estável em todos os 6 exercícios da série.",
+        "Payout alto (71%) — perfil de renda, crescimento limitado pela retenção baixa."
+      ]
     },
     "retornoTotal": {
       "doze": {
@@ -5461,6 +5768,9 @@ tbody tr:nth-child(n){animation-delay:calc(var(--i,0)*0.02s);}
       "nota": "⚠️ Não projetamos um cenário-base único: a divergência contábil vs. gerencial do 2T26 (Descobertas) torna qualquer ponto médio pouco confiável. Também não há guidance numérico oficial da empresa nem consenso de mercado formal localizado nesta pesquisa. Os extremos conservador/otimista acima ilustram a amplitude real da incerteza, não uma previsão."
     },
     "valuation": {
+      "regraMetodo": "P/L",
+      "regraPorque": "Seguradora ganha na subscrição e no float, e o lucro captura os dois. Como em banco, EV/EBITDA não se aplica — a provisão técnica é insumo, não dívida. Desde 14/09/2026 seguradora tem grupo de pares PRÓPRIO: o ciclo de uma seguradora não é o de um banco.",
+      "regraGrupo": "SEG",
       "criterio": "P/L",
       "metodos": [
         {
@@ -5476,7 +5786,43 @@ tbody tr:nth-child(n){animation-delay:calc(var(--i,0)*0.02s);}
           "precoJusto": "R$ 53,26"
         }
       ],
-      "nota": "Método ÚNICO: P/L. O preço justo é o fundamento projetado multiplicado pelo múltiplo que a empresa deve negociar — não é média nem mediana de métodos diferentes. Os 1 método(s) de verificação abaixo são calculados para comparação e NÃO entram na conta. Mesmo número da coluna Preço Justo do Radar, gerado pela mesma fonte (analise/tetos.json). Ver METODOLOGIA_ANALISE.md seção 31."
+      "nota": "Método ÚNICO: P/L. O preço justo é o fundamento projetado multiplicado pelo múltiplo que a empresa deve negociar — não é média nem mediana de métodos diferentes. Os 1 método(s) de verificação abaixo são calculados para comparação e NÃO entram na conta. Mesmo número da coluna Preço Justo do Radar, gerado pela mesma fonte (analise/tetos.json). Ver METODOLOGIA_ANALISE.md seção 31.",
+      "cenariosLpa": {
+        "multiplo": "8,52x",
+        "fundamento": "LPA",
+        "base": "R$ 0,39 bi (exercício fechado de 2025)",
+        "cenarios": [
+          {
+            "cenario": "Conservador",
+            "crescimento": "+0,0%",
+            "lpa": "R$ 4,78",
+            "precoJusto": "R$ 40,70",
+            "premissa": "crescimento ZERO — a empresa repete o resultado-base, sem supor deterioração nem avanço"
+          },
+          {
+            "cenario": "Base",
+            "crescimento": "-15,6%",
+            "lpa": "R$ 4,03",
+            "precoJusto": "R$ 34,36",
+            "premissa": "lucro de 2026 declarado no relatório — Cenário CONSERVADOR do relatório de 25/08/2026 — e é o único disponível: o próprio relatório se recusa a publicar um cenário base, porque a…"
+          },
+          {
+            "cenario": "Otimista",
+            "crescimento": "-10,4%",
+            "lpa": "R$ 4,28",
+            "precoJusto": "R$ 36,47",
+            "premissa": "a taxa do base vezes 1,5, limitada ao teto de 25% — premissa declarada, não calibração"
+          }
+        ]
+      },
+      "leituraDados": [
+        "⚠️ Rentabilidade BAIXA: ROE mediano de 4,5% em 5 exercícios — abaixo do custo de capital de boa parte do mercado.",
+        "ROE em MELHORA de 15,8 p.p. entre o início e o fim da série.",
+        "Alavancagem não se aplica: em banco e seguradora o passivo é a matéria-prima do negócio, não dívida.",
+        "⚠️ PREJUÍZO em 2 exercício(s) da série (2022, 2023). Múltiplo sobre lucro não descreve empresa que já deu prejuízo na janela.",
+        "Payout alto (71%) — perfil de renda, crescimento limitado pela retenção baixa.",
+        "⚠️ QUEBRA DE SÉRIE em 2022: houve evento societário, e os exercícios anteriores descrevem uma empresa com outra base acionária. Toda média histórica desta linha usa só os anos a partir dali."
+      ]
     },
     "retornoTotal": {
       "doze": {
@@ -5768,6 +6114,9 @@ tbody tr:nth-child(n){animation-delay:calc(var(--i,0)*0.02s);}
       "nota": "Consenso de mercado agregado (Bloomberg/Refinitiv) para 2026 não foi encontrado nesta pesquisa — os 3 cenários são estimativa própria a partir do lucro 2025 e do guidance oficial de carteira/margem financeira."
     },
     "valuation": {
+      "regraMetodo": "P/L",
+      "regraPorque": "Banco ganha no spread de crédito e o lucro é a medida direta disso. EV não se aplica: o passivo é a matéria-prima (depósito), não alavancagem.",
+      "regraGrupo": "FIN",
       "criterio": "P/L",
       "metodos": [
         {
@@ -5783,7 +6132,41 @@ tbody tr:nth-child(n){animation-delay:calc(var(--i,0)*0.02s);}
           "precoJusto": "R$ 36,77"
         }
       ],
-      "nota": "Método ÚNICO: P/L. O preço justo é o fundamento projetado multiplicado pelo múltiplo que a empresa deve negociar — não é média nem mediana de métodos diferentes. Os 1 método(s) de verificação abaixo são calculados para comparação e NÃO entram na conta. Mesmo número da coluna Preço Justo do Radar, gerado pela mesma fonte (analise/tetos.json). Ver METODOLOGIA_ANALISE.md seção 31."
+      "nota": "Método ÚNICO: P/L. O preço justo é o fundamento projetado multiplicado pelo múltiplo que a empresa deve negociar — não é média nem mediana de métodos diferentes. Os 1 método(s) de verificação abaixo são calculados para comparação e NÃO entram na conta. Mesmo número da coluna Preço Justo do Radar, gerado pela mesma fonte (analise/tetos.json). Ver METODOLOGIA_ANALISE.md seção 31.",
+      "cenariosLpa": {
+        "multiplo": "9,08x",
+        "fundamento": "LPA",
+        "base": "R$ 45,85 bi (exercício fechado de 2025)",
+        "cenarios": [
+          {
+            "cenario": "Conservador",
+            "crescimento": "+0,0%",
+            "lpa": "R$ 4,68",
+            "precoJusto": "R$ 42,51",
+            "premissa": "crescimento ZERO — a empresa repete o resultado-base, sem supor deterioração nem avanço"
+          },
+          {
+            "cenario": "Base",
+            "crescimento": "+10,4%",
+            "lpa": "R$ 5,17",
+            "precoJusto": "R$ 46,91",
+            "premissa": "lucro de 2026 declarado no relatório — Cenário BASE do relatório de 25/08/2026: crescimento financeiro padrão de 8% a.a. sobre o lucro RECORRENTE de 2025. O conservador (piso do guidance…"
+          },
+          {
+            "cenario": "Otimista",
+            "crescimento": "+15,5%",
+            "lpa": "R$ 5,41",
+            "precoJusto": "R$ 49,11",
+            "premissa": "a taxa do base vezes 1,5, limitada ao teto de 25% — premissa declarada, não calibração"
+          }
+        ]
+      },
+      "leituraDados": [
+        "Rentabilidade razoável: ROE mediano de 19,0%.",
+        "ROE em MELHORA de 3,9 p.p. entre o início e o fim da série.",
+        "Alavancagem não se aplica: em banco e seguradora o passivo é a matéria-prima do negócio, não dívida.",
+        "Lucro CRESCENTE ou estável em todos os 6 exercícios da série."
+      ]
     },
     "retornoTotal": {
       "doze": {
@@ -6060,6 +6443,9 @@ tbody tr:nth-child(n){animation-delay:calc(var(--i,0)*0.02s);}
       "nota": "⚠️ Guidance numérico oficial da companhia para 2026/2027 não encontrado no release do 2T26. Cenários construídos a partir do EBITDA recorrente projetado pela XP (R$4,4bi) e do EBITDA trimestral anualizado (R$1,27bi × 4 ≈ R$5,08bi) — pequena divergência entre as duas bases, tratada como faixa."
     },
     "valuation": {
+      "regraMetodo": "P/L",
+      "regraPorque": "Caso geral: o lucro é a medida do que o negócio entrega ao acionista, e o P/L é o preço que o mercado paga por ele. Os múltiplos de EV entram só onde a dívida financia o ativo operacional e distorce a comparação por lucro.",
+      "regraGrupo": "UTIL",
       "criterio": "P/L",
       "metodos": [
         {
@@ -6070,7 +6456,40 @@ tbody tr:nth-child(n){animation-delay:calc(var(--i,0)*0.02s);}
       "origemMult": "a média entre o P/L mediano da própria empresa ao longo de 1 anos (9,21x) e o dos 6 pares do grupo UTIL (8,57x)",
       "precoJusto": "R$ 15,19",
       "verificacao": [],
-      "nota": "Método ÚNICO: P/L. O preço justo é o fundamento projetado multiplicado pelo múltiplo que a empresa deve negociar — não é média nem mediana de métodos diferentes. Mesmo número da coluna Preço Justo do Radar, gerado pela mesma fonte (analise/tetos.json). Ver METODOLOGIA_ANALISE.md seção 31."
+      "nota": "Método ÚNICO: P/L. O preço justo é o fundamento projetado multiplicado pelo múltiplo que a empresa deve negociar — não é média nem mediana de métodos diferentes. Mesmo número da coluna Preço Justo do Radar, gerado pela mesma fonte (analise/tetos.json). Ver METODOLOGIA_ANALISE.md seção 31.",
+      "cenariosLpa": {
+        "multiplo": "8,89x",
+        "fundamento": "LPA",
+        "base": "R$ 1,46 bi (exercício fechado de 2025)",
+        "cenarios": [
+          {
+            "cenario": "Conservador",
+            "crescimento": "+0,0%",
+            "lpa": "R$ 2,04",
+            "precoJusto": "R$ 18,17",
+            "premissa": "crescimento ZERO — a empresa repete o resultado-base, sem supor deterioração nem avanço"
+          },
+          {
+            "cenario": "Base",
+            "crescimento": "-16,4%",
+            "lpa": "R$ 1,71",
+            "precoJusto": "R$ 15,20",
+            "premissa": "CAGR do lucro recorrente por regressão log"
+          },
+          {
+            "cenario": "Otimista",
+            "crescimento": "-10,9%",
+            "lpa": "R$ 1,82",
+            "precoJusto": "R$ 16,19",
+            "premissa": "a taxa do base vezes 1,5, limitada ao teto de 25% — premissa declarada, não calibração"
+          }
+        ]
+      },
+      "leituraDados": [
+        "Rentabilidade ALTA: ROE mediano de 23,3% em 6 exercícios. Retorno sobre capital nesse patamar costuma indicar vantagem competitiva ou alavancagem — vale distinguir qual.",
+        "ROE em DETERIORAÇÃO de 10,6 p.p. entre o início e o fim da série.",
+        "Alavancagem moderada: 2,6x EBITDA — acompanhar."
+      ]
     },
     "retornoTotal": {
       "doze": {
@@ -6354,6 +6773,9 @@ tbody tr:nth-child(n){animation-delay:calc(var(--i,0)*0.02s);}
       "nota": "⚠️ Guidance financeiro formal da companhia para 2026 não encontrado. Cenários construídos a partir do NOI 2T26 anualizado (R$529,9mi × 4) e do SSR/pipeline reportados nos releases trimestrais."
     },
     "valuation": {
+      "regraMetodo": "P/FFO",
+      "regraPorque": "Shopping registra o imóvel a CUSTO e o deprecia como se ele se desgastasse. Só que shopping bem administrado não perde valor, ganha — e o peso dessa depreciação depende de política contábil (a ALOS3 deprecia 29% do EBITDA, a MULT3 6%, porque a MULT3 usa valor justo). Lucro líquido de shopping mede contabilidade junto com operação. FFO = lucro + depreciação devolve a despesa que não sai caixa.",
+      "regraGrupo": "SHOP",
       "criterio": "P/FFO",
       "metodos": [
         {
@@ -6377,7 +6799,41 @@ tbody tr:nth-child(n){animation-delay:calc(var(--i,0)*0.02s);}
           "precoJusto": "R$ 34,18"
         }
       ],
-      "nota": "Método ÚNICO: P/FFO. O preço justo é o fundamento projetado multiplicado pelo múltiplo que a empresa deve negociar — não é média nem mediana de métodos diferentes. Os 3 método(s) de verificação abaixo são calculados para comparação e NÃO entram na conta. Mesmo número da coluna Preço Justo do Radar, gerado pela mesma fonte (analise/tetos.json). Ver METODOLOGIA_ANALISE.md seção 31."
+      "nota": "Método ÚNICO: P/FFO. O preço justo é o fundamento projetado multiplicado pelo múltiplo que a empresa deve negociar — não é média nem mediana de métodos diferentes. Os 3 método(s) de verificação abaixo são calculados para comparação e NÃO entram na conta. Mesmo número da coluna Preço Justo do Radar, gerado pela mesma fonte (analise/tetos.json). Ver METODOLOGIA_ANALISE.md seção 31.",
+      "cenariosLpa": {
+        "multiplo": "9,43x",
+        "fundamento": "FFO por ação",
+        "base": "R$ 1,28 bi (FFO do exercício de 2025)",
+        "cenarios": [
+          {
+            "cenario": "Conservador",
+            "crescimento": "+0,0%",
+            "lpa": "R$ 2,46",
+            "precoJusto": "R$ 23,20",
+            "premissa": "crescimento ZERO — a empresa repete o resultado-base, sem supor deterioração nem avanço"
+          },
+          {
+            "cenario": "Base",
+            "crescimento": "+10,3%",
+            "lpa": "R$ 2,71",
+            "precoJusto": "R$ 25,59",
+            "premissa": "regressão log do FFO da própria série (shopping não projeta lucro contábil)"
+          },
+          {
+            "cenario": "Otimista",
+            "crescimento": "+15,4%",
+            "lpa": "R$ 2,84",
+            "precoJusto": "R$ 26,78",
+            "premissa": "a taxa do base vezes 1,5, limitada ao teto de 25% — premissa declarada, não calibração"
+          }
+        ]
+      },
+      "leituraDados": [
+        "Rentabilidade razoável: ROE mediano de 19,0%.",
+        "ROE em MELHORA de 5,9 p.p. entre o início e o fim da série.",
+        "Alavancagem confortável: 1,9x EBITDA.",
+        "⚠️ QUEBRA DE SÉRIE em 2022: houve evento societário, e os exercícios anteriores descrevem uma empresa com outra base acionária. Toda média histórica desta linha usa só os anos a partir dali."
+      ]
     },
     "retornoTotal": {
       "doze": {
@@ -6658,6 +7114,9 @@ tbody tr:nth-child(n){animation-delay:calc(var(--i,0)*0.02s);}
       "nota": "⚠️ Não há guidance oficial da empresa. O cenário otimista replica a projeção da Safra, que pressupõe expansão de ROE muito acima do atual sem confirmação de qualidade de carteira (Bloco 4 vazio) — tratar com cautela."
     },
     "valuation": {
+      "regraMetodo": "P/L",
+      "regraPorque": "Banco ganha no spread de crédito e o lucro é a medida direta disso. EV não se aplica: o passivo é a matéria-prima (depósito), não alavancagem.",
+      "regraGrupo": "FIN",
       "criterio": "P/L",
       "metodos": [
         {
@@ -6673,7 +7132,41 @@ tbody tr:nth-child(n){animation-delay:calc(var(--i,0)*0.02s);}
           "precoJusto": "R$ 76,59"
         }
       ],
-      "nota": "Método ÚNICO: P/L. O preço justo é o fundamento projetado multiplicado pelo múltiplo que a empresa deve negociar — não é média nem mediana de métodos diferentes. Os 1 método(s) de verificação abaixo são calculados para comparação e NÃO entram na conta. Mesmo número da coluna Preço Justo do Radar, gerado pela mesma fonte (analise/tetos.json). Ver METODOLOGIA_ANALISE.md seção 31."
+      "nota": "Método ÚNICO: P/L. O preço justo é o fundamento projetado multiplicado pelo múltiplo que a empresa deve negociar — não é média nem mediana de métodos diferentes. Os 1 método(s) de verificação abaixo são calculados para comparação e NÃO entram na conta. Mesmo número da coluna Preço Justo do Radar, gerado pela mesma fonte (analise/tetos.json). Ver METODOLOGIA_ANALISE.md seção 31.",
+      "cenariosLpa": {
+        "multiplo": "8,70x",
+        "fundamento": "LPA",
+        "base": "R$ 0,64 bi (exercício fechado de 2025)",
+        "cenarios": [
+          {
+            "cenario": "Conservador",
+            "crescimento": "+0,0%",
+            "lpa": "R$ 6,11",
+            "precoJusto": "R$ 53,13",
+            "premissa": "crescimento ZERO — a empresa repete o resultado-base, sem supor deterioração nem avanço"
+          },
+          {
+            "cenario": "Base",
+            "crescimento": "+60,7%",
+            "lpa": "R$ 9,82",
+            "precoJusto": "R$ 85,40",
+            "premissa": "lucro de 2026 declarado no relatório — Cenário BASE do relatório de 25/08/2026: ponto médio entre o g financeiro padrão (8%) e o crescimento implícito pela retenção de capital (ROE ×…"
+          },
+          {
+            "cenario": "Otimista",
+            "crescimento": "+25,0%",
+            "lpa": "R$ 7,63",
+            "precoJusto": "R$ 66,41",
+            "premissa": "a taxa do base vezes 1,5, limitada ao teto de 25% — premissa declarada, não calibração"
+          }
+        ]
+      },
+      "leituraDados": [
+        "Rentabilidade ALTA: ROE mediano de 26,9% em 6 exercícios. Retorno sobre capital nesse patamar costuma indicar vantagem competitiva ou alavancagem — vale distinguir qual.",
+        "ROE em MELHORA de 11,6 p.p. entre o início e o fim da série.",
+        "Alavancagem não se aplica: em banco e seguradora o passivo é a matéria-prima do negócio, não dívida.",
+        "Lucro CRESCENTE ou estável em todos os 6 exercícios da série."
+      ]
     },
     "retornoTotal": {
       "doze": {
@@ -7598,12 +8091,14 @@ function renderReportCompleto(body, r){
     ${secHeader(r)}
     ${secVeredicto(r)}
     ${secTeseRiscos(r)}
+    ${secLeituraDados(r)}
     ${secEncaixeCarteira(r)}
     ${secClassificacao(r)}
     ${secContextoPreco(r)}
     ${secDescobertas(r)}
     ${secProjecaoLucro(r)}
     ${secValuation(r)}
+    ${secRegraMultiplo(r)}
     ${secRetornoTotal(r)}
     ${secDividendos(r)}
     ${secReceita(r)}
@@ -7728,6 +8223,60 @@ function secValuation(r){
         <tbody>${linhasVerif}</tbody>
       </table></div>` : ''}
       ${v.nota ? `<p class="rp-note">${esc(v.nota)}</p>` : ''}
+    </div>`;
+}
+
+// ── 8b · A REGRA DESTA EMPRESA + LPA EM TRÊS CENÁRIOS ─────────────────────────────────────
+// Pedido do usuário: "quero ver o cálculo de múltiplo e a regra que adotamos para cada empresa,
+// e também um detalhamento do LPA projetado considerando 3 cenários". A regra que rege o que
+// entra aqui está escrita no topo de scripts/gerar_relatorio_valuation.py — este render só
+// exibe o que o gerador produziu, para não haver duas definições da mesma coisa.
+function secRegraMultiplo(r){
+  const v = r.valuation; if(!v || !v.regraMetodo) return '';
+  const c = v.cenariosLpa;
+  const linhas = c ? c.cenarios.map(x => `
+    <tr${x.cenario === 'Base' ? ' style="background:#f0fdf6;font-weight:600;"' : ''}>
+      <td class="left">${esc(x.cenario)}</td>
+      <td class="rp-mono">${esc(x.crescimento)}</td>
+      <td class="rp-mono">${esc(x.lpa)}</td>
+      <td class="rp-mono rp-bold">${esc(x.precoJusto)}</td>
+      <td class="left" style="font-size:11px;color:#666;">${esc(x.premissa)}</td>
+    </tr>`).join('') : '';
+  return `
+    <div class="rp-section">
+      <div class="rp-section-title">8b · A regra desta empresa</div>
+      <div class="rp-info-grid">
+        <div class="rp-info-item"><div class="rp-info-label">Método que decide</div><div class="rp-info-value">${esc(v.regraMetodo)}</div></div>
+        <div class="rp-info-item"><div class="rp-info-label">Grupo de pares</div><div class="rp-info-value">${esc(v.regraGrupo)}</div></div>
+      </div>
+      <p class="rp-note" style="margin-top:0.8rem;"><strong>Por que este método:</strong> ${esc(v.regraPorque)}</p>
+      ${v.origemMult ? `<p class="rp-note"><strong>De onde vem o múltiplo:</strong> ${esc(v.origemMult)}.</p>` : ''}
+      ${c ? `
+      <div class="rp-section-title" style="font-size:12px;margin-top:1.2rem;">${/fixo/.test(c.fundamento||'') ? esc(c.fundamento.replace(' (fixo)','')) + ' — três cenários de múltiplo' : esc(c.fundamento||'LPA') + ' projetado 2026 — três cenários'}</div>
+      <p class="rp-note" style="margin-bottom:0.6rem;">Todos partem do mesmo lucro-base (<strong>${esc(c.base)}</strong>)
+         e do mesmo múltiplo (<strong>${esc(c.multiplo)}</strong>). O que muda é só o crescimento.</p>
+      <div class="rp-table-wrap"><table class="rp-table">
+        <thead><tr><th>Cenário</th><th>${/fixo/.test(c.fundamento||'') ? 'Múltiplo' : 'Crescimento'}</th><th>${esc((c.fundamento||'LPA').replace(' (fixo)',''))} 2026</th><th>Preço justo</th><th>Premissa</th></tr></thead>
+        <tbody>${linhas}</tbody>
+      </table></div>` : ''}
+    </div>`;
+}
+
+// ── 2b · LEITURA DOS DADOS ────────────────────────────────────────────────────────────────
+// ⚠️ NÃO É TESE. São fatos do HIST_SEED traduzidos para frase — rentabilidade, alavancagem,
+// consistência do lucro, sustentabilidade do dividendo, quebra de série. O rótulo diz isso,
+// porque dezenove das trinta e três empresas não têm análise escrita e um texto plausível
+// gerado do nada seria pior que a ausência dele.
+function secLeituraDados(r){
+  const v = r.valuation; if(!v || !(v.leituraDados||[]).length) return '';
+  return `
+    <div class="rp-section">
+      <div class="rp-section-title">2b · Leitura dos dados</div>
+      <p class="rp-note" style="margin-bottom:0.6rem;">Derivado da série do HIST_SEED, não é tese de
+         analista — os pontos abaixo são o que os números dizem sozinhos.</p>
+      <ul style="margin:0;padding-left:1.1rem;font-size:12.5px;line-height:1.75;">
+        ${v.leituraDados.map(x => `<li>${esc(x)}</li>`).join('')}
+      </ul>
     </div>`;
 }
 
