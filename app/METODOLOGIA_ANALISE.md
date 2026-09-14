@@ -3392,3 +3392,81 @@ afetar as páginas de carteira.
    conservador, base e otimista saíram os três com R$ 30,07, cada um com o seu múltiplo e o seu
    FFO ao lado, sem que a multiplicação fechasse. Agora ancorado no recuo do nível de topo, com
    `count=1`.
+
+---
+
+## 40. Ações em tesouraria: o LPA NÃO as exclui (14/09/2026)
+
+> "Para o LPA você está considerando retirar as ações que estão na tesouraria?"
+
+**Não.** Vale registrar como isso foi verificado, porque a resposta tem duas metades que
+apontam para lados diferentes.
+
+### 40.1 A prova de que não exclui
+
+O motor não conta ações: ele DERIVA a contagem de `lucro ÷ LPA` da base (`papeis()`), então
+quem decide é a Partnr. Três evidências:
+
+1. **A razão é exata.** Dividindo o lucro do controlador pelo `CONTROLLING_EPS` da ALOS3 nos
+   últimos 8 trimestres, o resultado bate com o `total_shares` de `companies_sharesHistory`
+   com razão **1,0000 em todos os oito** — e dá um degrau exatamente na data em que a
+   contagem muda (542.936.909 → 504.190.947 em 18/09/2025). Não é média ponderada do
+   trimestre, como manda o IAS 33: é divisão pelo número corrente.
+2. **O patrimônio confirma.** `CONTROLLING_SHAREHOLDERS_EQUITY ÷ CONTROLLING_BOOK_VALUE_PER_SHARE`
+   = 12.852.742.000 ÷ 25,4918 = **504.190.947**, o mesmo número.
+3. **A VALE3 fecha o caso.** Ela recompra de forma contínua desde 2021, e a contagem mudou
+   **4 vezes em 4 anos** — só nas datas de CANCELAMENTO. Se a série fosse de ações em
+   circulação, mudaria todo trimestre. É capital social.
+
+E a tesouraria é material: o BPP consolidado da VALE3 em 2026Q2 traz
+**"Ações em Tesouraria: −R$ 13,854 bi"**, contra patrimônio de R$ 201,5 bi.
+
+### 40.2 Mas em 28 dos 34 tickers isso NÃO move o preço justo
+
+O mesmo N aparece nos dois lados da conta e **cancela exatamente**:
+
+```
+múltiplo histórico   = preço × N ÷ lucro          (N no numerador)
+fundamento projetado = lucro ÷ N                  (N no denominador)
+preço justo = (lucro ÷ N) × (preço × N ÷ lucro)   → N some
+```
+
+Simulação com a contagem inflada em 5% de forma consistente (LPA ÷1,05 e P/L, P/VP ×1,05, que
+é o que de fato acontece quando a tesouraria não é excluída): **preço justo idêntico** em 28
+dos 34 tickers, até a segunda casa.
+
+### 40.3 Nos 6 restantes, move — e são justamente os piores casos
+
+| ticker | método | justo hoje | com 5% de tesouraria | Δ |
+|---|---|---|---|---|
+| **VALE3** | EV/EBITDA | R$ 66,75 | R$ 63,57 | **−4,76%** |
+| **PETR4** | EV/EBITDA | R$ 42,94 | R$ 40,90 | **−4,76%** |
+| KLBN11 | EV/EBITDA | R$ 20,17 | R$ 19,21 | −4,76% |
+| RANI3 | EV/EBITDA (declarado) | R$ 9,21 | R$ 8,77 | −4,76% |
+| BRAP4 | Paridade | R$ 19,27 | R$ 18,35 | −4,76% |
+| BPAC11 | P/L | R$ 76,90 | R$ 76,73 | −0,22% |
+
+A razão é estrutural: em **EV/EBITDA o múltiplo é de FIRMA, não por ação** — ele não carrega N,
+então N entra uma vez só, no denominador, e o erro passa inteiro para o preço. O mesmo vale
+para múltiplo DECLARADO (RANI3) e para paridade (BRAP4).
+
+⚠️ **VALE3 e PETR4 são as duas maiores recompradoras da B3.** A exposição está concentrada
+exatamente onde a tesouraria é maior.
+
+### 40.4 E a coluna de LPA do Radar é lida de frente
+
+O cancelamento da seção 40.2 vale para o PREÇO JUSTO, que é um produto. Não vale para os
+números lidos isolados: a coluna **Lucro por Ação**, a **Div. por Ação** e o DY projetado saem
+todos de `lucro ÷ N` e ficam **subestimados na proporção da tesouraria**.
+
+### 40.5 O que falta para corrigir
+
+A conta é trivial (`N_circulação = N_emitidas − N_tesouraria`); o que falta é a **quantidade**
+de ações em tesouraria. O BPP traz o valor em REAIS (custo de aquisição), não o número —
+dividir R$ 13,854 bi por um preço médio de compra desconhecido produziria uma estimativa, e
+estimativa entrando num divisor contamina tudo o que passa por ele.
+
+A quantidade existe no Formulário de Referência e nas notas do ITR. **Decisão pendente do
+usuário**, porque muda o preço justo de 6 tickers: coletar a quantidade e passar a usar ações
+em circulação, ou manter capital social e deixar registrado que os 6 métodos de firma ficam
+conservadores na proporção da tesouraria.
