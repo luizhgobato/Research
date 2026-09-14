@@ -3539,3 +3539,60 @@ capturado — o que falta é a precisão das colunas Lucro por Ação e Div. por
 2. A linha "Ações em Tesouraria" existe em **duas posições** do plano de contas da CVM: sob
    Reservas de Capital (VALE3) e sob Reservas de Lucros (BPAC11, KLBN11). Ler só a primeira
    teria deixado a BPAC11 e a KLBN11 passarem como zero. O coletor soma as duas.
+
+### 39.8 Três ajustes no modelo da ALOS3 (14/09/2026)
+
+> "Faltou uma coluna com FFO total, para eu saber quanto é o total e não somente o LPA"
+> "Não consigo ver como você chegou no crescimento de 7,7, qual o racional?"
+> "No item 8 faltou o LPA dos anos"
+
+**1 · FFO total ao lado do por-ação.** O por-ação esconde a escala: R$ 3,37 não diz se a
+empresa gera R$ 1 bi ou R$ 100 bi. A tabela de cenários passou a seis colunas:
+
+| Cenário | Crescimento | FFO total | FFO por ação | Múltiplo | Preço justo |
+|---|---|---|---|---|---|
+| Conservador | −7,7% | R$ 1,46 bi | R$ 2,88 | 7,52x | R$ 21,70 |
+| Base | +7,7% | R$ 1,70 bi | R$ 3,37 | 8,93x | R$ 30,07 |
+| Otimista | +11,6% | R$ 1,76 bi | R$ 3,49 | 9,96x | R$ 34,75 |
+
+**2 · A conta do crescimento, aberta.** O relatório dizia só *"regressão log do FFO da própria
+série"* — verdade, e não auditável. A taxa é **metade do preço justo** (a outra metade é o
+múltiplo) e aparecia como rodapé de uma linha. Agora tem tabela própria:
+
+| Exercício | FFO | Variação a/a |
+|---|---|---|
+| 2024 | R$ 1,43 bi | — |
+| 2025 | R$ 1,58 bi | +10,44% |
+| 2026 | R$ 1,66 bi | +5,05% |
+| **Taxa aplicada** | **+7,71%** | regressão log |
+
+Com a explicação de por que regressão e não média: média simples de variações superestima
+quando a série oscila (a média de +50% e −50% é 0%, mas quem viveu isso perdeu 25%) e a última
+variação joga a projeção num único ano. Quando a regressão bate no teto de 25%, a célula diz
+o valor bruto e que foi limitado.
+
+**3 · O fundamento por ano na tabela de dividendos.** A coluna "LPA estimado" vinha vazia nos
+5 anos, e sem ela não dá para ver **que fração do resultado está sendo distribuída** — a única
+pergunta que importa numa projeção de dividendo. Agora traz o FFO por ação (projetado à mesma
+taxa do cenário base, não número novo) e o **payout implícito**:
+
+| Ano | FFO por ação | Dividendo | Payout implícito | DY |
+|---|---|---|---|---|
+| 2026E | R$ 3,37 | R$ 2,60 | **77%** | ~10,0% |
+| 2027E | R$ 3,63 | R$ 2,45 | 67% | ~9,4% |
+| 2028E | R$ 3,91 | R$ 2,30 | **59%** | ~8,8% |
+| 2029E | R$ 4,21 | R$ 2,38 | 57% | ~9,1% |
+| 2030E | R$ 4,54 | R$ 2,45 | **54%** | ~9,4% |
+
+⚠️ **E a coluna nova revelou uma inconsistência que estava escondida.** O payout implícito cai
+de 77% para 54% do FFO. O alerta da mesma seção, escrito à mão em 15/08/2026, fala em
+normalizar a **~90% do AFFO** — que, pelos próprios números dele (135% sobre FFO = 152% sobre
+AFFO, logo AFFO ≈ 0,89 × FFO), daria **~80% do FFO**. As duas coisas não fecham: ou os
+dividendos projetados estão baixos, ou a referência de normalização está. O relatório agora
+imprime essa divergência em vez de deixar a coluna vazia e o leitor sem como perceber.
+
+**Bug de implementação:** a troca da tabela procurava a classe `rp-table-wrap`, mas a seção de
+dividendos usa `rp-div-table-wrap` (estilo próprio). `String.replace` não reclama quando não
+casa — devolveu o HTML intacto e a tabela continuou com a coluna vazia, exatamente o que o
+usuário tinha apontado. Falha silenciosa; agora o código compara o resultado e só troca a nota
+de rodapé se a substituição de fato ocorreu.

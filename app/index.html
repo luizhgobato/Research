@@ -1436,6 +1436,37 @@
         "roeHoje": "12,3%",
         "quebra": "Série restrita a partir de 2023 por QUEBRA DE SÉRIE — os anos anteriores descrevem outra empresa (evento societário) e não servem de âncora."
       },
+      "fundamentoPorAno": {
+        "rotulo": "FFO por ação",
+        "taxa": "+7,71%",
+        "linhas": [
+          {
+            "ano": "2026E",
+            "valor": "R$ 3,37",
+            "bruto": 3.37
+          },
+          {
+            "ano": "2027E",
+            "valor": "R$ 3,63",
+            "bruto": 3.629827
+          },
+          {
+            "ano": "2028E",
+            "valor": "R$ 3,91",
+            "bruto": 3.9096866616999995
+          },
+          {
+            "ano": "2029E",
+            "valor": "R$ 4,21",
+            "bruto": 4.2111235033170695
+          },
+          {
+            "ano": "2030E",
+            "valor": "R$ 4,54",
+            "bruto": 4.535801125422815
+          }
+        ]
+      },
       "pares": {
         "grupo": "SHOP",
         "metricaRoe": "FFO ÷ patrimônio",
@@ -1470,11 +1501,38 @@
         "base": "R$ 1,58 bi (FFO do exercício de 2025)",
         "amplitude": "60%",
         "variaMultiplo": true,
+        "origemCrescimento": {
+          "rotulo": "FFO",
+          "linhas": [
+            {
+              "ano": "2024",
+              "valor": "R$ 1,43 bi",
+              "variacao": "—"
+            },
+            {
+              "ano": "2025",
+              "valor": "R$ 1,58 bi",
+              "variacao": "+10,44%"
+            },
+            {
+              "ano": "2026",
+              "valor": "R$ 1,66 bi",
+              "variacao": "+5,05%"
+            }
+          ],
+          "taxa": "+7,71%",
+          "taxaBruta": "+7,71%",
+          "limitado": false,
+          "teto": "25%",
+          "metodo": "regressão log do FFO da própria série (shopping não projeta lucro contábil)",
+          "porQue": "A taxa NÃO é a média das variações ano a ano nem a última delas: é a inclinação de uma regressão sobre o logaritmo da série, que é o estimador de crescimento COMPOSTO. Média simples de variações superestima quando a série oscila (a média de +50% e −50% é 0%, mas quem viveu isso perdeu 25%); a última variação joga a projeção inteira num único ano. A regressão usa todos os pontos e pesa cada um igualmente no tempo."
+        },
         "cenarios": [
           {
             "cenario": "Conservador",
             "crescimento": "-7,7%",
             "multiplo": "7,52x",
+            "total": "R$ 1,46 bi",
             "lpa": "R$ 2,88",
             "precoJusto": "R$ 21,70",
             "premissa": "o fundamento ENCOLHE 7,7% — a mesma distância do base, para baixo e múltiplo de 7,52x (percentil 25 da própria série). As duas pontas pioram juntas, que é como o mercado se move de fato: múltiplo comprime justamente quando o resultado decepciona"
@@ -1483,6 +1541,7 @@
             "cenario": "Base",
             "crescimento": "+7,7%",
             "multiplo": "8,93x",
+            "total": "R$ 1,70 bi",
             "lpa": "R$ 3,37",
             "precoJusto": "R$ 30,07",
             "premissa": "regressão log do FFO da própria série (shopping não projeta lucro contábil) e o múltiplo que o preço justo aplica (8,93x)"
@@ -1491,6 +1550,7 @@
             "cenario": "Otimista",
             "crescimento": "+11,6%",
             "multiplo": "9,96x",
+            "total": "R$ 1,76 bi",
             "lpa": "R$ 3,49",
             "precoJusto": "R$ 34,75",
             "premissa": "a taxa do base vezes 1,5, limitada ao teto de 25% e múltiplo de 9,96x (percentil 75 da própria série). Premissa declarada, não calibração — mas as duas pontas do múltiplo são a faixa que a empresa JÁ negociou, não número inventado"
