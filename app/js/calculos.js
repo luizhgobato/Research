@@ -253,7 +253,11 @@ function renderMargemRetorno(cells, margemCell, precoJusto, cotacao, dyProj){
     const p = ensure();
     p.textContent = btn.dataset.tip || '';
     p.classList.add('show');
-    const r = btn.getBoundingClientRect();
+    // ⚠️ ÂNCORA NA CÉLULA, não no marcador. Desde que o ⓘ virou um span de largura zero
+    // (13/09), o rect dele é degenerado e o balão saía colado na borda esquerda do número.
+    // A célula é o que o usuário está olhando, e é sobre ela que o balão deve aparecer.
+    const alvo = btn.closest('td,th') || btn;
+    const r = alvo.getBoundingClientRect();
     let left = r.left + r.width/2 - p.offsetWidth/2;
     left = Math.max(8, Math.min(left, window.innerWidth - p.offsetWidth - 8));
     let top = r.bottom + 6;
@@ -262,8 +266,27 @@ function renderMargemRetorno(cells, margemCell, precoJusto, cotacao, dyProj){
     p.style.top  = top + 'px';
   }
   function hide(){ if(pop) pop.classList.remove('show'); }
-  document.addEventListener('mouseover', e => { const b = e.target.closest && e.target.closest('.teto-tip,.rank-badge[data-tip]'); if(b) show(b); });
-  document.addEventListener('mouseout',  e => { const b = e.target.closest && e.target.closest('.teto-tip,.rank-badge[data-tip]'); if(b) hide(); });
+  // ⚠️ .col-tip ENTROU AQUI EM 14/09/2026. O usuário: "o tooltip de todas as colunas está
+  // quebrando menos o da margem de segurança e retorno total". Exatamente essas duas usavam
+  // este popup; todo o resto usava um balão em CSS (.col-tip::after, position:absolute) que
+  // é RECORTADO pelo overflow:auto da .table-wrap — e nenhuma quantidade de overflow:visible
+  // na célula resolve, porque quem corta é o contêiner rolável, não o <td>.
+  // Agora há UM mecanismo para a tabela inteira: position:fixed no body, sem clipping possível.
+  const SEL = '.col-tip[data-tip],.teto-tip,.rank-badge[data-tip]';
+  document.addEventListener('mouseover', e => { const b = e.target.closest && e.target.closest(SEL); if(b) show(b); });
+  document.addEventListener('mouseout',  e => { const b = e.target.closest && e.target.closest(SEL); if(b) hide(); });
+  // O marcador tem largura zero, então o mouse nunca passa POR CIMA dele: quem dispara é a
+  // célula, que procura o marcador dentro de si.
+  document.addEventListener('mouseover', e => {
+    const cel = e.target.closest && e.target.closest('td,th');
+    if(!cel) return;
+    const marca = cel.querySelector(':scope .col-tip[data-tip], :scope .teto-tip[data-tip]');
+    if(marca) show(marca);
+  });
+  document.addEventListener('mouseout', e => {
+    const cel = e.target.closest && e.target.closest('td,th');
+    if(cel && !cel.contains(e.relatedTarget)) hide();
+  });
   window.addEventListener('scroll', hide, true);
 })();
 

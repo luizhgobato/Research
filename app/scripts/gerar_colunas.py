@@ -295,7 +295,10 @@ def gerar():
 
         # ── Coluna 5 · LUCRO PROJETADO 2026 ─────────────────────────────────────────────
         origem, bruto = origem_g, g_bruto
-        cortado = (g is not None and bruto is not None and abs(bruto - g) > 0.05)
+        # Em linha declarada a taxa é CONSEQUÊNCIA do lucro do relatório, não estimativa
+        # limitada pelo CRESC_CAP — mostrar "(valor bruto)" ao lado sugeriria um corte que
+        # não houve, e o parêntese exibiria a estimativa que foi justamente descartada.
+        cortado = (not decl26 and g is not None and bruto is not None and abs(bruto - g) > 0.05)
         cells[5] = cel((dinheiro(proj) + (TAG_DECL if decl26 else (TAG_FFO if ffo_shop else ''))) if proj else VAZIO,
             (f'LUCRO DE 2026 DECLARADO — {dinheiro(proj)}&#10;&#10;{decl26[1]}&#10;&#10;'
              f'É este número que o Preço Justo multiplica pelo múltiplo. Não é projeção do '
@@ -324,6 +327,9 @@ def gerar():
              + (f' <span style="color:#b45309;font-size:11px;">({"+" if bruto >= 0 else ""}'
                 f'{br(bruto,1)}%)</span>' if cortado else '')) if g is not None else VAZIO,
             (f'CRESCIMENTO 25→26 — {br(g,1)}%&#10;&#10;{origem.rstrip(".")}.'
+             + (f'&#10;&#10;Do lucro de 2025 ({dinheiro(l25)}) para o de 2026 declarado '
+                f'({dinheiro(proj)}). A estimativa estatística do motor daria '
+                f'{br(bruto,1)}% e foi descartada.' if (decl26 and bruto is not None) else '')
              + (f'&#10;&#10;Valor bruto {br(bruto,1)}%, limitado a ±{br(CRESC_CAP,0)}%.'
                 if cortado else '')
              if g is not None else

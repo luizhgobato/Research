@@ -960,9 +960,11 @@ def base_projecao(t, A):
     reconcilia com a contagem de papéis atual. É menos estável que um exercício fechado —
     e por isso a nota diz que a base mudou — mas é a única que descreve a empresa de hoje.
     """
-    # O lucro de 2026 DECLARADO pelo relatório dispensa base e crescimento: ele já É o alvo.
-    if t in LUCRO_2026_DECLARADO:
-        return None, 'declarado'
+    # ⚠️ NÃO há atalho para LUCRO_2026_DECLARADO aqui. Houve, e custou a coluna de
+    # crescimento: teto_ep já trata o declarado ANTES de chamar esta função, então o atalho
+    # só servia para devolver None a quem perguntasse o lucro-base — e a tabela precisa dele
+    # para mostrar de quanto foi a variação de 2025 para o 2026 declarado. As 6 linhas
+    # declaradas ficaram com "SEM TAXA DE CRESCIMENTO" na tela.
     q = ano_quebra(A)
     ltm = A[max(A)].get('lucrolin')
     if q and q >= 2025 and ltm and ltm > 0:
