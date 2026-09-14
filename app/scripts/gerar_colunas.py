@@ -376,6 +376,44 @@ def gerar():
               'se a projeção está dentro do que a empresa costuma pagar.&#10;'
               'Fonte: MCP Partnr (B3/CVM), analise/dy_historico.json.')
 
+        # ── Coluna 14 · P/L MÉDIO DA PRÓPRIA SÉRIE ──────────────────────────────────────
+        # Pedido do usuário: "acrescente uma coluna de P/L médio de 10 anos".
+        # ⚠️ SÃO 6 ANOS, NÃO 10, e a tooltip diz isso em vez de fingir a década: o HIST_SEED
+        # cobre 2021-2026 porque foi assim que a série foi coletada da Partnr. Rotular de
+        # "10 anos" um número de 6 seria o tipo de imprecisão que este projeto vem removendo.
+        #
+        # É a METADE PRÓPRIA do múltiplo que produz o Preço Justo (a outra é a mediana dos
+        # pares), então ela também serve de conferência: P/L atual acima deste valor = a ação
+        # está cara contra a própria história.
+        val14, q14 = M['anos_validos'](A)
+        pls14 = []
+        for y in val14:
+            d = A[y]
+            v14 = d.get('pl')
+            if not v14 and d.get('preco') and d.get('lpa') and d['lpa'] > 0:
+                v14 = d['preco'] / d['lpa']      # derivado, mesma regra do teto_ep
+            if v14 and 0 < v14 < 60:
+                pls14.append((y, v14))
+        if len(pls14) >= 2:
+            med14 = st.median([v for _, v in pls14])
+            anos_txt = ' · '.join(f'{y} {br(v,1)}x' for y, v in pls14)
+            atual14 = pls14[-1][1]
+            cor14 = '#059669' if atual14 < med14 else '#dc2626'
+            cells[14] = cel(f'<span style="color:{cor14};font-weight:600;">{br(med14,1)}x</span>',
+                f'P/L MÉDIO DA PRÓPRIA EMPRESA — {br(med14,1)}x&#10;&#10;'
+                f'{anos_txt}&#10;&#10;'
+                f'Mediana de {len(pls14)} exercícios.'
+                + (f' Restrito a partir de {q14} por QUEBRA DE SÉRIE.' if q14 else '')
+                + '&#10;&#10;⚠️ A base cobre 2021-2026, então são no máximo 6 anos e não 10.&#10;'
+                  'É a metade PRÓPRIA do múltiplo do Preço Justo — a outra metade é a mediana '
+                  'dos pares do segmento.')
+        else:
+            cells[14] = cel(VAZIO,
+                'P/L MÉDIO — não calculável&#10;&#10;'
+                f'Menos de 2 exercícios com P/L utilizável na série'
+                + (f' (quebra em {q14})' if q14 else '')
+                + '. Sem série própria, o múltiplo do Preço Justo vem inteiro dos pares.')
+
         med10, usados = dy_mediana(t)
         # A tooltip mostra a SÉRIE que gera a mediana — é esse o racional. A versão anterior
         # explicava por que mediana e não média, avisava sobre zeros e sobre troca de empresa:
@@ -482,4 +520,4 @@ if __name__ == '__main__':
         print(f"{t:8}{(f'{ltm/1e9:.2f}' if ltm else '—'):>10}{(f'{ln/1e9:.2f}' if ln else '—'):>10}"
               f"{(f'{lpa:.2f}' if lpa else '—'):>8}{(f'{po*100:.0f}%' if po is not None else '—'):>6}"
               f"{(f'{dps:.2f}' if dps else '—'):>8}{(f'{dy:.1f}%' if dy else '—'):>8}")
-    print(f"\n{len(log)} linhas regeneradas — colunas 4,5,6,7,9,10,11,12")
+    print(f"\n{len(log)} linhas regeneradas — colunas 4,5,6,7,8,9,10,11,12,14")

@@ -522,7 +522,12 @@ tbody td:has(> .teto-tip){position:relative;cursor:help;}
    linha em telas estreitas). Sem isso o cabeçalho da tabela ficaria colado sob os controles
    e um cortaria o outro. js/decisao.js mede .radar-controls e escreve --radar-controls-h no
    :root a cada load/resize — ver _syncTheadSticky() no fim daquele arquivo. */
-#mainTable thead{position:sticky;top:calc(var(--nav-h) + var(--radar-controls-h, 56px));z-index:50;}
+/* ⚠️ z-index 50 → 60 em 13/09/2026. O thead empatava em 50 com a linha promovida no hover
+   (regra logo abaixo) e, no empate, quem vem depois no DOM pinta por cima: as linhas
+   passavam POR CIMA do cabeçalho fixo ao rolar. Só aparecia quando o mouse estava sobre a
+   bolinha ⓘ; quando o gatilho do tooltip virou a célula inteira, passou a acontecer a cada
+   linha que o mouse tocasse. O cabeçalho agora fica acima de qualquer linha por construção. */
+#mainTable thead{position:sticky;top:calc(var(--nav-h) + var(--radar-controls-h, 56px));z-index:60;}
 /* Colgroup define larguras — não usar min-width nas frozen */
 .frozen-1,.frozen-2{position:sticky;z-index:5;}
 .frozen-1{left:0;background:inherit;}
@@ -533,25 +538,45 @@ tbody tr:nth-child(even) td{background:#fafafa;}
 tbody tr:hover td{background:#f0f2ff !important;}
 tbody tr.hidden{display:none;}
 tbody tr.in-carteira td:nth-child(2){border-left:3px solid var(--teal)!important;}
-tbody td{padding:8px 10px;vertical-align:middle;border-bottom:1px solid var(--border);white-space:nowrap;text-align:center;overflow:hidden;text-overflow:ellipsis;}
+/* ⚠️ ALTURA FIXA, 13/09/2026. As linhas tinham alturas diferentes e o olho não conseguia
+   varrer a tabela na horizontal: quem tem relatório recebe "📄 Ver" MAIS a data embaixo
+   (.report-date é display:block), duas linhas de conteúdo contra uma das demais — a linha
+   da ALOS3 ficava ~8px mais alta que a da VIVA3. Fixar a altura no <tr> e no <td> resolve
+   independentemente do que cada célula contenha; o conteúdo de duas linhas cabe porque o
+   botão e a data foram compactados logo abaixo. */
+tbody tr{height:44px;}
+tbody td{height:44px;padding:4px 10px;vertical-align:middle;border-bottom:1px solid var(--border);white-space:nowrap;text-align:center;overflow:hidden;text-overflow:ellipsis;}
 /* Um <td> com overflow:hidden (necessário para o "..." de texto longo) corta o balão do
    .col-tip (position:absolute), que precisa ultrapassar os limites da célula para aparecer.
    :has() liga overflow:visible SÓ enquanto o ⓘ daquela célula está em hover — mantém o
    truncamento normal no resto do tempo e não depende de alargar cada coluna manualmente. */
-tbody td:has(> .col-tip):hover{overflow:visible;}
+/* ⚠️ ERA `td:has(> .col-tip):hover`. O seletor :has() é reavaliado a cada movimento do
+   mouse sobre uma tabela de 33×22 células, e com o gatilho na célula inteira isso passou a
+   rodar o tempo todo — a rolagem travava. `td:hover` faz a mesma coisa sem :has(): célula
+   sem tooltip não tem balão para escapar, então liberar o overflow nela não muda nada. */
+tbody td:hover{overflow:visible;}
 /* O balão do tooltip estoura para dentro da linha de baixo (top:calc(100% + 5px)), mas o
    fundo opaco de cada <td> da linha seguinte pinta por cima dele — mesmo com z-index:9999,
    o algoritmo de pintura de fundo de células de tabela não respeita a ordem normal de
    empilhamento entre linhas. Promover a linha inteira (não só a célula) a um contexto de
    empilhamento acima das linhas vizinhas, só enquanto o ⓘ estiver em hover, resolve. */
 tbody tr{position:relative;z-index:0;}
-tbody tr:has(> td > .col-tip):hover{z-index:50;}
+/* 40, não 50: a linha precisa vencer as linhas VIZINHAS (para o balão não ser pintado por
+   baixo do fundo da linha de baixo), nunca o cabeçalho fixo, que está em 60. */
+tbody tr:hover{z-index:40;}
 /* Na última linha não há linha de baixo para "receber" o balão, e ele acaba cortado pelo
    fundo da .table-wrap (overflow-y:auto com altura máxima). Vira o balão pra cima nessa
    linha específica em vez de para baixo. */
 tbody tr:last-child .col-tip::after{top:auto;bottom:calc(100% + 5px);}
 tbody td.left{text-align:left;}
-.sep{border-left:1px solid var(--border2) !important;}
+/* ⚠️ DIVISÓRIA PADRONIZADA, 13/09/2026. Antes só as colunas marcadas com .sep tinham
+   linha vertical (e mais escura, var(--border2)), então a grade aparecia em alguns pontos
+   e sumia em outros — o usuário pediu para padronizar. Agora TODA coluna tem a mesma
+   divisória, na mesma cor da linha horizontal, e .sep deixa de ser um caso especial de
+   desenho (continua no HTML porque outras regras o usam para agrupar). */
+#mainTable tbody td,#mainTable thead th{border-left:1px solid var(--border);}
+#mainTable tbody td:first-child,#mainTable thead th:first-child{border-left:none;}
+.sep{border-left:1px solid var(--border) !important;}
 .empresa-name{font-weight:600;color:var(--text);font-size:12px;}
 .ticker-badge{display:inline-block;background:#eef0ff;border:1px solid #c7cdf5;border-radius:3px;padding:1px 6px;font-size:10.5px;font-weight:700;color:var(--accent);}
 .segmento-tag{display:inline-block;border:1px solid var(--border2);border-radius:20px;padding:1px 8px;font-size:10px;color:var(--text2);background:var(--gray-bg);}
@@ -601,7 +626,7 @@ body.privado .mob-card-value.num-green,.privado .mob-card-value:not(.rent-pos):n
   display:inline-flex;align-items:center;gap:4px;
   background:linear-gradient(135deg,#16a34a,#15803d);
   color:#fff;border:none;border-radius:6px;
-  padding:4px 10px;font-size:10px;font-weight:700;
+  padding:3px 9px;font-size:10px;font-weight:700;line-height:1.2;
   cursor:pointer;font-family:inherit;
   transition:all 0.2s;white-space:nowrap;
   box-shadow:0 1px 3px rgba(22,163,74,0.3);
@@ -612,11 +637,11 @@ body.privado .mob-card-value.num-green,.privado .mob-card-value:not(.rent-pos):n
   display:inline-flex;align-items:center;gap:4px;
   background:#f3f4f6;color:#9ca3af;
   border:1px dashed #d1d5db;border-radius:6px;
-  padding:4px 10px;font-size:10px;font-weight:500;
+  padding:3px 9px;font-size:10px;font-weight:500;line-height:1.2;
   cursor:default;font-family:inherit;white-space:nowrap;
   letter-spacing:0.02em;
 }
-.report-date{font-size:9px;color:var(--text3);display:block;text-align:center;margin-top:2px;}
+.report-date{font-size:9px;color:var(--text3);display:block;text-align:center;margin-top:1px;line-height:1;}
 td.cotacao-cell{font-weight:700;}
 td.cotacao-cell.loading{color:var(--text3);animation:pulse 1s infinite;}
 td.cotacao-cell.updated{color:var(--blue);}

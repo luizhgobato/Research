@@ -2459,3 +2459,41 @@ célula seguiam a bolinha (`.col-tip:hover`); passaram a seguir a célula (`td:h
 
 Conferido no navegador: 573 marcadores, **zero visíveis**, e os três caminhos de tooltip
 (célula do Radar, popup de Margem/Retorno e cabeçalho de coluna) abrindo no hover.
+
+### 31.17 Colgroup, altura de linha e segmentos (13-14/09/2026)
+
+**O bug que quebrou a tabela.** `#mainTable` é `table-layout:fixed`, então quem manda na largura
+é o `<colgroup>` — e ele tinha **21 `<col>` para 23 colunas**. Criei as colunas Múltiplo (31.10) e
+P/L médio sem acrescentar as entradas correspondentes, e as duas últimas colunas colapsaram para
+**largura zero**: Retorno Total com 68px de conteúdo e Relatório com 64px vazando por cima da
+vizinha. Foi o que o usuário viu como "o texto do retorno total está ultrapassando a célula" e
+"você tirou a coluna de relatório detalhado" — ela não tinha sido removida, tinha sido espremida
+a zero. Regra escrita no topo do colgroup: **nº de `<col>` == nº de `<th>` == nº de `<td>`**.
+
+**Altura de linha padronizada em 44px.** Quem tem relatório recebe "📄 Ver" mais a data embaixo
+(`.report-date` é `display:block`), duas linhas de conteúdo contra uma das demais — a linha da
+ALOS3 ficava ~8px mais alta que a da VIVA3 e o olho não conseguia varrer na horizontal.
+
+**Divisórias padronizadas.** Só as colunas marcadas `.sep` tinham linha vertical, e mais escura;
+agora toda coluna tem a mesma divisória, na cor da linha horizontal.
+
+**Cabeçalho fixo voltou a ficar por cima.** `#mainTable thead` empatava em `z-index:50` com a
+linha promovida no hover e, no empate, quem vem depois no DOM pinta por cima — as linhas passavam
+POR CIMA do cabeçalho ao rolar. Só aparecia com o mouse sobre a bolinha ⓘ; quando o gatilho do
+tooltip virou a célula inteira (31.16), passou a acontecer a cada linha tocada. Agora thead=60,
+linha em hover=40. Os seletores `:has()` avaliados a cada movimento do mouse (que travavam a
+rolagem) viraram `:hover` puro: 20 passos de rolagem em **49ms**.
+
+**20 segmentos → 10.** Doze tinham UMA empresa só, e havia "Papel e Celulose" e "Papel e celulose"
+duplicados por causa de uma maiúscula. O segmento passa a coincidir com o **grupo de pares** que o
+motor usa para escolher o múltiplo, então o rótulo que se lê e a régua que decide o preço justo
+falam da mesma coisa: Bancos (7), Utilities (6), Commodities (4), Seguros (4), Varejo, Shoppings,
+Telecom, Indústria, Holding e Saúde (2 cada).
+
+**Coluna P/L médio.** Mediana do P/L da própria empresa na série, com os anos um a um na tooltip.
+⚠️ **São 6 anos, não 10** — o HIST_SEED cobre 2021-2026 — e a tooltip diz isso em vez de fingir a
+década. É a metade PRÓPRIA do múltiplo do Preço Justo; a outra é a mediana dos pares.
+
+**Auditoria do Dív.Líq./EBITDA.** Conferido linha a linha contra `dívida líquida ÷ EBITDA` do
+HIST_SEED: bate em **todas as 24 empresas** onde a métrica se aplica. As 9 financeiras mostram
+"—" por decisão de método (em banco o passivo é matéria-prima, não alavancagem).
