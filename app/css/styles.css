@@ -220,26 +220,13 @@ thead tr.col-header,#fundTable thead tr{overflow:visible;}
    tooltip — sem isso, toda célula da tabela viraria "clicável" visualmente. */
 tbody td:has(> .col-tip), thead th:has(.col-tip){cursor:help;}
 tbody td:hover > .col-tip::after,
-thead th:hover .col-tip::after{display:block;opacity:1;}
-.col-tip::after{
-  content:attr(data-tip);
-  display:none;
-  position:absolute;top:calc(100% + 5px);left:50%;transform:translateX(-50%);
-  background:#1a1a2e;color:#e2e8f0;
-  padding:9px 11px;border-radius:7px;
-  font-size:11px;font-weight:400;
-  white-space:pre-line;width:230px;line-height:1.6;
-  box-shadow:0 6px 20px rgba(0,0,0,0.45);
-  opacity:0;pointer-events:none;transition:opacity 0.15s;
-  z-index:9999;text-align:left;
-  border:1px solid rgba(99,102,241,0.3);
-  font-family:var(--font);
-}
-/* display:none por padrão evita que o balão de tooltip (mesmo invisível, opacity:0)
-   seja contado no scrollWidth do container da tabela — antes isso inflava a área
-   rolável do Radar e fazia a última coluna nunca "encostar" na borda direita ao
-   rolar até o fim. Vira display:block só no hover, quando realmente precisa aparecer. */
-.col-tip:hover::after{display:block;opacity:1;}   /* fallback p/ navegador sem :has() */
+thead th:hover /* ⚠️ O BALÃO EM CSS (.col-tip::after) FOI REMOVIDO em 14/09/2026. Ele era
+   position:absolute e o overflow:auto da .table-wrap o RECORTAVA — o tooltip
+   aparecia cortado em todas as colunas menos Margem de Segurança e Retorno
+   Total, que já usavam o popup flutuante. Agora a tabela inteira usa o mesmo
+   #cellTipPop (position:fixed no body, em js/calculos.js), que não tem como
+   ser cortado por contêiner nenhum. O .col-tip continua existindo como
+   portador do data-tip. */
 
 /* ── TOOLTIP DE VARIÁVEIS NAS CÉLULAS (Preço Teto, Margem, Retorno) ── */
 /* Mesma remoção do ⓘ das células de Preço Justo, Margem e Retorno. Aqui o balão é um
@@ -554,7 +541,7 @@ tbody td{height:44px;padding:4px 10px;vertical-align:middle;border-bottom:1px so
    mouse sobre uma tabela de 33×22 células, e com o gatilho na célula inteira isso passou a
    rodar o tempo todo — a rolagem travava. `td:hover` faz a mesma coisa sem :has(): célula
    sem tooltip não tem balão para escapar, então liberar o overflow nela não muda nada. */
-tbody td:hover{overflow:visible;}
+/* overflow:visible no hover não é mais necessário — o balão não mora mais dentro da célula. */
 /* O balão do tooltip estoura para dentro da linha de baixo (top:calc(100% + 5px)), mas o
    fundo opaco de cada <td> da linha seguinte pinta por cima dele — mesmo com z-index:9999,
    o algoritmo de pintura de fundo de células de tabela não respeita a ordem normal de
@@ -563,11 +550,11 @@ tbody td:hover{overflow:visible;}
 tbody tr{position:relative;z-index:0;}
 /* 40, não 50: a linha precisa vencer as linhas VIZINHAS (para o balão não ser pintado por
    baixo do fundo da linha de baixo), nunca o cabeçalho fixo, que está em 60. */
-tbody tr:hover{z-index:40;}
+tbody tr:hover{z-index:40;}   /* mantido: a linha em hover fica acima das vizinhas, abaixo do thead (60) */
 /* Na última linha não há linha de baixo para "receber" o balão, e ele acaba cortado pelo
    fundo da .table-wrap (overflow-y:auto com altura máxima). Vira o balão pra cima nessa
    linha específica em vez de para baixo. */
-tbody tr:last-child .col-tip::after{top:auto;bottom:calc(100% + 5px);}
+/* o popup flutuante já se vira sozinho perto do rodapé (ver show() em calculos.js) */
 tbody td.left{text-align:left;}
 /* ⚠️ DIVISÓRIA PADRONIZADA, 13/09/2026. Antes só as colunas marcadas com .sep tinham
    linha vertical (e mais escura, var(--border2)), então a grade aparecia em alguns pontos
