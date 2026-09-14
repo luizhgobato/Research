@@ -62,15 +62,31 @@ function aplicarPrecoRadar(row, preco){
   if(_oldDy>0&&_oldCot>0&&preco>0) row.dataset.dyProj=(_oldDy*_oldCot/preco).toFixed(4);
   // Atualiza células de DY proj
   atualizarDivDY(row, preco);   // DPS = LPA × payout; DY = DPS ÷ preço (js/calculos.js)
-  calcularPrecoTeto(row,preco);
-  const precoTeto=parseFloat(row.dataset.precoTeto)||null;
+  // ⚠️ DOIS BUGS AQUI, e o primeiro escondia o segundo — 14/09/2026, pergunta do usuário:
+  // "à medida que as cotações forem alteradas, os valores vão atualizar correto e as margens
+  // de segurança também?" Não iam.
+  //
+  //  1 · `row.dataset.precoTeto` NÃO EXISTE MAIS. O campo virou `precoJusto` quando "preço
+  //      teto" saiu do projeto (seção 30), e esta leitura ficou para trás. `precoTeto` saía
+  //      sempre null, a condição do `if` nunca era verdadeira e A MARGEM NUNCA RECALCULAVA:
+  //      a cotação mudava na tela e a margem continuava a do último build. Reproduzido com o
+  //      ITUB3 — cotação de R$ 41,66 para R$ 30,00 e a margem parada em +11%.
+  //  2 · `dyProj` NÃO ESTÁ DEFINIDO neste escopo. Se o `if` do item 1 algum dia fosse
+  //      verdadeiro, a linha lançaria ReferenceError e a atualização inteira morreria ali.
+  //      O bug 1 mantinha o bug 2 dormente — por isso nunca apareceu erro no console.
+  //
+  // O caminho certo já existia em calcularDerivadosRadar() (js/calculos.js): lê precoJusto do
+  // dataset e dyProj da linha. Aqui passa a fazer o mesmo.
+  calcularPrecoJusto(row, preco);
+  const precoJusto = parseFloat(row.dataset.precoJusto) || 0;
+  const dyProj     = parseFloat(row.dataset.dyProj) || 0;
   const qtd=parseFloat(row.dataset.qtd)||0,pm=parseFloat(row.dataset.pm)||0;
   if(qtd>0){
     row.dataset.saldo=(qtd*preco).toFixed(2);
     if(pm>0)row.dataset.rent=(((preco-pm)/pm)*100>=0?'+':'')+((preco-pm)/pm*100).toFixed(2);
   }
-  if(margemCell&&precoTeto){
-    renderMargemRetorno(cells, margemCell, precoTeto, preco, dyProj);
+  if(margemCell && precoJusto > 0){
+    renderMargemRetorno(cells, margemCell, precoJusto, preco, dyProj);
   }
   if(typeof atualizarPLAtualLinha==='function') atualizarPLAtualLinha(row);
 }
