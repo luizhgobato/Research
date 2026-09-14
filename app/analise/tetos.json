@@ -69,32 +69,32 @@
   "seg": -5.560900685145253
  },
  "ASAI3": {
-  "justo": 5.5325625,
+  "justo": 5.5610625,
   "faixa": [
-   5.5325625,
-   5.5325625
+   5.5610625,
+   5.5610625
   ],
   "largura": 0.0,
   "nMetodos": 1,
   "metodos": [
    {
     "chave": "P/L",
-    "justo": 5.53,
+    "justo": 5.56,
     "papel": "principal",
-    "conta": "LPA projetado 2026 R$ 0.71 × P/L 7.76x",
-    "origemMult": "o P/L mediano da própria empresa ao longo de 1 anos (7.76x) — sem ROE suficiente na série para ajustar pela rentabilidade, fica a média histórica pura",
+    "conta": "LPA projetado 2026 R$ 0.71 × P/L 7.80x",
+    "origemMult": "o P/L mediano do UNIVERSO de empresas com série limpa (7.80x) — ASAI3 não tem série própria utilizável e o grupo VAREJO não tem 3 pares com série limpa — sem ROE suficiente na série para ajustar pela rentabilidade, fica a média histórica pura",
     "faixa": [
-     5.53,
-     5.53
+     5.56,
+     5.56
     ]
    }
   ],
-  "motor": "P/L · faixa R$ 5.53 a R$ 5.53",
-  "nota": "⚠️ SÉRIE PRÓPRIA INSUFICIENTE — o múltiplo NÃO é o histórico desta empresa, é o dos pares. Mesma falta de preço histórico da VIVA3, e ainda menos série: a DRE anual recente não voltou da API (só 2019-2020, anteriores ao spin-off do GPA, com base de ações incomparável — LPA de R$5,80 em 2020 contra R$0,71 no LTM). Restam margem líquida e dív.líq/EBITDA por exercício. A margem caindo de 3,84% (2021) para 0,64% (2025) é informação real e está na tabela; preço justo, não. || ⚠️ SEM FAIXA — o método que decide esta linha rodou sobre menos de 3 exercícios comparáveis, então não há amplitude histórica: o número é um ponto, não uma faixa. Sem teto de compra por isso. Trate como marcador, não como preço de entrada. || PREÇO JUSTO por P/L, MÉTODO ÚNICO — o múltiplo que descreve este negócio, aplicado ao fundamento projetado. Não é mediana de réguas diferentes. A faixa de R$ 5.53 a R$ 5.53 (largura 0%) é a OSCILAÇÃO HISTÓRICA do próprio múltiplo — percentil 25 a 75 da série —, e o limite inferior é o teto de compra. ⚠️ Só 1 anos de P/L comparável na base, insuficiente. O grupo VAREJO não tem par com série limpa, então o múltiplo vem do P/L mediano do UNIVERSO (7.8x). Peer comp tem viés próprio — é a régua do setor, não desta empresa.",
+  "motor": "P/L · faixa R$ 5.56 a R$ 5.56",
+  "nota": "⚠️ SÉRIE PRÓPRIA INSUFICIENTE — o múltiplo NÃO é o histórico desta empresa, é o dos pares. Mesma falta de preço histórico da VIVA3, e ainda menos série: a DRE anual recente não voltou da API (só 2019-2020, anteriores ao spin-off do GPA, com base de ações incomparável — LPA de R$5,80 em 2020 contra R$0,71 no LTM). Restam margem líquida e dív.líq/EBITDA por exercício. A margem caindo de 3,84% (2021) para 0,64% (2025) é informação real e está na tabela; preço justo, não. || ⚠️ SEM FAIXA — o método que decide esta linha rodou sobre menos de 3 exercícios comparáveis, então não há amplitude histórica: o número é um ponto, não uma faixa. Sem teto de compra por isso. Trate como marcador, não como preço de entrada. || PREÇO JUSTO por P/L, MÉTODO ÚNICO — o múltiplo que descreve este negócio, aplicado ao fundamento projetado. Não é mediana de réguas diferentes. A faixa de R$ 5.56 a R$ 5.56 (largura 0%) é a OSCILAÇÃO HISTÓRICA do próprio múltiplo — percentil 25 a 75 da série —, e o limite inferior é o teto de compra. ⚠️ Só 1 anos de P/L comparável na base, insuficiente. O grupo VAREJO não tem par com série limpa, então o múltiplo vem do P/L mediano do UNIVERSO (7.8x). Peer comp tem viés próprio — é a régua do setor, não desta empresa.",
   "teto_suprimido": true,
   "teto": null,
-  "faixaLo": 5.53,
-  "faixaHi": 5.53,
+  "faixaLo": 5.56,
+  "faixaHi": 5.56,
   "cot": 9.82,
   "seg": null
  },
@@ -142,7 +142,7 @@
     "justo": 41.68,
     "papel": "principal",
     "conta": "LPA projetado 2026 R$ 4.53 × P/L 9.21x",
-    "origemMult": "o P/L mediano da própria empresa ao longo de 2 anos (9.21x) — sem ROE suficiente na série para ajustar pela rentabilidade, fica a média histórica pura",
+    "origemMult": "o P/L mediano dos PARES do grupo UTIL (9.21x) — AXIA3 não tem série própria utilizável — sem ROE suficiente na série para ajustar pela rentabilidade, fica a média histórica pura",
     "faixa": [
      41.68,
      41.68
@@ -753,6 +753,65 @@
   "cot": 19.65,
   "seg": 11.470657608020538
  },
+ "GMAT3": {
+  "justo": 11.13781851615733,
+  "faixa": [
+   7.345928762607255,
+   11.945138831599532
+  ],
+  "largura": 0.385,
+  "nMetodos": 1,
+  "metodos": [
+   {
+    "chave": "P/L",
+    "justo": 11.14,
+    "papel": "principal",
+    "conta": "LPA projetado 2026 R$ 0.89 × P/L 12.54x",
+    "origemMult": "o P/L mediano da própria empresa ao longo de 6 anos (12.18x), ajustado pela rentabilidade (ROE): hoje 14.5% contra 14.1% de mediana do período dá fator 1.03 → múltiplo-alvo 12.54x. Proporção direta, sem teto: mais rentável que a própria mediana merece múltiplo maior; menos rentável, menor. O múltiplo do setor NÃO entra desde 14/09/2026.",
+    "faixa": [
+     7.35,
+     11.95
+    ]
+   },
+   {
+    "chave": "P/VP",
+    "justo": 8.23,
+    "papel": "verificação",
+    "conta": "VPA R$ 4.83 × P/VP 1.70x",
+    "faixa": [
+     5.61,
+     9.18
+    ]
+   },
+   {
+    "chave": "EV/Receita",
+    "justo": 10.23,
+    "papel": "verificação",
+    "conta": "receita R$ 40.6 bi × EV/Receita 0.60x − dívida líquida R$ 1.1 bi, ÷ 2,3 bi papéis",
+    "faixa": [
+     5.93,
+     12.32
+    ]
+   },
+   {
+    "chave": "P/FFO",
+    "justo": 11.1,
+    "papel": "verificação",
+    "conta": "FFO por papel projetado R$ 1.15 × P/FFO 9.66x",
+    "faixa": [
+     6.97,
+     11.92
+    ]
+   }
+  ],
+  "motor": "P/L · faixa R$ 7.35 a R$ 11.95",
+  "nota": "PREÇO JUSTO por P/L, MÉTODO ÚNICO — o múltiplo que descreve este negócio, aplicado ao fundamento projetado. Não é mediana de réguas diferentes. A faixa de R$ 7.35 a R$ 11.95 (largura 39%) é a OSCILAÇÃO HISTÓRICA do próprio múltiplo — percentil 25 a 75 da série —, e o limite inferior é o teto de compra. P/L: faixa 8.0x–13.1x (mediana 12.2x) · percentis de 6 anos, série de 6 anos (5.6x a 17.4x). LPA projetado R$ 0.89 = lucro base R$ 1.83 bi (exercício fechado de 2025) × (1+9.5%) ÷ 2260 mi papéis, ROE × retenção. || VERIFICAÇÃO (não entra na conta): P/VP R$ 8.23 · EV/Receita R$ 10.23 · P/FFO R$ 11.10. Todas dentro da faixa. ",
+  "teto": 7.35,
+  "faixaLo": 7.35,
+  "faixaHi": 11.95,
+  "cot": 4.88,
+  "seg": 33.56864519513847
+ },
  "IRBR3": {
   "justo": 33.26911566661679,
   "faixa": [
@@ -1112,7 +1171,7 @@
     "justo": 12.14,
     "papel": "principal",
     "conta": "LPA projetado 2026 R$ 1.71 × P/L 7.10x",
-    "origemMult": "o P/L mediano da própria empresa ao longo de 1 anos (9.21x), ajustado pela rentabilidade (ROE): hoje 17.3% contra 22.5% de mediana do período dá fator 0.77 → múltiplo-alvo 7.10x. Proporção direta, sem teto: mais rentável que a própria mediana merece múltiplo maior; menos rentável, menor. O múltiplo do setor NÃO entra desde 14/09/2026.",
+    "origemMult": "o P/L mediano dos PARES do grupo UTIL (9.21x) — PASS3 não tem série própria utilizável, ajustado pela rentabilidade (ROE): hoje 17.3% contra 22.5% de mediana do período dá fator 0.77 → múltiplo-alvo 7.10x. Proporção direta, sem teto: mais rentável que a própria mediana merece múltiplo maior; menos rentável, menor. O múltiplo do setor NÃO entra desde 14/09/2026.",
     "faixa": [
      12.14,
      12.14
@@ -1329,7 +1388,7 @@
     "justo": 5.39,
     "papel": "principal",
     "conta": "LPA projetado 2026 R$ 0.75 × P/L 7.19x",
-    "origemMult": "o P/L mediano da própria empresa ao longo de 1 anos (7.19x) — sem ROE suficiente na série para ajustar pela rentabilidade, fica a média histórica pura",
+    "origemMult": "o P/L mediano dos PARES do grupo FIN (7.19x) — ROXO34 não tem série própria utilizável — sem ROE suficiente na série para ajustar pela rentabilidade, fica a média histórica pura",
     "faixa": [
      5.39,
      5.39
@@ -1398,7 +1457,7 @@
     "justo": 3.42,
     "papel": "principal",
     "conta": "LPA projetado 2026 R$ 0.38 × P/L 9.11x",
-    "origemMult": "o P/L mediano da própria empresa ao longo de 1 anos (9.11x) — sem ROE suficiente na série para ajustar pela rentabilidade, fica a média histórica pura",
+    "origemMult": "o P/L mediano dos PARES do grupo SEG (9.11x) — SAUD3 não tem série própria utilizável — sem ROE suficiente na série para ajustar pela rentabilidade, fica a média histórica pura",
     "faixa": [
      3.42,
      3.42
@@ -1662,32 +1721,32 @@
   "seg": null
  },
  "VIVA3": {
-  "justo": 23.87507165344382,
+  "justo": 23.998059788168575,
   "faixa": [
-   23.87507165344382,
-   23.87507165344382
+   23.998059788168575,
+   23.998059788168575
   ],
   "largura": 0.0,
   "nMetodos": 1,
   "metodos": [
    {
     "chave": "P/L",
-    "justo": 23.88,
+    "justo": 24.0,
     "papel": "principal",
-    "conta": "LPA projetado 2026 R$ 3.07 × P/L 7.76x",
-    "origemMult": "o P/L mediano da própria empresa ao longo de 1 anos (7.76x) — sem ROE suficiente na série para ajustar pela rentabilidade, fica a média histórica pura",
+    "conta": "LPA projetado 2026 R$ 3.07 × P/L 7.80x",
+    "origemMult": "o P/L mediano do UNIVERSO de empresas com série limpa (7.80x) — VIVA3 não tem série própria utilizável e o grupo VAREJO não tem 3 pares com série limpa — sem ROE suficiente na série para ajustar pela rentabilidade, fica a média histórica pura",
     "faixa": [
-     23.88,
-     23.88
+     24.0,
+     24.0
     ]
    }
   ],
-  "motor": "P/L · faixa R$ 23.88 a R$ 23.88",
-  "nota": "⚠️ SÉRIE PRÓPRIA INSUFICIENTE — o múltiplo NÃO é o histórico desta empresa, é o dos pares. Série sem preço histórico: a chave de API do MCP Partnr desta sessão não tem escopo de cotação histórica nem de valuation ratios anuais, então não há P/L nem P/VP por exercício para ancorar múltiplo da própria série. A DRE de 2021-2025 está completa e auditável (receita, lucro, EBITDA, margens, LPA) — o que falta é só o lado do PREÇO. Assim que a série de cotação entrar, esta linha passa a ter preço justo sem mudar mais nada. || ⚠️ SEM FAIXA — o método que decide esta linha rodou sobre menos de 3 exercícios comparáveis, então não há amplitude histórica: o número é um ponto, não uma faixa. Sem teto de compra por isso. Trate como marcador, não como preço de entrada. || PREÇO JUSTO por P/L, MÉTODO ÚNICO — o múltiplo que descreve este negócio, aplicado ao fundamento projetado. Não é mediana de réguas diferentes. A faixa de R$ 23.88 a R$ 23.88 (largura 0%) é a OSCILAÇÃO HISTÓRICA do próprio múltiplo — percentil 25 a 75 da série —, e o limite inferior é o teto de compra. ⚠️ Só 1 anos de P/L comparável na base, insuficiente. O grupo VAREJO não tem par com série limpa, então o múltiplo vem do P/L mediano do UNIVERSO (7.8x). Peer comp tem viés próprio — é a régua do setor, não desta empresa. LPA projetado R$ 3.07 = lucro base R$ 0.62 bi (exercício fechado de 2025) × (1+17.2%) ÷ 236 mi papéis, regressão log do lucro da própria série.",
+  "motor": "P/L · faixa R$ 24.00 a R$ 24.00",
+  "nota": "⚠️ SÉRIE PRÓPRIA INSUFICIENTE — o múltiplo NÃO é o histórico desta empresa, é o dos pares. Série sem preço histórico: a chave de API do MCP Partnr desta sessão não tem escopo de cotação histórica nem de valuation ratios anuais, então não há P/L nem P/VP por exercício para ancorar múltiplo da própria série. A DRE de 2021-2025 está completa e auditável (receita, lucro, EBITDA, margens, LPA) — o que falta é só o lado do PREÇO. Assim que a série de cotação entrar, esta linha passa a ter preço justo sem mudar mais nada. || ⚠️ SEM FAIXA — o método que decide esta linha rodou sobre menos de 3 exercícios comparáveis, então não há amplitude histórica: o número é um ponto, não uma faixa. Sem teto de compra por isso. Trate como marcador, não como preço de entrada. || PREÇO JUSTO por P/L, MÉTODO ÚNICO — o múltiplo que descreve este negócio, aplicado ao fundamento projetado. Não é mediana de réguas diferentes. A faixa de R$ 24.00 a R$ 24.00 (largura 0%) é a OSCILAÇÃO HISTÓRICA do próprio múltiplo — percentil 25 a 75 da série —, e o limite inferior é o teto de compra. ⚠️ Só 1 anos de P/L comparável na base, insuficiente. O grupo VAREJO não tem par com série limpa, então o múltiplo vem do P/L mediano do UNIVERSO (7.8x). Peer comp tem viés próprio — é a régua do setor, não desta empresa. LPA projetado R$ 3.07 = lucro base R$ 0.62 bi (exercício fechado de 2025) × (1+17.2%) ÷ 236 mi papéis, regressão log do lucro da própria série.",
   "teto_suprimido": true,
   "teto": null,
-  "faixaLo": 23.88,
-  "faixaHi": 23.88,
+  "faixaLo": 24.0,
+  "faixaHi": 24.0,
   "cot": 22.33,
   "seg": null
  }

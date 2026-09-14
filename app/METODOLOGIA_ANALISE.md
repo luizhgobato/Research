@@ -3626,3 +3626,122 @@ de 876px e rolava de lado — a comparação mais importante do relatório saind
 Separada em **a conta** (7 colunas) e **porte, margem e alavancagem** (4 colunas). Mesmo assim
 a primeira ficou 7px maior que a caixa; `.rp-compacta` aperta o padding de 14px para 9px e
 resolve. Cabe inteira em 1024px e 1280px.
+
+
+---
+
+## 41. Grupo Mateus entra no Radar (14/09/2026)
+
+Pedido do usuário: *"acrescente grupo mateus na tabela"*. **GMAT3 já era posição da carteira**
+(bloco Crescimento, R$ 33,7 mil, 4,28% do total) e não tinha nenhuma cobertura no Radar — a
+mesma lacuna do BBAS3 na seção 38.
+
+### 41.1 A coleta
+
+Mesmo protocolo do BBAS3: campo a campo da Partnr, **zero número de memória**.
+
+| O que | De onde |
+|---|---|
+| DRE 2021-2025 | `companies_reports` INCOME_STATEMENT · CONSOLIDATED · ANNUAL |
+| DRE 2026 | soma dos **quatro trimestres** até 2T26 (LTM) |
+| Patrimônio e VPA | `companies_reports` BALANCE_SHEET do próprio exercício |
+| Ações | `companies_retrieve` + `companies_sharesHistory` — 2.303.692.568 hoje |
+| Preços | fechamento do último pregão de cada ano, **verificados um a um** |
+| Proventos | `companies_cashCorporateActionsByCompany`, somados por **data-ex** |
+
+`preco`, `pl`, `pvp` e `dy` são **derivados** (preço ÷ LPA e ÷ VPA do próprio ano) porque a
+série de valuation do Partnr só sai em TTM. Mesma nota que o BBAS3 carrega.
+
+Setor Consumo Básico / Varejo de Alimentos → grupo **`VAREJO`** no `MOTOR`. É a **primeira
+VAREJO com série completa**: VIVA3 e ASAI3 entraram sem preço histórico (seção 29) e caem em
+`SEM_TETO`. A GMAT3 tem os seis exercícios e produz preço justo pelo motor normal.
+
+| ano | lucro | LPA | VPA | preço | P/L | P/VP | ROE | DY |
+|---|---|---|---|---|---|---|---|---|
+| 2026 (LTM) | R$ 1,62 bi | 0,71 | 4,86 | 4,88 | 6,92x | 1,01 | 14,5% | 0,0% |
+| 2025 | R$ 1,83 bi | 0,80 | 4,51 | 4,48 | 5,63x | 0,99 | 17,7% | 5,6% |
+| 2024 | R$ 1,32 bi | 0,57 | 4,38 | 6,50 | 11,36x | 1,48 | 13,4% | 3,0% |
+| 2023 | R$ 1,22 bi | 0,55 | 3,93 | 7,18 | 12,99x | 1,83 | 14,1% | 0,0% |
+| 2022 | R$ 1,05 bi | 0,48 | 3,37 | 6,23 | 13,08x | 1,85 | 14,1% | 0,0% |
+| 2021 | R$ 0,76 bi | 0,34 | 2,90 | 5,97 | 17,38x | 2,06 | 11,9% | 0,0% |
+
+### 41.2 ⚠️ O lucro de 2025 está inflado, e é ele a base da projeção
+
+**O resultado de 2025 (R$ 1,83 bi) não é operacional inteiro.** A linha `INCOME_TAXES` vem
+**POSITIVA em R$ 511,9 mi** no ano — crédito tributário, não despesa —, concentrada no 3T25:
+lucro de **R$ 850,5 mi** naquele trimestre contra ~R$ 320 mi de trimestre normal. É por isso
+que o ROE de 17,65% é o ponto alto de uma série que anda em 12%-14%.
+
+**E a base do lucro projetado é justamente esse ano.** O motor usa o exercício fechado de 2025
+(regra geral, seção 4) e aplica +9,5% (ROE × retenção), chegando a R$ 2,01 bi em 2026. **Mas o
+LTM até 2T26 já publicado é R$ 1,62 bi** — 11% ABAIXO de 2025, não 9,5% acima. A projeção
+cresce a partir de um degrau que não se repete.
+
+Efeito na conta: LPA projetado R$ 0,89 × múltiplo 12,54x = **preço justo R$ 11,14** contra
+cotação de R$ 4,88. O teto de compra (piso da faixa, p25 da própria série) é R$ 7,35, e a
+margem de segurança sai **+34% pela faixa** — abaixo de `LIM_MARGEM`, então o aviso de margem
+extrema **não dispara**. Sobre o preço justo cheio a distância é de +128%.
+
+**O múltiplo, ao contrário do BBAS3, não é artefato.** Lá o ROE colapsou e bateu duas vezes
+(efeito quadrático, seção 35.4). Aqui o ROE **segurou** — 14,5% hoje contra 14,1% de mediana,
+fator 1,03 — e quem colapsou foi o múltiplo: de 17,4x (2021) para 6,9x. A régua diz "o mercado
+pagava 12x por esta rentabilidade e hoje paga 7x". Isso é uma **leitura defensável de
+de-rating**, não um motor quebrado. O que está frágil é o **numerador**, não o múltiplo.
+
+**Decisão: a linha entra com o número do motor, SEM relatório, e a distorção fica declarada**
+em `HIST_SEED_NOTES` (visível na Base de Dados) e aqui. Declarar um lucro normalizado em
+`LUCRO_2026_DECLARADO` exigiria relatório publicado com cenário — é o que as seis declarações
+da seção 37 têm e a GMAT3 não tem. Inventar o número aqui seria exatamente o "digitado à mão"
+que este projeto passou dez seções eliminando.
+
+**Para resolver, três caminhos** (mesma estrutura de escolha do BBAS3 na seção 38.2):
+1. **Escrever o relatório da GMAT3** e declarar o lucro de 2026 com cenário, como BBSE3/ITUB3.
+2. **Usar o LTM como base** quando ele for MENOR que o exercício fechado — regra geral, não
+   exceção: dado mais fresco não deveria perder para dado mais velho.
+3. **Manter como está**, lendo o R$ 11,14 como "vale isso se 2025 for o patamar".
+
+### 41.3 O que a linha mostra
+
+`data-carteira="true"` desde a inserção (é posição). DY mediano de 10 anos sai **"—"**: só
+2024 e 2025 têm provento, e a régua exige 3 exercícios. Payout 32% vem dos **dois** anos que
+pagaram, pela identidade `payout = DY × P/L` (seção 22) — não é "a empresa distribui 32%
+sempre", é "quando distribuiu, distribuiu isso".
+
+Validado: **35 linhas, 24 `<col>` == 24 `<th>` == 24 `<td>`, zero desalinho, zero erro de
+console.**
+
+### 41.4 Dois defeitos que a GMAT3 expôs no fallback de múltiplo
+
+Incluir uma empresa não deveria mexer no preço justo de outra sem informação nova. Mexeu — e o
+motivo eram dois defeitos que já estavam lá, invisíveis enquanto VAREJO estava vazio.
+
+**(a) Mediana de setor com UM par só.** `pl_setorial` monta a mediana de P/L dos pares de cada
+motor e serve de âncora para quem não tem série própria (`teto_ep`, ramo do fallback). Até
+ontem VAREJO não tinha nenhum membro com 4+ anos de P/L limpo, então ASAI3 e VIVA3 caíam no
+`_UNIVERSO` (7,76x, 22 empresas). Com a GMAT3 o grupo passou a ter **exatamente um** membro — e
+a "mediana do setor" virou o múltiplo da GMAT3 com outro nome. Efeito: **ASAI3 de R$ 5,53 para
+R$ 8,67 e VIVA3 de R$ 23,88 para R$ 37,43, +57% cada, sem que um único dado das duas tivesse
+mudado.**
+
+Corrigido: **mediana de setor exige 3 pares**; abaixo disso o grupo cai no `_UNIVERSO`. Um par
+único carrega a idiossincrasia inteira e não faz média nenhuma — o universo de 22 é referência
+pior que o setor certo e melhor que um par disfarçado de setor.
+
+Com a trava, ASAI3 vai a R$ 5,56 e VIVA3 a R$ 24,00 — **+0,5%, e esse meio por cento é
+legítimo**: a GMAT3 entra no `_UNIVERSO` como 23ª empresa e move a mediana de 7,76x para 7,80x.
+
+**(b) O rótulo do múltiplo mentia — de novo.** `alvo_com_pares` recebe o múltiplo-alvo já
+escolhido e escreve a origem dele, mas hard-codava **"o P/L mediano da PRÓPRIA EMPRESA ao longo
+de N anos"**. Para ASAI3 e VIVA3, que não têm série própria nenhuma, isso era simplesmente
+falso: as duas exibiam o **mesmo número** (7,76x, depois 12,18x) descrito como se fosse de cada
+uma. `n_anos` vinha `len(pls)`, que no fallback é 0 ou 1 — daí o absurdo **"ao longo de 1 anos"**
+impresso na tela.
+
+É o mesmo defeito da **seção 38.4**: a tooltip contando uma conta diferente da que o motor fez.
+`alvo_com_pares` ganhou `rotulo_base`, e `teto_ep` passa qual ramo tomou. Agora a célula diz:
+
+> *o P/L mediano do UNIVERSO de empresas com série limpa (7,80x) — ASAI3 não tem série própria
+> utilizável e o grupo VAREJO não tem 3 pares com série limpa*
+
+**A lição é a de sempre, na terceira variação:** uma definição, N consumidores. Aqui o consumidor
+não recalculava o número — recalculava a **explicação** dele, e errava.
