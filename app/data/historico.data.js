@@ -308,6 +308,26 @@ const HIST_SEED = {
     2022: { preco:null, receita:null, custos:null, lucrobruto:null, ebitda:null, ebit:null, imposto:null, lucrolin:null, divbruta:null, divliq:null, mgBruta:null, mgEbitda:null, mgLiq:2.24, roe:null, roic:null, pl:null, pvp:null, dy:null, evEbitda:null, divPl:null, lpa:null, divEbitda:1.76 },
     2021: { preco:null, receita:null, custos:null, lucrobruto:null, ebitda:null, ebit:null, imposto:null, lucrolin:null, divbruta:null, divliq:null, mgBruta:null, mgEbitda:null, mgLiq:3.84, roe:null, roic:null, pl:null, pvp:null, dy:null, evEbitda:null, divPl:null, lpa:null, divEbitda:1.68 },
   },
+  // ── GMAT3 — Grupo Mateus. Incluído a pedido do usuário em 14/09/2026 ──────────────────
+  // Já era posição da carteira (bloco Crescimento) e não tinha cobertura no Radar.
+  // Fonte: MCP Partnr (B3/CVM). DRE CONSOLIDATED/ANNUAL 2021-2025; o exercício 2026 é LTM
+  // montado somando os quatro trimestres até 2T26. Patrimônio e VPA saem do balanço do
+  // próprio exercício; preços são o fechamento do último pregão de cada ano, verificados
+  // um a um (2021 R$5,97 · 2022 R$6,23 · 2023 R$7,18 · 2024 R$6,50 · 2025 R$4,48 · hoje R$4,88).
+  // P/L, P/VP e DY são DERIVADOS (preço ÷ LPA e ÷ VPA do próprio ano; proventos somados por
+  // data-ex) porque a série de valuation do Partnr só sai em TTM — mesmo tratamento do BBAS3.
+  // ⚠️ O lucro de 2025 (R$1,83 bi) está INFLADO por crédito tributário não recorrente: a linha
+  // INCOME_TAXES vem POSITIVA em R$511,9 mi no ano, concentrada no 3T25 (lucro de R$850,5 mi
+  // contra ~R$320 mi de trimestre normal). O ROE de 17,65% daquele ano carrega essa distorção
+  // e é o ponto alto da série — não leia como patamar operacional.
+  GMAT3: {
+    2026: { preco:4.88, receita:40568200000, custos:-31439000000, lucrobruto:9129200000, ebitda:2670400000, ebit:2013000000, imposto:604100000, lucrolin:1624500000, divbruta:2724000000, divliq:1093000000, mgBruta:22.5, mgEbitda:6.58, mgLiq:4.0, roe:14.52, roic:null, pl:6.92, pvp:1.01, dy:0.0, evEbitda:4.62, divPl:0.1, lpa:0.71, divEbitda:0.41 },
+    2025: { preco:4.48, receita:38424403000, custos:-29817202000, lucrobruto:8607201000, ebitda:2800585000, ebit:2260989000, imposto:511924000, lucrolin:1832920000, divbruta:2861000000, divliq:1059000000, mgBruta:22.4, mgEbitda:7.29, mgLiq:4.77, roe:17.65, roic:null, pl:5.63, pvp:0.99, dy:5.57, evEbitda:4.06, divPl:0.1, lpa:0.8, divEbitda:0.38 },
+    2024: { preco:6.5, receita:32085428000, custos:-24825355000, lucrobruto:7260073000, ebitda:2467560000, ebit:2090814000, imposto:-183972000, lucrolin:1318193000, divbruta:2274000000, divliq:610000000, mgBruta:22.63, mgEbitda:7.69, mgLiq:4.11, roe:13.38, roic:null, pl:11.36, pvp:1.48, dy:2.98, evEbitda:6.17, divPl:0.06, lpa:0.57, divEbitda:0.25 },
+    2023: { preco:7.18, receita:26773586000, custos:-20960658000, lucrobruto:5812928000, ebitda:2036003000, ebit:1682611000, imposto:-42650000, lucrolin:1220856000, divbruta:3743000000, divliq:2453000000, mgBruta:21.71, mgEbitda:7.6, mgLiq:4.56, roe:14.08, roic:null, pl:12.99, pvp:1.83, dy:0.0, evEbitda:9.0, divPl:0.28, lpa:0.55, divEbitda:1.2 },
+    2022: { preco:6.23, receita:21768477000, custos:-16969435000, lucrobruto:4799042000, ebitda:1694452000, ebit:1365284000, imposto:-23519000, lucrolin:1052419000, divbruta:3168000000, divliq:1373000000, mgBruta:22.05, mgEbitda:7.78, mgLiq:4.83, roe:14.12, roic:null, pl:13.08, pvp:1.85, dy:0.0, evEbitda:8.93, divPl:0.18, lpa:0.48, divEbitda:0.81 },
+    2021: { preco:5.97, receita:15876857000, custos:-12174415000, lucrobruto:3702442000, ebitda:1181125000, ebit:916167000, imposto:-18759000, lucrolin:758931000, divbruta:1994000000, divliq:1117000000, mgBruta:23.32, mgEbitda:7.44, mgLiq:4.78, roe:11.85, roic:null, pl:17.38, pvp:2.06, dy:0.0, evEbitda:12.11, divPl:0.17, lpa:0.34, divEbitda:0.95 },
+  },
 };
 
 // Nota de rodapé específica por ticker no histórico expansível da Base de Dados
@@ -345,6 +365,7 @@ const HIST_SEED_NOTES = {
   PASS3: 'Fonte: MCP Partnr (B3/CVM) · série 2021-2026 de resultado completa, mas SEM série de preço antes de 2026 na base (IPO recente) — por isso P/L, P/VP, DY e EV/EBITDA só existem em 2026',
   MULT3: 'Fonte: MCP Partnr (B3/CVM) · série 2021-2026 completa',
   BBAS3: 'Fonte: MCP Partnr (B3/CVM), coletado em 14/09/2026 · banco: EBITDA, EBIT, dívida e EV/EBITDA não se aplicam · imposto POSITIVO em 2024/2025/2026 = crédito tributário, não erro · P/L, P/VP e DY DERIVADOS (preço de fechamento do ano ÷ LPA e VPA do próprio exercício; proventos somados por data-ex) porque a série de valuation do Partnr só vem em TTM · DESDOBRAMENTO 2:1 em 2024 — VPA cai de 59,06 para 31,34 e as ações vão de 2.865 mi para 5.731 mi; é quebra COSMÉTICA e os múltiplos atravessam intactos',
+  GMAT3: 'Fonte: MCP Partnr (B3/CVM), coletado em 14/09/2026 · exercício 2026 = LTM (soma de 4 trimestres até 2T26) · P/L, P/VP e DY DERIVADOS (preço de fechamento do ano ÷ LPA e VPA do próprio exercício; proventos somados por data-ex) porque a série de valuation do Partnr só vem em TTM · ⚠️ o lucro de 2025 está inflado por crédito tributário não recorrente de R$ 511,9 mi (imposto POSITIVO, concentrado no 3T25: R$ 850,5 mi de lucro contra ~R$ 320 mi de trimestre normal) — o ROE de 17,65% daquele ano não é patamar operacional · JCP só a partir de 2024; 2021-2023 e 2026 até aqui sem provento',
   BMEB4: 'Fonte: MCP Partnr (B3/CVM) · banco: EBITDA, EBIT, dívida e EV/EBITDA não se aplicam · imposto positivo em 2021/2025/2026 = crédito tributário reconhecido, não erro',
 };
 

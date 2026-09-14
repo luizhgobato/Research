@@ -187,7 +187,7 @@ MOTOR = {
     **{t: 'SHOP' for t in ['ALOS3','MULT3']},
     # varejo → estavam SEM grupo desde que foram adicionadas em 13/09/2026, caíam no default
     # e ficavam sem preço justo nenhum.
-    **{t: 'VAREJO' for t in ['VIVA3','ASAI3']},
+    **{t: 'VAREJO' for t in ['VIVA3','ASAI3','GMAT3']},
     # industrial/serviço de lucro estável → E/P histórico
     **{t: 'IND' for t in ['LEVE3','SHUL4','FLRY3']},
 }
@@ -1172,6 +1172,7 @@ def teto_ep(t, A, pl_setor=None, com_pares=True):
         lpa = (_l / _p) if (_l and _l > 0 and _p) else None
     if not lpa or lpa <= 0: return None
     faixa_mult = None
+    rotulo_base = None   # None = âncora é a série da própria empresa
     if len(pls) >= 3:
         p25, alvo, p75, nfx = faixa_com_tendencia(pls, truncar=False)
         faixa_mult = (p25, p75)
@@ -1187,7 +1188,13 @@ def teto_ep(t, A, pl_setor=None, com_pares=True):
         # pedido do usuário: "toda empresa deve ter um preço justo com base no LPA × múltiplo".
         universo = pl_setor is None
         pl_setor = pl_setor or PL_SETOR['_UNIVERSO']
-        alvo = pl_setor; conv = 1; mediana_propria = pl_setor; mediana_propria = pl_setor
+        alvo = pl_setor; conv = 1; mediana_propria = pl_setor
+        rotulo_base = (f'o P/L mediano do UNIVERSO de empresas com série limpa ({alvo:.2f}x) — '
+                       f'{t} não tem série própria utilizável e o grupo '
+                       f'{MOTOR.get(t) or "—"} não tem 3 pares com série limpa'
+                       if universo else
+                       f'o P/L mediano dos PARES do grupo {MOTOR.get(t) or "—"} ({alvo:.2f}x) — '
+                       f'{t} não tem série própria utilizável')
         nota = (f'⚠️ Só {len(pls)} anos de P/L comparável' + (f' (quebra de série em {q})' if q else ' na base') + ', insuficiente. '
                 + (f'O grupo {MOTOR.get(t) or "—"} não tem par com série limpa, então o múltiplo '
                    f'vem do P/L mediano do UNIVERSO ({alvo:.1f}x). ' if universo else
@@ -1208,7 +1215,7 @@ def teto_ep(t, A, pl_setor=None, com_pares=True):
     # papéis é ancorada com a regra de ±25% e nem sempre cai no divisor que a fonte usou.
     # Partindo do lucro, a identidade fecha por construção.
     alvo0 = alvo
-    alvo, nota_pares, origem_mult = (alvo_com_pares(t, 'E/P', alvo, len(pls), A) if com_pares
+    alvo, nota_pares, origem_mult = (alvo_com_pares(t, 'E/P', alvo, len(pls), A, rotulo_base) if com_pares
                                       else (alvo, '', f'o E/P mediano da própria empresa ({alvo:.2f}x)'))
     if faixa_mult:
         faixa_mult = recentrar(faixa_mult[0], mediana_propria, faixa_mult[1], alvo)
@@ -2041,7 +2048,14 @@ def pl_setorial(H):
         if len(pls) >= 4:
             todas.append(st.median(pls))
             if m: por.setdefault(m, []).append(st.median(pls))
-    out = {k: st.median(v) for k, v in por.items() if v}
+    # ⚠️ MÍNIMO DE 3 PARES (14/09/2026). "Mediana do setor" com um par só não é mediana de
+    # setor nenhuma — é o múltiplo daquela empresa com outro nome, idiossincrasia inteira e
+    # zero média. Apareceu ao incluir a GMAT3: até então VAREJO não tinha ninguém com série
+    # limpa e ASAI3/VIVA3 caíam no _UNIVERSO (7,76x, 22 empresas); com a GMAT3 o grupo passou
+    # a ter EXATAMENTE UM membro e as duas herdaram os 12,18x dela — preço justo da ASAI3
+    # +57% e o da VIVA3 +57% sem que UM DADO das duas tivesse mudado. Abaixo de 3, o universo
+    # inteiro é referência pior que o setor certo e melhor que um par único.
+    out = {k: st.median(v) for k, v in por.items() if len(v) >= 3}
     if todas:
         out['_UNIVERSO'] = st.median(todas)
     return out
@@ -2149,7 +2163,7 @@ def serie_roe(t, A):
     return hoje, serie, ('FFO ÷ patrimônio' if shop else 'ROE')
 
 
-def alvo_com_pares(t, chave, alvo_proprio, n_anos=None, A=None):
+def alvo_com_pares(t, chave, alvo_proprio, n_anos=None, A=None, rotulo_base=None):
     """Múltiplo-alvo: a MEDIANA HISTÓRICA DA PRÓPRIA EMPRESA, ajustada pela rentabilidade.
     Devolve (alvo, nota, origem).
 
@@ -2197,7 +2211,12 @@ def alvo_com_pares(t, chave, alvo_proprio, n_anos=None, A=None):
             f'o múltiplo-alvo DECLARADO no relatório ({d[1]:.2f}x, contra '
             f'{alvo_proprio:.2f}x da própria série). {d[3]}')
 
-    proprio = f'o {nome} mediano da própria empresa{janela} ({alvo_proprio:.2f}x)'
+    # ⚠️ `rotulo_base` NÃO é enfeite. Sem ele esta linha afirmava "o P/L mediano da PRÓPRIA
+    # EMPRESA" para ASAI3 e VIVA3, que não têm série própria nenhuma e recebem o múltiplo do
+    # setor ou do universo pelo fallback do teto_ep. As duas exibiam o MESMO número (7,76x,
+    # depois 12,18x) descrito como se fosse de cada uma. É o mesmo defeito da seção 38.4: a
+    # tooltip contando uma conta diferente da que o motor fez.
+    proprio = rotulo_base or f'o {nome} mediano da própria empresa{janela} ({alvo_proprio:.2f}x)'
     if A is None:
         return alvo_proprio, '', proprio
 
