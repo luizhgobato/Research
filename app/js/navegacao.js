@@ -255,7 +255,12 @@ function secRegraMultiplo(r){
       <div class="rp-table-wrap"><table class="rp-table">
         <thead><tr><th>Cenário</th><th>${/fixo/.test(c.fundamento||'') ? 'Múltiplo' : 'Crescimento'}</th><th>${esc((c.fundamento||'LPA').replace(' (fixo)',''))} 2026</th><th>Preço justo</th><th>Premissa</th></tr></thead>
         <tbody>${linhas}</tbody>
-      </table></div>` : ''}
+      </table></div>` : `
+      <p class="rp-note" style="margin-top:1rem;"><strong>Sem os três cenários nesta empresa.</strong>
+         Eles exigem um fundamento em reais e uma contagem de papéis que reconcilie com ele — a base
+         não tem os dois para esta linha, e projetar sobre um número que não fecha produziria três
+         preços justos com aparência de precisão. O preço justo da coluna continua valendo: ele usa
+         o LPA que a base traz, sem projeção.</p>`}
     </div>`;
 }
 
