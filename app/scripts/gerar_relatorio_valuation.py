@@ -128,6 +128,69 @@ REGRA_PADRAO = ('P/L',
                 'a dívida financia o ativo operacional e distorce a comparação por lucro.')
 
 
+def fundamento_por_ano(t, A, M, chave, base_por_acao, g, anos):
+    """{ano: fundamento por ação}, projetado à taxa base — para a tabela de dividendos.
+
+    Pedido do usuário: "no item 8 faltou o LPA dos anos". A tabela de dividendos mostrava
+    ano, dividendo e DY com a coluna de LPA vazia, então não dava para ver QUE FRAÇÃO do
+    resultado está sendo distribuída — que é a única pergunta que importa numa projeção de
+    dividendo de 5 anos.
+    """
+    if not base_por_acao or not anos:
+        return None
+    rot = 'FFO por ação' if M['MOTOR'].get(t) == 'SHOP' else 'LPA'
+    out = []
+    for k, a in enumerate(anos):
+        v = base_por_acao * (1 + g / 100) ** k
+        out.append({'ano': a, 'valor': brl(v), 'bruto': v})
+    return {'rotulo': rot, 'taxa': f'{g:+.2f}%'.replace('.', ','), 'linhas': out}
+
+
+def origem_crescimento(t, A, M, chave, g_eff, premissa):
+    """Abre a conta da taxa de crescimento: a série, as variações ano a ano e o ajuste.
+
+    Pedido do usuário: "na imagem não consigo ver como você chegou no crescimento de 7,7,
+    qual o racional?". O relatório dizia só "regressão log do FFO da própria série" — que é
+    verdade e não é auditável. A taxa é METADE do preço justo (a outra é o múltiplo) e estava
+    aparecendo como rodapé de uma linha.
+    """
+    if M['MOTOR'].get(t) == 'SHOP':
+        pts = M['serie_ffo'](t, A)
+        rot = 'FFO'
+    else:
+        val, _q = M['anos_validos'](A)
+        pts = [(y, (A[y] or {}).get('lucrolin')) for y in val]
+        pts = [(y, v) for y, v in pts if v and v > 0]
+        rot = 'Lucro líquido'
+    if len(pts) < 3:
+        return None
+    linhas = []
+    for i, (y, v) in enumerate(pts):
+        var = ''
+        if i:
+            var = f'{(v/pts[i-1][1] - 1)*100:+.2f}%'.replace('.', ',')
+        linhas.append({'ano': str(y), 'valor': f'R$ {ptbr(f"{v/1e9:.2f}")} bi', 'variacao': var or '—'})
+    cap = M['CRESC_CAP']
+    bruto = M['_reg_log'](pts)
+    limitado = bruto is not None and abs(bruto) > cap
+    return {
+        'rotulo': rot,
+        'linhas': linhas,
+        'taxa': f'{g_eff:+.2f}%'.replace('.', ','),
+        'taxaBruta': (f'{bruto:+.2f}%'.replace('.', ',') if bruto is not None else '—'),
+        'limitado': bool(limitado),
+        'teto': f'{cap:.0f}%',
+        'metodo': premissa,
+        'porQue': (
+            'A taxa NÃO é a média das variações ano a ano nem a última delas: é a inclinação '
+            'de uma regressão sobre o logaritmo da série, que é o estimador de crescimento '
+            'COMPOSTO. Média simples de variações superestima quando a série oscila (a média '
+            'de +50% e −50% é 0%, mas quem viveu isso perdeu 25%); a última variação joga a '
+            'projeção inteira num único ano. A regressão usa todos os pontos e pesa cada um '
+            'igualmente no tempo.'),
+    }
+
+
 def faixa_do_multiplo(t, A, chave, M, mult):
     """(p25, p75) do múltiplo da PRÓPRIA empresa, recentrados no múltiplo aplicado.
 
@@ -430,6 +493,10 @@ def cenarios_lpa(t, r, M, A):
                       'crescimento': f'{g:+.1f}%'.replace('.', ','),
                       'multiplo': (f'{ptbr(f"{mx:.3f}")}' if chave == 'Paridade'
                                    else f'{ptbr(f"{mx:.2f}")}x'),
+                      # Pedido do usuário: "faltou uma coluna com FFO total, para eu saber
+                      # quanto é o total e não somente o LPA". O por-ação esconde a escala:
+                      # R$ 3,37 não diz se a empresa gera 1 bi ou 100 bi.
+                      'total': (f'R$ {ptbr(f"{v/1e9:.2f}")} bi' if chave != 'Paridade' else '—'),
                       'lpa': fmt_f(por_acao(v)),
                       'precoJusto': brl(pj),
                       'premissa': prem})
@@ -447,6 +514,7 @@ def cenarios_lpa(t, r, M, A):
                  else f'{brl(base_val)} ({rot_base})'),
         'amplitude': amp,
         'variaMultiplo': bool(faixa_m),
+        'origemCrescimento': origem_crescimento(t, A, M, chave, g_eff, premissa_base),
         'cenarios': saida,
     }
 
@@ -557,6 +625,9 @@ def bloco_valuation(t, r, M=None, A=None):
         # desta versão simplesmente não mostra os blocos, em vez de quebrar.
         'serieMultiplo': (serie_do_multiplo(t, A, met.get('chave'), M)
                           if (M and A and met.get('chave')) else None),
+        # Preenchido depois, em main(), porque depende dos anos que a tabela de dividendos
+        # do próprio relatório declara — que é dado escrito à mão, não derivado.
+        'fundamentoPorAno': None,
         'pares': (comparacao_pares(t, A, M, M['H_GLOBAL']) if (M and A and M.get('H_GLOBAL'))
                   else None),
     }
@@ -604,6 +675,17 @@ def main(alvos=None):
                 obj['cenariosLpa'] = cen
             if t in H:
                 obj['leituraDados'] = leitura_qualitativa(t, M, H[t])
+            # ── fundamento por ano, alinhado aos anos da tabela de dividendos ────────────
+            if cen and t in H:
+                mb = re.search(r'"projecaoDividendos".*?"tabela".*?"linhas": \[(.*?)\]',
+                               bloco, re.S)
+                anos = re.findall(r'"ano": "([^"]+)"', mb.group(1)) if mb else []
+                base_linha = next((x for x in cen['cenarios'] if x['cenario'] == 'Base'), None)
+                bpa = num_br((base_linha or {}).get('lpa', ''))
+                gtx = num_br((cen.get('origemCrescimento') or {}).get('taxa', '')) or 0.0
+                if anos and bpa:
+                    obj['fundamentoPorAno'] = fundamento_por_ano(
+                        t, H[t], M, obj.get('criterio'), bpa, gtx, anos)
         else:
             motivo = (r.get('nota') or 'sem motor aplicavel').split('||')[0].strip()
             obj = {'criterio': '—', 'metodos': [], 'origemMult': '', 'precoJusto': None,

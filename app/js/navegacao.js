@@ -161,7 +161,7 @@ function renderReportV2(body, r){
     ${v2LucroPreco(r)}
     ${v2Cenarios(r)}
     ${_v2num(v2Retorno(r), '9 · Quanto posso ganhar', '7 · Quanto posso ganhar')}
-    ${_v2num(secDividendos(r), '10 · 💰 Projeção de dividendos', '8 · 💰 Projeção de dividendos')}
+    ${_v2num(v2Dividendos(r), '10 · 💰 Projeção de dividendos', '8 · 💰 Projeção de dividendos')}
     ${v2Testes(r)}
     ${_v2num(secBlocoCopiavel(r), '14 · Bloco de veredito copiável', '10 · Bloco de veredito copiável')}
     <p style="font-size:11px;color:#999;text-align:center;padding:0.5rem 0 1rem;">Research para uso pessoal · Não constitui recomendação de investimento</p>
@@ -295,7 +295,8 @@ function v2LucroPreco(r){
         <div style="border-top:1px solid #e8e8f0;margin-top:8px;padding-top:8px;">
           <b>=</b> Preço justo &nbsp;→&nbsp; <strong style="font-size:19px;color:#0a5c35;">${esc(v.precoJusto)}</strong></div>
       </div>
-      <p class="rp-note"><strong>De onde vem o crescimento:</strong> ${esc(base.premissa||'—')}</p>
+      ${v2Crescimento(c.origemCrescimento)}
+      <p class="rp-note"><strong>Premissa declarada:</strong> ${esc(base.premissa||'—')}</p>
       ${pl.nota ? `<p class="rp-note">${esc(pl.nota)}</p>` : ''}
 
       ${verif ? `
@@ -320,11 +321,12 @@ function v2Cenarios(r){
       <tr${x.cenario==='Base' ? ' style="background:#f0fdf6;font-weight:600;"' : ''}>
         <td class="left"><strong>${esc(x.cenario)}</strong></td>
         <td class="rp-mono">${esc(x.crescimento)}</td>
+        <td class="rp-mono">${esc(x.total||'—')}</td>
         <td class="rp-mono">${esc(x.lpa)}</td>
         <td class="rp-mono">${esc(x.multiplo||c.multiplo)}</td>
         <td class="rp-mono" style="font-weight:700;">${esc(x.precoJusto)}</td>
       </tr>
-      <tr><td colspan="5" class="left" style="padding-top:0;border-bottom:1px solid #f0f0f0;">
+      <tr><td colspan="6" class="left" style="padding-top:0;border-bottom:1px solid #f0f0f0;">
         <span style="font-size:13px;color:#666;line-height:1.6;">${esc(x.premissa)}</span></td></tr>`).join('');
   return `
     <div class="rp-section">
@@ -341,7 +343,7 @@ function v2Cenarios(r){
           + 'não número inventado.'
         : 'Os três cenários variam só o crescimento; o múltiplo é o mesmo nos três.'}</p>
       <div class="rp-table-wrap" style="margin-top:0.9rem;"><table class="rp-table">
-        <thead><tr><th>Cenário</th><th>Crescimento</th><th>${esc(fund)} 2026</th><th>Múltiplo</th><th>Preço justo</th></tr></thead>
+        <thead><tr><th>Cenário</th><th>Crescimento</th><th>${esc(fund.replace(' por ação',''))} total</th><th>${esc(fund)}</th><th>Múltiplo</th><th>Preço justo</th></tr></thead>
         <tbody>${linhas}</tbody>
       </table></div>
     </div>`;
@@ -349,6 +351,78 @@ function v2Cenarios(r){
 
 // ── 6 · RETORNO ───────────────────────────────────────────────────────────────────────────
 function v2Retorno(r){ return secRetornoTotal(r); }
+
+// A conta da taxa de crescimento, aberta. "Na imagem não consigo ver como você chegou no
+// crescimento de 7,7, qual o racional?" — a taxa é metade do preço justo e aparecia como
+// rodapé de uma linha.
+function v2Crescimento(oc){
+  if(!oc) return '';
+  const linhas = (oc.linhas||[]).map(l => `
+      <tr><td class="left"><strong>${esc(l.ano)}</strong></td>
+          <td class="rp-mono">${esc(l.valor)}</td>
+          <td class="rp-mono">${esc(l.variacao)}</td></tr>`).join('');
+  return `
+      <div class="rp-section-title" style="margin-top:1.4rem;">De onde vem o crescimento de ${esc(oc.taxa)}</div>
+      <div class="rp-table-wrap" style="max-width:520px;"><table class="rp-table">
+        <thead><tr><th>Exercício</th><th>${esc(oc.rotulo)}</th><th>Variação a/a</th></tr></thead>
+        <tbody>${linhas}</tbody>
+        <tfoot><tr style="background:#f7f7f5;font-weight:700;">
+          <td class="left">Taxa aplicada</td><td class="rp-mono">${esc(oc.taxa)}</td>
+          <td style="font-size:12px;color:#666;">regressão log</td></tr></tfoot>
+      </table></div>
+      <p class="rp-note">${esc(oc.porQue)}</p>
+      ${oc.limitado ? `<p class="rp-note">⚠️ A regressão deu ${esc(oc.taxaBruta)} e foi <strong>limitada ao teto de ${esc(oc.teto)}</strong> — premissa declarada, não calibração.</p>` : ''}`;
+}
+
+// Tabela de dividendos com o fundamento do ano e o payout implícito. "No item 8 faltou o LPA
+// dos anos" — sem ele não dá para ver QUE FRAÇÃO do resultado está sendo distribuída, que é
+// a única pergunta que importa numa projeção de dividendo de 5 anos.
+function v2Dividendos(r){
+  const html = secDividendos(r);
+  const fpa = (r.valuation||{}).fundamentoPorAno;
+  const pd = r.projecaoDividendos;
+  if(!html || !fpa || !pd || !pd.tabela) return html;
+  const porAno = {}; (fpa.linhas||[]).forEach(l => porAno[l.ano] = l);
+  const linhas = (pd.tabela.linhas||[]).map(l => {
+    const f = porAno[l.ano];
+    const dv = _parseNumBR(l.divAcao);
+    const po = (f && f.bruto && dv) ? Math.round(dv/f.bruto*100) + '%' : '—';
+    return `<tr><td class="left"><strong>${esc(l.ano)}</strong></td>
+      <td class="rp-mono">${esc(f ? f.valor : '—')}</td>
+      <td class="rp-mono">${esc(l.divAcao)}</td>
+      <td class="rp-mono">${po}</td>
+      <td class="rp-mono">${esc(l.dy)}</td>
+      <td class="left" style="font-size:13px;color:#666;">${esc(l.premissa)}</td></tr>`;
+  }).join('');
+  const tabela = `
+      <div class="rp-table-wrap" style="margin-top:1rem;"><table class="rp-table">
+        <thead><tr><th>Ano</th><th>${esc(fpa.rotulo)}</th><th>Dividendo/ação</th>
+          <th>Payout implícito</th><th>DY</th><th>Premissa</th></tr></thead>
+        <tbody>${linhas}</tbody>
+      </table></div>
+      <p class="rp-note"><strong>${esc(fpa.rotulo)}</strong> projetado à taxa do cenário base
+        (${esc(fpa.taxa)} a.a.), a mesma da seção 6 — não é número novo. O <strong>payout
+        implícito</strong> é o dividendo dividido por ele.</p>
+      <p class="rp-note">⚠️ <strong>Confira contra o alerta acima.</strong> O payout implícito
+        desta tabela cai de 77% para 54% do FFO ao longo dos 5 anos. O alerta, escrito à mão em
+        15/08/2026, fala em normalizar a ~90% do AFFO — que, pelos próprios números dele
+        (135% sobre FFO = 152% sobre AFFO, logo AFFO ≈ 0,89 × FFO), daria ~80% do FFO. As duas
+        coisas não fecham: ou os dividendos projetados estão baixos, ou a referência de
+        normalização está. Os valores de dividendo são premissa escrita, não saída do motor.</p>`;
+  // Troca a tabela antiga pela nova, mantendo alerta, cards e o resto da seção.
+  // ⚠️ A classe é `rp-div-table-wrap`, não `rp-table-wrap` — a seção de dividendos tem estilo
+  // próprio. A primeira versão procurou a classe genérica, não achou nada, e devolveu o HTML
+  // intacto: a tabela continuou com a coluna "LPA estimado" vazia, exatamente o que o usuário
+  // tinha apontado. Falha silenciosa de `String.replace`, que não reclama quando não casa.
+  const novo = html.replace(/<div class="rp-div-table-wrap">[\s\S]*?<\/table><\/div>/,
+                            tabela.replace('rp-table-wrap', 'rp-div-table-wrap')
+                                  .replace('class="rp-table"', 'class="rp-div-table"'));
+  if (novo === html) return html;
+  // A nota de rodapé dizia "coluna LPA não se aplica" — agora aplica, com FFO por ação.
+  return novo.replace(/ALOS3 não opera com LPA como motor[^<]*—\s*coluna LPA não se aplica\./,
+    'A coluna traz o FFO por ação, não o LPA: shopping não se mede por lucro contábil (ver seção 4).');
+}
+
 
 // ── 7 · TESTES E DADOS ────────────────────────────────────────────────────────────────────
 // Recolhe num acordeão o que era bloco solto: descobertas, payout, receita, contexto de preço,
