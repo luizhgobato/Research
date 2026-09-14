@@ -316,6 +316,19 @@ def comparacao_pares(t, A, M, H):
         pr = co.get('preco')
         roe_med_v = st.median([v for _y, v in pares_roe]) if pares_roe else None
         vm = (pr * pap / 1e9) if (pap and pr) else None
+        # ── A CADEIA INTEIRA POR CONCORRENTE (14/09/2026) ────────────────────────────────
+        # Pedido do usuário: "aqui falta o ROE mediano usado para cada um". Ele estava na
+        # tabela, mas numa coluna chamada só "mediano" — órfã, logo depois de "FFO ÷
+        # patrimônio hoje", sem dizer de que é a mediana.
+        # Corrigido o rótulo E ampliado o que importa: a tabela mostrava o múltiplo APLICADO
+        # sem mostrar de onde ele saiu. Agora traz a ÂNCORA (mediana do próprio múltiplo na
+        # janela 2021→), o FATOR de ROE e o aplicado — a mesma cadeia que a seção 4 abre para
+        # a empresa do relatório, agora para cada concorrente. Sem isso o leitor compara
+        # 8,93x com 12,22x sem saber se a diferença é de rentabilidade ou de patamar
+        # histórico. São coisas diferentes e levam a conclusões opostas.
+        sm = serie_do_multiplo(o, H[o], mp[0]['chave'], M)
+        ancora = (sm or {}).get('mediana') or '—'
+        fator = ('—' if not (hoje and roe_med_v) else ptbr(f'{hoje/roe_med_v:.2f}'))
         linhas.append({
             # ⚠️ 'ativo', NÃO 'ticker'. A primeira versão usou 'ticker' e quebrou o próprio
             # gerador: `main` delimita cada relatório procurando a linha `"ticker": "XXX",`, e
@@ -326,6 +339,8 @@ def comparacao_pares(t, A, M, H):
             'ativo': o,
             'eu': o == t,
             'metodo': mp[0]['chave'],
+            'ancora': ancora,
+            'fator': fator,
             'multiplo': (f'{ptbr(mm[-1])}x' if mm else '—'),
             'roe': (f'{ptbr(f"{hoje:.1f}")}%' if hoje else '—'),
             'roeMed': (f'{ptbr(f"{roe_med_v:.1f}")}%' if roe_med_v is not None else '—'),

@@ -3596,3 +3596,33 @@ dividendos usa `rp-div-table-wrap` (estilo próprio). `String.replace` não recl
 casa — devolveu o HTML intacto e a tabela continuou com a coluna vazia, exatamente o que o
 usuário tinha apontado. Falha silenciosa; agora o código compara o resultado e só troca a nota
 de rodapé se a substituição de fato ocorreu.
+
+### 39.9 A tabela de pares mostra a cadeia inteira, não só o resultado (14/09/2026)
+
+> "Aqui falta o ROE mediano usado para cada um."
+
+O ROE mediano **estava** na tabela — numa coluna chamada só **"mediano"**, logo depois de
+"FFO ÷ patrimônio hoje", sem dizer de que era a mediana. Coluna órfã não é coluna: se o leitor
+precisa inferir o rótulo, o dado não está lá.
+
+Corrigido o cabeçalho e, mais importante, **ampliado o que a tabela mostra**. Ela trazia o
+múltiplo APLICADO sem dizer de onde ele saiu. Agora traz a cadeia toda, na ordem da conta:
+
+| Ativo | Método | Múltiplo mediano<br>*âncora 2021→* | FFO÷patrim.<br>*hoje* | FFO÷patrim.<br>*mediano* | Fator de ROE<br>*hoje ÷ mediano* | Múltiplo aplicado<br>*âncora × fator* |
+|---|---|---|---|---|---|---|
+| **ALOS3** | P/FFO | **8,13x** | 12,3% | 11,2% | **1,10** | **8,93x** |
+| MULT3 | P/FFO | **10,95x** | 23,8% | 21,3% | **1,12** | **12,22x** |
+
+**E a coluna nova responde uma pergunta que a tabela antiga deixava no ar.** O múltiplo da
+MULT3 é 37% maior que o da ALOS3 — mas o **fator de ROE das duas é praticamente o mesmo**
+(1,10 contra 1,12). Ou seja: a diferença **não vem da rentabilidade de hoje**, vem do
+**patamar histórico** em que cada uma negocia (8,13x contra 10,95x). São causas diferentes e
+levam a conclusões opostas — rentabilidade melhor é mérito operacional, patamar histórico
+maior pode ser reputação, liquidez ou contabilidade. Com só o múltiplo aplicado na tela, não
+dava para distinguir.
+
+**Duas tabelas, não uma de dez colunas.** A versão de uma tabela só media 1.266px numa caixa
+de 876px e rolava de lado — a comparação mais importante do relatório saindo metade da tela.
+Separada em **a conta** (7 colunas) e **porte, margem e alavancagem** (4 colunas). Mesmo assim
+a primeira ficou 7px maior que a caixa; `.rp-compacta` aperta o padding de 14px para 9px e
+resolve. Cabe inteira em 1024px e 1280px.

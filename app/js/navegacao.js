@@ -200,13 +200,24 @@ function v2Tese(r){
 function v2Pares(r){
   const p = (r.valuation||{}).pares;
   if(!p || !(p.linhas||[]).length) return '';
-  const linhas = p.linhas.map(l => `
-      <tr${l.eu ? ' style="background:#f0fdf6;font-weight:700;"' : ''}>
+  const destaque = l => l.eu ? ' style="background:#f0fdf6;font-weight:700;"' : '';
+  // ⚠️ DUAS TABELAS, não uma de dez colunas. A versão de uma tabela só media 1.266px numa
+  // caixa de 876px e rolava de lado — justamente a comparação mais importante do relatório
+  // ficando metade fora da tela. A primeira tabela é a CONTA (âncora × fator = aplicado); a
+  // segunda é CONTEXTO (porte, margem, alavancagem). São perguntas diferentes.
+  const conta = p.linhas.map(l => `
+      <tr${destaque(l)}>
         <td class="left">${esc(l.ativo)}${l.eu ? ' ←' : ''}</td>
-        <td class="rp-mono">${esc(l.multiplo)}</td>
         <td class="left" style="font-size:12px;color:#666;">${esc(l.metodo)}</td>
+        <td class="rp-mono">${esc(l.ancora||'—')}</td>
         <td class="rp-mono">${esc(l.roe)}</td>
         <td class="rp-mono">${esc(l.roeMed)}</td>
+        <td class="rp-mono">${esc(l.fator||'—')}</td>
+        <td class="rp-mono" style="font-weight:700;">${esc(l.multiplo)}</td>
+      </tr>`).join('');
+  const contexto = p.linhas.map(l => `
+      <tr${destaque(l)}>
+        <td class="left">${esc(l.ativo)}${l.eu ? ' ←' : ''}</td>
         <td class="rp-mono">${esc(l.mgLiq)}</td>
         <td class="rp-mono">${esc(l.divEbitda)}</td>
         <td class="rp-mono">${esc(l.valorMercado)}</td>
@@ -214,11 +225,30 @@ function v2Pares(r){
   return `
     <div class="rp-section">
       <div class="rp-section-title">3 · Como ela se compara com os concorrentes</div>
+
+      <div class="rp-section-title" style="margin-top:0;">A conta do múltiplo, lado a lado</div>
+      <div class="rp-table-wrap"><table class="rp-table rp-compacta">
+        <thead><tr>
+          <th>Ativo</th><th>Método</th>
+          <th>Múltiplo mediano<br><span style="font-weight:400;color:#888;">âncora 2021→</span></th>
+          <th>${esc(p.metricaRoe)}<br><span style="font-weight:400;color:#888;">hoje</span></th>
+          <th>${esc(p.metricaRoe)}<br><span style="font-weight:400;color:#888;">mediano</span></th>
+          <th>Fator de ROE<br><span style="font-weight:400;color:#888;">hoje ÷ mediano</span></th>
+          <th>Múltiplo aplicado<br><span style="font-weight:400;color:#888;">âncora × fator</span></th>
+        </tr></thead>
+        <tbody>${conta}</tbody>
+      </table></div>
+      <p class="rp-note">Lê-se da esquerda para a direita, na ordem em que a conta é feita:
+        <strong>múltiplo mediano × fator de ROE = múltiplo aplicado</strong>. É a mesma cadeia que a
+        seção 4 abre para esta empresa, agora para cada concorrente — sem ela dá para comparar dois
+        múltiplos aplicados sem saber se a diferença vem da <strong>rentabilidade de hoje</strong> ou do
+        <strong>patamar histórico</strong> em que cada uma negocia. São causas diferentes e levam a
+        conclusões opostas.</p>
+
+      <div class="rp-section-title" style="margin-top:1.4rem;">Porte, margem e alavancagem</div>
       <div class="rp-table-wrap"><table class="rp-table">
-        <thead><tr><th>Ativo</th><th>Múltiplo aplicado</th><th>Método</th>
-          <th>${esc(p.metricaRoe)} hoje</th><th>mediano</th><th>Margem líq.</th>
-          <th>Dív.Líq/EBITDA</th><th>Valor de mercado</th></tr></thead>
-        <tbody>${linhas}</tbody>
+        <thead><tr><th>Ativo</th><th>Margem líquida</th><th>Dív. Líq./EBITDA</th><th>Valor de mercado</th></tr></thead>
+        <tbody>${contexto}</tbody>
       </table></div>
       <p class="rp-note">Todos do grupo <strong>${esc(p.grupo)}</strong> do motor, com a rentabilidade medida
         na <strong>mesma definição</strong> (em shopping o numerador é o FFO, não o lucro contábil — por isso

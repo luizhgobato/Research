@@ -418,6 +418,11 @@ tbody td:has(.teto-tip){cursor:help;}
    `white-space:nowrap` que a .rp-table aplica a todo td, ela empurrava a tabela para fora do
    container e as colunas Múltiplo e Preço Justo — as duas que importam — saíam da tela. */
 #page-report .rp-table tbody td[colspan]{white-space:normal;}
+/* Tabela de muitas colunas (a cadeia do múltiplo por concorrente: 7 colunas). Com o padding
+   padrão ela media 883px numa caixa de 876 e rolava de lado por SETE PIXELS — a comparação
+   mais importante do relatório saindo da tela por nada. */
+#page-report .rp-compacta thead th{padding:9px 9px;}
+#page-report .rp-compacta tbody td{padding:9px 9px;}
 #page-report .rp-info-label{font-size:11px;}
 #page-report .rp-info-value{font-size:15px;}
 #page-report p{font-size:14px;line-height:1.7;}
