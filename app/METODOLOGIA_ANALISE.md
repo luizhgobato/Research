@@ -2622,3 +2622,26 @@ Por isso a série longa entra como **contexto na coluna**, e o preço justo cont
 anos, que cobre o regime de juro atual. A tooltip diz isso explicitamente, para a comparação entre
 as duas colunas ser a informação — se o múltiplo aplicado está dentro ou fora do que a empresa
 negociou na década.
+
+### 32.7 O overlay que cobria a linha inteira (14/09/2026)
+
+> "Agora o tooltip do retorno total está aparecendo em todas as colunas — cada coluna deve ter
+> seu tooltip."
+
+Regressão da unificação do tooltip (31.16 + 32.x). Quando o símbolo ⓘ foi removido, o `.teto-tip`
+virou `position:absolute; inset:0` para continuar cobrindo a célula e receber o `mouseover`. Só
+que `inset:0` posiciona em relação ao **ancestral posicionado mais próximo**, e o `<td>` é
+`position:static` — o ancestral virava o `<tr>`, que é `position:relative` desde o conserto do
+z-index do cabeçalho.
+
+Resultado medido: o span do Retorno Total esticava **2483px**, a largura da linha inteira, por
+cima de todas as colunas. E como o listener resolve `closest('td')` a partir do elemento sob o
+mouse, qualquer ponto da linha devolvia a célula 21.
+
+A regra `td:has(> .teto-tip){position:relative}` existia justamente para prender o overlay na
+célula e não bastou. Mas o overlay só era necessário enquanto o **gatilho era o próprio span** —
+desde que o gatilho virou a célula (o listener procura o marcador dentro dela), não há nada a
+cobrir. O `.teto-tip` virou um marcador de tamanho zero, igual ao `.col-tip`.
+
+Varredura de verificação nas 33 linhas: **559 tooltips abertos, zero spans escapando da célula,
+zero títulos repetidos dentro da mesma linha, zero células com marcador que não abrem.**

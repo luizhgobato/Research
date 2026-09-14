@@ -244,11 +244,21 @@ thead th:hover /* ⚠️ O BALÃO EM CSS (.col-tip::after) FOI REMOVIDO em 14/09
    continuar existindo e ocupando o lugar do número para o mouseover encontrá-lo — por isso
    `position:absolute;inset:0` em vez de largura zero: ele cobre a célula inteira, que vira
    o gatilho sem nenhuma mudança no JS. */
-tbody td:has(> .teto-tip){position:relative;cursor:help;}
+/* ⚠️ ERA position:absolute;inset:0 PARA COBRIR A CÉLULA, e cobria a LINHA INTEIRA.
+   `inset:0` posiciona em relação ao ancestral posicionado mais próximo — e o <td> é
+   position:static, então o ancestral virava o <tr> (position:relative, posto lá para o
+   z-index do hover). O span do Retorno Total esticava 2483px por cima de todas as colunas,
+   e o listener, ao resolver closest('td') a partir dele, devolvia a célula 21 em qualquer
+   ponto da linha: o tooltip do Retorno Total aparecia em todas as colunas.
+   A regra `td:has(> .teto-tip){position:relative}` existia para evitar isso e não bastou —
+   o overlay só era necessário enquanto o gatilho era o próprio span. Desde que o gatilho
+   virou a CÉLULA (o listener procura o marcador dentro dela), cobrir coisa nenhuma é
+   necessário: vira um marcador de tamanho zero, igual ao .col-tip. */
+tbody td:has(.teto-tip){cursor:help;}
 .teto-tip{
-  position:absolute;inset:0;
+  display:inline;position:static;
+  width:0;height:0;margin:0;padding:0;border-radius:0;
   font-size:0;line-height:0;color:transparent;background:none;
-  margin:0;padding:0;border-radius:0;
 }
 #cellTipPop{
   position:fixed;z-index:99999;pointer-events:none;
