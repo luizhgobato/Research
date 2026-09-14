@@ -399,6 +399,65 @@ tbody td:has(.teto-tip){cursor:help;}
 .rp-vf-value{font-size:13px;font-weight:600;color:#fff;}
 .rp-vf-value.green{color:#4ecdc4;}.rp-vf-value.red{color:#ff6b6b;}.rp-vf-value.yellow{color:#ffd93d;}
 .rp-note{font-size:11px;color:#aaa;margin-top:6px;font-style:italic;}
+
+/* ══ TIPOGRAFIA DO RELATÓRIO — 14/09/2026 ════════════════════════════════════════════════
+   Pedido do usuário: "as letras estão pequenas, quase não dá para enxergar, principalmente
+   o que é observação que você escreveu, que tem um monte por sinal".
+   Ele tem razão nas duas partes. `.rp-note` era 11px, #aaa e itálico — cinza-claro itálico em
+   11px é o que se usa para RODAPÉ LEGAL, não para o racional de uma conta de valuation. E o
+   relatório vive de observação: é ali que mora o porquê de cada número.
+   Escopo em #page-report para não mexer nas páginas de carteira, que usam as mesmas classes
+   em contexto de planilha densa. */
+#page-report .rp-note{font-size:13px;color:#4a4a4a;font-style:normal;line-height:1.65;margin-top:8px;}
+#page-report .rp-section{padding:1.5rem 1.75rem;margin-bottom:1.5rem;}
+#page-report .rp-section-title{font-size:13px;color:#555;letter-spacing:0.06em;margin-bottom:1.1rem;}
+#page-report .rp-table{font-size:14px;}
+#page-report .rp-table thead th{font-size:12px;padding:11px 14px;}
+#page-report .rp-table tbody td{padding:11px 14px;}
+/* A linha de PREMISSA de cada cenário é texto corrido dentro de um colspan. Com o
+   `white-space:nowrap` que a .rp-table aplica a todo td, ela empurrava a tabela para fora do
+   container e as colunas Múltiplo e Preço Justo — as duas que importam — saíam da tela. */
+#page-report .rp-table tbody td[colspan]{white-space:normal;}
+#page-report .rp-info-label{font-size:11px;}
+#page-report .rp-info-value{font-size:15px;}
+#page-report p{font-size:14px;line-height:1.7;}
+#page-report li{font-size:14px;line-height:1.7;}
+/* Parágrafos que trazem font-size:12px inline vêm de antes desta mudança — o inline vence a
+   folha, então a regra abaixo só alcança os que NÃO declaram tamanho. Os gerados a partir de
+   agora não declaram. */
+#page-report .rp-section p[style*="font-size:12px"]{font-size:14px!important;}
+#page-report .rp-section p[style*="font-size:11px"]{font-size:13px!important;color:#4a4a4a!important;}
+
+/* ── DESTAQUE DO MÚLTIPLO ──────────────────────────────────────────────────────────────
+   "O racional do múltiplo está pequeno como uma observação, mas é uma informação
+   extremamente relevante." É a variável que, junto com o lucro projetado, define o preço
+   justo inteiro. Ganha caixa própria, borda e corpo de texto de leitura. */
+#page-report .rp-destaque{
+  background:linear-gradient(180deg,#f8f7ff 0%,#fdfdff 100%);
+  border:1px solid #ddd9f5;border-left:4px solid #6366f1;border-radius:10px;
+  padding:1.1rem 1.3rem;margin:1rem 0;
+}
+#page-report .rp-destaque .rp-destaque-topo{
+  font-size:12px;font-weight:700;color:#4f46e5;text-transform:uppercase;
+  letter-spacing:0.07em;margin-bottom:8px;
+}
+#page-report .rp-destaque .rp-conta{
+  font-size:18px;font-weight:700;color:#1a1a2e;line-height:1.5;margin:6px 0 10px;
+}
+#page-report .rp-destaque p{font-size:14px;line-height:1.7;color:#3a3a4a;margin:0;}
+#page-report .rp-formula{
+  font-size:15px;line-height:2;color:#1a1a2e;background:#fff;border:1px solid #e8e8f0;
+  border-radius:8px;padding:0.9rem 1.1rem;margin:0.8rem 0;
+}
+#page-report .rp-formula b{color:#4f46e5;}
+/* Faixa de cenários: barra visual do intervalo conservador → otimista. */
+#page-report .rp-faixa{display:flex;align-items:stretch;gap:0;margin:0.9rem 0 0.3rem;
+  border-radius:8px;overflow:hidden;border:1px solid #e8e8e8;}
+#page-report .rp-faixa div{flex:1;padding:10px 12px;font-size:13px;text-align:center;}
+#page-report .rp-faixa .fx-lo{background:#fff4f4;color:#b91c1c;}
+#page-report .rp-faixa .fx-md{background:#f0fdf6;color:#0a5c35;font-weight:700;}
+#page-report .rp-faixa .fx-hi{background:#f2f7ff;color:#1d4ed8;}
+#page-report .rp-faixa b{display:block;font-size:17px;margin-top:3px;}
 .rp-fonte{font-size:10px;color:#ccc;margin-top:6px;}
 .rp-muted{color:#bbb;}.rp-mono{font-family:monospace;}.rp-estim{color:#856404;font-size:10px;}
 .rp-bold{font-weight:600;}

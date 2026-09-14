@@ -84,6 +84,11 @@ function copiarBloco(btnEl, raw){
 // 12 Teste do payout · 13 Dados coletados · 14 Bloco copiável
 // ══════════════════════════════════════════════════════
 function renderReportCompleto(body, r){
+  // ⚠️ GATE DO MODELO NOVO (14/09/2026). Só quem tem `valuation.serieMultiplo` — hoje apenas
+  // a ALOS3, porque o gerador roda com argumento — entra no layout novo. Os outros 13
+  // continuam exatamente como estavam, para dar para comparar os dois lado a lado antes de
+  // replicar. Ver o cabeçalho de renderReportV2.
+  if (r && r.valuation && r.valuation.serieMultiplo) return renderReportV2(body, r);
   body.innerHTML = `
     ${secHeader(r)}
     ${secVeredicto(r)}
@@ -107,6 +112,264 @@ function renderReportCompleto(body, r){
 }
 
 function esc(s){ return (s==null?'':String(s)); }
+
+// ══════════════════════════════════════════════════════════════════════════════════════════
+// MODELO NOVO DE RELATÓRIO — 14/09/2026
+//
+// Pedido do usuário, ponto a ponto, e onde cada um foi atendido:
+//
+//   "temos muitos blocos no relatório, precisamos organizar melhor" / "tem itens que são
+//   parecidos e podem ser melhor organizados: projeção de lucro, valuation, a regra, quanto
+//   posso ganhar"  →  de 15 blocos para 7. Os quatro que ele citou eram QUATRO CAIXAS
+//   contando a MESMA história em pedaços — viraram duas: "O múltiplo" e "Do lucro ao preço".
+//
+//   "o racional do múltiplo está pequeno como uma observação, mas é uma informação
+//   extremamente relevante"  →  ganhou SEÇÃO PRÓPRIA, a primeira depois da tese, com caixa
+//   de destaque e corpo de texto de leitura em vez de nota de rodapé.
+//
+//   "quero acrescentar o ROE e P/L histórico que está sendo utilizado, quebrado por ano"
+//   →  tabela ano a ano dentro da seção do múltiplo, com a mediana conferível na tela.
+//
+//   "os cenários estão muito próximos... dois centavos de diferença não faz diferença"
+//   →  os cenários passaram a mover o múltiplo TAMBÉM (ver faixa_do_multiplo no gerador).
+//   Na ALOS3 a amplitude foi de 12% para 71%.
+//
+//   "sinto falta de uma análise qualitativa, já havia pedido, e também comparação com os
+//   concorrentes"  →  seção 1 (qualitativa, escrita) e seção 2 (tabela de pares, derivada).
+//
+//   "as letras estão pequenas, quase não dá para enxergar"  →  css/styles.css, bloco
+//   #page-report.
+//
+// ⚠️ SÓ A ALOS3 ENTRA AQUI, e é de propósito: "faça essas alterações somente na Allos,
+// depois replicaremos". O gate é `valuation.serieMultiplo`, que só o gerador rodado com
+// argumento produz. Os outros 13 relatórios caem em renderReportCompleto, intactos, para dar
+// para comparar os dois modelos lado a lado.
+// ══════════════════════════════════════════════════════════════════════════════════════════
+
+// Renumera o título de uma seção REAPROVEITADA do modelo antigo. Elas trazem a numeração
+// de lá (9, 10, 14) e são compartilhadas com os 13 relatórios que ainda usam o layout
+// original — mexer no título na origem quebraria aqueles. A troca é feita aqui, na montagem.
+function _v2num(html, de, para){ return html ? html.replace(de, para) : ''; }
+
+function renderReportV2(body, r){
+  body.innerHTML = `
+    ${secHeader(r)}
+    ${secVeredicto(r)}
+    ${v2Tese(r)}
+    ${v2Pares(r)}
+    ${v2Multiplo(r)}
+    ${v2LucroPreco(r)}
+    ${v2Cenarios(r)}
+    ${_v2num(v2Retorno(r), '9 · Quanto posso ganhar', '7 · Quanto posso ganhar')}
+    ${_v2num(secDividendos(r), '10 · 💰 Projeção de dividendos', '8 · 💰 Projeção de dividendos')}
+    ${v2Testes(r)}
+    ${_v2num(secBlocoCopiavel(r), '14 · Bloco de veredito copiável', '10 · Bloco de veredito copiável')}
+    <p style="font-size:11px;color:#999;text-align:center;padding:0.5rem 0 1rem;">Research para uso pessoal · Não constitui recomendação de investimento</p>
+  `;
+}
+
+// ── 1 · A TESE ────────────────────────────────────────────────────────────────────────────
+// Junta o que antes eram quatro caixas separadas (Pontos a favor/Riscos, Encaixe na carteira,
+// Classificação setorial e a análise qualitativa nova). São todas resposta à mesma pergunta:
+// que empresa é esta e por que ela estaria na carteira.
+function v2Tese(r){
+  const q = r.qualitativa;
+  const tese = (r.tese||[]).map(x => `<li>${esc(x)}</li>`).join('');
+  const riscos = (r.riscos||[]).map(x => `<li>${esc(x)}</li>`).join('');
+  const cl = r.classificacao || {};
+  const blocosQ = q ? (q.blocos||[]).map(b => `
+      <div style="margin-bottom:1.1rem;">
+        <div style="font-size:14px;font-weight:700;color:#1a1a2e;margin-bottom:5px;">${esc(b.titulo)}</div>
+        <p style="margin:0;color:#3a3a4a;">${esc(b.texto)}</p>
+      </div>`).join('') : '';
+  return `
+    <div class="rp-section">
+      <div class="rp-section-title">2 · A tese</div>
+      ${q ? `<p style="font-size:16px;line-height:1.65;color:#1a1a2e;font-weight:600;margin:0 0 1.2rem;">${esc(q.resumo)}</p>` : ''}
+      ${blocosQ}
+      <div class="rp-bull-bear">
+        <div class="rp-bull"><div class="rp-bb-title">A favor</div><ul>${tese}</ul></div>
+        <div class="rp-bear"><div class="rp-bb-title">Riscos</div><ul>${riscos}</ul></div>
+      </div>
+      ${r.encaixeCarteira ? `<p class="rp-note"><strong>Encaixe na carteira:</strong> ${esc(r.encaixeCarteira)}</p>` : ''}
+      ${cl.setor ? `<p class="rp-note"><strong>Classificação:</strong> ${esc(cl.setor)}${cl.perfil ? ' · ' + esc(cl.perfil) : ''}${cl.racional ? ' — ' + esc(cl.racional) : ''}</p>` : ''}
+    </div>`;
+}
+
+// ── 2 · COMO ELA SE COMPARA ───────────────────────────────────────────────────────────────
+function v2Pares(r){
+  const p = (r.valuation||{}).pares;
+  if(!p || !(p.linhas||[]).length) return '';
+  const linhas = p.linhas.map(l => `
+      <tr${l.eu ? ' style="background:#f0fdf6;font-weight:700;"' : ''}>
+        <td class="left">${esc(l.ativo)}${l.eu ? ' ←' : ''}</td>
+        <td class="rp-mono">${esc(l.multiplo)}</td>
+        <td class="left" style="font-size:12px;color:#666;">${esc(l.metodo)}</td>
+        <td class="rp-mono">${esc(l.roe)}</td>
+        <td class="rp-mono">${esc(l.roeMed)}</td>
+        <td class="rp-mono">${esc(l.mgLiq)}</td>
+        <td class="rp-mono">${esc(l.divEbitda)}</td>
+        <td class="rp-mono">${esc(l.valorMercado)}</td>
+      </tr>`).join('');
+  return `
+    <div class="rp-section">
+      <div class="rp-section-title">3 · Como ela se compara com os concorrentes</div>
+      <div class="rp-table-wrap"><table class="rp-table">
+        <thead><tr><th>Ativo</th><th>Múltiplo aplicado</th><th>Método</th>
+          <th>${esc(p.metricaRoe)} hoje</th><th>mediano</th><th>Margem líq.</th>
+          <th>Dív.Líq/EBITDA</th><th>Valor de mercado</th></tr></thead>
+        <tbody>${linhas}</tbody>
+      </table></div>
+      <p class="rp-note">Todos do grupo <strong>${esc(p.grupo)}</strong> do motor, com a rentabilidade medida
+        na <strong>mesma definição</strong> (em shopping o numerador é o FFO, não o lucro contábil — por isso
+        a linha lê alto para os dois). Não há coluna de preço justo aqui de propósito: cada empresa tem o seu,
+        calculado sobre um fundamento diferente, e comparar dois desses números não diz nada.</p>
+    </div>`;
+}
+
+// ── 3 · O MÚLTIPLO ────────────────────────────────────────────────────────────────────────
+// A seção que o usuário pediu para destacar. Era uma linha de observação dentro de "8b".
+function v2Multiplo(r){
+  const v = r.valuation || {};
+  const s = v.serieMultiplo;
+  if(!s) return '';
+  const linhas = (s.linhas||[]).map(l => `
+      <tr>
+        <td class="left"><strong>${esc(l.ano)}</strong></td>
+        <td class="rp-mono">${esc(l.preco)}</td>
+        <td class="rp-mono">${esc(l.fundamento)}</td>
+        <td class="rp-mono" style="font-weight:700;">${esc(l.multiplo)}</td>
+        <td class="rp-mono">${esc(l.roe)}</td>
+      </tr>`).join('');
+  const conta = (v.metodos||[{}])[0].metodo || '';
+  return `
+    <div class="rp-section">
+      <div class="rp-section-title">4 · O múltiplo — a variável que define metade do preço</div>
+
+      <div class="rp-destaque">
+        <div class="rp-destaque-topo">Múltiplo aplicado</div>
+        <div class="rp-conta">${esc(conta)} = <span style="color:#0a5c35;">${esc(v.precoJusto)}</span></div>
+        <p>${esc(v.origemMult)}</p>
+      </div>
+
+      <p style="margin-top:1.3rem;"><strong>Por que ${esc(v.regraMetodo)} e não outro múltiplo:</strong>
+        ${esc(v.regraPorque)}</p>
+
+      <div class="rp-section-title" style="margin-top:1.4rem;">A série que produz a âncora, ano a ano</div>
+      <div class="rp-table-wrap"><table class="rp-table">
+        <thead><tr><th>Exercício</th><th>Preço</th><th>${esc(s.metrica === 'P/FFO' ? 'FFO' : 'Lucro')}</th>
+          <th>${esc(s.metrica)}</th><th>${esc(s.metricaRoe)}</th></tr></thead>
+        <tbody>${linhas}</tbody>
+        <tfoot><tr style="background:#f7f7f5;font-weight:700;">
+          <td class="left">Mediana</td><td>—</td><td>—</td>
+          <td class="rp-mono">${esc(s.mediana)}</td><td class="rp-mono">${esc(s.roeMediano)}</td>
+        </tr></tfoot>
+      </table></div>
+      <p class="rp-note">É esta mediana que ancora o preço justo, corrigida pela rentabilidade de hoje
+        (<strong>${esc(s.roeHoje)}</strong> contra <strong>${esc(s.roeMediano)}</strong> de mediana do período).
+        O múltiplo do setor <strong>não entra</strong> desde 14/09/2026 — quem faz esse papel é o ajuste de ROE.</p>
+      ${s.quebra ? `<p class="rp-note">⚠️ ${esc(s.quebra)}</p>` : ''}
+    </div>`;
+}
+
+// ── 4 · DO LUCRO AO PREÇO ─────────────────────────────────────────────────────────────────
+// Funde "7 · Projeção de lucro" e "8 · Valuation". "Precisamos ter clareza na projeção de
+// lucro, o LPA e o múltiplo" — a fórmula aparece inteira, com cada peça nomeada.
+function v2LucroPreco(r){
+  const v = r.valuation || {};
+  const c = v.cenariosLpa || {};
+  const pl = r.projecaoLucro || {};
+  const base = (c.cenarios||[]).find(x => x.cenario === 'Base') || {};
+  const fund = (c.fundamento||'LPA').replace(' (fixo)','');
+  const verif = (v.verificacao||[]).map(m => `
+      <tr><td class="left">${esc(m.metodo)}</td><td class="rp-mono">${esc(m.precoJusto)}</td></tr>`).join('');
+  return `
+    <div class="rp-section">
+      <div class="rp-section-title">5 · Do lucro projetado ao preço justo</div>
+
+      <div class="rp-formula">
+        <div><b>1.</b> Ponto de partida &nbsp;→&nbsp; <strong>${esc(c.base||'—')}</strong></div>
+        <div><b>2.</b> Crescimento aplicado &nbsp;→&nbsp; <strong>${esc(base.crescimento||'—')}</strong></div>
+        <div><b>3.</b> ${esc(fund)} projetado &nbsp;→&nbsp; <strong>${esc(base.lpa||'—')}</strong></div>
+        <div><b>4.</b> Múltiplo &nbsp;→&nbsp; <strong>${esc(c.multiplo||'—')}</strong></div>
+        <div style="border-top:1px solid #e8e8f0;margin-top:8px;padding-top:8px;">
+          <b>=</b> Preço justo &nbsp;→&nbsp; <strong style="font-size:19px;color:#0a5c35;">${esc(v.precoJusto)}</strong></div>
+      </div>
+      <p class="rp-note"><strong>De onde vem o crescimento:</strong> ${esc(base.premissa||'—')}</p>
+      ${pl.nota ? `<p class="rp-note">${esc(pl.nota)}</p>` : ''}
+
+      ${verif ? `
+      <div class="rp-section-title" style="margin-top:1.4rem;">Verificação — não entra na conta</div>
+      <div class="rp-table-wrap"><table class="rp-table">
+        <thead><tr><th>Método</th><th>Daria</th></tr></thead><tbody>${verif}</tbody>
+      </table></div>
+      <p class="rp-note">Réguas diferentes, calculadas só para comparação. O preço justo usa
+        <strong>um</strong> método, nunca a mediana de vários — ver METODOLOGIA_ANALISE.md seção 31.</p>` : ''}
+    </div>`;
+}
+
+// ── 5 · CENÁRIOS ──────────────────────────────────────────────────────────────────────────
+function v2Cenarios(r){
+  const c = (r.valuation||{}).cenariosLpa;
+  if(!c || !(c.cenarios||[]).length) return '';
+  const fund = (c.fundamento||'LPA').replace(' (fixo)','');
+  const cen = c.cenarios;
+  const lo = cen.find(x=>x.cenario==='Conservador')||{}, md = cen.find(x=>x.cenario==='Base')||{},
+        hi = cen.find(x=>x.cenario==='Otimista')||{};
+  const linhas = cen.map(x => `
+      <tr${x.cenario==='Base' ? ' style="background:#f0fdf6;font-weight:600;"' : ''}>
+        <td class="left"><strong>${esc(x.cenario)}</strong></td>
+        <td class="rp-mono">${esc(x.crescimento)}</td>
+        <td class="rp-mono">${esc(x.lpa)}</td>
+        <td class="rp-mono">${esc(x.multiplo||c.multiplo)}</td>
+        <td class="rp-mono" style="font-weight:700;">${esc(x.precoJusto)}</td>
+      </tr>
+      <tr><td colspan="5" class="left" style="padding-top:0;border-bottom:1px solid #f0f0f0;">
+        <span style="font-size:13px;color:#666;line-height:1.6;">${esc(x.premissa)}</span></td></tr>`).join('');
+  return `
+    <div class="rp-section">
+      <div class="rp-section-title">6 · Cenários${c.amplitude ? ` — amplitude de ${esc(c.amplitude)}` : ''}</div>
+      <div class="rp-faixa">
+        <div class="fx-lo">Conservador<b>${esc(lo.precoJusto||'—')}</b></div>
+        <div class="fx-md">Base<b>${esc(md.precoJusto||'—')}</b></div>
+        <div class="fx-hi">Otimista<b>${esc(hi.precoJusto||'—')}</b></div>
+      </div>
+      <p class="rp-note">${c.variaMultiplo
+        ? 'Os três cenários movem <strong>as duas</strong> variáveis juntas — o fundamento e o múltiplo —, '
+          + 'porque é assim que o mercado se move: múltiplo comprime justamente quando o resultado decepciona. '
+          + 'As pontas do múltiplo são o percentil 25 e 75 do que a <strong>própria empresa já negociou</strong>, '
+          + 'não número inventado.'
+        : 'Os três cenários variam só o crescimento; o múltiplo é o mesmo nos três.'}</p>
+      <div class="rp-table-wrap" style="margin-top:0.9rem;"><table class="rp-table">
+        <thead><tr><th>Cenário</th><th>Crescimento</th><th>${esc(fund)} 2026</th><th>Múltiplo</th><th>Preço justo</th></tr></thead>
+        <tbody>${linhas}</tbody>
+      </table></div>
+    </div>`;
+}
+
+// ── 6 · RETORNO ───────────────────────────────────────────────────────────────────────────
+function v2Retorno(r){ return secRetornoTotal(r); }
+
+// ── 7 · TESTES E DADOS ────────────────────────────────────────────────────────────────────
+// Recolhe num acordeão o que era bloco solto: descobertas, payout, receita, contexto de preço,
+// leitura dos dados e dados coletados. Continua tudo lá — deixa de disputar a atenção.
+function v2Testes(r){
+  const partes = [secDescobertas(r), secTestePayout(r), secReceita(r), secContextoPreco(r),
+                  secLeituraDados(r), secDadosColetados(r)].filter(Boolean).join('');
+  if(!partes) return '';
+  return `
+    <div class="rp-section">
+      <div class="rp-section-title">9 · Testes, dados e verificações</div>
+      <p class="rp-note" style="margin-top:0;">Tudo o que sustenta os números acima, recolhido aqui para não
+        disputar atenção com a tese. Clique para abrir.</p>
+      <details style="margin-top:0.6rem;">
+        <summary style="cursor:pointer;font-size:14px;font-weight:600;color:#4f46e5;padding:6px 0;">
+          Abrir testes de qualidade, payout, receita, contexto de preço e dados coletados</summary>
+        <div style="margin-top:0.8rem;">${partes}</div>
+      </details>
+    </div>`;
+}
+
 
 function secHeader(r){
   return `
