@@ -14,14 +14,14 @@ function calcularRanking(){
 
   const dados = rows.map(row => {
     const cells = row.querySelectorAll('td');
-    const margem = parseCell(cells, 20);
+    const margem = parseCell(cells, 21);
     const plHist = parseCell(cells, 14);
-    const plProj = parseCell(cells, 12);
+    const plProj = parseCell(cells, 13);   // P/L ATUAL — era 12 (DY médio 10a), índice defasado
     const desvioPL = (plHist > 0 && plProj > 0) ? ((plHist - plProj) / plHist) * 100 : null;
     const dyRaw = parseFloat(row.dataset.dyProj) || 0;
     const dyProj = dyRaw > 0 ? dyRaw * 100 : null;
-    const roe = parseCell(cells, 16);
-    const divVal = parseCell(cells, 17);
+    const roe = parseCell(cells, 15);      // ROE atual — era 16, índice defasado
+    const divVal = parseCell(cells, 17);   // Dív.Líq/EBITDA — 16→17 com a coluna de ROE médio
     return { row, margem, desvioPL, dyProj, roe, divVal };
   });
 

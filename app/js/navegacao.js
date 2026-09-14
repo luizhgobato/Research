@@ -244,10 +244,13 @@ function secRegraMultiplo(r){
       <div class="rp-section-title">8b · A regra desta empresa</div>
       <div class="rp-info-grid">
         <div class="rp-info-item"><div class="rp-info-label">Método que decide</div><div class="rp-info-value">${esc(v.regraMetodo)}</div></div>
-        <div class="rp-info-item"><div class="rp-info-label">Grupo de pares</div><div class="rp-info-value">${esc(v.regraGrupo)}</div></div>
+        <div class="rp-info-item"><div class="rp-info-label">Grupo (só fallback)</div><div class="rp-info-value">${esc(v.regraGrupo)}</div></div>
       </div>
       <p class="rp-note" style="margin-top:0.8rem;"><strong>Por que este método:</strong> ${esc(v.regraPorque)}</p>
-      ${v.origemMult ? `<p class="rp-note"><strong>De onde vem o múltiplo:</strong> ${esc(v.origemMult)}.</p>` : ''}
+      ${v.origemMult ? `<p class="rp-note"><strong>De onde vem o múltiplo:</strong> ${esc(v.origemMult.replace(/\.$/, ''))}.</p>` : ''}
+      <p class="rp-note" style="font-size:11px;color:#666;">${/DECLARADO/.test(v.origemMult || '')
+        ? 'Este múltiplo foi DECLARADO no relatório e prevalece sobre a estatística — é a única exceção à regra geral. Nas demais empresas a âncora é a mediana do próprio múltiplo na janela 2021→, corrigida por (ROE atual ÷ ROE médio do período), limitada a ±30%.'
+        : 'Desde 14/09/2026 o múltiplo do SETOR não entra no preço justo. A âncora é a mediana do próprio múltiplo na janela 2021→, corrigida por (ROE atual ÷ ROE médio do período), limitada a ±30%. O grupo acima só é usado como fallback quando a empresa não tem série própria utilizável.'}</p>
       ${c ? `
       <div class="rp-section-title" style="font-size:12px;margin-top:1.2rem;">${/fixo/.test(c.fundamento||'') ? esc(c.fundamento.replace(' (fixo)','')) + ' — três cenários de múltiplo' : esc(c.fundamento||'LPA') + ' projetado 2026 — três cenários'}</div>
       <p class="rp-note" style="margin-bottom:0.6rem;">Todos partem do mesmo lucro-base (<strong>${esc(c.base)}</strong>)

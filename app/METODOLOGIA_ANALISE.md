@@ -2705,3 +2705,131 @@ têm análise escrita. Elas recebem a leitura derivada, não um texto plausível
 Quando o fundamento não fecha com a contagem de papéis (ROXO34, BDR sem lucro em reais na base), os
 três cenários **não são exibidos** e a seção diz por quê, em vez de mostrar três preços com
 aparência de precisão.
+
+---
+
+## 34. O múltiplo sai dos pares e passa a ser a própria série ajustada pelo ROE (14/09/2026)
+
+Pedido do usuário, textual:
+
+> "Para a conta de múltiplo, vamos levar em consideração somente os últimos 6 anos da média de P/L
+> que a empresa foi negociada. Mas temos que levar em consideração o ROE médio do período também.
+> Não vamos mais levar em consideração o múltiplo do setor."
+
+E, no mesmo dia:
+
+> "Acrescente uma coluna de ROE médio — ou seja, teremos P/L atual, P/L médio, ROE atual e ROE médio."
+> "Para o P/L médio e ROE médio vamos manter desde 2021 para cá."
+
+### 34.1 O que mudou
+
+Antes (13/09) o múltiplo-alvo era a **média entre a mediana da própria empresa e a mediana dos
+pares do grupo**. Agora é:
+
+```
+múltiplo-alvo = mediana do próprio múltiplo (janela 2021→) × ajuste de ROE
+ajuste de ROE = ROE atual ÷ ROE mediano do período,  limitado a [0,70 ; 1,30]
+```
+
+O múltiplo do setor **não entra mais no preço justo**. Ele sobrevive em um lugar só: o *fallback*
+de quem não tem série própria utilizável (menos de 3 anos comparáveis, ou quebra de série que
+invalidou o histórico). Um múltiplo DECLARADO em relatório (`MULTIPLO_DECLARADO`, seção 32)
+continua prevalecendo sobre tudo.
+
+### 34.2 A evidência que essa decisão contraria, registrada
+
+`scripts/backtest_pares.py` mediu, em 54 observações, a média (própria + pares) em **+14,1 p.p.**
+contra as duas pontas isoladas, com p=0,040. A âncora própria **sozinha** foi a que deu negativo:
+**−1,8 p.p.**, p=0,549. A mudança vai contra esse número e isso fica escrito aqui porque o projeto
+não apaga medição que incomoda.
+
+O argumento que a decisão ganha: a mediana do segmento mistura empresas com rentabilidade e risco
+diferentes. O **BPAC11** é o caso limpo — P/L próprio de 39,4x contra 7,5x dos bancos, e a média
+cortava a diferença pela metade sem que nada no negócio justificasse o corte.
+
+O que o ROE entra para fazer é **substituir a informação que os pares traziam**. Pela relação de
+Gordon, `P/L = payout ÷ (Ke − g)` e `g = ROE × retenção`: mais ROE significa mais crescimento
+sustentável e, com o resto constante, múltiplo justificadamente maior. É informação sobre o
+negócio, não sobre a vizinhança.
+
+### 34.3 O limite de ±30% é premissa declarada
+
+Não é calibração. A relação entre ROE e P/L justo é não-linear e depende de payout e de Ke — e o
+Ke variável saiu do motor em 13/09 justamente por não ser observável sem premissa (seção 30).
+Proporção direta sem limite faria o múltiplo dobrar quando o ROE dobrasse, o que a teoria não
+sustenta. O limite deixa o ajuste **mover** o múltiplo sem deixá-lo **dominar** a média histórica.
+
+Hoje três linhas batem no teto superior — TIMS3 (bruto 1,43), LEVE3 (1,37) e BRSR6 (1,34) — e
+nenhuma bate no piso de 0,70.
+
+### 34.4 O efeito, medido
+
+| | |
+|---|---|
+| Linhas que subiram | 16 |
+| Linhas que caíram | 9 |
+| Sem efeito (método declarado, paridade, EV/EBITDA de ciclo) | 8 |
+| Δ mediano | 0,0% |
+| Δ médio | +9,4% |
+
+Os extremos, e é neles que está o risco:
+
+| Ativo | Múltiplo antes | Múltiplo depois | Justo antes | Justo depois | Δ |
+|---|---|---|---|---|---|
+| BPAC11 | 23,81x | 45,69x | R$ 120,19 | R$ 230,69 | **+92%** |
+| TIMS3 | 11,16x | 18,56x | R$ 22,95 | R$ 38,18 | +66% |
+| CXSE3 | 9,98x | 13,23x | R$ 15,42 | R$ 20,43 | +33% |
+| SANB11 | 11,93x | 15,70x | R$ 40,92 | R$ 53,84 | +32% |
+| PASS3 | 8,89x | 7,10x | R$ 15,19 | R$ 12,14 | −20% |
+| SHUL4 | 7,01x | 5,66x | R$ 5,50 | R$ 4,44 | −19% |
+| BRSR6 | 6,85x | 5,80x | R$ 30,83 | R$ 26,11 | −15% |
+
+⚠️ **O BPAC11 é o alerta que a própria decisão cria.** Sem par que o puxe para baixo, o preço justo
+passa a ser a média histórica de um banco que negociou a 39x logo depois do IPO — margem de
+segurança de 73% sobre uma cotação de R$ 57,80. Ele não tem relatório detalhado; até ter, o número
+descreve o múltiplo que o mercado praticou, não o que o negócio justifica.
+
+### 34.5 Em shopping o ROE é FFO ÷ patrimônio
+
+`serie_roe(t, A)` (em `scripts/motor_teto.py`) é **uma função, dois consumidores**: o ajuste do
+múltiplo e a coluna ROE médio do Radar leem o mesmo número. Em shopping o numerador é o FFO, não o
+lucro líquido, porque o usuário pediu FFO em **todas** as colunas.
+
+A ressalva permanece: o imóvel está no balanço a custo histórico, então FFO ÷ patrimônio lê **alto
+por construção** e não se compara com o de empresa que não carrega imóvel. Para o ajuste isso não
+contamina nada — ele só usa a razão da empresa contra ela mesma —, mas a tooltip da coluna diz,
+porque lá o número é lido de frente.
+
+### 34.6 As colunas P/L médio e ROE médio, janela 2021→
+
+O Radar passou a 24 colunas. A sequência de leitura é **P/L atual (13) · P/L médio (14) · ROE atual
+(15) · ROE médio (16)**, e ela é a **conta do múltiplo aberta na tela**:
+
+```
+Múltiplo (col. 18) = P/L médio (col. 14) × [ ROE atual (15) ÷ ROE médio (16) ]
+```
+
+O leitor divide duas células da mesma linha e confere. No ITUB3: 10,0x × (21,0 ÷ 18,2) = 11,56x —
+que é exatamente o que a coluna Múltiplo mostra.
+
+Três decisões dentro disso:
+
+1. **A janela é 2021→**, fixada pelo usuário. É o HIST_SEED inteiro e é a mesma janela do motor —
+   as três coisas coincidem por construção, não por coincidência.
+
+2. **A série longa de 16 anos saiu da coluna**, e o selo azul "10a" com ela. O motivo é medido:
+   usar 2011-2020 no preço justo subia **toda** empresa entre +12% e +77%, porque naquele intervalo
+   a Selic rodou perto de 7% e chegou a 2%. O P/L praticado ali descreve outro custo de capital.
+   `scripts/coletar_pl_historico.py` e `analise/pl_historico.json` continuam no repositório para
+   quem quiser olhar o ciclo inteiro; para valorar hoje, eles desancoram.
+
+3. **A coluna P/L médio usa `faixa_com_tendencia`, a mesma do motor.** A primeira versão usava
+   `st.median()` cru e mostrava 7,8x no ITUB3 enquanto o motor ancorava em 10,0x — porque a regra de
+   tendência detecta série que sobe e passa a usar só a metade recente. Com o número cru na tela, a
+   conta que a tooltip promete não fechava: 7,8 × 1,16 = 9,1 contra os 11,6x da coluna Múltiplo.
+   Duas definições do mesmo conceito, pela quinta vez neste projeto.
+
+Quando o método que decide **não** é P/L (P/FFO em shopping, EV/EBITDA em cíclica, paridade em
+holding), a tooltip da coluna 14 diz que ali ela é **contexto**, não o múltiplo aplicado — e aponta
+para a coluna Múltiplo. Prometer uma conta que não fecha naquela linha seria o mesmo defeito com
+outra roupa.

@@ -1119,7 +1119,7 @@ def teto_ep(t, A, pl_setor=None, com_pares=True):
     # papéis é ancorada com a regra de ±25% e nem sempre cai no divisor que a fonte usou.
     # Partindo do lucro, a identidade fecha por construção.
     alvo0 = alvo
-    alvo, nota_pares, origem_mult = (alvo_com_pares(t, 'E/P', alvo, len(pls)) if com_pares
+    alvo, nota_pares, origem_mult = (alvo_com_pares(t, 'E/P', alvo, len(pls), A) if com_pares
                                       else (alvo, '', f'o E/P mediano da própria empresa ({alvo:.2f}x)'))
     if faixa_mult:
         faixa_mult = recentrar(faixa_mult[0], mediana_propria, faixa_mult[1], alvo)
@@ -1222,7 +1222,7 @@ def teto_pvp(t, A, com_pares=True):
     v = vpa(t, A)
     if not v or v <= 0: return None
     alvo0 = alvo
-    alvo, nota_pares, origem_mult = (alvo_com_pares(t, 'P/VP', alvo, len(pv)) if com_pares
+    alvo, nota_pares, origem_mult = (alvo_com_pares(t, 'P/VP', alvo, len(pv), A) if com_pares
                                       else (alvo, '', f'o P/VP mediano da própria empresa ({alvo:.2f}x)'))
     p25, p75 = recentrar(p25, alvo0, p75, alvo)
     return dict(justo=alvo*v, conv=2, chave='P/VP', alvo=alvo0, faixa=(p25*v, p75*v),
@@ -1251,7 +1251,7 @@ def teto_ev_receita(t, A, com_pares=True):
     def _justo(mult):
         return (mult*c['receita'] - dl) / pap
     alvo0 = alvo
-    alvo, nota_pares, origem_mult = (alvo_com_pares(t, 'EV/Receita', alvo, len(r)) if com_pares
+    alvo, nota_pares, origem_mult = (alvo_com_pares(t, 'EV/Receita', alvo, len(r), A) if com_pares
                                       else (alvo, '', f'o EV/Receita mediano da própria empresa ({alvo:.2f}x)'))
     p25, p75 = recentrar(p25, alvo0, p75, alvo)
     justo = _justo(alvo)
@@ -1363,7 +1363,7 @@ def teto_ffo(t, A, com_pares=True):
         return None
     p25, alvo, p75, nfx = faixa_com_tendencia(pfs, limiar_rel=0.15)
     alvo0 = alvo
-    alvo, nota_pares, origem_mult = (alvo_com_pares(t, 'P/FFO', alvo, len(pfs)) if com_pares
+    alvo, nota_pares, origem_mult = (alvo_com_pares(t, 'P/FFO', alvo, len(pfs), A) if com_pares
                                       else (alvo, '', f'o P/FFO mediano da própria empresa ({alvo:.2f}x)'))
     p25, p75 = recentrar(p25, alvo0, p75, alvo)
     atual0 = atual
@@ -1890,6 +1890,9 @@ PL_SETOR = {}
 # ⚠️ Pares = mesmo grupo de motor, o ticker FORA da própria mediana, mínimo de 3. Com menos, o
 # múltiplo próprio decide sozinho — mediana de 2 pares é a opinião de duas empresas, não do
 # setor. SHOP tem 2 empresas e fica assim.
+# Limites do ajuste de ROE sobre o múltiplo histórico. Ver alvo_com_pares().
+ROE_AJUSTE_MIN, ROE_AJUSTE_MAX = 0.70, 1.30
+
 MIN_PARES = 3
 MULT_PARES = {}
 
@@ -1926,42 +1929,116 @@ def multiplos_pares(H):
 # volta calado.
 PARES_SEM = {'P/VP'}
 
-def alvo_com_pares(t, chave, alvo_proprio, n_anos=None):
-    """Média entre o múltiplo da empresa e a mediana dos pares. (alvo, nota, origem).
+def serie_roe(t, A):
+    """(roe_hoje, [(ano, roe) dos anos comparáveis], rótulo da métrica) — a rentabilidade.
 
-    `origem` é uma frase em português dizendo DE ONDE o múltiplo saiu, escrita para a tooltip
-    do preço justo — o pedido do usuário é que ali esteja o racional para chegar ao valor e
-    nada mais. Nasceu separada de `nota` porque `nota` é prosa do motor, cheia de ressalva, e
-    a tooltip precisa de uma linha só.
+    UMA DEFINIÇÃO, DOIS CONSUMIDORES, e é de propósito: quem ajusta o múltiplo em
+    `alvo_com_pares` e quem preenche a coluna ROE médio do Radar (scripts/gerar_colunas.py)
+    têm que ler o MESMO número. Se a coluna mostrasse uma série e o motor usasse outra, o
+    leitor faria a divisão na tela e não bateria com o fator que a tooltip do Múltiplo declara
+    — que é o defeito que este projeto já pagou quatro vezes em campos diferentes.
+
+    EM SHOPPING O NUMERADOR É O FFO, não o lucro líquido: o usuário pediu FFO em TODAS as
+    colunas do Radar, e o ajuste de múltiplo é uma delas. O patrimônio vem implícito do ROE
+    contábil do próprio ano (lucro ÷ ROE), então o denominador é o mesmo dos dois lados e a
+    razão roe_hoje/roe_mediano — que é tudo o que o ajuste usa — não depende dele.
+
+    ⚠️ A RESSALVA DO FFO ÷ PATRIMÔNIO permanece: o imóvel está no balanço a custo histórico,
+    então este retorno lê ALTO por construção e não se compara com o de empresa que não
+    carrega imóvel. Para o AJUSTE isso não contamina nada, porque ele só usa a razão da
+    empresa contra ela mesma — mas a coluna diz na tooltip, porque lá o número é lido de frente.
     """
-    # ⚠️ A frase de `origem` fala em MÚLTIPLO MEDIANO DOS ANOS, nunca em "mediana" solta.
-    # O usuário leu "mediana da própria série" e entendeu mediana DE MÉTODOS — que é
-    # exatamente o que esta mudança de arquitetura veio eliminar. Como a palavra carrega o
-    # mal-entendido, a frase diz o que está sendo medido: o múltiplo, ao longo de N anos.
-    # O MÚLTIPLO DECLARADO pelo relatório vence a média com os pares — mesma hierarquia do
-    # lucro declarado e do payout por política. `alvo_proprio` continua sendo devolvido na
-    # nota para dar para conferir o quanto o relatório se afasta do que a série mostra.
+    val, _q = anos_validos(A)
+    shop = MOTOR.get(t) == 'SHOP'
+
+    def _roe(y):
+        d = A.get(y) or {}
+        r = d.get('roe')
+        if r is None or r == 0:
+            return None
+        if not shop:
+            return r
+        f, li = ffo_ano(t, A, y), d.get('lucrolin')
+        if not f or not li or li <= 0:
+            return None
+        return f / (li / (r / 100)) * 100
+
+    serie = [(y, v) for y in val for v in (_roe(y),) if v is not None]
+    hoje = _roe(max(A))
+    return hoje, serie, ('FFO ÷ patrimônio' if shop else 'ROE')
+
+
+def alvo_com_pares(t, chave, alvo_proprio, n_anos=None, A=None):
+    """Múltiplo-alvo: a MÉDIA HISTÓRICA DA PRÓPRIA EMPRESA, ajustada pela rentabilidade.
+    Devolve (alvo, nota, origem).
+
+    ══ MUDANÇA DE 14/09/2026, pedida pelo usuário ══
+    "Para a conta de múltiplo, vamos levar em consideração somente os últimos 6 anos da média
+    de P/L que a empresa foi negociada. Mas temos que levar em consideração o ROE médio do
+    período também. Não vamos mais levar em consideração o múltiplo do setor."
+
+    Duas mudanças, e a primeira contraria um backtest — por isso fica registrada com o número.
+
+    1 · O MÚLTIPLO DOS PARES SAI DA CONTA. Ele entrou em 13/09 porque `backtest_pares.py`
+        mediu a média (própria + pares) em +14,1 p.p. contra as duas pontas isoladas, com
+        p=0,040 em 54 observações; a âncora própria SOZINHA foi a que deu negativo
+        (−1,8 p.p., p=0,549).
+        ⚠️ O QUE ISSO CUSTA: a média histórica própria prende a empresa no patamar em que ela
+        já negociou e nunca enxerga re-rating. A evidência apontava para o outro lado.
+        O QUE A DECISÃO GANHA, e é o argumento do usuário: a mediana do setor mistura empresas
+        com rentabilidade e risco distintos. O BPAC11 mostra o custo do peer comp — P/L próprio
+        de 39,4x contra 7,5x dos bancos, e a média cortava a diferença pela metade sem que
+        nada no negócio justificasse o corte.
+
+    2 · O ROE ENTRA COMO AJUSTE, e é ele que substitui a informação que os pares traziam.
+        Média histórica pura ignora que a empresa pode estar mais (ou menos) rentável hoje do
+        que foi na média do período. Pela relação de Gordon, P/L = payout ÷ (Ke − g) e
+        g = ROE × retenção: mais ROE significa mais crescimento sustentável e, com tudo o mais
+        constante, múltiplo justificadamente maior.
+
+            ajuste = ROE atual ÷ ROE mediano do período,   limitado a [0,70 ; 1,30]
+
+        ⚠️ O LIMITE DE ±30% É PREMISSA DECLARADA, não calibração. A relação entre ROE e P/L
+        justo é não-linear e depende de payout e de Ke — nenhum dos dois observável sem
+        premissa, e o Ke variável saiu do motor em 13/09 justamente por isso (seção 30).
+        Proporção direta sem limite faria o múltiplo dobrar quando o ROE dobrasse, o que a
+        teoria não sustenta. O limite deixa o ajuste MOVER o múltiplo sem deixá-lo DOMINAR a
+        média histórica, que continua sendo a âncora.
+    """
+    janela = f' ao longo de {n_anos} anos' if n_anos else ''
+    nome = {'E/P': 'P/L'}.get(chave, chave)
+
     d = MULTIPLO_DECLARADO.get(t)
     if d and d[0] == chave:
         return d[1], f'{d[1]:.2f}x DECLARADO', (
             f'o múltiplo-alvo DECLARADO no relatório ({d[1]:.2f}x, contra '
             f'{alvo_proprio:.2f}x da própria série). {d[3]}')
-    g = MOTOR.get(t)
-    janela = f' ao longo de {n_anos} anos' if n_anos else ''
-    # `chave` é o nome INTERNO do método; 'E/P' é o inverso do múltiplo que a conta exibe.
-    # Escrever "E/P mediano de 10,00x" ao lado de "× P/L 9,39x" faz o leitor conferir duas vezes.
-    nome = {'E/P': 'P/L'}.get(chave, chave)
+
     proprio = f'o {nome} mediano da própria empresa{janela} ({alvo_proprio:.2f}x)'
-    if chave in PARES_SEM:
+    if A is None:
         return alvo_proprio, '', proprio
-    pares = [v for (o, v) in MULT_PARES.get((g, chave), []) if o != t]
-    if len(pares) < MIN_PARES:
-        return (alvo_proprio, f'{alvo_proprio:.2f}x próprio (sem {MIN_PARES} pares no grupo {g})',
-                f'{proprio} — o grupo {g} não tem {MIN_PARES} pares para comparar')
-    mp = st.median(pares)
-    a = (alvo_proprio + mp) / 2
-    return a, (f'{a:.2f}x = média entre {alvo_proprio:.2f}x próprio e {mp:.2f}x dos {len(pares)} pares {g}'), \
-           (f'a média entre {proprio} e o dos {len(pares)} pares do grupo {g} ({mp:.2f}x)')
+
+    roe_hoje, pares_roe, metrica = serie_roe(t, A)
+    roes = [v for _y, v in pares_roe]
+    if len(roes) < 3 or roe_hoje is None or roe_hoje <= 0:
+        return alvo_proprio, '', (proprio + ' — sem ROE suficiente na série para ajustar pela '
+                                            'rentabilidade, fica a média histórica pura')
+    roe_med = st.median(roes)
+    if roe_med <= 0:
+        return alvo_proprio, '', (proprio + ' — ROE mediano do período não é positivo, '
+                                            'sem ajuste possível')
+
+    bruto = roe_hoje / roe_med
+    aj = max(ROE_AJUSTE_MIN, min(bruto, ROE_AJUSTE_MAX))
+    alvo = alvo_proprio * aj
+    limitado = abs(bruto - aj) > 1e-9
+    return alvo, f'{alvo:.2f}x = {alvo_proprio:.2f}x × ajuste de ROE {aj:.2f}', (
+        f'{proprio}, ajustado pela rentabilidade ({metrica}): hoje {roe_hoje:.1f}% contra '
+        f'{roe_med:.1f}% de mediana do período dá fator {bruto:.2f}'
+        + (f', limitado a {aj:.2f} pelo teto de ±30%' if limitado else '')
+        + f' → múltiplo-alvo {alvo:.2f}x. Mais rentável que a própria média merece múltiplo '
+          f'maior; menos rentável, menor. O múltiplo do setor NÃO entra desde 14/09/2026.')
+
 
 if __name__ == '__main__':
     H = carregar(); out = {}

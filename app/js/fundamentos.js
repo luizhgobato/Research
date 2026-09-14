@@ -57,7 +57,7 @@ function initRadarRealCells() {
 // de runtime mais abaixo não acha a célula e não reescreve nada — que é o comportamento
 // desejado: aquele bloco sobrepunha o valor da API por cima de um número digitado à mão, e
 // nenhum dos dois vinha da base que alimenta a tabela.
-  const COL = { plAtual:13, roe:15, divEbitda:16 };  // 23 colunas: P/L médio entrou em 14 (13/09/2026)
+  const COL = { plAtual:13, roe:15, divEbitda:17 };  // 24 colunas: ROE médio entrou em 16 (14/09/2026)
   document.querySelectorAll('#tableBody tr[data-ticker]').forEach(row => {
     const cells = row.querySelectorAll('td');
     cells[COL.plAtual]?.classList.add('radar-pl-atual');
