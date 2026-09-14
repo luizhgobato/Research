@@ -485,7 +485,13 @@ tbody td:has(.teto-tip){cursor:help;}
 .search-input{width:100%;background:#fff;border:1px solid var(--border2);border-radius:7px;padding:7px 10px 7px 30px;color:var(--text);font-family:inherit;font-size:12px;outline:none;transition:border-color 0.2s;}
 .search-input:focus{border-color:var(--accent);}
 .search-input::placeholder{color:var(--text3);}
-.filter-group{display:flex;gap:5px;flex-wrap:wrap;}
+/* O grupo de SEGMENTO mora na mesma barra dos filtros de veredicto (Todas/Compra/…) e
+   com 10 botões iguais os dois viravam uma fileira só. O separador à esquerda e o tom
+   mais claro dizem, sem rótulo ocupando espaço, que ali começa outro eixo de filtro. */
+.filter-group{display:flex;gap:5px;flex-wrap:wrap;padding-left:10px;border-left:1px solid var(--border2);}
+.filter-group .filter-btn{background:var(--bg2);color:var(--text3);}
+.filter-group .filter-btn:hover{background:#fff;border-color:var(--accent);color:var(--accent);}
+.filter-group .filter-btn.active{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600;}
 .filter-btn{background:#fff;border:1px solid var(--border2);border-radius:20px;padding:5px 12px;color:var(--text2);font-family:inherit;font-size:11px;cursor:pointer;transition:all 0.2s;white-space:nowrap;}
 .filter-btn:hover{border-color:var(--accent);color:var(--accent);}
 .filter-btn.active{background:var(--accent);border-color:var(--accent);color:white;font-weight:600;}
@@ -778,7 +784,17 @@ tbody tr:nth-child(n){animation-delay:calc(var(--i,0)*0.02s);}
   .radar-controls{padding:0.6rem 1rem;flex-wrap:wrap;gap:0.5rem;}
   .search-wrap{min-width:140px;max-width:100%;flex:1;}
   .stats-row{margin-left:0;width:100%;justify-content:space-between;display:flex;}
-  .filter-group{display:none;} /* esconde filtros de segmento no mobile */
+  /* ⚠️ 14/09/2026 — O FILTRO DE SEGMENTO VOLTA NO MOBILE. A regra antiga era
+     `.filter-group{display:none}` e vinha da versão original: com 20 segmentos os botões
+     ocupavam três linhas inteiras numa tela de telefone e empurravam a tabela para fora.
+     Depois que o usuário mandou resumir os segmentos (20 → 10, 13/09), o motivo da regra
+     deixou de existir — e esconder um filtro é tirar função, não economizar espaço.
+     Some só a busca de rolagem horizontal, não o controle. */
+  /* No mobile o grupo ocupa a linha inteira, então o separador vira uma borda
+     SUPERIOR — a da esquerda viraria um risco solto na margem. */
+  .filter-group{display:flex;gap:4px;width:100%;padding-left:0;padding-top:6px;
+                border-left:none;border-top:1px solid var(--border2);}
+  .filter-group .filter-btn{font-size:10px;padding:4px 9px;}
 
   /* RADAR TABLE — scroll horizontal, só Empresa congelada */
   .frozen-2{position:static!important;box-shadow:none!important;}
