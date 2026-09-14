@@ -470,7 +470,7 @@ def gerar():
         # quem quiser olhar o ciclo inteiro; para valorar hoje, ela desancora.
         #
         # As duas colunas são a CONTA DO MÚLTIPLO aberta na tela: múltiplo aplicado =
-        # P/L médio × (ROE atual ÷ ROE mediano), limitado a ±30%. O leitor confere a
+        # P/L mediano × (ROE atual ÷ ROE mediano), sem teto. O leitor confere a
         # coluna Múltiplo dividindo duas células que estão na mesma linha.
         val14, q14 = M['anos_validos'](A)
         pls14 = []
@@ -507,7 +507,7 @@ def gerar():
                 + ('É a ÂNCORA do múltiplo que produz o Preço Justo — desde 14/09/2026 sozinha, '
                    'sem mistura com os pares do setor. O que a corrige é o ROE mediano duas '
                    'colunas à direita: múltiplo aplicado = este valor × (ROE atual ÷ ROE mediano), '
-                   'limitado a ±30%.'
+                   'em proporção direta e sem teto.'
                    if metodo_principal(t) == 'P/L' else
                    f'⚠️ CONTEXTO, não é o múltiplo aplicado: o preço justo desta linha sai por '
                    f'{metodo_principal(t) or "outro método"}, não por P/L — a coluna Múltiplo '
@@ -539,12 +539,10 @@ def gerar():
                         for k in range(0, len(pares_roe), 6)]
             if roe_hj and roe_med > 0:
                 bruto16 = roe_hj / roe_med
-                aj16 = max(M['ROE_AJUSTE_MIN'], min(bruto16, M['ROE_AJUSTE_MAX']))
+                aj16 = bruto16          # proporção direta, sem teto — regra do usuário (14/09/2026)
                 mp16 = metodo_principal(t)
                 conta16 = (f'&#10;&#10;AJUSTE DO MÚLTIPLO: {br(roe_hj,1)}% ÷ {br(roe_med,1)}% '
                            f'= {br(bruto16,2)}'
-                           + (f', limitado a {br(aj16,2)} pelo teto de ±30%'
-                              if abs(bruto16 - aj16) > 1e-9 else '')
                            + '.&#10;'
                            + (f'O múltiplo aplicado é o P/L mediano × {br(aj16,2)} — confira '
                               f'dividindo as duas colunas à esquerda.'

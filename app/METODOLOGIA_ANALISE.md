@@ -2880,3 +2880,112 @@ cabeçalho das colunas 14 e 16, nas tooltips e no texto do motor. As ocorrência
 **permanecem** são as que descrevem médias de verdade: a média do ciclo no EV/EBITDA de cíclica, a
 média própria+pares que o `backtest_pares` mediu (história, não método vigente) e a citação
 literal do pedido do usuário.
+
+---
+
+## 35. A amarração P/L ↔ ROE em proporção direta, sem teto (14/09/2026)
+
+O usuário escreveu a regra que quer, com a ponte do P/VP e um exemplo numérico:
+
+```
+P/L Ajustado = P/L Mediano Histórico × (ROE Atual ÷ ROE Histórico)
+```
+
+Duas mudanças no motor para que ele execute exatamente isso.
+
+### 35.1 O teto de ±30% saiu
+
+A fórmula do usuário não tem teto. Saiu. O que o teto protegia continua verdadeiro e fica
+registrado: proporção direta faz o múltiplo **dobrar** quando o ROE dobra, e a teoria não sustenta
+isso — a relação entre ROE e P/L justo é não-linear e depende de payout e de Ke, nenhum dos dois
+observável sem premissa. Hoje nenhuma linha do Radar passa de ±45%, então o efeito prático é
+pequeno; o risco aparece em empresa vindo de ano de prejuízo ou de lucro extraordinário.
+
+### 35.2 A truncagem de tendência sai de onde o ROE atua
+
+"P/L **mediano histórico**" é a mediana da série inteira, não a dos 3 anos recentes. E não é só
+literalidade: truncar a série **e** multiplicar pelo ajuste de ROE aplica a correção de recência
+**duas vezes**. Os dois mecanismos fazem o mesmo trabalho — dizer que a empresa de hoje não é a
+dos anos antigos — só que a truncagem faz isso **mudo**, jogando metade da série fora sem declarar
+por quê, e o ROE faz **declarando** o motivo e o tamanho.
+
+O ITUB3 é o caso limpo: truncada, a âncora era 10,0x (só 2024-2026, o período caro); plena, 7,8x.
+Com o ajuste de 1,156 em cima, a versão truncada cobrava 11,56x — o múltiplo caro **e** o prêmio
+de rentabilidade, pelo mesmo fato.
+
+`truncar=False` passa a valer nos quatro pontos onde `alvo_com_pares` atua (E/P, P/VP, EV/Receita,
+P/FFO). A regra de tendência continua onde o ROE **não** corrige: lucro normalizado, crescimento e
+o EV/EBITDA de ciclo.
+
+### 35.3 Efeito: 13 das 33 linhas
+
+| Ativo | Múltiplo | Justo | Δ |
+|---|---|---|---|
+| CLSC4 | 6,28x → 4,86x | R$ 121,95 → R$ 94,50 | −23% |
+| ITSA4 | paridade | R$ 19,26 → R$ 15,03 | −22% |
+| **ITUB3** | 11,56x → **9,03x** | R$ 59,75 → **R$ 46,63** | −22% |
+| BMEB4 | 8,89x → 7,47x | R$ 87,29 → R$ 73,36 | −16% |
+| PSSA3 | 11,53x → 10,81x | R$ 71,93 → R$ 67,41 | −6% |
+| LEVE3 | 9,63x → 9,15x | R$ 43,38 → R$ 41,23 | −5% |
+| CPFE3 | 7,72x → 7,46x | R$ 39,67 → R$ 38,36 | −3% |
+| SANB11 | 15,88x → 15,70x | R$ 54,46 → R$ 53,84 | −1% |
+| BBSE3 | 8,42x → 8,62x | R$ 36,43 → R$ 37,27 | +2% |
+| TIMS3 | 18,85x → 20,80x | R$ 38,77 → R$ 42,77 | +10% |
+| SHUL4 | 5,03x → 5,66x | R$ 3,95 → R$ 4,44 | +13% |
+| MULT3 | 10,53x → 12,22x | R$ 28,57 → R$ 33,17 | +16% |
+| BRSR6 | 4,51x → 5,97x | R$ 20,31 → R$ 26,91 | +33% |
+
+### 35.4 ⚠️ A identidade citada aponta para o outro lado
+
+A ponte `P/L = P/VP ÷ ROE` está correta, mas ela **não** implica a regra de três. Lida ao pé da
+letra, ela diz o contrário: se o ROE cai e o P/VP se mantém, o P/L justo **sobe** (o denominador
+encolheu), não desce.
+
+A regra de três é uma afirmação separada e mais forte. Abrindo:
+
+```
+Preço = LPA × P/L_ajustado
+      = (VPA × ROE_atual) × P/L_hist × (ROE_atual ÷ ROE_hist)
+      = VPA × P/VP_hist × (ROE_atual ÷ ROE_hist)²
+```
+
+Ou seja: ela escala o **P/VP justo pelo QUADRADO** da razão de ROE. O ROE menor já derruba o preço
+uma vez, pelo **LPA projetado menor**; ajustar o múltiplo pela mesma razão aplica o golpe uma
+segunda vez. A versão linear (P/VP justo ∝ ROE) deixaria o P/L **inalterado** — toda a proteção
+viria do LPA.
+
+Isso não invalida a escolha: ela é **deliberadamente conservadora**, e é o que a última frase do
+pedido diz — *"você só deve pagar o P/L de 9,2x se acreditar que o ROE vai voltar para a casa dos
+16%"*. Fica declarado que o efeito é quadrático, não que ele seja um erro.
+
+### 35.5 Por que o SANB11 não reproduz o exemplo
+
+O exemplo esperava fator 0,689 (ROE 16% → 11,03%). O motor dá **1,00**. A conta está certa; os
+insumos é que são outros:
+
+| | Exemplo | Motor (base Partnr) |
+|---|---|---|
+| P/L mediano | 9,2x (10 anos) | **15,70x** (2021→) |
+| ROE histórico | 16,0% | **11,4%** |
+| ROE atual | 11,03% | 11,4% |
+| Fator | 0,689 | **1,000** |
+| LPA projetado | R$ 4,25 | R$ 3,43 |
+| Preço justo | R$ 26,94 | R$ 53,84 |
+
+**A causa é a janela.** O ROE do Santander na base é `2021 18,5% · 2022 16,7% · 2023 9,8% ·
+2025 10,4% · 2026 11,4%` (2024 ausente). A deterioração já ocupa **3 dos 5 anos** da janela 2021→,
+então a mediana do período **é** 11,4% — o nível de hoje. A razão vira 1,00 e o ajuste desaparece
+exatamente onde deveria morder.
+
+Isto é estrutural, não um caso isolado: **quando a queda de rentabilidade é velha o bastante para
+ocupar metade da janela, a amarração se auto-neutraliza.** Para ela morder, o `ROE histórico`
+precisa vir de uma janela mais longa que a do P/L — o nível de tempos normais, não o recente.
+
+E a série longa não resolve sozinha: o P/L do SANB11 na Partnr nunca passou perto de 9,2x
+(`2016 36,2x · 2019 16,9x · 2022 11,0x · 2025 17,0x`; mediana de 10 anos = **18,68x**). Com a
+janela longa e o fator 0,689 o preço justo sairia R$ 44,17 — ainda longe dos R$ 26,94, porque o
+9,2x e o LPA de R$ 4,25 do exemplo vêm de outra fonte.
+
+**Decisão pendente do usuário:** manter `ROE histórico` na janela 2021→ (como está, e como ele
+fixou) ou coletar ROE de 10 anos só para esse denominador. A segunda opção faz a amarração morder
+em bancos deteriorados e exige uma coleta nova na Partnr.
