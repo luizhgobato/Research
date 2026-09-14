@@ -55,6 +55,25 @@ tir = (RAIZ / 'data/tir.data.js').read_text()
 # API. Agora as duas colunas de DY realizado — a de 2025 e a mediana de 10 anos — saem daqui.
 DYH = json.loads((RAIZ / 'analise/dy_historico.json').read_text())['tickers']
 
+# P/L anual de até 16 anos, coletado da Partnr por scripts/coletar_pl_historico.py. O
+# HIST_SEED cobre só 2021-2026; para empresa madura isso é pouco para dizer "o múltiplo que
+# ela costuma negociar". Pedido do usuário: "eu gostaria do P/L de 10 anos para empresas
+# maduras, mesmo que tenhamos que pegar de outra fonte" — não precisou de outra fonte, a
+# própria Partnr tem, só não em frequência ANUAL (ver o cabeçalho do coletor).
+try:
+    PLH = json.loads((RAIZ / 'analise/pl_historico.json').read_text())['tickers']
+except Exception:
+    PLH = {}
+
+
+def pl_serie_longa(t):
+    """[(ano, P/L)] da série longa, ou [] quando o ticker não foi coletado."""
+    r = PLH.get(t)
+    if not r:
+        return []
+    return [(int(a), v) for a, v in sorted(r['anos'].items())
+            if v and 0 < v < 200]
+
 def dy_ano(t, ano):
     v = DYH.get(t, {}).get(str(ano))
     return v if (v and v > 0) else None      # zero na base = dado ausente, não dividendo zero
@@ -180,6 +199,9 @@ TAG_FFO = ('<span style="font-size:9px;font-weight:700;color:#7c3aed;background:
 TAG_DECL = ('<span style="font-size:9px;font-weight:700;color:#0a5c35;background:#dcfce7;'
             'border-radius:3px;padding:1px 4px;margin-left:4px;vertical-align:middle;"'
             ' title="lucro declarado no relatório">REL</span>')
+# Marca a mediana calculada sobre a série longa (8+ anos), para separar do fallback de 6 anos.
+TAG_10A = ('<span style="font-size:9px;font-weight:700;color:#1e40af;background:#dbeafe;'
+           'border-radius:3px;padding:1px 4px;margin-left:4px;vertical-align:middle;">10a</span>')
 
 
 def cel(txt, tip):
@@ -429,27 +451,47 @@ def gerar():
         # pares), então ela também serve de conferência: P/L atual acima deste valor = a ação
         # está cara contra a própria história.
         val14, q14 = M['anos_validos'](A)
-        pls14 = []
-        for y in val14:
-            d = A[y]
-            v14 = d.get('pl')
-            if not v14 and d.get('preco') and d.get('lpa') and d['lpa'] > 0:
-                v14 = d['preco'] / d['lpa']      # derivado, mesma regra do teto_ep
-            if v14 and 0 < v14 < 60:
-                pls14.append((y, v14))
+        longa = pl_serie_longa(t)
+        fonte14 = 'curta'
+        if len(longa) >= 8:
+            # SÉRIE LONGA quando existe. A quebra de série continua respeitada: se houve evento
+            # societário, os anos anteriores descrevem outra empresa e saem fora — foi o que
+            # tornou o P/L de 38,9x da SAUD3 em 2026 incomparável com os 13x dos anos anteriores.
+            pls14 = [(y, v) for y, v in longa if not q14 or y >= q14]
+            fonte14 = 'longa' if len(pls14) >= 8 else 'curta'
+        if fonte14 != 'longa':
+            pls14 = []
+            for y in val14:
+                d = A[y]
+                v14 = d.get('pl')
+                if not v14 and d.get('preco') and d.get('lpa') and d['lpa'] > 0:
+                    v14 = d['preco'] / d['lpa']      # derivado, mesma regra do teto_ep
+                if v14 and 0 < v14 < 60:
+                    pls14.append((y, v14))
         if len(pls14) >= 2:
             med14 = st.median([v for _, v in pls14])
             anos_txt = ' · '.join(f'{y} {br(v,1)}x' for y, v in pls14)
             atual14 = pls14[-1][1]
             cor14 = '#059669' if atual14 < med14 else '#dc2626'
-            cells[14] = cel(f'<span style="color:{cor14};font-weight:600;">{br(med14,1)}x</span>',
-                f'P/L MÉDIO DA PRÓPRIA EMPRESA — {br(med14,1)}x&#10;&#10;'
-                f'{anos_txt}&#10;&#10;'
-                f'Mediana de {len(pls14)} exercícios.'
-                + (f' Restrito a partir de {q14} por QUEBRA DE SÉRIE.' if q14 else '')
-                + '&#10;&#10;⚠️ A base cobre 2021-2026, então são no máximo 6 anos e não 10.&#10;'
-                  'É a metade PRÓPRIA do múltiplo do Preço Justo — a outra metade é a mediana '
-                  'dos pares do segmento.')
+            linhas14 = []
+            for k in range(0, len(pls14), 6):
+                linhas14.append(' · '.join(f'{y} {br(v,1)}x' for y, v in pls14[k:k+6]))
+            cells[14] = cel(f'<span style="color:{cor14};font-weight:600;">{br(med14,1)}x</span>'
+                            + (TAG_10A if fonte14 == 'longa' else ''),
+                f'P/L MEDIANO DA PRÓPRIA EMPRESA — {br(med14,1)}x&#10;&#10;'
+                + '&#10;'.join(linhas14)
+                + f'&#10;&#10;Mediana de {len(pls14)} exercícios'
+                + (f', restrito a partir de {q14} por QUEBRA DE SÉRIE' if q14 else '')
+                + '.&#10;'
+                + ('Série longa do MCP Partnr (frequency=TTM, último registro de cada ano). '
+                   'O HIST_SEED cobre só 2021-2026 — para empresa madura isso é pouco para '
+                   'dizer que múltiplo ela costuma negociar.'
+                   if fonte14 == 'longa' else
+                   'Série do HIST_SEED (2021-2026). Esta empresa não tem série longa coletada '
+                   '— ou é recente, ou teve quebra que invalidou os anos anteriores.')
+                + '&#10;&#10;⚠️ O Preço Justo NÃO usa esta mediana: ele usa a dos 6 anos do '
+                  'HIST_SEED, misturada com a dos pares. Comparar as duas mostra se o '
+                  'múltiplo aplicado está dentro do que a empresa negociou na década.')
         else:
             cells[14] = cel(VAZIO,
                 'P/L MÉDIO — não calculável&#10;&#10;'
