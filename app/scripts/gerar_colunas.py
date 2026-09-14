@@ -472,15 +472,13 @@ def gerar():
         # As duas colunas são a CONTA DO MÚLTIPLO aberta na tela: múltiplo aplicado =
         # P/L mediano × (ROE atual ÷ ROE mediano), sem teto. O leitor confere a
         # coluna Múltiplo dividindo duas células que estão na mesma linha.
+        # ⚠️ M['pl_ano'], NÃO o campo `pl` cru. Esta coluna reimplementava a leitura do P/L e
+        # por isso NÃO recebeu a correção do fator de unit de 14/09/2026 — a mesma que o
+        # usuário pediu ao dizer "o P/L mediano do BTG está errado". O motor passou a mostrar
+        # 13,15x e a COLUNA continuou mostrando 39,4x, que é o número que ele estava vendo.
+        # SANB11 idem (15,70x contra 7,85x). Uma definição, três consumidores — de novo.
         val14, q14 = M['anos_validos'](A)
-        pls14 = []
-        for y in val14:
-            d = A[y]
-            v14 = d.get('pl')
-            if not v14 and d.get('preco') and d.get('lpa') and d['lpa'] > 0:
-                v14 = d['preco'] / d['lpa']      # derivado, mesma regra do teto_ep
-            if v14 and 0 < v14 < 60:
-                pls14.append((y, v14))
+        pls14 = [(y, v) for y in val14 for v in (M['pl_ano'](t, A, y),) if v]
         if len(pls14) >= 2:
             # ⚠️ MESMA MEDIANA QUE O MOTOR, regra de tendência incluída. A primeira versão desta
             # coluna usava st.median() cru sobre os 6 anos e mostrava 7,8x no ITUB3 enquanto o
@@ -490,7 +488,13 @@ def gerar():
             # contra os 11,6x da coluna Múltiplo. Duas definições do mesmo conceito, de novo.
             vals14 = [v for _, v in pls14]
             if len(vals14) >= 3:
-                _p25, med14, _p75, nota14 = M['faixa_com_tendencia'](vals14)
+                # ⚠️ truncar=False, IGUAL AO MOTOR. Segunda vez que esta coluna desalinha da
+                # âncora: em 14/09 eu tirei a truncagem de tendência dos quatro pontos onde o
+                # ajuste de ROE atua (seção 35.2) e esqueci de tirar daqui. O BBAS3 expôs —
+                # a coluna mostrava 9,1x (mediana só de 2024-2026) contra 5,28x do motor, e
+                # a conta que a tooltip promete (col 14 × ajuste = col 18) dava 4,4x contra
+                # os 2,53x aplicados. Promessa quebrada é pior que número feio.
+                _p25, med14, _p75, nota14 = M['faixa_com_tendencia'](vals14, truncar=False)
             else:
                 med14, nota14 = st.median(vals14), 'série curta — mediana simples'
             atual14 = pls14[-1][1]
@@ -556,8 +560,13 @@ def gerar():
                               f'vence a estatística, ajuste de ROE incluído. O fator acima é '
                               f'só leitura da rentabilidade contra a própria média.'
                               if _decl16 else
-                              f'O múltiplo aplicado é o P/L mediano × {br(aj16,2)} — confira '
-                              f'dividindo as duas colunas à esquerda.'
+                              f'O múltiplo aplicado é o P/L mediano × {br(aj16,2)}.&#10;'
+                              f'⚠️ A conta usa os DOIS números desta tooltip ({br(roe_hj,1)}% e '
+                              f'{br(roe_med,1)}%), não necessariamente o que a coluna ROE ao lado '
+                              f'mostra: aquela célula é reescrita em tempo de execução pela API '
+                              f'(js/fundamentos.js), que às vezes traz um ROE de data-base ou '
+                              f'definição diferente do HIST_SEED — no LEVE3 a diferença é grande '
+                              f'(73,7% no seed contra 22,5% da API). O motor lê o seed.'
                               if mp16 == 'P/L' else
                               f'Este fator ajusta o múltiplo de {mp16 or "outro método"}, que é '
                               f'a régua desta linha — não o P/L mediano ao lado.')

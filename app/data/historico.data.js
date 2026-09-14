@@ -106,6 +106,14 @@ const HIST_SEED = {
   // da BBDC3. Mesma armadilha que já apareceu no DY do ITUB3.
   // ⚠️ Campos de banco (ebitda, ebit, dívida, EV/EBITDA) são null de propósito: em
   // banco o passivo é a matéria-prima, não alavancagem. Igual ao ITUB3 e ao SANB11.
+  BBAS3: {
+    2026: { preco:22.09, receita:330434000000, custos:-228447000000, lucrobruto:101987000000, ebitda:null, ebit:null, imposto:8689000000, lucrolin:12272000000, divbruta:null, divliq:null, mgBruta:30.86, mgEbitda:null, mgLiq:3.71, roe:6.6, roic:null, pl:10.32, pvp:0.68, dy:2.59, evEbitda:null, divPl:null, lpa:2.14 },
+    2025: { preco:21.72, receita:319462104000, custos:-218451386000, lucrobruto:101010718000, ebitda:null, ebit:null, imposto:11168302000, lucrolin:13698124000, divbruta:null, divliq:null, mgBruta:31.62, mgEbitda:null, mgLiq:4.29, roe:7.24, roic:null, pl:9.09, pvp:0.66, dy:5.45, evEbitda:null, divPl:null, lpa:2.39 },
+    2024: { preco:24.11, receita:273505274000, custos:-168990827000, lucrobruto:104514447000, ebitda:null, ebit:null, imposto:1460975000, lucrolin:26358860000, divbruta:null, divliq:null, mgBruta:38.21, mgEbitda:null, mgLiq:9.64, roe:14.67, roic:null, pl:5.24, pvp:0.77, dy:13.45, evEbitda:null, divPl:null, lpa:4.6 },
+    2023: { preco:55.39, receita:265438605000, custos:-176689874000, lucrobruto:88748731000, ebitda:null, ebit:null, imposto:-7981600000, lucrolin:29860965000, divbruta:null, divliq:null, mgBruta:33.43, mgEbitda:null, mgLiq:11.25, roe:17.64, roic:null, pl:5.32, pvp:0.94, dy:8.26, evEbitda:null, divPl:null, lpa:10.42 },
+    2022: { preco:34.67, receita:236549051000, custos:-162202484000, lucrobruto:74346567000, ebitda:null, ebit:null, imposto:-8452382000, lucrolin:27630407000, divbruta:null, divliq:null, mgBruta:31.43, mgEbitda:null, mgLiq:11.68, roe:17.38, roic:null, pl:3.6, pvp:0.62, dy:12.03, evEbitda:null, divPl:null, lpa:9.64 },
+    2021: { preco:28.85, receita:125947217000, custos:-66273138000, lucrobruto:59674079000, ebitda:null, ebit:null, imposto:-4266920000, lucrolin:18344326000, divbruta:null, divliq:null, mgBruta:47.38, mgEbitda:null, mgLiq:14.57, roe:12.85, roic:null, pl:4.51, pvp:0.58, dy:7.86, evEbitda:null, divPl:null, lpa:6.4 },
+  },
   BBDC3: {
     2026: { preco:16.32, receita:299942971000, custos:-218576140000, lucrobruto:81366831000, ebitda:null, ebit:null, imposto:-1213526000, lucrolin:24586062000, divbruta:null, divliq:null, mgBruta:27.13, mgEbitda:null, mgLiq:8.2, roe:13.69, roic:null, pl:7.21, pvp:0.97, dy:5.44, evEbitda:null, divPl:null, lpa:2.2 },
     2025: { preco:15.6, receita:270183106000, custos:-193843753000, lucrobruto:76339353000, ebitda:null, ebit:null, imposto:2900052000, lucrolin:23924636000, divbruta:null, divliq:null, mgBruta:28.25, mgEbitda:null, mgLiq:8.85, roe:13.66, roic:null, pl:7.15, pvp:0.96, dy:4.95, evEbitda:null, divPl:null, lpa:2.26 },
@@ -336,6 +344,7 @@ const HIST_SEED_NOTES = {
   ITUB3: 'Fonte: MCP Partnr (B3/CVM) · banco: EBITDA, EBIT, dívida bruta/líquida, margem EBITDA e EV/EBITDA não se aplicam ao setor · "receita" = receitas de intermediação financeira, base diferente de uma empresa não-financeira — não comparar margens entre setores',
   PASS3: 'Fonte: MCP Partnr (B3/CVM) · série 2021-2026 de resultado completa, mas SEM série de preço antes de 2026 na base (IPO recente) — por isso P/L, P/VP, DY e EV/EBITDA só existem em 2026',
   MULT3: 'Fonte: MCP Partnr (B3/CVM) · série 2021-2026 completa',
+  BBAS3: 'Fonte: MCP Partnr (B3/CVM), coletado em 14/09/2026 · banco: EBITDA, EBIT, dívida e EV/EBITDA não se aplicam · imposto POSITIVO em 2024/2025/2026 = crédito tributário, não erro · P/L, P/VP e DY DERIVADOS (preço de fechamento do ano ÷ LPA e VPA do próprio exercício; proventos somados por data-ex) porque a série de valuation do Partnr só vem em TTM · DESDOBRAMENTO 2:1 em 2024 — VPA cai de 59,06 para 31,34 e as ações vão de 2.865 mi para 5.731 mi; é quebra COSMÉTICA e os múltiplos atravessam intactos',
   BMEB4: 'Fonte: MCP Partnr (B3/CVM) · banco: EBITDA, EBIT, dívida e EV/EBITDA não se aplicam · imposto positivo em 2021/2025/2026 = crédito tributário reconhecido, não erro',
 };
 
