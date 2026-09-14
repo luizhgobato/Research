@@ -164,7 +164,7 @@ def main():
         # ficou com 23 células e a linha inteira deslocada em relação ao cabeçalho. Contar é
         # a única verificação que não depende do conteúdo ter sido escrito antes.
         tds = [x for x in re.finditer(r'<td\b[^>]*>.*?</td>', bloco, re.S)]
-        if len(tds) == 23:
+        if len(tds) == 24:
             # REPARO. A primeira versão desta migração detectava "já migrado" procurando a
             # tooltip do múltiplo no texto da linha. Nas 6 linhas SEM preço justo não há
             # tooltip nenhuma, então a detecção dizia "ainda não migrou" toda vez e a segunda
@@ -173,14 +173,14 @@ def main():
             # cabeçalho — cotação aparecendo na coluna da margem, e assim por diante.
             # Remove a duplicata e segue. O gerador conserta o arquivo em vez de exigir que
             # alguém edite HTML à mão.
-            bloco = bloco[:tds[16].start()] + bloco[tds[16].end():]
+            bloco = bloco[:tds[17].start()] + bloco[tds[17].end():]
             tds = [x for x in re.finditer(r'<td\b[^>]*>.*?</td>', bloco, re.S)]
-        if len(tds) == 21:
-            bloco = bloco[:tds[16].start()] + cel_mult + bloco[tds[16].start():]   # layout antigo
-        elif len(tds) == 22:
-            bloco = bloco[:tds[16].start()] + cel_mult + bloco[tds[16].end():]     # já migrado
+        if len(tds) == 22:
+            bloco = bloco[:tds[17].start()] + cel_mult + bloco[tds[17].start():]   # layout antigo
+        elif len(tds) == 23:
+            bloco = bloco[:tds[17].start()] + cel_mult + bloco[tds[17].end():]     # já migrado
         else:
-            raise SystemExit(f'{t}: {len(tds)} células — esperado 21 (a migrar) ou 22')
+            raise SystemExit(f'{t}: {len(tds)} células — esperado 22 (a migrar) ou 23')
 
         # A CÉLULA DO PREÇO JUSTO — identificada pela tooltip, que é única na linha.
         novo, n = re.subn(
@@ -195,10 +195,10 @@ def main():
             # ativo a colar a tooltip à mão antes de rodar o gerador, que é exatamente o
             # trabalho manual que estes scripts existem para eliminar.
             tds2 = [x for x in re.finditer(r'<td\b[^>]*>.*?</td>', novo, re.S)]
-            if len(tds2) > 17:
-                novo = novo[:tds2[17].start()] + cel + novo[tds2[17].end():]
+            if len(tds2) > 18:
+                novo = novo[:tds2[18].start()] + cel + novo[tds2[18].end():]
             else:
-                raise SystemExit(f'{t}: linha com {len(tds2)} células, esperado 22')
+                raise SystemExit(f'{t}: linha com {len(tds2)} células, esperado 23')
 
         # O ATRIBUTO — a fonte que o JS lê. Tem que sair junto ou volta a divergir da célula.
         # Escrito DEPOIS do data-ticker, para o corte acima continuar funcionando na próxima
