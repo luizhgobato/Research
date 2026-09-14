@@ -88,12 +88,14 @@ function renderReportCompleto(body, r){
     ${secHeader(r)}
     ${secVeredicto(r)}
     ${secTeseRiscos(r)}
+    ${secLeituraDados(r)}
     ${secEncaixeCarteira(r)}
     ${secClassificacao(r)}
     ${secContextoPreco(r)}
     ${secDescobertas(r)}
     ${secProjecaoLucro(r)}
     ${secValuation(r)}
+    ${secRegraMultiplo(r)}
     ${secRetornoTotal(r)}
     ${secDividendos(r)}
     ${secReceita(r)}
@@ -218,6 +220,60 @@ function secValuation(r){
         <tbody>${linhasVerif}</tbody>
       </table></div>` : ''}
       ${v.nota ? `<p class="rp-note">${esc(v.nota)}</p>` : ''}
+    </div>`;
+}
+
+// ── 8b · A REGRA DESTA EMPRESA + LPA EM TRÊS CENÁRIOS ─────────────────────────────────────
+// Pedido do usuário: "quero ver o cálculo de múltiplo e a regra que adotamos para cada empresa,
+// e também um detalhamento do LPA projetado considerando 3 cenários". A regra que rege o que
+// entra aqui está escrita no topo de scripts/gerar_relatorio_valuation.py — este render só
+// exibe o que o gerador produziu, para não haver duas definições da mesma coisa.
+function secRegraMultiplo(r){
+  const v = r.valuation; if(!v || !v.regraMetodo) return '';
+  const c = v.cenariosLpa;
+  const linhas = c ? c.cenarios.map(x => `
+    <tr${x.cenario === 'Base' ? ' style="background:#f0fdf6;font-weight:600;"' : ''}>
+      <td class="left">${esc(x.cenario)}</td>
+      <td class="rp-mono">${esc(x.crescimento)}</td>
+      <td class="rp-mono">${esc(x.lpa)}</td>
+      <td class="rp-mono rp-bold">${esc(x.precoJusto)}</td>
+      <td class="left" style="font-size:11px;color:#666;">${esc(x.premissa)}</td>
+    </tr>`).join('') : '';
+  return `
+    <div class="rp-section">
+      <div class="rp-section-title">8b · A regra desta empresa</div>
+      <div class="rp-info-grid">
+        <div class="rp-info-item"><div class="rp-info-label">Método que decide</div><div class="rp-info-value">${esc(v.regraMetodo)}</div></div>
+        <div class="rp-info-item"><div class="rp-info-label">Grupo de pares</div><div class="rp-info-value">${esc(v.regraGrupo)}</div></div>
+      </div>
+      <p class="rp-note" style="margin-top:0.8rem;"><strong>Por que este método:</strong> ${esc(v.regraPorque)}</p>
+      ${v.origemMult ? `<p class="rp-note"><strong>De onde vem o múltiplo:</strong> ${esc(v.origemMult)}.</p>` : ''}
+      ${c ? `
+      <div class="rp-section-title" style="font-size:12px;margin-top:1.2rem;">${/fixo/.test(c.fundamento||'') ? esc(c.fundamento.replace(' (fixo)','')) + ' — três cenários de múltiplo' : esc(c.fundamento||'LPA') + ' projetado 2026 — três cenários'}</div>
+      <p class="rp-note" style="margin-bottom:0.6rem;">Todos partem do mesmo lucro-base (<strong>${esc(c.base)}</strong>)
+         e do mesmo múltiplo (<strong>${esc(c.multiplo)}</strong>). O que muda é só o crescimento.</p>
+      <div class="rp-table-wrap"><table class="rp-table">
+        <thead><tr><th>Cenário</th><th>${/fixo/.test(c.fundamento||'') ? 'Múltiplo' : 'Crescimento'}</th><th>${esc((c.fundamento||'LPA').replace(' (fixo)',''))} 2026</th><th>Preço justo</th><th>Premissa</th></tr></thead>
+        <tbody>${linhas}</tbody>
+      </table></div>` : ''}
+    </div>`;
+}
+
+// ── 2b · LEITURA DOS DADOS ────────────────────────────────────────────────────────────────
+// ⚠️ NÃO É TESE. São fatos do HIST_SEED traduzidos para frase — rentabilidade, alavancagem,
+// consistência do lucro, sustentabilidade do dividendo, quebra de série. O rótulo diz isso,
+// porque dezenove das trinta e três empresas não têm análise escrita e um texto plausível
+// gerado do nada seria pior que a ausência dele.
+function secLeituraDados(r){
+  const v = r.valuation; if(!v || !(v.leituraDados||[]).length) return '';
+  return `
+    <div class="rp-section">
+      <div class="rp-section-title">2b · Leitura dos dados</div>
+      <p class="rp-note" style="margin-bottom:0.6rem;">Derivado da série do HIST_SEED, não é tese de
+         analista — os pontos abaixo são o que os números dizem sozinhos.</p>
+      <ul style="margin:0;padding-left:1.1rem;font-size:12.5px;line-height:1.75;">
+        ${v.leituraDados.map(x => `<li>${esc(x)}</li>`).join('')}
+      </ul>
     </div>`;
 }
 
