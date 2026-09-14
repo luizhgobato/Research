@@ -800,9 +800,24 @@ tbody tr:nth-child(n){animation-delay:calc(var(--i,0)*0.02s);}
      são os últimos da barra: existiam, respondiam a clique via JS, e nenhum dedo
      conseguia chegar neles.
      100vw é a largura da TELA. Tudo passa a caber e a quebrar dentro dela. */
-  .radar-controls{padding:0.6rem 1rem;flex-wrap:wrap;gap:0.5rem;width:100vw;max-width:100vw;
-                  overflow-x:hidden;}
-  .nav{width:100vw;max-width:100vw;}
+  /* ⚠️ 14/09/2026, SEGUNDA VERSÃO. A primeira usou width:100vw e o usuário devolveu:
+     "o cabeçalho tá menor que a largura do espaço no iPhone Pro, tava bom antes". Estava —
+     eu tinha trocado um defeito por outro.
+
+     SÃO DUAS LARGURAS DIFERENTES, e a barra precisa de uma para cada coisa:
+       · a CAIXA (fundo, borda) tem que cobrir a largura do CONTEÚDO — 1.572px no iPhone Pro,
+         porque a tabela tem 2.564px e o Safari alarga o bloco contêiner. Com 100vw (393px) a
+         barra virava uma tarja de 25% da área visível, com o resto vazio à direita.
+       · o CONTEÚDO (busca, chips, botões) tem que caber nos 393px da TELA. Fora deles, numa
+         barra position:fixed, nada é alcançável: elemento fixo não acompanha rolagem
+         horizontal, e era por isso que os chips de segmento sumiam.
+
+     `width:100%` dá a primeira. `padding-right: 100% − 100vw` come a diferença e devolve a
+     segunda, porque o box-sizing é border-box: o fundo continua com 1.572px, a caixa de
+     conteúdo fica com 393px. O max() protege o caso sem transbordo, onde a conta é negativa. */
+  .radar-controls{padding:0.6rem 1rem;flex-wrap:wrap;gap:0.5rem;width:100%;
+                  padding-right:max(1rem, calc(100% - 100vw + 1rem));}
+  .nav{width:100%;padding-right:max(1rem, calc(100% - 100vw + 1rem));}
   .search-wrap{min-width:140px;max-width:100%;flex:1;}
   .stats-row{margin-left:0;width:100%;justify-content:space-between;display:flex;}
   /* ⚠️ 14/09/2026 — O FILTRO DE SEGMENTO VOLTA NO MOBILE. A regra antiga era

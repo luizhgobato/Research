@@ -3056,6 +3056,31 @@ e elemento fixo **não acompanha rolagem horizontal**. Tudo o que passava dos 39
 inalcançável **para sempre**. Os chips de segmento são os últimos da barra: existiam no DOM,
 respondiam a clique via JS, e nenhum dedo conseguia chegar neles.
 
-`width:100vw` é a largura da **tela**, não do documento. Verificado em iPhone 13 (390px),
-iPhone SE (320px) e Pixel 5 (393px): os 10 chips dentro da tela, clique no último filtrando a
-tabela, zero erro de console.
+**Terceira, porque a segunda correção trocou um defeito por outro.** `width:100vw` resolveu os
+chips e quebrou o cabeçalho — o usuário devolveu: *"o cabeçalho tá menor que a largura do espaço
+no iPhone Pro, tava bom antes do último ajuste"*. Estava.
+
+São **duas larguras diferentes**, e a barra precisa de uma para cada coisa:
+
+| | largura certa | no iPhone 15 Pro | o que quebra com a outra |
+|---|---|---|---|
+| **CAIXA** (fundo, borda) | a do **conteúdo** | 1.572px | com 100vw vira tarja de 25% da área visível, o resto vazio |
+| **CONTEÚDO** (busca, chips, botões) | a da **tela** | 393px | com 100% os chips caem fora e ficam inalcançáveis |
+
+A solução usa as duas ao mesmo tempo:
+
+```css
+.nav, .radar-controls{
+  width: 100%;                                        /* caixa = 1.572px */
+  padding-right: max(1rem, calc(100% - 100vw + 1rem)); /* conteúdo = 393px */
+}
+```
+
+`box-sizing:border-box` faz o resto: o fundo continua com 1.572px e a caixa de conteúdo encolhe
+para 393px. O `max()` protege o caso sem transbordo, onde a conta seria negativa.
+
+Verificado em iPhone 15 Pro (393px de tela, 1.572 visíveis), 15 Pro Max (430/1.720), 13 (390),
+SE (320) e Pixel 5 (393), e por varredura de 320px a 1920px: **em toda largura a barra cobre a
+tela inteira E os 10 chips ficam dentro dela**. Clique no último chip filtra a tabela; a barra
+continua ancorada em `left:0` depois de rolar 800px para a direita. Zero erro de console,
+desktop sem regressão (24 col == 24 th == 24 td, zero desalinho).
