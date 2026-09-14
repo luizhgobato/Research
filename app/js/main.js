@@ -66,6 +66,7 @@ window.atualizarCotacoes = async function(){
   } catch {}
 })();
 
+restaurarCarteira();   // lê o localStorage ANTES de desenhar os toggles (ver graficos.js)
 renderToggles();
 renderReportCells();
 applyMobileColHide();
