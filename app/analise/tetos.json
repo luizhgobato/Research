@@ -159,199 +159,200 @@
   "seg": null
  },
  "BBAS3": {
-  "justo": 5.362275225352605,
+  "justo": 10.439678095075239,
   "faixa": [
-   4.765620548289224,
-   8.274457840636432
+   9.81641373119015,
+   11.647252800102597
   ],
-  "largura": 0.424,
+  "largura": 0.157,
   "nMetodos": 1,
   "metodos": [
    {
-    "chave": "P/L",
-    "justo": 5.36,
-    "papel": "principal",
-    "conta": "LPA projetado 2026 R$ 2.12 × P/L 2.53x",
-    "origemMult": "o P/L mediano da própria empresa ao longo de 6 anos (5.28x), ajustado pela rentabilidade (ROE): hoje 6.6% contra 13.8% de mediana do período dá fator 0.48 → múltiplo-alvo 2.53x. Proporção direta, sem teto: mais rentável que a própria mediana merece múltiplo maior; menos rentável, menor. O múltiplo do setor NÃO entra desde 14/09/2026.",
-    "faixa": [
-     4.77,
-     8.27
-    ]
-   },
-   {
     "chave": "P/VP",
     "justo": 10.44,
-    "papel": "verificação",
+    "papel": "principal",
     "conta": "VPA R$ 32.49 × P/VP 0.32x",
+    "origemMult": "o P/VP mediano da própria empresa ao longo de 6 anos (0.67x), ajustado pela rentabilidade (ROE): hoje 6.6% contra 13.8% de mediana do período dá fator 0.48 → múltiplo-alvo 0.32x. Proporção direta, sem teto: mais rentável que a própria mediana merece múltiplo maior; menos rentável, menor. O múltiplo do setor NÃO entra desde 14/09/2026.",
     "faixa": [
      9.82,
      11.65
     ]
+   },
+   {
+    "chave": "E/P",
+    "justo": 5.36,
+    "papel": "verificação",
+    "conta": "LPA projetado 2026 R$ 2.12 × P/L 2.53x",
+    "faixa": [
+     4.77,
+     8.27
+    ]
    }
   ],
-  "motor": "P/L · faixa R$ 4.77 a R$ 8.27",
-  "nota": "PREÇO JUSTO por P/L, MÉTODO ÚNICO — o múltiplo que descreve este negócio, aplicado ao fundamento projetado. Não é mediana de réguas diferentes. A faixa de R$ 4.77 a R$ 8.27 (largura 42%) é a OSCILAÇÃO HISTÓRICA do próprio múltiplo — percentil 25 a 75 da série —, e o limite inferior é o teto de compra. P/L: faixa 4.7x–8.1x (mediana 5.3x) · percentis de 6 anos, série de 6 anos (3.6x a 10.3x). LPA projetado R$ 2.12 = lucro base R$ 13.70 bi (exercício fechado de 2025) × (1-11.4%) ÷ 5731 mi papéis, regressão log do lucro da própria série. || VERIFICAÇÃO (não entra na conta): P/VP R$ 10.44. 1 fora da faixa — as réguas discordam, olhe a empresa.  ⚠️ MARGEM EXTREMA: o teto fica 364% ABAIXO da cotação. Convicção forçada a ★☆☆. Isto pode significar que o mercado discorda muito do histórico da empresa — ou que os métodos ainda não descrevem bem este caso.",
-  "teto": 4.77,
-  "faixaLo": 4.77,
-  "faixaHi": 8.27,
+  "motor": "P/VP · faixa R$ 9.82 a R$ 11.65",
+  "nota": "PREÇO JUSTO por P/VP, MÉTODO ÚNICO — o múltiplo que descreve este negócio, aplicado ao fundamento projetado. Não é mediana de réguas diferentes. A faixa de R$ 9.82 a R$ 11.65 (largura 16%) é a OSCILAÇÃO HISTÓRICA do próprio múltiplo — percentil 25 a 75 da série —, e o limite inferior é o teto de compra. P/VP-alvo = mediana plena de 6 anos (a correção de fase fica com o ROE) de 6 anos (0.58x a 0.94x), corrigido para units. Não depende de lucro contábil de um ano só — é o método que sobrevive a prejuízo e a lucro distorcido por evento não-recorrente. o P/VP mediano da própria empresa ao longo de 6 anos (0.67x), ajustado pela rentabilidade (ROE): hoje 6.6% contra 13.8% de mediana do período dá fator 0.48 → múltiplo-alvo 0.32x. Proporção direta, sem teto: mais rentável que a própria mediana merece múltiplo maior; menos rentável, menor. O múltiplo do setor NÃO entra desde 14/09/2026.. || VERIFICAÇÃO (não entra na conta): E/P R$ 5.36. 1 fora da faixa — as réguas discordam, olhe a empresa.  ⚠️ MARGEM EXTREMA: o teto fica 125% ABAIXO da cotação. Convicção forçada a ★☆☆. Isto pode significar que o mercado discorda muito do histórico da empresa — ou que os métodos ainda não descrevem bem este caso.",
+  "teto": 9.82,
+  "faixaLo": 9.82,
+  "faixaHi": 11.65,
   "cot": 22.09,
-  "seg": -363.5283018479079
+  "seg": -125.03126503126506
  },
  "BBDC3": {
-  "justo": 16.690484537720927,
+  "justo": 15.043740860501387,
   "faixa": [
-   16.61498826110632,
-   16.887936338097578
+   13.513868908585993,
+   16.4461234830905
   ],
-  "largura": 0.016,
+  "largura": 0.178,
   "nMetodos": 1,
   "metodos": [
    {
-    "chave": "P/L",
-    "justo": 16.69,
-    "papel": "principal",
-    "conta": "LPA projetado 2026 R$ 2.30 × P/L 7.26x",
-    "origemMult": "o P/L mediano da própria empresa ao longo de 6 anos (7.19x), ajustado pela rentabilidade (ROE): hoje 13.7% contra 13.6% de mediana do período dá fator 1.01 → múltiplo-alvo 7.26x. Proporção direta, sem teto: mais rentável que a própria mediana merece múltiplo maior; menos rentável, menor. O múltiplo do setor NÃO entra desde 14/09/2026.",
-    "faixa": [
-     16.61,
-     16.89
-    ]
-   },
-   {
     "chave": "P/VP",
     "justo": 15.04,
-    "papel": "verificação",
+    "papel": "principal",
     "conta": "VPA R$ 16.82 × P/VP 0.89x",
+    "origemMult": "o P/VP mediano da própria empresa ao longo de 6 anos (0.89x), ajustado pela rentabilidade (ROE): hoje 13.7% contra 13.6% de mediana do período dá fator 1.01 → múltiplo-alvo 0.89x. Proporção direta, sem teto: mais rentável que a própria mediana merece múltiplo maior; menos rentável, menor. O múltiplo do setor NÃO entra desde 14/09/2026.",
     "faixa": [
      13.51,
      16.45
     ]
+   },
+   {
+    "chave": "E/P",
+    "justo": 16.69,
+    "papel": "verificação",
+    "conta": "LPA projetado 2026 R$ 2.30 × P/L 7.26x",
+    "faixa": [
+     16.61,
+     16.89
+    ]
    }
   ],
-  "motor": "P/L · faixa R$ 16.61 a R$ 16.89",
-  "nota": "PREÇO JUSTO por P/L, MÉTODO ÚNICO — o múltiplo que descreve este negócio, aplicado ao fundamento projetado. Não é mediana de réguas diferentes. A faixa de R$ 16.61 a R$ 16.89 (largura 2%) é a OSCILAÇÃO HISTÓRICA do próprio múltiplo — percentil 25 a 75 da série —, e o limite inferior é o teto de compra. P/L: faixa 7.2x–7.3x (mediana 7.2x) · percentis de 6 anos, série de 6 anos (6.1x a 9.1x). LPA projetado R$ 2.30 = lucro base R$ 23.92 bi (exercício fechado de 2025) × (1+2.3%) ÷ 10647 mi papéis, regressão log do lucro da própria série. || VERIFICAÇÃO (não entra na conta): P/VP R$ 15.04. 1 fora da faixa — as réguas discordam, olhe a empresa. ",
-  "teto": 16.61,
-  "faixaLo": 16.61,
-  "faixaHi": 16.89,
+  "motor": "P/VP · faixa R$ 13.51 a R$ 16.45",
+  "nota": "PREÇO JUSTO por P/VP, MÉTODO ÚNICO — o múltiplo que descreve este negócio, aplicado ao fundamento projetado. Não é mediana de réguas diferentes. A faixa de R$ 13.51 a R$ 16.45 (largura 18%) é a OSCILAÇÃO HISTÓRICA do próprio múltiplo — percentil 25 a 75 da série —, e o limite inferior é o teto de compra. P/VP-alvo = mediana plena de 6 anos (a correção de fase fica com o ROE) de 6 anos (0.74x a 1.07x), corrigido para units. Não depende de lucro contábil de um ano só — é o método que sobrevive a prejuízo e a lucro distorcido por evento não-recorrente. o P/VP mediano da própria empresa ao longo de 6 anos (0.89x), ajustado pela rentabilidade (ROE): hoje 13.7% contra 13.6% de mediana do período dá fator 1.01 → múltiplo-alvo 0.89x. Proporção direta, sem teto: mais rentável que a própria mediana merece múltiplo maior; menos rentável, menor. O múltiplo do setor NÃO entra desde 14/09/2026.. || VERIFICAÇÃO (não entra na conta): E/P R$ 16.69. 1 fora da faixa — as réguas discordam, olhe a empresa. ",
+  "teto": 13.51,
+  "faixaLo": 13.51,
+  "faixaHi": 16.45,
   "cot": 16.32,
-  "seg": 1.775434664596488
+  "seg": -20.76482397747059
  },
  "BBSE3": {
-  "justo": 37.26936944026918,
+  "justo": 34.57900614712165,
   "faixa": [
-   36.482595591472275,
-   46.49510114670944
+   32.21620171726514,
+   39.191426770673885
   ],
-  "largura": 0.215,
+  "largura": 0.178,
   "nMetodos": 1,
   "metodos": [
    {
-    "chave": "P/L",
-    "justo": 37.27,
-    "papel": "principal",
-    "conta": "LPA projetado 2026 R$ 4.32 × P/L 8.62x",
-    "origemMult": "o P/L mediano da própria empresa ao longo de 6 anos (8.64x), ajustado pela rentabilidade (ROE): hoje 78.6% contra 78.8% de mediana do período dá fator 1.00 → múltiplo-alvo 8.62x. Proporção direta, sem teto: mais rentável que a própria mediana merece múltiplo maior; menos rentável, menor. O múltiplo do setor NÃO entra desde 14/09/2026.",
-    "faixa": [
-     36.48,
-     46.5
-    ]
-   },
-   {
     "chave": "P/VP",
     "justo": 34.58,
-    "papel": "verificação",
+    "papel": "principal",
     "conta": "VPA R$ 5.68 × P/VP 6.09x",
+    "origemMult": "o P/VP mediano da própria empresa ao longo de 6 anos (6.11x), ajustado pela rentabilidade (ROE): hoje 78.6% contra 78.8% de mediana do período dá fator 1.00 → múltiplo-alvo 6.09x. Proporção direta, sem teto: mais rentável que a própria mediana merece múltiplo maior; menos rentável, menor. O múltiplo do setor NÃO entra desde 14/09/2026.",
     "faixa": [
      32.22,
      39.19
     ]
+   },
+   {
+    "chave": "E/P",
+    "justo": 37.27,
+    "papel": "verificação",
+    "conta": "LPA projetado 2026 R$ 4.32 × P/L 8.62x",
+    "faixa": [
+     36.48,
+     46.5
+    ]
    }
   ],
-  "motor": "P/L · faixa R$ 36.48 a R$ 46.50",
-  "nota": "PREÇO JUSTO por P/L, MÉTODO ÚNICO — o múltiplo que descreve este negócio, aplicado ao fundamento projetado. Não é mediana de réguas diferentes. A faixa de R$ 36.48 a R$ 46.50 (largura 22%) é a OSCILAÇÃO HISTÓRICA do próprio múltiplo — percentil 25 a 75 da série —, e o limite inferior é o teto de compra. P/L: faixa 8.5x–10.8x (mediana 8.6x) · percentis de 6 anos, série de 6 anos (8.0x a 12.3x). LPA projetado R$ 4.32 = lucro de 2026 R$ 8.65 bi DECLARADO ÷ 2000 mi papéis. Cenário BASE do relatório de 25/08/2026, que usa o guidance oficial da companhia (resultado operacional consolidado −7% a −3% para 2026; o base é o meio, −5%) e coincide com o consenso de mercado de R$ 8,65-8,69 bi. || VERIFICAÇÃO (não entra na conta): P/VP R$ 34.58. 1 fora da faixa — as réguas discordam, olhe a empresa. ",
-  "teto": 36.48,
-  "faixaLo": 36.48,
-  "faixaHi": 46.5,
+  "motor": "P/VP · faixa R$ 32.22 a R$ 39.19",
+  "nota": "PREÇO JUSTO por P/VP, MÉTODO ÚNICO — o múltiplo que descreve este negócio, aplicado ao fundamento projetado. Não é mediana de réguas diferentes. A faixa de R$ 32.22 a R$ 39.19 (largura 18%) é a OSCILAÇÃO HISTÓRICA do próprio múltiplo — percentil 25 a 75 da série —, e o limite inferior é o teto de compra. P/VP-alvo = mediana plena de 6 anos (a correção de fase fica com o ROE) de 6 anos (5.33x a 7.13x), corrigido para units. Não depende de lucro contábil de um ano só — é o método que sobrevive a prejuízo e a lucro distorcido por evento não-recorrente. o P/VP mediano da própria empresa ao longo de 6 anos (6.11x), ajustado pela rentabilidade (ROE): hoje 78.6% contra 78.8% de mediana do período dá fator 1.00 → múltiplo-alvo 6.09x. Proporção direta, sem teto: mais rentável que a própria mediana merece múltiplo maior; menos rentável, menor. O múltiplo do setor NÃO entra desde 14/09/2026.. || VERIFICAÇÃO (não entra na conta): E/P R$ 37.27. Todas dentro da faixa. ",
+  "teto": 32.22,
+  "faixaLo": 32.22,
+  "faixaHi": 39.19,
   "cot": 40.48,
-  "seg": -10.957017568843446
+  "seg": -25.65106326083798
  },
  "BMEB4": {
-  "justo": 73.35811987702037,
+  "justo": 47.80245583343161,
   "faixa": [
-   56.927345488250346,
-   86.07455908214382
+   30.22393646445167,
+   62.671242967667595
   ],
-  "largura": 0.339,
+  "largura": 0.518,
   "nMetodos": 1,
   "metodos": [
    {
-    "chave": "P/L",
-    "justo": 73.36,
-    "papel": "principal",
-    "conta": "LPA projetado 2026 R$ 9.82 × P/L 7.47x",
-    "origemMult": "o P/L mediano da própria empresa ao longo de 6 anos (7.11x), ajustado pela rentabilidade (ROE): hoje 27.1% contra 25.7% de mediana do período dá fator 1.05 → múltiplo-alvo 7.47x. Proporção direta, sem teto: mais rentável que a própria mediana merece múltiplo maior; menos rentável, menor. O múltiplo do setor NÃO entra desde 14/09/2026.",
-    "faixa": [
-     56.93,
-     86.07
-    ]
-   },
-   {
     "chave": "P/VP",
     "justo": 47.8,
-    "papel": "verificação",
+    "papel": "principal",
     "conta": "VPA R$ 26.44 × P/VP 1.81x",
+    "origemMult": "o P/VP mediano da própria empresa ao longo de 6 anos (1.72x), ajustado pela rentabilidade (ROE): hoje 27.1% contra 25.7% de mediana do período dá fator 1.05 → múltiplo-alvo 1.81x. Proporção direta, sem teto: mais rentável que a própria mediana merece múltiplo maior; menos rentável, menor. O múltiplo do setor NÃO entra desde 14/09/2026.",
     "faixa": [
      30.22,
      62.67
     ]
+   },
+   {
+    "chave": "E/P",
+    "justo": 73.36,
+    "papel": "verificação",
+    "conta": "LPA projetado 2026 R$ 9.82 × P/L 7.47x",
+    "faixa": [
+     56.93,
+     86.07
+    ]
    }
   ],
-  "motor": "P/L · faixa R$ 56.93 a R$ 86.07",
-  "nota": "PREÇO JUSTO por P/L, MÉTODO ÚNICO — o múltiplo que descreve este negócio, aplicado ao fundamento projetado. Não é mediana de réguas diferentes. A faixa de R$ 56.93 a R$ 86.07 (largura 34%) é a OSCILAÇÃO HISTÓRICA do próprio múltiplo — percentil 25 a 75 da série —, e o limite inferior é o teto de compra. P/L: faixa 5.5x–8.3x (mediana 7.1x) · percentis de 6 anos, série de 6 anos (5.2x a 15.4x). LPA projetado R$ 9.82 = lucro de 2026 R$ 1.03 bi DECLARADO ÷ 105 mi papéis. Cenário BASE do relatório de 25/08/2026: ponto médio entre o g financeiro padrão (8%) e o crescimento implícito pela retenção de capital (ROE × retenção ≈ 19,3%). ⚠️ Sem guidance oficial; o otimista replica a projeção do Safra (R$ 1,20 bi). || VERIFICAÇÃO (não entra na conta): P/VP R$ 47.80. 1 fora da faixa — as réguas discordam, olhe a empresa. ",
-  "teto": 56.93,
-  "faixaLo": 56.93,
-  "faixaHi": 86.07,
+  "motor": "P/VP · faixa R$ 30.22 a R$ 62.67",
+  "nota": "⛔ SEM TETO DE COMPRA — o múltiplo oscilou 52% ao longo da série (faixa de R$ 30.22 a R$ 62.67). O preço justo continua valendo — é a mediana do múltiplo, a melhor estimativa única —, mas o limite inferior de uma faixa tão larga é o ano mais pessimista da série, não uma estimativa conservadora de valor. Dar um preço de entrada aqui seria emprestar precisão à volatilidade. || PREÇO JUSTO por P/VP, MÉTODO ÚNICO — o múltiplo que descreve este negócio, aplicado ao fundamento projetado. Não é mediana de réguas diferentes. A faixa de R$ 30.22 a R$ 62.67 (largura 52%) é a OSCILAÇÃO HISTÓRICA do próprio múltiplo — percentil 25 a 75 da série —, e o limite inferior é o teto de compra. P/VP-alvo = mediana plena de 6 anos (a correção de fase fica com o ROE) de 6 anos (0.77x a 4.25x), corrigido para units. Não depende de lucro contábil de um ano só — é o método que sobrevive a prejuízo e a lucro distorcido por evento não-recorrente. o P/VP mediano da própria empresa ao longo de 6 anos (1.72x), ajustado pela rentabilidade (ROE): hoje 27.1% contra 25.7% de mediana do período dá fator 1.05 → múltiplo-alvo 1.81x. Proporção direta, sem teto: mais rentável que a própria mediana merece múltiplo maior; menos rentável, menor. O múltiplo do setor NÃO entra desde 14/09/2026.. || VERIFICAÇÃO (não entra na conta): E/P R$ 73.36. 1 fora da faixa — as réguas discordam, olhe a empresa. ",
+  "teto_suprimido": true,
+  "teto": null,
+  "faixaLo": 30.22,
+  "faixaHi": 62.67,
   "cot": 60.55,
-  "seg": -6.363645591901625
+  "seg": null
  },
  "BPAC11": {
-  "justo": 77.15197682621366,
+  "justo": 58.09403222773915,
   "faixa": [
-   70.37465144396418,
-   79.82183227982708
+   56.051663907232694,
+   63.04522815623964
   ],
-  "largura": 0.118,
+  "largura": 0.111,
   "nMetodos": 1,
   "metodos": [
    {
-    "chave": "P/L",
-    "justo": 77.15,
-    "papel": "principal",
-    "conta": "LPA projetado 2026 R$ 5.07 × P/L 15.23x",
-    "origemMult": "o P/L mediano da própria empresa ao longo de 6 anos (13.15x), ajustado pela rentabilidade (ROE): hoje 23.3% contra 20.1% de mediana do período dá fator 1.16 → múltiplo-alvo 15.23x. Proporção direta, sem teto: mais rentável que a própria mediana merece múltiplo maior; menos rentável, menor. O múltiplo do setor NÃO entra desde 14/09/2026.",
-    "faixa": [
-     70.37,
-     79.82
-    ]
-   },
-   {
     "chave": "P/VP",
     "justo": 58.09,
-    "papel": "verificação",
+    "papel": "principal",
     "conta": "VPA R$ 21.37 × P/VP 2.72x",
+    "origemMult": "o P/VP mediano da própria empresa ao longo de 6 anos (2.35x), ajustado pela rentabilidade (ROE): hoje 23.3% contra 20.1% de mediana do período dá fator 1.16 → múltiplo-alvo 2.72x. Proporção direta, sem teto: mais rentável que a própria mediana merece múltiplo maior; menos rentável, menor. O múltiplo do setor NÃO entra desde 14/09/2026.",
     "faixa": [
      56.05,
      63.05
     ]
+   },
+   {
+    "chave": "E/P",
+    "justo": 77.15,
+    "papel": "verificação",
+    "conta": "LPA projetado 2026 R$ 5.07 × P/L 15.23x",
+    "faixa": [
+     70.37,
+     79.82
+    ]
    }
   ],
-  "motor": "P/L · faixa R$ 70.37 a R$ 79.82",
-  "nota": "PREÇO JUSTO por P/L, MÉTODO ÚNICO — o múltiplo que descreve este negócio, aplicado ao fundamento projetado. Não é mediana de réguas diferentes. A faixa de R$ 70.37 a R$ 79.82 (largura 12%) é a OSCILAÇÃO HISTÓRICA do próprio múltiplo — percentil 25 a 75 da série —, e o limite inferior é o teto de compra. P/L: faixa 12.0x–13.6x (mediana 13.1x) · percentis de 6 anos, série de 6 anos (10.8x a 13.8x). LPA projetado R$ 5.07 = lucro base R$ 16.66 bi (exercício fechado de 2025) × (1+16.6%) ÷ 3834 mi papéis, ROE × retenção. || VERIFICAÇÃO (não entra na conta): P/VP R$ 58.09. 1 fora da faixa — as réguas discordam, olhe a empresa. ",
-  "teto": 70.37,
-  "faixaLo": 70.37,
-  "faixaHi": 79.82,
+  "motor": "P/VP · faixa R$ 56.05 a R$ 63.05",
+  "nota": "PREÇO JUSTO por P/VP, MÉTODO ÚNICO — o múltiplo que descreve este negócio, aplicado ao fundamento projetado. Não é mediana de réguas diferentes. A faixa de R$ 56.05 a R$ 63.05 (largura 11%) é a OSCILAÇÃO HISTÓRICA do próprio múltiplo — percentil 25 a 75 da série —, e o limite inferior é o teto de compra. P/VP-alvo = mediana plena de 6 anos (a correção de fase fica com o ROE) de 6 anos (2.16x a 2.84x), corrigido para units. Não depende de lucro contábil de um ano só — é o método que sobrevive a prejuízo e a lucro distorcido por evento não-recorrente. o P/VP mediano da própria empresa ao longo de 6 anos (2.35x), ajustado pela rentabilidade (ROE): hoje 23.3% contra 20.1% de mediana do período dá fator 1.16 → múltiplo-alvo 2.72x. Proporção direta, sem teto: mais rentável que a própria mediana merece múltiplo maior; menos rentável, menor. O múltiplo do setor NÃO entra desde 14/09/2026.. || VERIFICAÇÃO (não entra na conta): E/P R$ 77.15. 1 fora da faixa — as réguas discordam, olhe a empresa. ",
+  "teto": 56.05,
+  "faixaLo": 56.05,
+  "faixaHi": 63.05,
   "cot": 57.8,
-  "seg": 17.868154493065948
+  "seg": -3.1191511025629066
  },
  "BRAP4": {
   "justo": 20.04036484707503,
@@ -413,43 +414,43 @@
   "seg": -17.63609488507792
  },
  "BRSR6": {
-  "justo": 26.90610247178413,
+  "justo": 19.87137251448254,
   "faixa": [
-   22.306124190453325,
-   31.641817817154205
+   19.662200172224832,
+   20.080544856740254
   ],
-  "largura": 0.295,
+  "largura": 0.021,
   "nMetodos": 1,
   "metodos": [
    {
-    "chave": "P/L",
-    "justo": 26.91,
-    "papel": "principal",
-    "conta": "LPA projetado 2026 R$ 4.50 × P/L 5.97x",
-    "origemMult": "o P/L mediano da própria empresa ao longo de 6 anos (4.46x), ajustado pela rentabilidade (ROE): hoje 14.3% contra 10.6% de mediana do período dá fator 1.34 → múltiplo-alvo 5.97x. Proporção direta, sem teto: mais rentável que a própria mediana merece múltiplo maior; menos rentável, menor. O múltiplo do setor NÃO entra desde 14/09/2026.",
-    "faixa": [
-     22.31,
-     31.64
-    ]
-   },
-   {
     "chave": "P/VP",
     "justo": 19.87,
-    "papel": "verificação",
+    "papel": "principal",
     "conta": "VPA R$ 31.23 × P/VP 0.64x",
+    "origemMult": "o P/VP mediano da própria empresa ao longo de 6 anos (0.47x), ajustado pela rentabilidade (ROE): hoje 14.3% contra 10.6% de mediana do período dá fator 1.34 → múltiplo-alvo 0.64x. Proporção direta, sem teto: mais rentável que a própria mediana merece múltiplo maior; menos rentável, menor. O múltiplo do setor NÃO entra desde 14/09/2026.",
     "faixa": [
      19.66,
      20.08
     ]
+   },
+   {
+    "chave": "E/P",
+    "justo": 26.91,
+    "papel": "verificação",
+    "conta": "LPA projetado 2026 R$ 4.50 × P/L 5.97x",
+    "faixa": [
+     22.31,
+     31.64
+    ]
    }
   ],
-  "motor": "P/L · faixa R$ 22.31 a R$ 31.64",
-  "nota": "PREÇO JUSTO por P/L, MÉTODO ÚNICO — o múltiplo que descreve este negócio, aplicado ao fundamento projetado. Não é mediana de réguas diferentes. A faixa de R$ 22.31 a R$ 31.64 (largura 30%) é a OSCILAÇÃO HISTÓRICA do próprio múltiplo — percentil 25 a 75 da série —, e o limite inferior é o teto de compra. P/L: faixa 3.7x–5.2x (mediana 4.5x) · percentis de 6 anos, série de 6 anos (3.5x a 6.8x). LPA projetado R$ 4.50 = lucro base R$ 1.71 bi (exercício fechado de 2025) × (1+7.4%) ÷ 409 mi papéis, ROE × retenção. || VERIFICAÇÃO (não entra na conta): P/VP R$ 19.87. 1 fora da faixa — as réguas discordam, olhe a empresa. ",
-  "teto": 22.31,
-  "faixaLo": 22.31,
-  "faixaHi": 31.64,
+  "motor": "P/VP · faixa R$ 19.66 a R$ 20.08",
+  "nota": "PREÇO JUSTO por P/VP, MÉTODO ÚNICO — o múltiplo que descreve este negócio, aplicado ao fundamento projetado. Não é mediana de réguas diferentes. A faixa de R$ 19.66 a R$ 20.08 (largura 2%) é a OSCILAÇÃO HISTÓRICA do próprio múltiplo — percentil 25 a 75 da série —, e o limite inferior é o teto de compra. P/VP-alvo = mediana plena de 6 anos (a correção de fase fica com o ROE) de 6 anos (0.45x a 0.52x), corrigido para units. Não depende de lucro contábil de um ano só — é o método que sobrevive a prejuízo e a lucro distorcido por evento não-recorrente. o P/VP mediano da própria empresa ao longo de 6 anos (0.47x), ajustado pela rentabilidade (ROE): hoje 14.3% contra 10.6% de mediana do período dá fator 1.34 → múltiplo-alvo 0.64x. Proporção direta, sem teto: mais rentável que a própria mediana merece múltiplo maior; menos rentável, menor. O múltiplo do setor NÃO entra desde 14/09/2026.. || VERIFICAÇÃO (não entra na conta): E/P R$ 26.91. 1 fora da faixa — as réguas discordam, olhe a empresa. ",
+  "teto": 19.66,
+  "faixaLo": 19.66,
+  "faixaHi": 20.08,
   "cot": 14.99,
-  "seg": 32.79872436819173
+  "seg": 23.762346692130944
  },
  "CLSC4": {
   "justo": 94.49859192039649,
@@ -577,33 +578,33 @@
   "seg": -28.080044704080375
  },
  "CXSE3": {
-  "justo": 20.428620526711846,
+  "justo": 16.568540484785967,
   "faixa": [
-   19.46168926253874,
-   22.094379386355524
+   13.136485670080301,
+   18.85657702792308
   ],
-  "largura": 0.119,
+  "largura": 0.303,
   "nMetodos": 1,
   "metodos": [
    {
-    "chave": "P/L",
-    "justo": 20.43,
-    "papel": "principal",
-    "conta": "LPA projetado 2026 R$ 1.54 × P/L 13.23x",
-    "origemMult": "o P/L mediano da própria empresa ao longo de 6 anos (11.62x), ajustado pela rentabilidade (ROE): hoje 33.1% contra 29.1% de mediana do período dá fator 1.14 → múltiplo-alvo 13.23x. Proporção direta, sem teto: mais rentável que a própria mediana merece múltiplo maior; menos rentável, menor. O múltiplo do setor NÃO entra desde 14/09/2026.",
-    "faixa": [
-     19.46,
-     22.09
-    ]
-   },
-   {
     "chave": "P/VP",
     "justo": 16.57,
-    "papel": "verificação",
+    "papel": "principal",
     "conta": "VPA R$ 4.62 × P/VP 3.59x",
+    "origemMult": "o P/VP mediano da própria empresa ao longo de 6 anos (3.15x), ajustado pela rentabilidade (ROE): hoje 33.1% contra 29.1% de mediana do período dá fator 1.14 → múltiplo-alvo 3.59x. Proporção direta, sem teto: mais rentável que a própria mediana merece múltiplo maior; menos rentável, menor. O múltiplo do setor NÃO entra desde 14/09/2026.",
     "faixa": [
      13.14,
      18.86
+    ]
+   },
+   {
+    "chave": "E/P",
+    "justo": 20.43,
+    "papel": "verificação",
+    "conta": "LPA projetado 2026 R$ 1.54 × P/L 13.23x",
+    "faixa": [
+     19.46,
+     22.09
     ]
    },
    {
@@ -617,13 +618,13 @@
     ]
    }
   ],
-  "motor": "P/L · faixa R$ 19.46 a R$ 22.09",
-  "nota": "PREÇO JUSTO por P/L, MÉTODO ÚNICO — o múltiplo que descreve este negócio, aplicado ao fundamento projetado. Não é mediana de réguas diferentes. A faixa de R$ 19.46 a R$ 22.09 (largura 12%) é a OSCILAÇÃO HISTÓRICA do próprio múltiplo — percentil 25 a 75 da série —, e o limite inferior é o teto de compra. P/L: faixa 11.1x–12.6x (mediana 11.6x) · percentis de 6 anos, série de 6 anos (9.8x a 13.9x). LPA projetado R$ 1.54 = lucro de 2026 R$ 4.64 bi DECLARADO ÷ 3005 mi papéis. Cenário BASE do relatório de 25/08/2026: crescimento financeiro de 8% a.a. sem novo choque regulatório. ⚠️ Não há guidance numérico oficial da companhia — o conservador (+3%, prestamista não recupera) dá R$ 4,43 bi. || VERIFICAÇÃO (não entra na conta): P/VP R$ 16.57 · P/FFO R$ 23.31. 2 fora da faixa — as réguas discordam, olhe a empresa. ",
-  "teto": 19.46,
-  "faixaLo": 19.46,
-  "faixaHi": 22.09,
+  "motor": "P/VP · faixa R$ 13.14 a R$ 18.86",
+  "nota": "PREÇO JUSTO por P/VP, MÉTODO ÚNICO — o múltiplo que descreve este negócio, aplicado ao fundamento projetado. Não é mediana de réguas diferentes. A faixa de R$ 13.14 a R$ 18.86 (largura 30%) é a OSCILAÇÃO HISTÓRICA do próprio múltiplo — percentil 25 a 75 da série —, e o limite inferior é o teto de compra. P/VP-alvo = mediana plena de 6 anos (a correção de fase fica com o ROE) de 6 anos (2.13x a 4.20x), corrigido para units. Não depende de lucro contábil de um ano só — é o método que sobrevive a prejuízo e a lucro distorcido por evento não-recorrente. o P/VP mediano da própria empresa ao longo de 6 anos (3.15x), ajustado pela rentabilidade (ROE): hoje 33.1% contra 29.1% de mediana do período dá fator 1.14 → múltiplo-alvo 3.59x. Proporção direta, sem teto: mais rentável que a própria mediana merece múltiplo maior; menos rentável, menor. O múltiplo do setor NÃO entra desde 14/09/2026.. || VERIFICAÇÃO (não entra na conta): E/P R$ 20.43 · P/FFO R$ 23.31. 2 fora da faixa — as réguas discordam, olhe a empresa. ",
+  "teto": 13.14,
+  "faixaLo": 13.14,
+  "faixaHi": 18.86,
   "cot": 19.4,
-  "seg": 0.31697794423984615
+  "seg": -47.68028898463686
  },
  "FIQE3": {
   "justo": 6.681388932005282,
@@ -813,63 +814,62 @@
   "seg": 33.56864519513847
  },
  "IRBR3": {
-  "justo": 33.26911566661679,
+  "justo": 54.7993023255814,
   "faixa": [
-   33.107810863384714,
-   76.98271734251085
+   48.19697674418605,
+   56.78000000000001
   ],
-  "largura": 0.57,
+  "largura": 0.151,
   "nMetodos": 1,
   "metodos": [
    {
-    "chave": "P/L",
-    "justo": 33.27,
-    "papel": "principal",
-    "conta": "LPA projetado 2026 R$ 4.03 × P/L 8.25x",
-    "origemMult": "o P/L mediano da própria empresa ao longo de 3 anos (8.25x), ajustado pela rentabilidade (ROE): hoje 4.5% contra 4.5% de mediana do período dá fator 1.00 → múltiplo-alvo 8.25x. Proporção direta, sem teto: mais rentável que a própria mediana merece múltiplo maior; menos rentável, menor. O múltiplo do setor NÃO entra desde 14/09/2026.",
-    "faixa": [
-     33.11,
-     76.98
-    ]
-   },
-   {
     "chave": "P/VP",
     "justo": 54.8,
-    "papel": "verificação",
+    "papel": "principal",
     "conta": "VPA R$ 66.02 × P/VP 0.83x",
+    "origemMult": "o P/VP mediano da própria empresa ao longo de 5 anos (0.83x), ajustado pela rentabilidade (ROE): hoje 4.5% contra 4.5% de mediana do período dá fator 1.00 → múltiplo-alvo 0.83x. Proporção direta, sem teto: mais rentável que a própria mediana merece múltiplo maior; menos rentável, menor. O múltiplo do setor NÃO entra desde 14/09/2026.",
     "faixa": [
      48.2,
      56.78
     ]
+   },
+   {
+    "chave": "E/P",
+    "justo": 33.27,
+    "papel": "verificação",
+    "conta": "LPA projetado 2026 R$ 4.03 × P/L 8.25x",
+    "faixa": [
+     33.11,
+     76.98
+    ]
    }
   ],
-  "motor": "P/L · faixa R$ 33.11 a R$ 76.98",
-  "nota": "⛔ SEM TETO DE COMPRA — o múltiplo oscilou 57% ao longo da série (faixa de R$ 33.11 a R$ 76.98). O preço justo continua valendo — é a mediana do múltiplo, a melhor estimativa única —, mas o limite inferior de uma faixa tão larga é o ano mais pessimista da série, não uma estimativa conservadora de valor. Dar um preço de entrada aqui seria emprestar precisão à volatilidade. || PREÇO JUSTO por P/L, MÉTODO ÚNICO — o múltiplo que descreve este negócio, aplicado ao fundamento projetado. Não é mediana de réguas diferentes. A faixa de R$ 33.11 a R$ 76.98 (largura 57%) é a OSCILAÇÃO HISTÓRICA do próprio múltiplo — percentil 25 a 75 da série —, e o limite inferior é o teto de compra. P/L: faixa 8.2x–19.1x (mediana 8.2x) · série de 3 anos — amplitude observada (mín-máx), não percentis, série de 3 anos (8.2x a 19.1x), restrito a partir de 2022 por QUEBRA DE SÉRIE. LPA projetado R$ 4.03 = lucro de 2026 R$ 0.33 bi DECLARADO ÷ 82 mi papéis. Cenário CONSERVADOR do relatório de 25/08/2026 — e é o único disponível: o próprio relatório se recusa a publicar um cenário base, porque a divergência entre lucro contábil (IFRS) e gerencial inverteu de sinal no 2T26. É o lucro médio de ciclo 2023-2025, tratando o trimestre como ruído. O otimista, sobre o run-rate gerencial do 2T26, daria R$ 740 mi — mais que o dobro. || VERIFICAÇÃO (não entra na conta): P/VP R$ 54.80. Todas dentro da faixa. ",
-  "teto_suprimido": true,
-  "teto": null,
-  "faixaLo": 33.11,
-  "faixaHi": 76.98,
+  "motor": "P/VP · faixa R$ 48.20 a R$ 56.78",
+  "nota": "PREÇO JUSTO por P/VP, MÉTODO ÚNICO — o múltiplo que descreve este negócio, aplicado ao fundamento projetado. Não é mediana de réguas diferentes. A faixa de R$ 48.20 a R$ 56.78 (largura 15%) é a OSCILAÇÃO HISTÓRICA do próprio múltiplo — percentil 25 a 75 da série —, e o limite inferior é o teto de compra. P/VP-alvo = mediana plena de 5 anos (a correção de fase fica com o ROE) de 5 anos (0.52x a 0.87x), corrigido para units. Não depende de lucro contábil de um ano só — é o método que sobrevive a prejuízo e a lucro distorcido por evento não-recorrente. o P/VP mediano da própria empresa ao longo de 5 anos (0.83x), ajustado pela rentabilidade (ROE): hoje 4.5% contra 4.5% de mediana do período dá fator 1.00 → múltiplo-alvo 0.83x. Proporção direta, sem teto: mais rentável que a própria mediana merece múltiplo maior; menos rentável, menor. O múltiplo do setor NÃO entra desde 14/09/2026.. Restrito a partir de 2022 por quebra de série. || VERIFICAÇÃO (não entra na conta): E/P R$ 33.27. 1 fora da faixa — as réguas discordam, olhe a empresa. ",
+  "teto": 48.2,
+  "faixaLo": 48.2,
+  "faixaHi": 56.78,
   "cot": 56.78,
-  "seg": null
+  "seg": -17.80821917808218
  },
  "ITSA4": {
-  "justo": 15.034080895199189,
+  "justo": 9.809242303011963,
   "faixa": [
-   14.89758441204801,
-   15.145440627029547
+   9.720182846296757,
+   9.881900857927098
   ],
   "largura": 0.016,
   "nMetodos": 1,
   "metodos": [
    {
     "chave": "Paridade",
-    "justo": 15.03,
+    "justo": 9.81,
     "papel": "principal",
-    "conta": "preço justo de ITUB3 R$ 46.63 × paridade 0.322",
+    "conta": "preço justo de ITUB3 R$ 30.43 × paridade 0.322",
     "origemMult": "a razão entre o preço de ITSA4 e o de ITUB3 ao longo de 6 anos (0.322) — o desconto de holding que o mercado pratica",
     "faixa": [
-     14.9,
-     15.15
+     9.72,
+     9.88
     ]
    },
    {
@@ -923,52 +923,52 @@
     ]
    }
   ],
-  "motor": "Paridade · faixa R$ 14.90 a R$ 15.15",
-  "nota": "PREÇO JUSTO por Paridade, MÉTODO ÚNICO — o múltiplo que descreve este negócio, aplicado ao fundamento projetado. Não é mediana de réguas diferentes. A faixa de R$ 14.90 a R$ 15.15 (largura 2%) é a OSCILAÇÃO HISTÓRICA do próprio múltiplo — percentil 25 a 75 da série —, e o limite inferior é o teto de compra. Razão preço ITSA4 ÷ preço ITUB3 = TENDÊNCIA -0.1 entre as metades da série → média dos 3 anos recentes de 6 anos (0.318 a 0.468, dispersão 32%; faixa 0.319 a 0.325, TENDÊNCIA -0.1 entre as metades → faixa só dos 3 anos recentes). É o desconto de holding medido pelo próprio mercado, não um NAV estimado por mim. ⚠️ NÃO enxerga os demais ativos da holding nem a dívida dela, e não sabe dizer se o par inteiro está caro: se o motor errar em ITUB3, erra aqui junto. Convicção limitada a ★★☆ por isso. || VERIFICAÇÃO (não entra na conta): P/VP R$ 11.81 · EV/Receita R$ 11.93 · P/FFO R$ 12.04 · E/P R$ 13.16 · EV/EBITDA R$ 14.04. 5 fora da faixa — as réguas discordam, olhe a empresa. ",
-  "teto": 14.9,
-  "faixaLo": 14.9,
-  "faixaHi": 15.15,
+  "motor": "Paridade · faixa R$ 9.72 a R$ 9.88",
+  "nota": "PREÇO JUSTO por Paridade, MÉTODO ÚNICO — o múltiplo que descreve este negócio, aplicado ao fundamento projetado. Não é mediana de réguas diferentes. A faixa de R$ 9.72 a R$ 9.88 (largura 2%) é a OSCILAÇÃO HISTÓRICA do próprio múltiplo — percentil 25 a 75 da série —, e o limite inferior é o teto de compra. Razão preço ITSA4 ÷ preço ITUB3 = TENDÊNCIA -0.1 entre as metades da série → média dos 3 anos recentes de 6 anos (0.318 a 0.468, dispersão 32%; faixa 0.319 a 0.325, TENDÊNCIA -0.1 entre as metades → faixa só dos 3 anos recentes). É o desconto de holding medido pelo próprio mercado, não um NAV estimado por mim. ⚠️ NÃO enxerga os demais ativos da holding nem a dívida dela, e não sabe dizer se o par inteiro está caro: se o motor errar em ITUB3, erra aqui junto. Convicção limitada a ★★☆ por isso. || VERIFICAÇÃO (não entra na conta): P/VP R$ 11.81 · EV/Receita R$ 11.93 · P/FFO R$ 12.04 · E/P R$ 13.16 · EV/EBITDA R$ 14.04. 5 fora da faixa — as réguas discordam, olhe a empresa. ",
+  "teto": 9.72,
+  "faixaLo": 9.72,
+  "faixaHi": 9.88,
   "cot": 13.68,
-  "seg": 8.173032475408045
+  "seg": -40.73809326757545
  },
  "ITUB3": {
-  "justo": 46.63196906844752,
+  "justo": 30.42582295835786,
   "faixa": [
-   42.19580801356959,
-   56.893392114579314
+   29.411628859745935,
+   43.779378590081585
   ],
-  "largura": 0.258,
+  "largura": 0.328,
   "nMetodos": 1,
   "metodos": [
    {
-    "chave": "P/L",
-    "justo": 46.63,
-    "papel": "principal",
-    "conta": "LPA projetado 2026 R$ 5.17 × P/L 9.03x",
-    "origemMult": "o P/L mediano da própria empresa ao longo de 6 anos (7.80x), ajustado pela rentabilidade (ROE): hoje 21.0% contra 18.2% de mediana do período dá fator 1.16 → múltiplo-alvo 9.03x. Proporção direta, sem teto: mais rentável que a própria mediana merece múltiplo maior; menos rentável, menor. O múltiplo do setor NÃO entra desde 14/09/2026.",
-    "faixa": [
-     42.2,
-     56.89
-    ]
-   },
-   {
     "chave": "P/VP",
     "justo": 30.43,
-    "papel": "verificação",
+    "papel": "principal",
     "conta": "VPA R$ 19.49 × P/VP 1.56x",
+    "origemMult": "o P/VP mediano da própria empresa ao longo de 6 anos (1.35x), ajustado pela rentabilidade (ROE): hoje 21.0% contra 18.2% de mediana do período dá fator 1.16 → múltiplo-alvo 1.56x. Proporção direta, sem teto: mais rentável que a própria mediana merece múltiplo maior; menos rentável, menor. O múltiplo do setor NÃO entra desde 14/09/2026.",
     "faixa": [
      29.41,
      43.78
     ]
+   },
+   {
+    "chave": "E/P",
+    "justo": 46.63,
+    "papel": "verificação",
+    "conta": "LPA projetado 2026 R$ 5.17 × P/L 9.03x",
+    "faixa": [
+     42.2,
+     56.89
+    ]
    }
   ],
-  "motor": "P/L · faixa R$ 42.20 a R$ 56.89",
-  "nota": "PREÇO JUSTO por P/L, MÉTODO ÚNICO — o múltiplo que descreve este negócio, aplicado ao fundamento projetado. Não é mediana de réguas diferentes. A faixa de R$ 42.20 a R$ 56.89 (largura 26%) é a OSCILAÇÃO HISTÓRICA do próprio múltiplo — percentil 25 a 75 da série —, e o limite inferior é o teto de compra. P/L: faixa 7.1x–9.5x (mediana 7.8x) · percentis de 6 anos, série de 6 anos (6.9x a 10.5x). LPA projetado R$ 5.17 = lucro de 2026 R$ 50.60 bi DECLARADO ÷ 9794 mi papéis. Cenário BASE do relatório de 25/08/2026: crescimento financeiro padrão de 8% a.a. sobre o lucro RECORRENTE de 2025. O conservador (piso do guidance de carteira, +5,5%) dá R$ 49,2 bi e o otimista (ritmo do 2T26, +9,6%) dá R$ 52,5 bi. || VERIFICAÇÃO (não entra na conta): P/VP R$ 30.43. 1 fora da faixa — as réguas discordam, olhe a empresa. ",
-  "teto": 42.2,
-  "faixaLo": 42.2,
-  "faixaHi": 56.89,
+  "motor": "P/VP · faixa R$ 29.41 a R$ 43.78",
+  "nota": "PREÇO JUSTO por P/VP, MÉTODO ÚNICO — o múltiplo que descreve este negócio, aplicado ao fundamento projetado. Não é mediana de réguas diferentes. A faixa de R$ 29.41 a R$ 43.78 (largura 33%) é a OSCILAÇÃO HISTÓRICA do próprio múltiplo — percentil 25 a 75 da série —, e o limite inferior é o teto de compra. P/VP-alvo = mediana plena de 6 anos (a correção de fase fica com o ROE) de 6 anos (1.19x a 2.21x), corrigido para units. Não depende de lucro contábil de um ano só — é o método que sobrevive a prejuízo e a lucro distorcido por evento não-recorrente. o P/VP mediano da própria empresa ao longo de 6 anos (1.35x), ajustado pela rentabilidade (ROE): hoje 21.0% contra 18.2% de mediana do período dá fator 1.16 → múltiplo-alvo 1.56x. Proporção direta, sem teto: mais rentável que a própria mediana merece múltiplo maior; menos rentável, menor. O múltiplo do setor NÃO entra desde 14/09/2026.. || VERIFICAÇÃO (não entra na conta): E/P R$ 46.63. 1 fora da faixa — as réguas discordam, olhe a empresa. ",
+  "teto": 29.41,
+  "faixaLo": 29.41,
+  "faixaHi": 43.78,
   "cot": 43.07,
-  "seg": -2.071750791332833
+  "seg": -46.43867636636582
  },
  "KLBN11": {
   "justo": 20.240712966183338,
@@ -1257,30 +1257,20 @@
   "seg": -55.51088347682387
  },
  "PSSA3": {
-  "justo": 67.41390249594558,
+  "justo": 52.47079387079387,
   "faixa": [
-   62.51140958666304,
-   76.86738882290172
+   44.75450065450065,
+   61.80750866250866
   ],
-  "largura": 0.187,
+  "largura": 0.276,
   "nMetodos": 1,
   "metodos": [
    {
-    "chave": "P/L",
-    "justo": 67.41,
-    "papel": "principal",
-    "conta": "LPA projetado 2026 R$ 6.24 × P/L 10.81x",
-    "origemMult": "o P/L mediano da própria empresa ao longo de 6 anos (9.11x), ajustado pela rentabilidade (ROE): hoje 23.7% contra 20.0% de mediana do período dá fator 1.19 → múltiplo-alvo 10.81x. Proporção direta, sem teto: mais rentável que a própria mediana merece múltiplo maior; menos rentável, menor. O múltiplo do setor NÃO entra desde 14/09/2026.",
-    "faixa": [
-     62.51,
-     76.87
-    ]
-   },
-   {
     "chave": "P/VP",
     "justo": 52.47,
-    "papel": "verificação",
+    "papel": "principal",
     "conta": "VPA R$ 26.02 × P/VP 2.02x",
+    "origemMult": "o P/VP mediano da própria empresa ao longo de 6 anos (1.70x), ajustado pela rentabilidade (ROE): hoje 23.7% contra 20.0% de mediana do período dá fator 1.19 → múltiplo-alvo 2.02x. Proporção direta, sem teto: mais rentável que a própria mediana merece múltiplo maior; menos rentável, menor. O múltiplo do setor NÃO entra desde 14/09/2026.",
     "faixa": [
      44.75,
      61.81
@@ -1297,6 +1287,16 @@
     ]
    },
    {
+    "chave": "E/P",
+    "justo": 67.41,
+    "papel": "verificação",
+    "conta": "LPA projetado 2026 R$ 6.24 × P/L 10.81x",
+    "faixa": [
+     62.51,
+     76.87
+    ]
+   },
+   {
     "chave": "EV/Receita",
     "justo": 71.12,
     "papel": "verificação",
@@ -1307,13 +1307,13 @@
     ]
    }
   ],
-  "motor": "P/L · faixa R$ 62.51 a R$ 76.87",
-  "nota": "PREÇO JUSTO por P/L, MÉTODO ÚNICO — o múltiplo que descreve este negócio, aplicado ao fundamento projetado. Não é mediana de réguas diferentes. A faixa de R$ 62.51 a R$ 76.87 (largura 19%) é a OSCILAÇÃO HISTÓRICA do próprio múltiplo — percentil 25 a 75 da série —, e o limite inferior é o teto de compra. P/L: faixa 8.4x–10.4x (mediana 9.1x) · percentis de 6 anos, série de 6 anos (8.0x a 13.4x). LPA projetado R$ 6.24 = lucro base R$ 3.42 bi (exercício fechado de 2025) × (1+17.8%) ÷ 647 mi papéis, CAGR do lucro recorrente por regressão log. || VERIFICAÇÃO (não entra na conta): P/VP R$ 52.47 · P/FFO R$ 65.69 · EV/Receita R$ 71.12. 1 fora da faixa — as réguas discordam, olhe a empresa. ",
-  "teto": 62.51,
-  "faixaLo": 62.51,
-  "faixaHi": 76.87,
+  "motor": "P/VP · faixa R$ 44.75 a R$ 61.81",
+  "nota": "PREÇO JUSTO por P/VP, MÉTODO ÚNICO — o múltiplo que descreve este negócio, aplicado ao fundamento projetado. Não é mediana de réguas diferentes. A faixa de R$ 44.75 a R$ 61.81 (largura 28%) é a OSCILAÇÃO HISTÓRICA do próprio múltiplo — percentil 25 a 75 da série —, e o limite inferior é o teto de compra. P/VP-alvo = mediana plena de 6 anos (a correção de fase fica com o ROE) de 6 anos (1.39x a 2.10x), corrigido para units. Não depende de lucro contábil de um ano só — é o método que sobrevive a prejuízo e a lucro distorcido por evento não-recorrente. o P/VP mediano da própria empresa ao longo de 6 anos (1.70x), ajustado pela rentabilidade (ROE): hoje 23.7% contra 20.0% de mediana do período dá fator 1.19 → múltiplo-alvo 2.02x. Proporção direta, sem teto: mais rentável que a própria mediana merece múltiplo maior; menos rentável, menor. O múltiplo do setor NÃO entra desde 14/09/2026.. || VERIFICAÇÃO (não entra na conta): P/FFO R$ 65.69 · E/P R$ 67.41 · EV/Receita R$ 71.12. 3 fora da faixa — as réguas discordam, olhe a empresa. ",
+  "teto": 44.75,
+  "faixaLo": 44.75,
+  "faixaHi": 61.81,
   "cot": 50.74,
-  "seg": 18.830817709115454
+  "seg": -13.374072457442173
  },
  "RANI3": {
   "justo": 9.210922648294702,
@@ -1396,7 +1396,7 @@
    }
   ],
   "motor": "P/L · faixa R$ 5.39 a R$ 5.39",
-  "nota": "⚠️ SÉRIE PRÓPRIA INSUFICIENTE — o múltiplo NÃO é o histórico desta empresa, é o dos pares. BDR de empresa estrangeira (Nu Holdings, NYSE/Cayman), fora da cobertura B3/CVM do MCP Partnr. A base tem exatamente 1 ano de dado (2025, lido à mão de release), sem série para separar padrão de ano atípico. Gordon, lucro residual e múltiplo próprio rodariam todos sobre esse único ponto — \"consenso de métodos\" seria validação cruzada aparente, não real: os três concordariam porque vêm da mesma fonte única. Sem segunda fonte independente, não há preço justo defensável. Payout, TIR real e as demais colunas continuam calculados normalmente. || ⚠️ SEM FAIXA — o método que decide esta linha rodou sobre menos de 3 exercícios comparáveis, então não há amplitude histórica: o número é um ponto, não uma faixa. Sem teto de compra por isso. Trate como marcador, não como preço de entrada. || PREÇO JUSTO por P/L, MÉTODO ÚNICO — o múltiplo que descreve este negócio, aplicado ao fundamento projetado. Não é mediana de réguas diferentes. A faixa de R$ 5.39 a R$ 5.39 (largura 0%) é a OSCILAÇÃO HISTÓRICA do próprio múltiplo — percentil 25 a 75 da série —, e o limite inferior é o teto de compra. ⚠️ Só 1 anos de P/L comparável na base, insuficiente. Ancorado no P/L mediano dos PARES sem quebra (7.2x). Peer comp tem viés próprio — é a régua do setor, não desta empresa. ⚠️ Sem lucro de 2025 positivo: usa o LPA dos últimos 12 meses.",
+  "nota": "⚠️ SÉRIE PRÓPRIA INSUFICIENTE — o múltiplo NÃO é o histórico desta empresa, é o dos pares. BDR de empresa estrangeira (Nu Holdings, NYSE/Cayman), fora da cobertura B3/CVM do MCP Partnr. A base tem exatamente 1 ano de dado (2025, lido à mão de release), sem série para separar padrão de ano atípico. Gordon, lucro residual e múltiplo próprio rodariam todos sobre esse único ponto — \"consenso de métodos\" seria validação cruzada aparente, não real: os três concordariam porque vêm da mesma fonte única. Sem segunda fonte independente, não há preço justo defensável. Payout, TIR real e as demais colunas continuam calculados normalmente. || ⚠️ SEM FAIXA — o método que decide esta linha rodou sobre menos de 3 exercícios comparáveis, então não há amplitude histórica: o número é um ponto, não uma faixa. Sem teto de compra por isso. Trate como marcador, não como preço de entrada. || PREÇO JUSTO por P/L, MÉTODO ÚNICO — o múltiplo que descreve este negócio, aplicado ao fundamento projetado. Não é mediana de réguas diferentes. A faixa de R$ 5.39 a R$ 5.39 (largura 0%) é a OSCILAÇÃO HISTÓRICA do próprio múltiplo — percentil 25 a 75 da série —, e o limite inferior é o teto de compra. ⚠️ O método padrão do grupo não se aplicou a esta empresa (dado faltando ou fundamento negativo); decidiu P/L, o seguinte do encadeamento. ⚠️ Só 1 anos de P/L comparável na base, insuficiente. Ancorado no P/L mediano dos PARES sem quebra (7.2x). Peer comp tem viés próprio — é a régua do setor, não desta empresa. ⚠️ Sem lucro de 2025 positivo: usa o LPA dos últimos 12 meses.",
   "teto_suprimido": true,
   "teto": null,
   "faixaLo": 5.39,
@@ -1405,43 +1405,43 @@
   "seg": null
  },
  "SANB11": {
-  "justo": 26.91947679401762,
+  "justo": 30.4674325,
   "faixa": [
-   23.228765087067114,
-   28.694104722795213
+   29.703625000000002,
+   37.97820625
   ],
-  "largura": 0.19,
+  "largura": 0.218,
   "nMetodos": 1,
   "metodos": [
    {
-    "chave": "P/L",
-    "justo": 26.92,
-    "papel": "principal",
-    "conta": "LPA projetado 2026 R$ 3.43 × P/L 7.85x",
-    "origemMult": "o P/L mediano da própria empresa ao longo de 6 anos (7.85x), ajustado pela rentabilidade (ROE): hoje 11.4% contra 11.4% de mediana do período dá fator 1.00 → múltiplo-alvo 7.85x. Proporção direta, sem teto: mais rentável que a própria mediana merece múltiplo maior; menos rentável, menor. O múltiplo do setor NÃO entra desde 14/09/2026.",
-    "faixa": [
-     23.23,
-     28.69
-    ]
-   },
-   {
     "chave": "P/VP",
     "justo": 30.47,
-    "papel": "verificação",
+    "papel": "principal",
     "conta": "VPA R$ 33.95 × P/VP 0.90x",
+    "origemMult": "o P/VP mediano da própria empresa ao longo de 6 anos (0.90x), ajustado pela rentabilidade (ROE): hoje 11.4% contra 11.4% de mediana do período dá fator 1.00 → múltiplo-alvo 0.90x. Proporção direta, sem teto: mais rentável que a própria mediana merece múltiplo maior; menos rentável, menor. O múltiplo do setor NÃO entra desde 14/09/2026.",
     "faixa": [
      29.7,
      37.98
     ]
+   },
+   {
+    "chave": "E/P",
+    "justo": 26.92,
+    "papel": "verificação",
+    "conta": "LPA projetado 2026 R$ 3.43 × P/L 7.85x",
+    "faixa": [
+     23.23,
+     28.69
+    ]
    }
   ],
-  "motor": "P/L · faixa R$ 23.23 a R$ 28.69",
-  "nota": "PREÇO JUSTO por P/L, MÉTODO ÚNICO — o múltiplo que descreve este negócio, aplicado ao fundamento projetado. Não é mediana de réguas diferentes. A faixa de R$ 23.23 a R$ 28.69 (largura 19%) é a OSCILAÇÃO HISTÓRICA do próprio múltiplo — percentil 25 a 75 da série —, e o limite inferior é o teto de compra. P/L: faixa 6.8x–8.4x (mediana 7.8x) · percentis de 6 anos, série de 6 anos (5.5x a 10.2x). LPA projetado R$ 3.43 = lucro base R$ 12.97 bi (exercício fechado de 2025) × (1-0.7%) ÷ 3755 mi papéis, regressão log do lucro da própria série. || VERIFICAÇÃO (não entra na conta): P/VP R$ 30.47. 1 fora da faixa — as réguas discordam, olhe a empresa. ",
-  "teto": 23.23,
-  "faixaLo": 23.23,
-  "faixaHi": 28.69,
+  "motor": "P/VP · faixa R$ 29.70 a R$ 37.98",
+  "nota": "PREÇO JUSTO por P/VP, MÉTODO ÚNICO — o múltiplo que descreve este negócio, aplicado ao fundamento projetado. Não é mediana de réguas diferentes. A faixa de R$ 29.70 a R$ 37.98 (largura 22%) é a OSCILAÇÃO HISTÓRICA do próprio múltiplo — percentil 25 a 75 da série —, e o limite inferior é o teto de compra. P/VP-alvo = mediana plena de 6 anos (a correção de fase fica com o ROE) de 6 anos (0.87x a 1.24x), corrigido para units. Não depende de lucro contábil de um ano só — é o método que sobrevive a prejuízo e a lucro distorcido por evento não-recorrente. o P/VP mediano da própria empresa ao longo de 6 anos (0.90x), ajustado pela rentabilidade (ROE): hoje 11.4% contra 11.4% de mediana do período dá fator 1.00 → múltiplo-alvo 0.90x. Proporção direta, sem teto: mais rentável que a própria mediana merece múltiplo maior; menos rentável, menor. O múltiplo do setor NÃO entra desde 14/09/2026.. || VERIFICAÇÃO (não entra na conta): E/P R$ 26.92. 1 fora da faixa — as réguas discordam, olhe a empresa. ",
+  "teto": 29.7,
+  "faixaLo": 29.7,
+  "faixaHi": 37.98,
   "cot": 29.85,
-  "seg": -28.50446370314941
+  "seg": -0.4927849715312492
  },
  "SAUD3": {
   "justo": 3.423853611760647,
@@ -1465,7 +1465,7 @@
    }
   ],
   "motor": "P/L · faixa R$ 3.42 a R$ 3.42",
-  "nota": "⚠️ SEM FAIXA — o método que decide esta linha rodou sobre menos de 3 exercícios comparáveis, então não há amplitude histórica: o número é um ponto, não uma faixa. Sem teto de compra por isso. Trate como marcador, não como preço de entrada. || PREÇO JUSTO por P/L, MÉTODO ÚNICO — o múltiplo que descreve este negócio, aplicado ao fundamento projetado. Não é mediana de réguas diferentes. A faixa de R$ 3.42 a R$ 3.42 (largura 0%) é a OSCILAÇÃO HISTÓRICA do próprio múltiplo — percentil 25 a 75 da série —, e o limite inferior é o teto de compra. ⚠️ Só 1 anos de P/L comparável (quebra de série em 2026), insuficiente. Ancorado no P/L mediano dos PARES sem quebra (9.1x). Peer comp tem viés próprio — é a régua do setor, não desta empresa. O histórico anterior a 2026 descreve uma empresa com outra base acionária e NÃO serve de âncora. LPA projetado R$ 0.38 = lucro base R$ 1.05 bi (LUCRO LTM (não o exercício de 2025): houve quebra de série em 2026, então o lucro de 2025 é de antes do evento societário e os papéis são de depois — dividir um pelo outro mistura duas empresas) × (1+4.4%) ÷ 2927 mi papéis, CAGR do lucro recorrente por regressão log.",
+  "nota": "⚠️ SEM FAIXA — o método que decide esta linha rodou sobre menos de 3 exercícios comparáveis, então não há amplitude histórica: o número é um ponto, não uma faixa. Sem teto de compra por isso. Trate como marcador, não como preço de entrada. || PREÇO JUSTO por P/L, MÉTODO ÚNICO — o múltiplo que descreve este negócio, aplicado ao fundamento projetado. Não é mediana de réguas diferentes. A faixa de R$ 3.42 a R$ 3.42 (largura 0%) é a OSCILAÇÃO HISTÓRICA do próprio múltiplo — percentil 25 a 75 da série —, e o limite inferior é o teto de compra. ⚠️ O método padrão do grupo não se aplicou a esta empresa (dado faltando ou fundamento negativo); decidiu P/L, o seguinte do encadeamento. ⚠️ Só 1 anos de P/L comparável (quebra de série em 2026), insuficiente. Ancorado no P/L mediano dos PARES sem quebra (9.1x). Peer comp tem viés próprio — é a régua do setor, não desta empresa. O histórico anterior a 2026 descreve uma empresa com outra base acionária e NÃO serve de âncora. LPA projetado R$ 0.38 = lucro base R$ 1.05 bi (LUCRO LTM (não o exercício de 2025): houve quebra de série em 2026, então o lucro de 2025 é de antes do evento societário e os papéis são de depois — dividir um pelo outro mistura duas empresas) × (1+4.4%) ÷ 2927 mi papéis, CAGR do lucro recorrente por regressão log.",
   "teto_suprimido": true,
   "teto": null,
   "faixaLo": 3.42,

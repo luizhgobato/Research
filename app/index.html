@@ -3305,7 +3305,7 @@
     "data": "24/08/2026",
     "fontes": "Nu International (releases oficiais Q1/Q2'26), BusinessWire, StockTitan, StatusInvest, Investidor10, stockanalysis.com — coletado 24/08/2026",
     "cotacao": 12.4,
-    "precoTeto": 6.25,
+    "precoJusto": "R$ 5,39",
     "max52": null,
     "min52": null,
     "classificacao": {
@@ -3464,8 +3464,8 @@
       "nota": "Todos os cenários assumem câmbio USD/BRL constante — risco relevante não capturado (ver Riscos)."
     },
     "valuation": {
-      "regraMetodo": "P/L",
-      "regraPorque": "Banco ganha no spread de crédito e o lucro é a medida direta disso. EV não se aplica: o passivo é a matéria-prima (depósito), não alavancagem.",
+      "regraMetodo": "P/VP × ROE",
+      "regraPorque": "Banco ganha no spread sobre o patrimônio que capta e empresta, não sobre uma \"produção\" que o lucro contábil de um trimestre descreva bem. Provisão de crédito e efeitos fiscais pontuais turbinam ou derrubam o LPA sem que o negócio tenha mudado — a BBAS3 é o caso: o LPA caiu forte com o provisionamento da carteira agro de 2025-26, mas o patrimônio líquido não levou o mesmo golpe. O ROE mede a rentabilidade sobre o capital que o banco de fato tem, e o P/VP aplicado ao VPA já carrega esse ajuste. EV não se aplica: o passivo é a matéria-prima (depósito), não alavancagem. P/L entra só como verificação.",
       "regraGrupo": "FIN",
       "criterio": "P/L",
       "metodos": [
@@ -3474,10 +3474,138 @@
           "precoJusto": "R$ 5,39"
         }
       ],
-      "origemMult": "o P/L mediano da própria empresa ao longo de 1 anos (7,19x) — sem ROE suficiente na série para ajustar pela rentabilidade, fica a média histórica pura",
+      "origemMult": "o P/L mediano dos PARES do grupo FIN (7,19x) — ROXO34 não tem série própria utilizável — sem ROE suficiente na série para ajustar pela rentabilidade, fica a média histórica pura",
       "precoJusto": "R$ 5,39",
       "verificacao": [],
       "nota": "Método ÚNICO: P/L. O preço justo é o fundamento projetado multiplicado pelo múltiplo que a empresa deve negociar — não é média nem mediana de métodos diferentes. Mesmo número da coluna Preço Justo do Radar, gerado pela mesma fonte (analise/tetos.json). Ver METODOLOGIA_ANALISE.md seção 31.",
+      "serieMultiplo": {
+        "metrica": "P/L",
+        "metricaRoe": "ROE",
+        "linhas": [
+          {
+            "ano": "2025",
+            "multiplo": "16,47x",
+            "roe": "33,0%",
+            "fundamento": "—",
+            "preco": "R$ 12,40"
+          }
+        ],
+        "mediana": "16,47x",
+        "roeMediano": "33,0%",
+        "roeHoje": "33,0%",
+        "quebra": ""
+      },
+      "fundamentoPorAno": null,
+      "pares": {
+        "grupo": "FIN",
+        "metricaRoe": "ROE",
+        "linhas": [
+          {
+            "ativo": "BBAS3",
+            "eu": false,
+            "metodo": "P/VP",
+            "ancora": "0,67x",
+            "fator": "0,48",
+            "multiplo": "0,32x",
+            "roe": "6,6%",
+            "roeMed": "13,8%",
+            "mgLiq": "3,7%",
+            "valorMercado": "R$ 126,6 bi",
+            "divEbitda": "—"
+          },
+          {
+            "ativo": "BBDC3",
+            "eu": false,
+            "metodo": "P/VP",
+            "ancora": "0,89x",
+            "fator": "1,01",
+            "multiplo": "0,89x",
+            "roe": "13,7%",
+            "roeMed": "13,6%",
+            "mgLiq": "8,2%",
+            "valorMercado": "R$ 173,8 bi",
+            "divEbitda": "—"
+          },
+          {
+            "ativo": "BMEB4",
+            "eu": false,
+            "metodo": "P/VP",
+            "ancora": "1,72x",
+            "fator": "1,05",
+            "multiplo": "1,81x",
+            "roe": "27,1%",
+            "roeMed": "25,7%",
+            "mgLiq": "8,9%",
+            "valorMercado": "R$ 6,4 bi",
+            "divEbitda": "—"
+          },
+          {
+            "ativo": "BPAC11",
+            "eu": false,
+            "metodo": "P/VP",
+            "ancora": "2,35x",
+            "fator": "1,16",
+            "multiplo": "2,72x",
+            "roe": "23,3%",
+            "roeMed": "20,1%",
+            "mgLiq": "58,4%",
+            "valorMercado": "R$ 221,6 bi",
+            "divEbitda": "—"
+          },
+          {
+            "ativo": "BRSR6",
+            "eu": false,
+            "metodo": "P/VP",
+            "ancora": "0,47x",
+            "fator": "1,34",
+            "multiplo": "0,64x",
+            "roe": "14,3%",
+            "roeMed": "10,6%",
+            "mgLiq": "7,1%",
+            "valorMercado": "R$ 6,1 bi",
+            "divEbitda": "—"
+          },
+          {
+            "ativo": "ITUB3",
+            "eu": false,
+            "metodo": "P/VP",
+            "ancora": "1,35x",
+            "fator": "1,16",
+            "multiplo": "1,56x",
+            "roe": "21,0%",
+            "roeMed": "18,2%",
+            "mgLiq": "12,4%",
+            "valorMercado": "R$ 421,8 bi",
+            "divEbitda": "—"
+          },
+          {
+            "ativo": "ROXO34",
+            "eu": true,
+            "metodo": "P/L",
+            "ancora": "16,47x",
+            "fator": "1,00",
+            "multiplo": "7,19x",
+            "roe": "33,0%",
+            "roeMed": "33,0%",
+            "mgLiq": "—",
+            "valorMercado": "—",
+            "divEbitda": "—"
+          },
+          {
+            "ativo": "SANB11",
+            "eu": false,
+            "metodo": "P/VP",
+            "ancora": "0,90x",
+            "fator": "1,00",
+            "multiplo": "0,90x",
+            "roe": "11,4%",
+            "roeMed": "11,4%",
+            "mgLiq": "8,6%",
+            "valorMercado": "R$ 112,1 bi",
+            "divEbitda": "—"
+          }
+        ]
+      },
       "leituraDados": [
         "Rentabilidade ALTA: ROE mediano de 33,0% em 1 exercícios. Retorno sobre capital nesse patamar costuma indicar vantagem competitiva ou alavancagem — vale distinguir qual.",
         "Alavancagem não se aplica: em banco e seguradora o passivo é a matéria-prima do negócio, não dívida.",
@@ -3573,8 +3701,8 @@
       "class": "acima",
       "conviccao": "★☆☆☆☆",
       "cotacao": 12.4,
-      "precoTeto": 6.25,
-      "margem": -49.6,
+      "precoJusto": "R$ 5,39",
+      "margem": "-130,1%",
       "premioSelic": -54.7,
       "gatilhos": [
         "Motor P/VP×ROE aponta cotação bem acima do preço teto — mas modelo é frágil para hipercrescimento, tratar com cautela",
@@ -4675,7 +4803,7 @@
     "data": "27/08/2026",
     "fontes": "StatusInvest, Investidor10, RI Caixa Seguridade (dividendos, cobertura de analistas), CAIXA Notícias, Nord Investimentos, XP Investimentos, FinanceNews, Agência Gov, CAIXA — Relatório da Administração 2T26 (IFRS e BR GAAP) — coletado 25-27/08/2026",
     "cotacao": 18.59,
-    "precoTeto": 12.72,
+    "precoJusto": "R$ 16,57",
     "max52": 22.44,
     "min52": 12.94,
     "classificacao": {
@@ -4953,54 +5081,227 @@
       "nota": "⚠️ Não há guidance numérico oficial da empresa nem consenso de mercado formal (Bloomberg/Refinitiv) localizado nesta pesquisa — os três cenários são estimativa própria a partir do lucro gerencial de 2025 (R$4,3bi) e do crescimento financeiro padrão da metodologia (g=8%), sensibilizado para cima/baixo pelo risco regulatório do Bloco 8."
     },
     "valuation": {
-      "regraMetodo": "P/L",
-      "regraPorque": "Seguradora ganha na subscrição e no float, e o lucro captura os dois. Como em banco, EV/EBITDA não se aplica — a provisão técnica é insumo, não dívida. A separação entre pares de banco e de seguradora, feita em 13/09/2026, deixou de afetar o preço justo em 14/09 — o múltiplo do setor saiu da conta —, mas segue valendo para o fallback de quem não tem série própria utilizável.",
+      "regraMetodo": "P/VP × ROE",
+      "regraPorque": "Seguradora ganha na subscrição e no float sobre o patrimônio segurado, e o lucro de um ano isolado pode ser dominado por sinistralidade ou efeito não recorrente — a própria IRB é o exemplo que a metodologia cita nominalmente para descartar histórico pré-turnaround, e mesmo restrito a 3 anos seu P/L segue sendo o método mais ruidoso dos dois (P/L R$33,27 contra P/VP R$54,80, 65% de diferença). O P/VP ajustado por ROE mede rentabilidade sobre capital sem depender do lucro pontual. Como em banco, EV/EBITDA não se aplica — a provisão técnica é insumo, não dívida. P/L entra só como verificação.",
       "regraGrupo": "SEG",
-      "criterio": "P/L",
+      "criterio": "P/VP",
       "metodos": [
-        {
-          "metodo": "LPA projetado 2026 R$ 1,54 × P/L 13,23x",
-          "precoJusto": "R$ 20,43"
-        }
-      ],
-      "origemMult": "o P/L mediano da própria empresa ao longo de 6 anos (11,62x), ajustado pela rentabilidade (ROE): hoje 33,1% contra 29,1% de mediana do período dá fator 1,14 → múltiplo-alvo 13,23x. Proporção direta, sem teto: mais rentável que a própria mediana merece múltiplo maior; menos rentável, menor. O múltiplo do setor NÃO entra desde 14/09/2026.",
-      "precoJusto": "R$ 20,43",
-      "verificacao": [
         {
           "metodo": "VPA R$ 4,62 × P/VP 3,59x",
           "precoJusto": "R$ 16,57"
+        }
+      ],
+      "origemMult": "o P/VP mediano da própria empresa ao longo de 6 anos (3,15x), ajustado pela rentabilidade (ROE): hoje 33,1% contra 29,1% de mediana do período dá fator 1,14 → múltiplo-alvo 3,59x. Proporção direta, sem teto: mais rentável que a própria mediana merece múltiplo maior; menos rentável, menor. O múltiplo do setor NÃO entra desde 14/09/2026.",
+      "precoJusto": "R$ 16,57",
+      "verificacao": [
+        {
+          "metodo": "LPA projetado 2026 R$ 1,54 × P/L 13,23x",
+          "precoJusto": "R$ 20,43"
         },
         {
           "metodo": "FFO por papel projetado R$ 1,79 × P/FFO 13,05x",
           "precoJusto": "R$ 23,31"
         }
       ],
-      "nota": "Método ÚNICO: P/L. O preço justo é o fundamento projetado multiplicado pelo múltiplo que a empresa deve negociar — não é média nem mediana de métodos diferentes. Os 2 método(s) de verificação abaixo são calculados para comparação e NÃO entram na conta. Mesmo número da coluna Preço Justo do Radar, gerado pela mesma fonte (analise/tetos.json). Ver METODOLOGIA_ANALISE.md seção 31.",
+      "nota": "Método ÚNICO: P/VP. O preço justo é o fundamento projetado multiplicado pelo múltiplo que a empresa deve negociar — não é média nem mediana de métodos diferentes. Os 2 método(s) de verificação abaixo são calculados para comparação e NÃO entram na conta. Mesmo número da coluna Preço Justo do Radar, gerado pela mesma fonte (analise/tetos.json). Ver METODOLOGIA_ANALISE.md seção 31.",
+      "serieMultiplo": {
+        "metrica": "P/VP",
+        "metricaRoe": "ROE",
+        "linhas": [
+          {
+            "ano": "2021",
+            "multiplo": "2,32x",
+            "roe": "18,1%",
+            "fundamento": "—",
+            "preco": "R$ 8,36"
+          },
+          {
+            "ano": "2022",
+            "multiplo": "2,13x",
+            "roe": "26,4%",
+            "fundamento": "—",
+            "preco": "R$ 8,35"
+          },
+          {
+            "ano": "2023",
+            "multiplo": "3,03x",
+            "roe": "29,2%",
+            "fundamento": "—",
+            "preco": "R$ 12,90"
+          },
+          {
+            "ano": "2024",
+            "multiplo": "3,27x",
+            "roe": "28,9%",
+            "fundamento": "—",
+            "preco": "R$ 14,25"
+          },
+          {
+            "ano": "2025",
+            "multiplo": "3,69x",
+            "roe": "31,5%",
+            "fundamento": "—",
+            "preco": "R$ 16,62"
+          },
+          {
+            "ano": "2026",
+            "multiplo": "4,20x",
+            "roe": "33,1%",
+            "fundamento": "—",
+            "preco": "R$ 19,40"
+          }
+        ],
+        "mediana": "3,15x",
+        "roeMediano": "29,1%",
+        "roeHoje": "33,1%",
+        "quebra": ""
+      },
+      "fundamentoPorAno": null,
+      "pares": {
+        "grupo": "SEG",
+        "metricaRoe": "ROE",
+        "linhas": [
+          {
+            "ativo": "BBSE3",
+            "eu": false,
+            "metodo": "P/VP",
+            "ancora": "6,11x",
+            "fator": "1,00",
+            "multiplo": "6,09x",
+            "roe": "78,6%",
+            "roeMed": "78,8%",
+            "mgLiq": "—",
+            "valorMercado": "R$ 81,0 bi",
+            "divEbitda": "—"
+          },
+          {
+            "ativo": "CXSE3",
+            "eu": true,
+            "metodo": "P/VP",
+            "ancora": "3,15x",
+            "fator": "1,14",
+            "multiplo": "3,59x",
+            "roe": "33,1%",
+            "roeMed": "29,1%",
+            "mgLiq": "—",
+            "valorMercado": "R$ 58,3 bi",
+            "divEbitda": "-0,26x"
+          },
+          {
+            "ativo": "IRBR3",
+            "eu": false,
+            "metodo": "P/VP",
+            "ancora": "0,83x",
+            "fator": "1,00",
+            "multiplo": "0,83x",
+            "roe": "4,5%",
+            "roeMed": "4,5%",
+            "mgLiq": "5,4%",
+            "valorMercado": "R$ 4,6 bi",
+            "divEbitda": "—"
+          },
+          {
+            "ativo": "PSSA3",
+            "eu": false,
+            "metodo": "P/VP",
+            "ancora": "1,70x",
+            "fator": "1,19",
+            "multiplo": "2,02x",
+            "roe": "23,7%",
+            "roeMed": "20,0%",
+            "mgLiq": "8,7%",
+            "valorMercado": "R$ 32,8 bi",
+            "divEbitda": "-4,05x"
+          },
+          {
+            "ativo": "SAUD3",
+            "eu": false,
+            "metodo": "P/L",
+            "ancora": "38,93x",
+            "fator": "1,00",
+            "multiplo": "9,11x",
+            "roe": "18,6%",
+            "roeMed": "18,6%",
+            "mgLiq": "10,6%",
+            "valorMercado": "R$ 42,7 bi",
+            "divEbitda": "-11,03x"
+          }
+        ]
+      },
       "cenariosLpa": {
-        "multiplo": "13,23x",
+        "multiplo": "3,59x",
         "fundamento": "LPA",
         "base": "R$ 4,29 bi (exercício fechado de 2025)",
+        "amplitude": "139%",
+        "variaMultiplo": true,
+        "origemCrescimento": {
+          "rotulo": "Lucro líquido",
+          "linhas": [
+            {
+              "ano": "2021",
+              "valor": "R$ 1,90 bi",
+              "variacao": "—"
+            },
+            {
+              "ano": "2022",
+              "valor": "R$ 2,95 bi",
+              "variacao": "+55,73%"
+            },
+            {
+              "ano": "2023",
+              "valor": "R$ 3,58 bi",
+              "variacao": "+21,32%"
+            },
+            {
+              "ano": "2024",
+              "valor": "R$ 3,77 bi",
+              "variacao": "+5,11%"
+            },
+            {
+              "ano": "2025",
+              "valor": "R$ 4,29 bi",
+              "variacao": "+13,98%"
+            },
+            {
+              "ano": "2026",
+              "valor": "R$ 4,52 bi",
+              "variacao": "+5,39%"
+            }
+          ],
+          "taxa": "+25,00%",
+          "taxaBruta": "+17,08%",
+          "limitado": false,
+          "teto": "25%",
+          "metodo": "CAGR do lucro recorrente por regressão log",
+          "porQue": "A taxa NÃO é a média das variações ano a ano nem a última delas: é a inclinação de uma regressão sobre o logaritmo da série, que é o estimador de crescimento COMPOSTO. Média simples de variações superestima quando a série oscila (a média de +50% e −50% é 0%, mas quem viveu isso perdeu 25%); a última variação joga a projeção inteira num único ano. A regressão usa todos os pontos e pesa cada um igualmente no tempo."
+        },
         "cenarios": [
           {
             "cenario": "Conservador",
-            "crescimento": "+0,0%",
-            "lpa": "R$ 1,43",
-            "precoJusto": "R$ 18,89",
-            "premissa": "crescimento ZERO — a empresa repete o resultado-base, sem supor deterioração nem avanço"
+            "crescimento": "-25,0%",
+            "multiplo": "2,85x",
+            "total": "R$ 3,22 bi",
+            "lpa": "R$ 1,07",
+            "precoJusto": "R$ 3,05",
+            "premissa": "o fundamento ENCOLHE 25,0% — a mesma distância do base, para baixo e múltiplo de 2,85x (percentil 25 da própria série). As duas pontas pioram juntas, que é como o mercado se move de fato: múltiplo comprime justamente quando o resultado decepciona"
           },
           {
             "cenario": "Base",
-            "crescimento": "+8,1%",
-            "lpa": "R$ 1,54",
-            "precoJusto": "R$ 20,43",
-            "premissa": "lucro de 2026 declarado no relatório — Cenário BASE do relatório de 25/08/2026: crescimento financeiro de 8% a.a. sem novo choque regulatório. ⚠️ Não há guidance numérico oficial da…"
+            "crescimento": "+25,0%",
+            "multiplo": "3,59x",
+            "total": "R$ 5,36 bi",
+            "lpa": "R$ 1,78",
+            "precoJusto": "R$ 6,41",
+            "premissa": "CAGR do lucro recorrente por regressão log e o múltiplo que o preço justo aplica (3,59x)"
           },
           {
             "cenario": "Otimista",
-            "crescimento": "+12,2%",
-            "lpa": "R$ 1,60",
-            "precoJusto": "R$ 21,19",
-            "premissa": "a taxa do base vezes 1,5, limitada ao teto de 25% — premissa declarada, não calibração"
+            "crescimento": "+25,0%",
+            "multiplo": "4,09x",
+            "total": "R$ 5,36 bi",
+            "lpa": "R$ 1,78",
+            "precoJusto": "R$ 7,29",
+            "premissa": "a taxa do base vezes 1,5, limitada ao teto de 25% e múltiplo de 4,09x (percentil 75 da própria série). Premissa declarada, não calibração — mas as duas pontas do múltiplo são a faixa que a empresa JÁ negociou, não número inventado"
           }
         ]
       },
@@ -5098,8 +5399,8 @@
       "class": "acima",
       "conviccao": "★★★☆☆",
       "cotacao": 18.59,
-      "precoTeto": 12.72,
-      "margem": -46.15,
+      "precoJusto": "R$ 16,57",
+      "margem": "-12,2%",
       "premioSelic": -26.53,
       "gatilhos": [
         "Cotação abaixo do preço-teto ✗ (está 46,2% acima do teto)",
@@ -5126,7 +5427,7 @@
     "data": "25/08/2026",
     "fontes": "StatusInvest, Genial Investimentos (Genial Analisa), InfoMoney, Seu Dinheiro, AUVP Analítica, RI BB Seguridade (api.mziq.com), Guia do Investidor, SimplyWall.st, Monitor Mercantil, Suno Notícias — coletado 25/08/2026",
     "cotacao": 37.19,
-    "precoTeto": 32.7,
+    "precoJusto": "R$ 34,58",
     "max52": 42.58,
     "min52": 29.64,
     "classificacao": {
@@ -5325,50 +5626,223 @@
       "nota": "Os 3 cenários usam diretamente o guidance oficial da empresa (resultado operacional consolidado -7% a -3% para 2026) — o cenário base coincide com o consenso de mercado informal (AUVP Analítica), o que dá razoável confiança a esta faixa."
     },
     "valuation": {
-      "regraMetodo": "P/L",
-      "regraPorque": "Seguradora ganha na subscrição e no float, e o lucro captura os dois. Como em banco, EV/EBITDA não se aplica — a provisão técnica é insumo, não dívida. A separação entre pares de banco e de seguradora, feita em 13/09/2026, deixou de afetar o preço justo em 14/09 — o múltiplo do setor saiu da conta —, mas segue valendo para o fallback de quem não tem série própria utilizável.",
+      "regraMetodo": "P/VP × ROE",
+      "regraPorque": "Seguradora ganha na subscrição e no float sobre o patrimônio segurado, e o lucro de um ano isolado pode ser dominado por sinistralidade ou efeito não recorrente — a própria IRB é o exemplo que a metodologia cita nominalmente para descartar histórico pré-turnaround, e mesmo restrito a 3 anos seu P/L segue sendo o método mais ruidoso dos dois (P/L R$33,27 contra P/VP R$54,80, 65% de diferença). O P/VP ajustado por ROE mede rentabilidade sobre capital sem depender do lucro pontual. Como em banco, EV/EBITDA não se aplica — a provisão técnica é insumo, não dívida. P/L entra só como verificação.",
       "regraGrupo": "SEG",
-      "criterio": "P/L",
+      "criterio": "P/VP",
       "metodos": [
-        {
-          "metodo": "LPA projetado 2026 R$ 4,32 × P/L 8,62x",
-          "precoJusto": "R$ 37,27"
-        }
-      ],
-      "origemMult": "o P/L mediano da própria empresa ao longo de 6 anos (8,64x), ajustado pela rentabilidade (ROE): hoje 78,6% contra 78,8% de mediana do período dá fator 1,00 → múltiplo-alvo 8,62x. Proporção direta, sem teto: mais rentável que a própria mediana merece múltiplo maior; menos rentável, menor. O múltiplo do setor NÃO entra desde 14/09/2026.",
-      "precoJusto": "R$ 37,27",
-      "verificacao": [
         {
           "metodo": "VPA R$ 5,68 × P/VP 6,09x",
           "precoJusto": "R$ 34,58"
         }
       ],
-      "nota": "Método ÚNICO: P/L. O preço justo é o fundamento projetado multiplicado pelo múltiplo que a empresa deve negociar — não é média nem mediana de métodos diferentes. Os 1 método(s) de verificação abaixo são calculados para comparação e NÃO entram na conta. Mesmo número da coluna Preço Justo do Radar, gerado pela mesma fonte (analise/tetos.json). Ver METODOLOGIA_ANALISE.md seção 31.",
+      "origemMult": "o P/VP mediano da própria empresa ao longo de 6 anos (6,11x), ajustado pela rentabilidade (ROE): hoje 78,6% contra 78,8% de mediana do período dá fator 1,00 → múltiplo-alvo 6,09x. Proporção direta, sem teto: mais rentável que a própria mediana merece múltiplo maior; menos rentável, menor. O múltiplo do setor NÃO entra desde 14/09/2026.",
+      "precoJusto": "R$ 34,58",
+      "verificacao": [
+        {
+          "metodo": "LPA projetado 2026 R$ 4,32 × P/L 8,62x",
+          "precoJusto": "R$ 37,27"
+        }
+      ],
+      "nota": "Método ÚNICO: P/VP. O preço justo é o fundamento projetado multiplicado pelo múltiplo que a empresa deve negociar — não é média nem mediana de métodos diferentes. Os 1 método(s) de verificação abaixo são calculados para comparação e NÃO entram na conta. Mesmo número da coluna Preço Justo do Radar, gerado pela mesma fonte (analise/tetos.json). Ver METODOLOGIA_ANALISE.md seção 31.",
+      "serieMultiplo": {
+        "metrica": "P/VP",
+        "metricaRoe": "ROE",
+        "linhas": [
+          {
+            "ano": "2021",
+            "multiplo": "5,33x",
+            "roe": "54,0%",
+            "fundamento": "—",
+            "preco": "R$ 20,75"
+          },
+          {
+            "ano": "2022",
+            "multiplo": "7,13x",
+            "roe": "72,7%",
+            "fundamento": "—",
+            "preco": "R$ 33,71"
+          },
+          {
+            "ano": "2023",
+            "multiplo": "6,31x",
+            "roe": "80,5%",
+            "fundamento": "—",
+            "preco": "R$ 33,65"
+          },
+          {
+            "ano": "2024",
+            "multiplo": "5,91x",
+            "roe": "79,1%",
+            "fundamento": "—",
+            "preco": "R$ 36,18"
+          },
+          {
+            "ano": "2025",
+            "multiplo": "5,62x",
+            "roe": "79,4%",
+            "fundamento": "—",
+            "preco": "R$ 36,15"
+          },
+          {
+            "ano": "2026",
+            "multiplo": "7,13x",
+            "roe": "78,6%",
+            "fundamento": "—",
+            "preco": "R$ 40,48"
+          }
+        ],
+        "mediana": "6,11x",
+        "roeMediano": "78,8%",
+        "roeHoje": "78,6%",
+        "quebra": ""
+      },
+      "fundamentoPorAno": null,
+      "pares": {
+        "grupo": "SEG",
+        "metricaRoe": "ROE",
+        "linhas": [
+          {
+            "ativo": "BBSE3",
+            "eu": true,
+            "metodo": "P/VP",
+            "ancora": "6,11x",
+            "fator": "1,00",
+            "multiplo": "6,09x",
+            "roe": "78,6%",
+            "roeMed": "78,8%",
+            "mgLiq": "—",
+            "valorMercado": "R$ 81,0 bi",
+            "divEbitda": "—"
+          },
+          {
+            "ativo": "CXSE3",
+            "eu": false,
+            "metodo": "P/VP",
+            "ancora": "3,15x",
+            "fator": "1,14",
+            "multiplo": "3,59x",
+            "roe": "33,1%",
+            "roeMed": "29,1%",
+            "mgLiq": "—",
+            "valorMercado": "R$ 58,3 bi",
+            "divEbitda": "-0,26x"
+          },
+          {
+            "ativo": "IRBR3",
+            "eu": false,
+            "metodo": "P/VP",
+            "ancora": "0,83x",
+            "fator": "1,00",
+            "multiplo": "0,83x",
+            "roe": "4,5%",
+            "roeMed": "4,5%",
+            "mgLiq": "5,4%",
+            "valorMercado": "R$ 4,6 bi",
+            "divEbitda": "—"
+          },
+          {
+            "ativo": "PSSA3",
+            "eu": false,
+            "metodo": "P/VP",
+            "ancora": "1,70x",
+            "fator": "1,19",
+            "multiplo": "2,02x",
+            "roe": "23,7%",
+            "roeMed": "20,0%",
+            "mgLiq": "8,7%",
+            "valorMercado": "R$ 32,8 bi",
+            "divEbitda": "-4,05x"
+          },
+          {
+            "ativo": "SAUD3",
+            "eu": false,
+            "metodo": "P/L",
+            "ancora": "38,93x",
+            "fator": "1,00",
+            "multiplo": "9,11x",
+            "roe": "18,6%",
+            "roeMed": "18,6%",
+            "mgLiq": "10,6%",
+            "valorMercado": "R$ 42,7 bi",
+            "divEbitda": "-11,03x"
+          }
+        ]
+      },
       "cenariosLpa": {
-        "multiplo": "8,62x",
+        "multiplo": "6,09x",
         "fundamento": "LPA",
         "base": "R$ 9,02 bi (exercício fechado de 2025)",
+        "amplitude": "24%",
+        "variaMultiplo": true,
+        "origemCrescimento": {
+          "rotulo": "Lucro líquido",
+          "linhas": [
+            {
+              "ano": "2021",
+              "valor": "R$ 3,93 bi",
+              "variacao": "—"
+            },
+            {
+              "ano": "2022",
+              "valor": "R$ 6,04 bi",
+              "variacao": "+53,68%"
+            },
+            {
+              "ano": "2023",
+              "valor": "R$ 7,95 bi",
+              "variacao": "+31,48%"
+            },
+            {
+              "ano": "2024",
+              "valor": "R$ 8,70 bi",
+              "variacao": "+9,51%"
+            },
+            {
+              "ano": "2025",
+              "valor": "R$ 9,02 bi",
+              "variacao": "+3,61%"
+            },
+            {
+              "ano": "2026",
+              "valor": "R$ 9,19 bi",
+              "variacao": "+1,91%"
+            }
+          ],
+          "taxa": "-5,00%",
+          "taxaBruta": "+17,13%",
+          "limitado": false,
+          "teto": "25%",
+          "metodo": "Consenso de mercado para 2026: lucro de R$ 8,6 bi, −5,4% sobre 2025. O guidance da companhia divulgado com o 4T25 projeta prêmios emitidos de −1,5% (faixa −3% a +2%), depois de 2025 fechar em −8,8%, abaixo do próprio guidance revisado. Pressões: seguro agrícola em queda pelo terceiro ano, prestamista afetado pela Selic alta e saída líquida na Brasilprev após o IOF sobre VGBL.",
+          "porQue": "A taxa NÃO é a média das variações ano a ano nem a última delas: é a inclinação de uma regressão sobre o logaritmo da série, que é o estimador de crescimento COMPOSTO. Média simples de variações superestima quando a série oscila (a média de +50% e −50% é 0%, mas quem viveu isso perdeu 25%); a última variação joga a projeção inteira num único ano. A regressão usa todos os pontos e pesa cada um igualmente no tempo."
+        },
         "cenarios": [
           {
             "cenario": "Conservador",
-            "crescimento": "+0,0%",
-            "lpa": "R$ 4,51",
-            "precoJusto": "R$ 38,86",
-            "premissa": "crescimento ZERO — a empresa repete o resultado-base, sem supor deterioração nem avanço"
+            "crescimento": "-5,0%",
+            "multiplo": "5,67x",
+            "total": "R$ 8,57 bi",
+            "lpa": "R$ 4,28",
+            "precoJusto": "R$ 24,30",
+            "premissa": "o fundamento ENCOLHE 5,0% — a mesma distância do base, para baixo e múltiplo de 5,67x (percentil 25 da própria série). As duas pontas pioram juntas, que é como o mercado se move de fato: múltiplo comprime justamente quando o resultado decepciona"
           },
           {
             "cenario": "Base",
-            "crescimento": "-4,1%",
-            "lpa": "R$ 4,32",
-            "precoJusto": "R$ 37,28",
-            "premissa": "lucro de 2026 declarado no relatório — Cenário BASE do relatório de 25/08/2026, que usa o guidance oficial da companhia (resultado operacional consolidado −7% a −3% para 2026; o base é o…"
+            "crescimento": "-5,0%",
+            "multiplo": "6,09x",
+            "total": "R$ 8,57 bi",
+            "lpa": "R$ 4,28",
+            "precoJusto": "R$ 26,08",
+            "premissa": "Consenso de mercado para 2026: lucro de R$ 8,6 bi, −5,4% sobre 2025. O guidance da companhia divulgado com o 4T25 projeta prêmios emitidos de −1,5% (faixa −3% a +2%), depois de 2025 fechar em −8,8%, abaixo do próprio guidance revisado. Pressões: seguro agrícola em queda pelo terceiro ano, prestamista afetado pela Selic alta e saída líquida na Brasilprev após o IOF sobre VGBL. e o múltiplo que o preço justo aplica (6,09x)"
           },
           {
             "cenario": "Otimista",
-            "crescimento": "-2,7%",
-            "lpa": "R$ 4,39",
-            "precoJusto": "R$ 37,81",
-            "premissa": "a taxa do base vezes 1,5, limitada ao teto de 25% — premissa declarada, não calibração"
+            "crescimento": "-3,3%",
+            "multiplo": "6,90x",
+            "total": "R$ 8,72 bi",
+            "lpa": "R$ 4,36",
+            "precoJusto": "R$ 30,08",
+            "premissa": "a taxa do base vezes 1,5, limitada ao teto de 25% e múltiplo de 6,90x (percentil 75 da própria série). Premissa declarada, não calibração — mas as duas pontas do múltiplo são a faixa que a empresa JÁ negociou, não número inventado"
           }
         ]
       },
@@ -5466,8 +5940,8 @@
       "class": "aguardar",
       "conviccao": "★★★☆☆",
       "cotacao": 37.19,
-      "precoTeto": 32.7,
-      "margem": -13.74,
+      "precoJusto": "R$ 34,58",
+      "margem": "-7,6%",
       "premioSelic": 0.3,
       "gatilhos": [
         "Cotação abaixo do preço-teto ✗ (está 13,7% acima do teto, mas ainda abaixo do preço-justo)",
@@ -5494,7 +5968,7 @@
     "data": "25/08/2026",
     "fontes": "StatusInvest, Dados de Mercado, Fundamentus, irbre.com (releases oficiais), CVM, DOJ/Kroll, Money Times, Genial Analisa, Safra, InfoMoney — coletado 25/08/2026. ⚠️ Caso de turnaround — histórico pré-2023 descartado conforme protocolo seção 3.5/9.",
     "cotacao": 51.16,
-    "precoTeto": 21.45,
+    "precoJusto": "R$ 54,80",
     "max52": 63.22,
     "min52": 45.11,
     "classificacao": {
@@ -5692,50 +6166,201 @@
       "nota": "⚠️ Não projetamos um cenário-base único: a divergência contábil vs. gerencial do 2T26 (Descobertas) torna qualquer ponto médio pouco confiável. Também não há guidance numérico oficial da empresa nem consenso de mercado formal localizado nesta pesquisa. Os extremos conservador/otimista acima ilustram a amplitude real da incerteza, não uma previsão."
     },
     "valuation": {
-      "regraMetodo": "P/L",
-      "regraPorque": "Seguradora ganha na subscrição e no float, e o lucro captura os dois. Como em banco, EV/EBITDA não se aplica — a provisão técnica é insumo, não dívida. A separação entre pares de banco e de seguradora, feita em 13/09/2026, deixou de afetar o preço justo em 14/09 — o múltiplo do setor saiu da conta —, mas segue valendo para o fallback de quem não tem série própria utilizável.",
+      "regraMetodo": "P/VP × ROE",
+      "regraPorque": "Seguradora ganha na subscrição e no float sobre o patrimônio segurado, e o lucro de um ano isolado pode ser dominado por sinistralidade ou efeito não recorrente — a própria IRB é o exemplo que a metodologia cita nominalmente para descartar histórico pré-turnaround, e mesmo restrito a 3 anos seu P/L segue sendo o método mais ruidoso dos dois (P/L R$33,27 contra P/VP R$54,80, 65% de diferença). O P/VP ajustado por ROE mede rentabilidade sobre capital sem depender do lucro pontual. Como em banco, EV/EBITDA não se aplica — a provisão técnica é insumo, não dívida. P/L entra só como verificação.",
       "regraGrupo": "SEG",
-      "criterio": "P/L",
+      "criterio": "P/VP",
       "metodos": [
-        {
-          "metodo": "LPA projetado 2026 R$ 4,03 × P/L 8,25x",
-          "precoJusto": "R$ 33,27"
-        }
-      ],
-      "origemMult": "o P/L mediano da própria empresa ao longo de 3 anos (8,25x), ajustado pela rentabilidade (ROE): hoje 4,5% contra 4,5% de mediana do período dá fator 1,00 → múltiplo-alvo 8,25x. Proporção direta, sem teto: mais rentável que a própria mediana merece múltiplo maior; menos rentável, menor. O múltiplo do setor NÃO entra desde 14/09/2026.",
-      "precoJusto": "R$ 33,27",
-      "verificacao": [
         {
           "metodo": "VPA R$ 66,02 × P/VP 0,83x",
           "precoJusto": "R$ 54,80"
         }
       ],
-      "nota": "Método ÚNICO: P/L. O preço justo é o fundamento projetado multiplicado pelo múltiplo que a empresa deve negociar — não é média nem mediana de métodos diferentes. Os 1 método(s) de verificação abaixo são calculados para comparação e NÃO entram na conta. Mesmo número da coluna Preço Justo do Radar, gerado pela mesma fonte (analise/tetos.json). Ver METODOLOGIA_ANALISE.md seção 31.",
+      "origemMult": "o P/VP mediano da própria empresa ao longo de 5 anos (0,83x), ajustado pela rentabilidade (ROE): hoje 4,5% contra 4,5% de mediana do período dá fator 1,00 → múltiplo-alvo 0,83x. Proporção direta, sem teto: mais rentável que a própria mediana merece múltiplo maior; menos rentável, menor. O múltiplo do setor NÃO entra desde 14/09/2026.",
+      "precoJusto": "R$ 54,80",
+      "verificacao": [
+        {
+          "metodo": "LPA projetado 2026 R$ 4,03 × P/L 8,25x",
+          "precoJusto": "R$ 33,27"
+        }
+      ],
+      "nota": "Método ÚNICO: P/VP. O preço justo é o fundamento projetado multiplicado pelo múltiplo que a empresa deve negociar — não é média nem mediana de métodos diferentes. Os 1 método(s) de verificação abaixo são calculados para comparação e NÃO entram na conta. Mesmo número da coluna Preço Justo do Radar, gerado pela mesma fonte (analise/tetos.json). Ver METODOLOGIA_ANALISE.md seção 31.",
+      "serieMultiplo": {
+        "metrica": "P/VP",
+        "metricaRoe": "ROE",
+        "linhas": [
+          {
+            "ano": "2022",
+            "multiplo": "0,52x",
+            "roe": "-16,7%",
+            "fundamento": "—",
+            "preco": "R$ 0,86"
+          },
+          {
+            "ano": "2023",
+            "multiplo": "0,87x",
+            "roe": "-3,0%",
+            "fundamento": "—",
+            "preco": "R$ 44,30"
+          },
+          {
+            "ano": "2024",
+            "multiplo": "0,73x",
+            "roe": "17,2%",
+            "fundamento": "—",
+            "preco": "R$ 42,45"
+          },
+          {
+            "ano": "2025",
+            "multiplo": "0,83x",
+            "roe": "7,5%",
+            "fundamento": "—",
+            "preco": "R$ 53,70"
+          },
+          {
+            "ano": "2026",
+            "multiplo": "0,86x",
+            "roe": "4,5%",
+            "fundamento": "—",
+            "preco": "R$ 56,78"
+          }
+        ],
+        "mediana": "0,83x",
+        "roeMediano": "4,5%",
+        "roeHoje": "4,5%",
+        "quebra": "Série restrita a partir de 2022 por QUEBRA DE SÉRIE — os anos anteriores descrevem outra empresa (evento societário) e não servem de âncora."
+      },
+      "fundamentoPorAno": null,
+      "pares": {
+        "grupo": "SEG",
+        "metricaRoe": "ROE",
+        "linhas": [
+          {
+            "ativo": "BBSE3",
+            "eu": false,
+            "metodo": "P/VP",
+            "ancora": "6,11x",
+            "fator": "1,00",
+            "multiplo": "6,09x",
+            "roe": "78,6%",
+            "roeMed": "78,8%",
+            "mgLiq": "—",
+            "valorMercado": "R$ 81,0 bi",
+            "divEbitda": "—"
+          },
+          {
+            "ativo": "CXSE3",
+            "eu": false,
+            "metodo": "P/VP",
+            "ancora": "3,15x",
+            "fator": "1,14",
+            "multiplo": "3,59x",
+            "roe": "33,1%",
+            "roeMed": "29,1%",
+            "mgLiq": "—",
+            "valorMercado": "R$ 58,3 bi",
+            "divEbitda": "-0,26x"
+          },
+          {
+            "ativo": "IRBR3",
+            "eu": true,
+            "metodo": "P/VP",
+            "ancora": "0,83x",
+            "fator": "1,00",
+            "multiplo": "0,83x",
+            "roe": "4,5%",
+            "roeMed": "4,5%",
+            "mgLiq": "5,4%",
+            "valorMercado": "R$ 4,6 bi",
+            "divEbitda": "—"
+          },
+          {
+            "ativo": "PSSA3",
+            "eu": false,
+            "metodo": "P/VP",
+            "ancora": "1,70x",
+            "fator": "1,19",
+            "multiplo": "2,02x",
+            "roe": "23,7%",
+            "roeMed": "20,0%",
+            "mgLiq": "8,7%",
+            "valorMercado": "R$ 32,8 bi",
+            "divEbitda": "-4,05x"
+          },
+          {
+            "ativo": "SAUD3",
+            "eu": false,
+            "metodo": "P/L",
+            "ancora": "38,93x",
+            "fator": "1,00",
+            "multiplo": "9,11x",
+            "roe": "18,6%",
+            "roeMed": "18,6%",
+            "mgLiq": "10,6%",
+            "valorMercado": "R$ 42,7 bi",
+            "divEbitda": "-11,03x"
+          }
+        ]
+      },
       "cenariosLpa": {
-        "multiplo": "8,25x",
+        "multiplo": "0,83x",
         "fundamento": "LPA",
         "base": "R$ 0,39 bi (exercício fechado de 2025)",
+        "amplitude": "28%",
+        "variaMultiplo": true,
+        "origemCrescimento": {
+          "rotulo": "Lucro líquido",
+          "linhas": [
+            {
+              "ano": "2024",
+              "valor": "R$ 0,81 bi",
+              "variacao": "—"
+            },
+            {
+              "ano": "2025",
+              "valor": "R$ 0,39 bi",
+              "variacao": "-51,48%"
+            },
+            {
+              "ano": "2026",
+              "valor": "R$ 0,24 bi",
+              "variacao": "-38,46%"
+            }
+          ],
+          "taxa": "-25,00%",
+          "taxaBruta": "-45,36%",
+          "limitado": true,
+          "teto": "25%",
+          "metodo": "regressão log do lucro da própria série",
+          "porQue": "A taxa NÃO é a média das variações ano a ano nem a última delas: é a inclinação de uma regressão sobre o logaritmo da série, que é o estimador de crescimento COMPOSTO. Média simples de variações superestima quando a série oscila (a média de +50% e −50% é 0%, mas quem viveu isso perdeu 25%); a última variação joga a projeção inteira num único ano. A regressão usa todos os pontos e pesa cada um igualmente no tempo."
+        },
         "cenarios": [
           {
             "cenario": "Conservador",
-            "crescimento": "+0,0%",
-            "lpa": "R$ 4,78",
-            "precoJusto": "R$ 39,41",
-            "premissa": "crescimento ZERO — a empresa repete o resultado-base, sem supor deterioração nem avanço"
+            "crescimento": "-25,0%",
+            "multiplo": "0,74x",
+            "total": "R$ 0,29 bi",
+            "lpa": "R$ 3,58",
+            "precoJusto": "R$ 2,66",
+            "premissa": "o fundamento ENCOLHE 25,0% — a mesma distância do base, para baixo e múltiplo de 0,74x (percentil 25 da própria série). As duas pontas pioram juntas, que é como o mercado se move de fato: múltiplo comprime justamente quando o resultado decepciona"
           },
           {
             "cenario": "Base",
-            "crescimento": "-15,6%",
-            "lpa": "R$ 4,03",
-            "precoJusto": "R$ 33,27",
-            "premissa": "lucro de 2026 declarado no relatório — Cenário CONSERVADOR do relatório de 25/08/2026 — e é o único disponível: o próprio relatório se recusa a publicar um cenário base, porque a…"
+            "crescimento": "-25,0%",
+            "multiplo": "0,83x",
+            "total": "R$ 0,29 bi",
+            "lpa": "R$ 3,58",
+            "precoJusto": "R$ 2,97",
+            "premissa": "regressão log do lucro da própria série e o múltiplo que o preço justo aplica (0,83x)"
           },
           {
             "cenario": "Otimista",
-            "crescimento": "-10,4%",
-            "lpa": "R$ 4,28",
-            "precoJusto": "R$ 35,32",
-            "premissa": "a taxa do base vezes 1,5, limitada ao teto de 25% — premissa declarada, não calibração"
+            "crescimento": "-16,7%",
+            "multiplo": "0,85x",
+            "total": "R$ 0,33 bi",
+            "lpa": "R$ 3,98",
+            "precoJusto": "R$ 3,39",
+            "premissa": "a taxa do base vezes 1,5, limitada ao teto de 25% e múltiplo de 0,85x (percentil 75 da própria série). Premissa declarada, não calibração — mas as duas pontas do múltiplo são a faixa que a empresa JÁ negociou, não número inventado"
           }
         ]
       },
@@ -5830,19 +6455,19 @@
     "blocoCopiavel": "🔴 IRBR3 — ACIMA DO TETO (★☆☆☆☆)\nSetor: Resseguros | Motor de valuation: P/VP × ROE (base contábil, conservadora)\nCotação: R$ 51,16 | Preço Justo: R$ 25,23 (contábil) a R$ 57,75 (gerencial) | Preço justo: R$ 31,90 | Margem: -138,5%\nPrêmio s/ Selic 12m: -61,18pp (FALHA)\nRetorno Real 12m: -49,42% | Retorno Real 5a: -17,6% | Selic Real 5a: 9,09% | Diversifica? NÃO (financeiro, + risco idiossincrático de fraude contábil 2020)\nP/L: — (proibido para resseguradoras; P/L médio de ciclo informativo ~12,4x-12,7x) | ROE: 4,5% (contábil) / ~22% (gerencial, ⚠️ divergência é a tese) | DY: 3,5% (mínimo estatutário) | Origem: dividendo recém-retomado, sem margem de segurança testável\n\nTese em uma frase: Turnaround real está em andamento, mas o histórico é curto e o trimestre mais recente trouxe o maior red flag contábil da análise — dispersão de valuation de quase 130% entre a leitura conservadora e a otimista.\nMaior risco: divergência entre lucro contábil (IFRS) e gerencial, com sinal invertido no 2T26 — ceticismo obrigatório dado o histórico de 2020.\nGatilho de monitoramento: esclarecimento da divergência contábil/gerencial do 2T26 e mais 2-3 trimestres de histórico consistente pós-turnaround.\n\nFontes: StatusInvest, irbre.com, CVM, DOJ/Kroll, Money Times — 25/08/2026",
     "ressalvas": "⚠️ Esta é a análise de MAIOR incerteza do dashboard — dispersão de valuation de 128,9% entre a base contábil e a gerencial. ⚠️ ROE gerencial (~22%) e patrimônio ajustado (R$2,7bi) são calculados/derivados por este relatório a partir de dados parciais — não são números diretamente publicados de forma consolidada pela empresa. ⚠️ Ações em tesouraria, free float exato, CSM (IFRS 17) e run-off de sinistros de anos anteriores não encontrados. ⚠️ Guidance numérico oficial de lucro/ROE não encontrado. ⚠️ Rating de crédito atual (AM Best) não confirmado com nota e outlook específicos nesta pesquisa. ⚠️ Metodologia exata por trás do salto do índice de solvência (183%→316%) não confirmada. ⚠️ Status atual do processo individual contra Fernando Passos (ex-CFO) nos EUA não confirmado.",
     "veredicto": {
-      "emoji": "🔴",
-      "label": "ACIMA DO TETO",
-      "class": "acima",
+      "emoji": "🟡",
+      "label": "AGUARDAR",
+      "class": "aguardar",
       "conviccao": "★☆☆☆☆",
       "cotacao": 51.16,
-      "precoTeto": 21.45,
-      "margem": -138.51,
+      "precoJusto": "R$ 54,80",
+      "margem": "+6,6%",
       "premioSelic": -61.18,
       "gatilhos": [
-        "Cotação abaixo do preço-teto ✗ (está muito acima do teto)",
-        "Prêmio de 12 meses sobre a Selic ≥5pp ✗ (está em -61,18pp)",
-        "Retorno real de 5 anos > Selic real ✗ (-17,6% vs 9,09%)",
-        "Veredicto mecânico: os 3 critérios falham com folga (na base conservadora/contábil) — 🔴 Acima do teto, convicção MÍNIMA (★☆☆☆☆) dada a dispersão de 128,9% entre os métodos de valuation. A divergência entre a leitura conservadora e a otimista (replicando a tese do BTG) é, ela mesma, a tese — não um erro de cálculo."
+        "⚠️ Label e margem corrigidos em 15/09/2026 — motor de valuation passou a decidir por P/VP×ROE (não mais P/L). Margem virou de negativa para +6,6%, mas os dois indicadores abaixo (prêmio sobre a Selic e retorno real de 5 anos) ainda NÃO foram recalculados contra o novo preço justo — tratar como desatualizados até nova rodada.",
+        "Prêmio de 12 meses sobre a Selic ≥5pp ✗ (última leitura: -61,18pp — não recalculado)",
+        "Retorno real de 5 anos > Selic real ✗ (última leitura: -17,6% vs 9,09% — não recalculado)",
+        "Veredicto mecânico: margem positiva mas MARGINAL (+6,6%), com convicção MÍNIMA (★☆☆☆☆) dada a dispersão de 128,9% entre os métodos de valuation (P/VP R$54,80 vs. P/L R$33,27, série curta pós-turnaround). A divergência entre a leitura conservadora e a otimista (replicando a tese do BTG) é, ela mesma, a tese — não um erro de cálculo. Não tratar como sinal de compra sem revisar prêmio sobre Selic e retorno real."
       ],
       "dyProjetado": "3,5%",
       "plAtual": "—",
@@ -5863,7 +6488,7 @@
     "data": "25/08/2026",
     "fontes": "DadosDeMercado, StatusInvest, Investidor10, Itaú RI (Fact Sheet 1T26, Estatuto Social), InfoMoney, Capitalizo, Brasilagro, XP, Times Brasil/CNBC — coletado 25/08/2026",
     "cotacao": 41.66,
-    "precoTeto": 31.2,
+    "precoJusto": "R$ 30,43",
     "max52": 46.47,
     "min52": 29.54,
     "classificacao": {
@@ -6038,50 +6663,262 @@
       "nota": "Consenso de mercado agregado (Bloomberg/Refinitiv) para 2026 não foi encontrado nesta pesquisa — os 3 cenários são estimativa própria a partir do lucro 2025 e do guidance oficial de carteira/margem financeira."
     },
     "valuation": {
-      "regraMetodo": "P/L",
-      "regraPorque": "Banco ganha no spread de crédito e o lucro é a medida direta disso. EV não se aplica: o passivo é a matéria-prima (depósito), não alavancagem.",
+      "regraMetodo": "P/VP × ROE",
+      "regraPorque": "Banco ganha no spread sobre o patrimônio que capta e empresta, não sobre uma \"produção\" que o lucro contábil de um trimestre descreva bem. Provisão de crédito e efeitos fiscais pontuais turbinam ou derrubam o LPA sem que o negócio tenha mudado — a BBAS3 é o caso: o LPA caiu forte com o provisionamento da carteira agro de 2025-26, mas o patrimônio líquido não levou o mesmo golpe. O ROE mede a rentabilidade sobre o capital que o banco de fato tem, e o P/VP aplicado ao VPA já carrega esse ajuste. EV não se aplica: o passivo é a matéria-prima (depósito), não alavancagem. P/L entra só como verificação.",
       "regraGrupo": "FIN",
-      "criterio": "P/L",
+      "criterio": "P/VP",
       "metodos": [
-        {
-          "metodo": "LPA projetado 2026 R$ 5,17 × P/L 9,03x",
-          "precoJusto": "R$ 46,63"
-        }
-      ],
-      "origemMult": "o P/L mediano da própria empresa ao longo de 6 anos (7,80x), ajustado pela rentabilidade (ROE): hoje 21,0% contra 18,2% de mediana do período dá fator 1,16 → múltiplo-alvo 9,03x. Proporção direta, sem teto: mais rentável que a própria mediana merece múltiplo maior; menos rentável, menor. O múltiplo do setor NÃO entra desde 14/09/2026.",
-      "precoJusto": "R$ 46,63",
-      "verificacao": [
         {
           "metodo": "VPA R$ 19,49 × P/VP 1,56x",
           "precoJusto": "R$ 30,43"
         }
       ],
-      "nota": "Método ÚNICO: P/L. O preço justo é o fundamento projetado multiplicado pelo múltiplo que a empresa deve negociar — não é média nem mediana de métodos diferentes. Os 1 método(s) de verificação abaixo são calculados para comparação e NÃO entram na conta. Mesmo número da coluna Preço Justo do Radar, gerado pela mesma fonte (analise/tetos.json). Ver METODOLOGIA_ANALISE.md seção 31.",
+      "origemMult": "o P/VP mediano da própria empresa ao longo de 6 anos (1,35x), ajustado pela rentabilidade (ROE): hoje 21,0% contra 18,2% de mediana do período dá fator 1,16 → múltiplo-alvo 1,56x. Proporção direta, sem teto: mais rentável que a própria mediana merece múltiplo maior; menos rentável, menor. O múltiplo do setor NÃO entra desde 14/09/2026.",
+      "precoJusto": "R$ 30,43",
+      "verificacao": [
+        {
+          "metodo": "LPA projetado 2026 R$ 5,17 × P/L 9,03x",
+          "precoJusto": "R$ 46,63"
+        }
+      ],
+      "nota": "Método ÚNICO: P/VP. O preço justo é o fundamento projetado multiplicado pelo múltiplo que a empresa deve negociar — não é média nem mediana de métodos diferentes. Os 1 método(s) de verificação abaixo são calculados para comparação e NÃO entram na conta. Mesmo número da coluna Preço Justo do Radar, gerado pela mesma fonte (analise/tetos.json). Ver METODOLOGIA_ANALISE.md seção 31.",
+      "serieMultiplo": {
+        "metrica": "P/VP",
+        "metricaRoe": "ROE",
+        "linhas": [
+          {
+            "ano": "2021",
+            "multiplo": "1,30x",
+            "roe": "17,3%",
+            "fundamento": "—",
+            "preco": "R$ 19,09"
+          },
+          {
+            "ano": "2022",
+            "multiplo": "1,19x",
+            "roe": "17,3%",
+            "fundamento": "—",
+            "preco": "R$ 21,89"
+          },
+          {
+            "ano": "2023",
+            "multiplo": "1,38x",
+            "roe": "17,0%",
+            "fundamento": "—",
+            "preco": "R$ 28,84"
+          },
+          {
+            "ano": "2024",
+            "multiplo": "1,32x",
+            "roe": "19,0%",
+            "fundamento": "—",
+            "preco": "R$ 26,90"
+          },
+          {
+            "ano": "2025",
+            "multiplo": "2,13x",
+            "roe": "21,3%",
+            "fundamento": "—",
+            "preco": "R$ 36,35"
+          },
+          {
+            "ano": "2026",
+            "multiplo": "2,21x",
+            "roe": "21,0%",
+            "fundamento": "—",
+            "preco": "R$ 43,07"
+          }
+        ],
+        "mediana": "1,35x",
+        "roeMediano": "18,2%",
+        "roeHoje": "21,0%",
+        "quebra": ""
+      },
+      "fundamentoPorAno": null,
+      "pares": {
+        "grupo": "FIN",
+        "metricaRoe": "ROE",
+        "linhas": [
+          {
+            "ativo": "BBAS3",
+            "eu": false,
+            "metodo": "P/VP",
+            "ancora": "0,67x",
+            "fator": "0,48",
+            "multiplo": "0,32x",
+            "roe": "6,6%",
+            "roeMed": "13,8%",
+            "mgLiq": "3,7%",
+            "valorMercado": "R$ 126,6 bi",
+            "divEbitda": "—"
+          },
+          {
+            "ativo": "BBDC3",
+            "eu": false,
+            "metodo": "P/VP",
+            "ancora": "0,89x",
+            "fator": "1,01",
+            "multiplo": "0,89x",
+            "roe": "13,7%",
+            "roeMed": "13,6%",
+            "mgLiq": "8,2%",
+            "valorMercado": "R$ 173,8 bi",
+            "divEbitda": "—"
+          },
+          {
+            "ativo": "BMEB4",
+            "eu": false,
+            "metodo": "P/VP",
+            "ancora": "1,72x",
+            "fator": "1,05",
+            "multiplo": "1,81x",
+            "roe": "27,1%",
+            "roeMed": "25,7%",
+            "mgLiq": "8,9%",
+            "valorMercado": "R$ 6,4 bi",
+            "divEbitda": "—"
+          },
+          {
+            "ativo": "BPAC11",
+            "eu": false,
+            "metodo": "P/VP",
+            "ancora": "2,35x",
+            "fator": "1,16",
+            "multiplo": "2,72x",
+            "roe": "23,3%",
+            "roeMed": "20,1%",
+            "mgLiq": "58,4%",
+            "valorMercado": "R$ 221,6 bi",
+            "divEbitda": "—"
+          },
+          {
+            "ativo": "BRSR6",
+            "eu": false,
+            "metodo": "P/VP",
+            "ancora": "0,47x",
+            "fator": "1,34",
+            "multiplo": "0,64x",
+            "roe": "14,3%",
+            "roeMed": "10,6%",
+            "mgLiq": "7,1%",
+            "valorMercado": "R$ 6,1 bi",
+            "divEbitda": "—"
+          },
+          {
+            "ativo": "ITUB3",
+            "eu": true,
+            "metodo": "P/VP",
+            "ancora": "1,35x",
+            "fator": "1,16",
+            "multiplo": "1,56x",
+            "roe": "21,0%",
+            "roeMed": "18,2%",
+            "mgLiq": "12,4%",
+            "valorMercado": "R$ 421,8 bi",
+            "divEbitda": "—"
+          },
+          {
+            "ativo": "ROXO34",
+            "eu": false,
+            "metodo": "P/L",
+            "ancora": "16,47x",
+            "fator": "1,00",
+            "multiplo": "7,19x",
+            "roe": "33,0%",
+            "roeMed": "33,0%",
+            "mgLiq": "—",
+            "valorMercado": "—",
+            "divEbitda": "—"
+          },
+          {
+            "ativo": "SANB11",
+            "eu": false,
+            "metodo": "P/VP",
+            "ancora": "0,90x",
+            "fator": "1,00",
+            "multiplo": "0,90x",
+            "roe": "11,4%",
+            "roeMed": "11,4%",
+            "mgLiq": "8,6%",
+            "valorMercado": "R$ 112,1 bi",
+            "divEbitda": "—"
+          }
+        ]
+      },
       "cenariosLpa": {
-        "multiplo": "9,03x",
+        "multiplo": "1,56x",
         "fundamento": "LPA",
         "base": "R$ 45,85 bi (exercício fechado de 2025)",
+        "amplitude": "91%",
+        "variaMultiplo": true,
+        "origemCrescimento": {
+          "rotulo": "Lucro líquido",
+          "linhas": [
+            {
+              "ano": "2021",
+              "valor": "R$ 28,38 bi",
+              "variacao": "—"
+            },
+            {
+              "ano": "2022",
+              "valor": "R$ 30,74 bi",
+              "variacao": "+8,29%"
+            },
+            {
+              "ano": "2023",
+              "valor": "R$ 33,88 bi",
+              "variacao": "+10,22%"
+            },
+            {
+              "ano": "2024",
+              "valor": "R$ 42,13 bi",
+              "variacao": "+24,36%"
+            },
+            {
+              "ano": "2025",
+              "valor": "R$ 45,85 bi",
+              "variacao": "+8,83%"
+            },
+            {
+              "ano": "2026",
+              "valor": "R$ 47,94 bi",
+              "variacao": "+4,57%"
+            }
+          ],
+          "taxa": "+10,24%",
+          "taxaBruta": "+12,23%",
+          "limitado": false,
+          "teto": "25%",
+          "metodo": "ROE × retenção",
+          "porQue": "A taxa NÃO é a média das variações ano a ano nem a última delas: é a inclinação de uma regressão sobre o logaritmo da série, que é o estimador de crescimento COMPOSTO. Média simples de variações superestima quando a série oscila (a média de +50% e −50% é 0%, mas quem viveu isso perdeu 25%); a última variação joga a projeção inteira num único ano. A regressão usa todos os pontos e pesa cada um igualmente no tempo."
+        },
         "cenarios": [
           {
             "cenario": "Conservador",
-            "crescimento": "+0,0%",
-            "lpa": "R$ 4,68",
-            "precoJusto": "R$ 42,27",
-            "premissa": "crescimento ZERO — a empresa repete o resultado-base, sem supor deterioração nem avanço"
+            "crescimento": "-10,2%",
+            "multiplo": "1,51x",
+            "total": "R$ 41,16 bi",
+            "lpa": "R$ 4,20",
+            "precoJusto": "R$ 6,34",
+            "premissa": "o fundamento ENCOLHE 10,2% — a mesma distância do base, para baixo e múltiplo de 1,51x (percentil 25 da própria série). As duas pontas pioram juntas, que é como o mercado se move de fato: múltiplo comprime justamente quando o resultado decepciona"
           },
           {
             "cenario": "Base",
-            "crescimento": "+10,4%",
-            "lpa": "R$ 5,17",
-            "precoJusto": "R$ 46,65",
-            "premissa": "lucro de 2026 declarado no relatório — Cenário BASE do relatório de 25/08/2026: crescimento financeiro padrão de 8% a.a. sobre o lucro RECORRENTE de 2025. O conservador (piso do guidance…"
+            "crescimento": "+10,2%",
+            "multiplo": "1,56x",
+            "total": "R$ 50,54 bi",
+            "lpa": "R$ 5,16",
+            "precoJusto": "R$ 8,05",
+            "premissa": "ROE × retenção e o múltiplo que o preço justo aplica (1,56x)"
           },
           {
             "cenario": "Otimista",
-            "crescimento": "+15,5%",
-            "lpa": "R$ 5,41",
-            "precoJusto": "R$ 48,84",
-            "premissa": "a taxa do base vezes 1,5, limitada ao teto de 25% — premissa declarada, não calibração"
+            "crescimento": "+15,4%",
+            "multiplo": "2,24x",
+            "total": "R$ 52,89 bi",
+            "lpa": "R$ 5,40",
+            "precoJusto": "R$ 12,12",
+            "premissa": "a taxa do base vezes 1,5, limitada ao teto de 25% e múltiplo de 2,24x (percentil 75 da própria série). Premissa declarada, não calibração — mas as duas pontas do múltiplo são a faixa que a empresa JÁ negociou, não número inventado"
           }
         ]
       },
@@ -6178,8 +7015,8 @@
       "class": "acima",
       "conviccao": "★★★★★",
       "cotacao": 41.66,
-      "precoTeto": 31.2,
-      "margem": -33.52,
+      "precoJusto": "R$ 30,43",
+      "margem": "-36,9%",
       "premioSelic": -18.37,
       "gatilhos": [
         "Cotação abaixo do preço-teto ✗ (está 33,5% acima do teto)",
@@ -6873,7 +7710,7 @@
     "data": "25/08/2026",
     "fontes": "StatusInvest, Fundamentus, Investidor10, Dados de Mercado, BancoData, ADVFN, InfoMoney, Money Times, RI Banco Mercantil, XP — coletado 25/08/2026. ⚠️ Divergências relevantes entre fontes secundárias para praticamente todos os indicadores — banco de baixa liquidez e cobertura escassa.",
     "cotacao": 60.4,
-    "precoTeto": 30.86,
+    "precoJusto": "R$ 47,80",
     "max52": 84.63,
     "min52": 37.99,
     "classificacao": {
@@ -7038,50 +7875,262 @@
       "nota": "⚠️ Não há guidance oficial da empresa. O cenário otimista replica a projeção da Safra, que pressupõe expansão de ROE muito acima do atual sem confirmação de qualidade de carteira (Bloco 4 vazio) — tratar com cautela."
     },
     "valuation": {
-      "regraMetodo": "P/L",
-      "regraPorque": "Banco ganha no spread de crédito e o lucro é a medida direta disso. EV não se aplica: o passivo é a matéria-prima (depósito), não alavancagem.",
+      "regraMetodo": "P/VP × ROE",
+      "regraPorque": "Banco ganha no spread sobre o patrimônio que capta e empresta, não sobre uma \"produção\" que o lucro contábil de um trimestre descreva bem. Provisão de crédito e efeitos fiscais pontuais turbinam ou derrubam o LPA sem que o negócio tenha mudado — a BBAS3 é o caso: o LPA caiu forte com o provisionamento da carteira agro de 2025-26, mas o patrimônio líquido não levou o mesmo golpe. O ROE mede a rentabilidade sobre o capital que o banco de fato tem, e o P/VP aplicado ao VPA já carrega esse ajuste. EV não se aplica: o passivo é a matéria-prima (depósito), não alavancagem. P/L entra só como verificação.",
       "regraGrupo": "FIN",
-      "criterio": "P/L",
+      "criterio": "P/VP",
       "metodos": [
-        {
-          "metodo": "LPA projetado 2026 R$ 9,82 × P/L 7,47x",
-          "precoJusto": "R$ 73,36"
-        }
-      ],
-      "origemMult": "o P/L mediano da própria empresa ao longo de 6 anos (7,11x), ajustado pela rentabilidade (ROE): hoje 27,1% contra 25,7% de mediana do período dá fator 1,05 → múltiplo-alvo 7,47x. Proporção direta, sem teto: mais rentável que a própria mediana merece múltiplo maior; menos rentável, menor. O múltiplo do setor NÃO entra desde 14/09/2026.",
-      "precoJusto": "R$ 73,36",
-      "verificacao": [
         {
           "metodo": "VPA R$ 26,44 × P/VP 1,81x",
           "precoJusto": "R$ 47,80"
         }
       ],
-      "nota": "Método ÚNICO: P/L. O preço justo é o fundamento projetado multiplicado pelo múltiplo que a empresa deve negociar — não é média nem mediana de métodos diferentes. Os 1 método(s) de verificação abaixo são calculados para comparação e NÃO entram na conta. Mesmo número da coluna Preço Justo do Radar, gerado pela mesma fonte (analise/tetos.json). Ver METODOLOGIA_ANALISE.md seção 31.",
+      "origemMult": "o P/VP mediano da própria empresa ao longo de 6 anos (1,72x), ajustado pela rentabilidade (ROE): hoje 27,1% contra 25,7% de mediana do período dá fator 1,05 → múltiplo-alvo 1,81x. Proporção direta, sem teto: mais rentável que a própria mediana merece múltiplo maior; menos rentável, menor. O múltiplo do setor NÃO entra desde 14/09/2026.",
+      "precoJusto": "R$ 47,80",
+      "verificacao": [
+        {
+          "metodo": "LPA projetado 2026 R$ 9,82 × P/L 7,47x",
+          "precoJusto": "R$ 73,36"
+        }
+      ],
+      "nota": "Método ÚNICO: P/VP. O preço justo é o fundamento projetado multiplicado pelo múltiplo que a empresa deve negociar — não é média nem mediana de métodos diferentes. Os 1 método(s) de verificação abaixo são calculados para comparação e NÃO entram na conta. Mesmo número da coluna Preço Justo do Radar, gerado pela mesma fonte (analise/tetos.json). Ver METODOLOGIA_ANALISE.md seção 31.",
+      "serieMultiplo": {
+        "metrica": "P/VP",
+        "metricaRoe": "ROE",
+        "linhas": [
+          {
+            "ano": "2021",
+            "multiplo": "1,02x",
+            "roe": "16,6%",
+            "fundamento": "—",
+            "preco": "R$ 10,85"
+          },
+          {
+            "ano": "2022",
+            "multiplo": "0,77x",
+            "roe": "14,7%",
+            "fundamento": "—",
+            "preco": "R$ 10,02"
+          },
+          {
+            "ano": "2023",
+            "multiplo": "1,29x",
+            "roe": "24,5%",
+            "fundamento": "—",
+            "preco": "R$ 16,89"
+          },
+          {
+            "ano": "2024",
+            "multiplo": "2,15x",
+            "roe": "26,9%",
+            "fundamento": "—",
+            "preco": "R$ 37,80"
+          },
+          {
+            "ano": "2025",
+            "multiplo": "4,25x",
+            "roe": "27,5%",
+            "fundamento": "—",
+            "preco": "R$ 72,38"
+          },
+          {
+            "ano": "2026",
+            "multiplo": "2,29x",
+            "roe": "27,1%",
+            "fundamento": "—",
+            "preco": "R$ 60,55"
+          }
+        ],
+        "mediana": "1,72x",
+        "roeMediano": "25,7%",
+        "roeHoje": "27,1%",
+        "quebra": ""
+      },
+      "fundamentoPorAno": null,
+      "pares": {
+        "grupo": "FIN",
+        "metricaRoe": "ROE",
+        "linhas": [
+          {
+            "ativo": "BBAS3",
+            "eu": false,
+            "metodo": "P/VP",
+            "ancora": "0,67x",
+            "fator": "0,48",
+            "multiplo": "0,32x",
+            "roe": "6,6%",
+            "roeMed": "13,8%",
+            "mgLiq": "3,7%",
+            "valorMercado": "R$ 126,6 bi",
+            "divEbitda": "—"
+          },
+          {
+            "ativo": "BBDC3",
+            "eu": false,
+            "metodo": "P/VP",
+            "ancora": "0,89x",
+            "fator": "1,01",
+            "multiplo": "0,89x",
+            "roe": "13,7%",
+            "roeMed": "13,6%",
+            "mgLiq": "8,2%",
+            "valorMercado": "R$ 173,8 bi",
+            "divEbitda": "—"
+          },
+          {
+            "ativo": "BMEB4",
+            "eu": true,
+            "metodo": "P/VP",
+            "ancora": "1,72x",
+            "fator": "1,05",
+            "multiplo": "1,81x",
+            "roe": "27,1%",
+            "roeMed": "25,7%",
+            "mgLiq": "8,9%",
+            "valorMercado": "R$ 6,4 bi",
+            "divEbitda": "—"
+          },
+          {
+            "ativo": "BPAC11",
+            "eu": false,
+            "metodo": "P/VP",
+            "ancora": "2,35x",
+            "fator": "1,16",
+            "multiplo": "2,72x",
+            "roe": "23,3%",
+            "roeMed": "20,1%",
+            "mgLiq": "58,4%",
+            "valorMercado": "R$ 221,6 bi",
+            "divEbitda": "—"
+          },
+          {
+            "ativo": "BRSR6",
+            "eu": false,
+            "metodo": "P/VP",
+            "ancora": "0,47x",
+            "fator": "1,34",
+            "multiplo": "0,64x",
+            "roe": "14,3%",
+            "roeMed": "10,6%",
+            "mgLiq": "7,1%",
+            "valorMercado": "R$ 6,1 bi",
+            "divEbitda": "—"
+          },
+          {
+            "ativo": "ITUB3",
+            "eu": false,
+            "metodo": "P/VP",
+            "ancora": "1,35x",
+            "fator": "1,16",
+            "multiplo": "1,56x",
+            "roe": "21,0%",
+            "roeMed": "18,2%",
+            "mgLiq": "12,4%",
+            "valorMercado": "R$ 421,8 bi",
+            "divEbitda": "—"
+          },
+          {
+            "ativo": "ROXO34",
+            "eu": false,
+            "metodo": "P/L",
+            "ancora": "16,47x",
+            "fator": "1,00",
+            "multiplo": "7,19x",
+            "roe": "33,0%",
+            "roeMed": "33,0%",
+            "mgLiq": "—",
+            "valorMercado": "—",
+            "divEbitda": "—"
+          },
+          {
+            "ativo": "SANB11",
+            "eu": false,
+            "metodo": "P/VP",
+            "ancora": "0,90x",
+            "fator": "1,00",
+            "multiplo": "0,90x",
+            "roe": "11,4%",
+            "roeMed": "11,4%",
+            "mgLiq": "8,6%",
+            "valorMercado": "R$ 112,1 bi",
+            "divEbitda": "—"
+          }
+        ]
+      },
       "cenariosLpa": {
-        "multiplo": "7,47x",
+        "multiplo": "1,81x",
         "fundamento": "LPA",
         "base": "R$ 0,64 bi (exercício fechado de 2025)",
+        "amplitude": "223%",
+        "variaMultiplo": true,
+        "origemCrescimento": {
+          "rotulo": "Lucro líquido",
+          "linhas": [
+            {
+              "ano": "2021",
+              "valor": "R$ 0,20 bi",
+              "variacao": "—"
+            },
+            {
+              "ano": "2022",
+              "valor": "R$ 0,20 bi",
+              "variacao": "-0,85%"
+            },
+            {
+              "ano": "2023",
+              "valor": "R$ 0,40 bi",
+              "variacao": "+97,84%"
+            },
+            {
+              "ano": "2024",
+              "valor": "R$ 0,51 bi",
+              "variacao": "+29,15%"
+            },
+            {
+              "ano": "2025",
+              "valor": "R$ 0,64 bi",
+              "variacao": "+25,49%"
+            },
+            {
+              "ano": "2026",
+              "valor": "R$ 0,85 bi",
+              "variacao": "+33,03%"
+            }
+          ],
+          "taxa": "+19,68%",
+          "taxaBruta": "+36,77%",
+          "limitado": true,
+          "teto": "25%",
+          "metodo": "ROE × retenção",
+          "porQue": "A taxa NÃO é a média das variações ano a ano nem a última delas: é a inclinação de uma regressão sobre o logaritmo da série, que é o estimador de crescimento COMPOSTO. Média simples de variações superestima quando a série oscila (a média de +50% e −50% é 0%, mas quem viveu isso perdeu 25%); a última variação joga a projeção inteira num único ano. A regressão usa todos os pontos e pesa cada um igualmente no tempo."
+        },
         "cenarios": [
           {
             "cenario": "Conservador",
-            "crescimento": "+0,0%",
-            "lpa": "R$ 6,11",
-            "precoJusto": "R$ 45,62",
-            "premissa": "crescimento ZERO — a empresa repete o resultado-base, sem supor deterioração nem avanço"
+            "crescimento": "-19,7%",
+            "multiplo": "1,14x",
+            "total": "R$ 0,51 bi",
+            "lpa": "R$ 4,90",
+            "precoJusto": "R$ 5,61",
+            "premissa": "o fundamento ENCOLHE 19,7% — a mesma distância do base, para baixo e múltiplo de 1,14x (percentil 25 da própria série). As duas pontas pioram juntas, que é como o mercado se move de fato: múltiplo comprime justamente quando o resultado decepciona"
           },
           {
             "cenario": "Base",
-            "crescimento": "+60,7%",
-            "lpa": "R$ 9,82",
-            "precoJusto": "R$ 73,33",
-            "premissa": "lucro de 2026 declarado no relatório — Cenário BASE do relatório de 25/08/2026: ponto médio entre o g financeiro padrão (8%) e o crescimento implícito pela retenção de capital (ROE ×…"
+            "crescimento": "+19,7%",
+            "multiplo": "1,81x",
+            "total": "R$ 0,77 bi",
+            "lpa": "R$ 7,31",
+            "precoJusto": "R$ 13,23",
+            "premissa": "ROE × retenção e o múltiplo que o preço justo aplica (1,81x)"
           },
           {
             "cenario": "Otimista",
             "crescimento": "+25,0%",
+            "multiplo": "2,37x",
+            "total": "R$ 0,80 bi",
             "lpa": "R$ 7,63",
-            "precoJusto": "R$ 57,02",
-            "premissa": "a taxa do base vezes 1,5, limitada ao teto de 25% — premissa declarada, não calibração"
+            "precoJusto": "R$ 18,11",
+            "premissa": "a taxa do base vezes 1,5, limitada ao teto de 25% e múltiplo de 2,37x (percentil 75 da própria série). Premissa declarada, não calibração — mas as duas pontas do múltiplo são a faixa que a empresa JÁ negociou, não número inventado"
           }
         ]
       },
@@ -7178,8 +8227,8 @@
       "class": "acima",
       "conviccao": "★☆☆☆☆",
       "cotacao": 60.4,
-      "precoTeto": 30.86,
-      "margem": -95.72,
+      "precoJusto": "R$ 47,80",
+      "margem": "-26,4%",
       "premioSelic": -50.88,
       "gatilhos": [
         "Cotação abaixo do preço-teto ✗ (está muito acima do teto)",
