@@ -349,6 +349,7 @@
     <col style="width:100px"><!-- 21 Margem de Segurança -->
     <col style="width:95px"> <!-- 22 Retorno Total -->
     <col style="width:120px"><!-- 23 Relatório -->
+    <col style="width:130px"><!-- 24 Cenário de Tese -->
   </colgroup>
   <thead>
     <tr class="col-header">
@@ -376,6 +377,7 @@
       <th data-col="21" onclick="sortTable(21)"  class="gh-opp sortable" ><div class="th-inner">Margem de Segurança<span class="sort-arrow"></span><span class="col-tag proj">proj.</span></div><span class="col-tip" data-tip="Fonte: Calculado&#10;(Preço Justo − Cotação) ÷ Preço Justo × 100&#10;Positivo = cotação abaixo do valor justo&#10;Negativo = cotação acima do valor justo&#10;&#10;O veredicto 🟢 compra exige margem de pelo menos 15%.">ⓘ</span></th>
       <th data-col="22" onclick="sortTable(22)"  class="sep gh-ret col-mob-hide sortable" ><div class="th-inner">Retorno Total<span class="sort-arrow"></span><span class="col-tag proj">proj.</span></div><span class="col-tip" data-tip="Fonte: Calculado&#10;Valorização até o Preço Justo + DY projetado&#10;Retorno total esperado no horizonte de análise">ⓘ</span></th>
       <th data-col="23"  class="sep gh-rep" style="cursor:default;"><div class="th-inner">Relatório <span class="col-tip" data-tip="Fonte: Análise própria&#10;Link para o relatório detalhado do ativo com tese, riscos e projeções">ⓘ</span></div></th>
+      <th data-col="24"  class="sep gh-tese" style="cursor:default;"><div class="th-inner">Cenário de Tese <span class="col-tip" data-tip="Fonte: Análise própria, escrita caso a caso — NÃO é automático&#10;&#10;Registra uma aposta explícita de recuperação/mudança (ex.: ROE volta a subir), separada do Preço Justo oficial (que nunca aposta no futuro).&#10;&#10;Só existe para ativos com tese registrada manualmente, com premissa, prazo e condição de revisão declarados. Nunca entra no cálculo de margem, veredicto ou estrelas de convicção — é informativo, não decisório.">ⓘ</span></div></th>
     </tr>
   </thead>
   <tbody id="tableBody"><!-- populado por data/radar-rows.data.js --></tbody>
@@ -8252,11 +8254,36 @@
 
 <div class="toast" id="toast"></div>
 
+<div id="teseOverlay" onclick="if(event.target===this) fecharTese()">
+  <div id="teseModal">
+    <button class="tese-close" onclick="fecharTese()">×</button>
+    <h3 id="teseTitulo">—</h3>
+    <div class="tese-sub" id="teseData"></div>
+    <div class="tese-alerta">⚠️ Isto é uma aposta, não o Preço Justo do motor. O motor nunca aposta no futuro — só usa ROE e múltiplo observados. Esta tese existe à parte, com premissa e condição de revisão declaradas.</div>
+    <div class="tese-linha"><b>Gatilho:</b> <span id="teseGatilho"></span></div>
+    <div class="tese-linha"><b>Premissa:</b> <span id="tesePremissa"></span></div>
+    <div class="tese-precos">
+      <div class="tese-preco-box tese-preco-oficial">
+        <div class="lbl">Preço Justo (oficial)</div>
+        <div class="val" id="tesePrecoOficial">—</div>
+      </div>
+      <div class="tese-preco-box tese-preco-cenario">
+        <div class="lbl">Se a tese confirmar</div>
+        <div class="val" id="tesePrecoCenario">—</div>
+      </div>
+    </div>
+    <div class="tese-linha"><b>Confiança:</b> <span id="teseConfianca"></span></div>
+    <div class="tese-revisao"><b>Condição que invalida esta tese:</b> <span id="teseRevisao"></span></div>
+    <div class="tese-fonte" id="teseFonte"></div>
+  </div>
+</div>
+
 <script src="js/config.js"></script>
 <script src="data/radar-rows.data.js"></script>
 <script src="data/historico.data.js"></script>
 <script src="data/setorial.data.js"></script>
 <script src="data/tir.data.js"></script>
+<script src="data/teses.data.js"></script>
 <script src="js/navegacao.js"></script>
 <script src="js/carteira.js"></script>
 <script src="js/graficos.js"></script>
@@ -8270,6 +8297,7 @@
 <script src="js/fundamentos-api.js"></script>
 <script src="js/fundamentos-render.js"></script>
 <script src="js/setorial.js"></script>
+<script src="js/teses.js"></script>
 <script src="js/main.js"></script>
 <!-- decisao.js roda DEPOIS de main.js: precisa das células já populadas (LPA, preço-teto,
      cotação de cache) e embrulha applyFilters/atualizarCotacoes já definidas. -->
