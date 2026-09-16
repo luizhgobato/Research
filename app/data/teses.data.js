@@ -27,15 +27,14 @@
 //
 // Chave = ticker sem ".SA" (mesmo padrão de REPORTS em reportsData).
 window.TESES = {
-  // Exemplo de formato (comentado — apagar quando a primeira tese de verdade for adicionada):
-  // "BBAS3": {
-  //   data: "2026-09-16",
-  //   gatilho: "Normalização da inadimplência da carteira de agronegócio",
-  //   premissa: "ROE volta a ~12% em até 2 anos, se a inadimplência do agro arrefecer como o próprio BB projeta para 2026",
-  //   precoCenario: 19.53,
-  //   precoOficial: 10.44,
-  //   confianca: "média",
-  //   condicaoDeRevisao: "Inadimplência agro (90d) cair 2 trimestres seguidos, OU ROE trimestral > 10%",
-  //   fonte: "https://investalk.bb.com.br/radar/banco-do-brasil-espera-arrefecimento-da-inadimplencia-do-agronegocio-ainda-neste-ano"
-  // },
+  "BBAS3": {
+    data: "2026-09-16",
+    gatilho: "Normalização da inadimplência da carteira de agronegócio, hoje a causa documentada da queda do ROE (lucro caiu 54% no 1T26 por avanço da crise no agro — Agência Brasil, 14/05/2026). O próprio BB projeta arrefecimento da inadimplência agro ainda em 2026.",
+    premissa: "ROE volta à MEDIANA dos últimos 6 anos da própria empresa (13,8% — não um número novo, é a mesma mediana que já ancora o motor). Não usa a melhor marca histórica (17,64% em 2023), só o retorno ao padrão típico do banco. Sem prazo definido — a condição de revisão abaixo é o que decide, não o calendário.",
+    precoCenario: 21.77,
+    precoOficial: 10.44,
+    confianca: "média",
+    condicaoDeRevisao: "ROE trimestral do BB voltar a ficar acima de 10% por 2 trimestres seguidos, OU o próprio BB reportar queda na inadimplência agro (90d) por 2 trimestres seguidos. Se isso NÃO acontecer até o balanço do 4T26 (fev/2027), a tese fica sem sustentação e deve ser descartada, não renovada.",
+    fonte: "https://agenciabrasil.ebc.com.br/economia/noticia/2026-05/lucro-do-banco-do-brasil-cai-54-com-avanco-da-crise-no-agro"
+  },
 };
