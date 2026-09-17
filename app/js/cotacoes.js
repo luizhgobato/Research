@@ -27,6 +27,14 @@ async function fetchCotacao(ticker){
 
 // Fetch via brapi.dev — 1 ticker por requisição (plano free NÃO aceita batch),
 // em paralelo via Promise.all. Nome mantido p/ compatibilidade com atualizarCotacoes.
+//
+// ⚠️ 17/09/2026 — deixou de ser a PRIMEIRA fonte tentada. O plano grátis da brapi.dev tem
+// teto de 15.000 requisições/mês, 1 ticker por requisição — 35 tickers por clique em
+// "Atualizar Cotações" estoura a cota rápido se usado várias vezes ao dia. E quando estoura,
+// falha em SILÊNCIO (o catch{} abaixo só deixa de preencher o mapa, sem avisar ninguém):
+// o usuário via a tabela simplesmente parar de atualizar, sem mensagem de erro nenhuma.
+// Ver fetchCotacoesBatchYahoo, que agora roda primeiro em atualizarCotacoes(); esta função
+// vira fallback só para o que sobrar.
 async function fetchCotacoesBatch(tickers){
   const map={};
   await Promise.all(tickers.map(async t=>{
@@ -37,6 +45,24 @@ async function fetchCotacoesBatch(tickers){
       const json=await res.json();
       const r=json?.results?.[0];
       if(r&&r.regularMarketPrice>0)map[t]=r.regularMarketPrice;
+    }catch{}
+  }));
+  return map;
+}
+
+// Yahoo Finance (via proxies gratuitos), em lote — reaproveita fetchCotacao ticker a ticker,
+// em paralelo. Não tem teto mensal de requisições como a brapi, mas os proxies gratuitos
+// (corsproxy.io, codetabs, allorigins) são instáveis individualmente; por isso fetchCotacao já
+// tenta 3 proxies × 2 endpoints do Yahoo antes de desistir de um ticker. Passa a ser a
+// PRIMEIRA fonte tentada em atualizarCotacoes() desde 17/09/2026.
+async function fetchCotacoesBatchYahoo(tickers){
+  const map={};
+  await Promise.all(tickers.map(async t=>{
+    // dataset.ticker já vem com o sufixo ".SA" (ex.: "GMAT3.SA"), que é o formato que o
+    // Yahoo exige para papéis da B3 — fetchCotacao(ticker) usa o valor direto na URL.
+    try{
+      const p=await fetchCotacao(t);
+      if(p&&p>0)map[t]=p;
     }catch{}
   }));
   return map;
@@ -98,10 +124,11 @@ async function atualizarCotacoes(){
   arr.forEach(r=>{const c=r.querySelector('.cotacao-cell');if(c){c.classList.add('loading');c.textContent='...';}});
   let ok=0,errs=0;
 
-  // brapi primeiro (1 ticker/req em paralelo — plano free não aceita batch);
-  // Yahoo via proxies só como fallback (proxies gratuitos estão instáveis)
+  // Yahoo Finance primeiro (17/09/2026 — sem teto mensal de requisições, ao contrário da
+  // brapi.dev free, cujo limite de 15.000 req/mês estourava com o uso normal do botão e
+  // falhava em silêncio). brapi entra só como fallback do que o Yahoo não conseguiu.
   statusText.textContent='Buscando cotações...';
-  const batchMap=await fetchCotacoesBatch(arr.map(r=>r.dataset.ticker));
+  const batchMap=await fetchCotacoesBatchYahoo(arr.map(r=>r.dataset.ticker));
   const fallbackRows=[];
   for(const row of arr){
     const p=batchMap[row.dataset.ticker];
@@ -109,11 +136,12 @@ async function atualizarCotacoes(){
     else fallbackRows.push(row);
   }
   if(fallbackRows.length>0){
-    await Promise.all(fallbackRows.map(async row=>{
-      const p=await fetchCotacao(row.dataset.ticker);
+    const brapiMap=await fetchCotacoesBatch(fallbackRows.map(r=>r.dataset.ticker));
+    for(const row of fallbackRows){
+      const p=brapiMap[row.dataset.ticker];
       if(p){aplicarPrecoRadar(row,p);ok++;}
       else{row.querySelector('.cotacao-cell').classList.add('error');row.querySelector('.cotacao-cell').textContent='Erro';errs++;}
-    }));
+    }
   }
   // ── RECALCULA KPI CARDS ──
   recalcularKPIs();
