@@ -21,7 +21,10 @@ function _cwFmtResult(saldo, investido, cellEl, positiveColor, negativeColor) {
   if (!cellEl) return;
   const result = saldo - investido;
   const pct = investido > 0 ? (result / investido * 100) : null;
-  const pctTxt = pct !== null ? ` (${pct >= 0 ? '+' : ''}${pct.toFixed(2)}%)` : '';
+  // pt-BR usa vírgula decimal. Esta era a ÚNICA das cinco formatações de percentual do
+  // arquivo sem o `.replace`, então a página mostrava "+9.23%" na coluna Result. e
+  // "4,20%" na coluna ao lado — duas convenções na mesma linha da tabela.
+  const pctTxt = pct !== null ? ` (${pct >= 0 ? '+' : ''}${pct.toFixed(2).replace('.', ',')}%)` : '';
   cellEl.textContent = (result >= 0 ? '+' : '') + result.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + pctTxt;
   cellEl.style.color = result >= 0 ? (positiveColor || '#0a5c35') : (negativeColor || '#9c1c1c');
 }
