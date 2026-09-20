@@ -3945,3 +3945,36 @@ R$ 43,07 → **−10%** a R$ 33,33 → **−46%** a R$ 44,44.
 **A lição, agora escrita do jeito certo:** *contar células não é conferir layout.* Conferir
 layout é comparar com a definição do layout — e a definição é o `<colgroup>`, não um número
 no meio de um script.
+
+
+### 43.6 A tela do usuário: 31 de 35, e uma margem órfã (20/09/2026)
+
+Com o conserto publicado, o print do celular mostra **"31 ok · 4 erros · via yahoo/jina,
+brapi"**. O botão funciona. Sobraram dois defeitos, e o primeiro é da régua que a seção 42
+introduziu.
+
+**(a) 429 não é "proxy morto".** `direto`, `allorigins`, `codetabs` e `corsproxy` estavam
+todos fora do ar, então o `jina` era **o único caminho vivo** — e o limite de requisições
+dele responde **429** para chamadas simultâneas. A régua somava qualquer falha e matava o
+proxy na terceira: **três 429 e o código executava o único proxy que estava funcionando.** Os
+4 erros eram isso.
+
+Limite de uso pede **espera**, não execução. Agora 429/502/503/504 entram por um caminho
+separado — recuo de 0,9s, 2,2s e 4,5s **no mesmo proxy**, sem contar para a régua de morte,
+que passa a valer só para falha dura (rede, TLS, 404, timeout). E os que ainda faltarem ao
+fim da primeira passada voltam numa **segunda passada, um a um, com pausa**: quem falha por
+concorrência quase sempre passa sozinho.
+
+Testado com o único proxy vivo devolvendo **14 erros 429 seguidos**: recupera **35 de 35** em
+7,8s. A versão anterior parava em 3.
+
+**(b) Margem órfã ao lado de "Erro".** A Bradsaúde aparecia com **"Erro"** na Cotação e
+**"−327%"** na Margem — número calculado contra um preço que a linha não mostra mais, herdado
+do último build. Petrobras "+0%", BTG "−12%", mesma origem.
+
+**Número órfão ao lado de um erro é pior que campo vazio: parece dado.** Sem cotação, Margem
+e Retorno Total passam a "—".
+
+⚠️ E o Retorno Total é localizado como **vizinho da margem**, não pela célula 22. Escrever o
+índice ali repetiria, na mesma semana e no mesmo arquivo, o erro que a seção 43 acabou de
+arrancar do gerador.

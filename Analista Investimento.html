@@ -11950,6 +11950,15 @@ function _precoDoTexto(txt){
   return null;
 }
 
+const _espera = ms => new Promise(r => setTimeout(r, ms));
+
+// ⚠️ 429 NÃO É "PROXY MORTO" — 20/09/2026, com a tela do usuário na mão. A primeira versão
+// somava qualquer falha e matava o proxy na terceira: com `direto`, `allorigins`, `codetabs`
+// e `corsproxy` fora do ar, o `jina` era O ÚNICO caminho vivo, e o limite de requisições dele
+// respondia 429 para as chamadas simultâneas — três 429 e a régua executava o único proxy que
+// estava funcionando. Resultado: "31 ok · 4 erros". Limite de uso pede ESPERA, não execução.
+const _limitado = e => /\b(429|503|502|504|rate|limit)\b/i.test(String(e && e.message || e));
+
 async function _tentar(url, ms){
   const res = await fetch(url, {signal: AbortSignal.timeout(ms)});
   if(!res.ok) throw new Error('HTTP ' + res.status);
@@ -11968,10 +11977,22 @@ async function fetchCotacao(ticker){
         if(p){ COT_DIAG.push({ticker, fonte: 'yahoo/' + px.nome, preco: p}); return p; }
       }catch(e){
         COT_DIAG.push({ticker, fonte: 'yahoo/' + px.nome, erro: String(e.message || e)});
-        // Proxy que falha em 3 tickers diferentes está fora do ar; não gasta os 32 restantes
-        // nele. É o que transformava a atualização em cinco minutos de timeout.
-        const falhas = COT_DIAG.filter(d => d.fonte === 'yahoo/' + px.nome && d.erro).length;
-        if(falhas >= 3) _cotMortos.add(px.nome);
+        if(_limitado(e)){
+          // Estourou o limite do proxy: espera e tenta de novo NESTE mesmo, com recuo
+          // crescente. Não conta para a régua de morte e não desiste do ticker.
+          for(const atraso of [900, 2200, 4500]){
+            await _espera(atraso);
+            try{
+              const p = await _tentar(px.url(yfUrl(host, ticker)), 12000);
+              if(p){ COT_DIAG.push({ticker, fonte: 'yahoo/' + px.nome, preco: p, esperou: atraso}); return p; }
+            }catch(e2){ if(!_limitado(e2)) break; }
+          }
+          break;
+        }
+        // Falha DURA (rede, TLS, 404, timeout) em 3 tickers diferentes: o proxy está fora do
+        // ar e não vale gastar os 32 restantes nele.
+        const duras = COT_DIAG.filter(d => d.fonte === 'yahoo/' + px.nome && d.erro && !_limitado(d.erro)).length;
+        if(duras >= 3) _cotMortos.add(px.nome);
         break;   // host alternativo do Yahoo não ajuda se o problema é o proxy
       }
     }
@@ -12020,6 +12041,20 @@ async function fetchCotacoesBatch(tickers, aoResolver){
     }
   };
   await Promise.all(Array.from({length: Math.min(6, tickers.length)}, trabalhador));
+
+  // ── SEGUNDA PASSADA, DEVAGAR ──────────────────────────────────────────────────────────
+  // Quem falhou na primeira quase sempre falhou por concorrência, não por não existir: seis
+  // pedidos ao mesmo tempo estouram o limite do proxy e alguns tickers levam o 429. Refazer
+  // os que faltaram UM A UM, com pausa, recupera a maioria — foi a diferença entre "31 ok ·
+  // 4 erros" e a tabela inteira. Só os que sobraram, então o custo é proporcional ao estrago.
+  const faltaram = tickers.filter(t => !map[t]);
+  if(faltaram.length && faltaram.length < tickers.length){
+    for(const t of faltaram){
+      await _espera(700);
+      const p = await fetchCotacao(t);
+      if(p){ map[t] = p; if(aoResolver) aoResolver(t, p, tickers.length, tickers.length, true); }
+    }
+  }
   return map;
 }
 
@@ -12086,12 +12121,28 @@ async function atualizarCotacoes(){
   // fonte que responder primeiro, sem esperar o lote inteiro falhar antes de tentar a
   // reserva.
   const porTicker=Object.fromEntries(arr.map(r=>[r.dataset.ticker,r]));
-  await fetchCotacoesBatch(arr.map(r=>r.dataset.ticker),(t,p,feitos,total)=>{
+  await fetchCotacoesBatch(arr.map(r=>r.dataset.ticker),(t,p,feitos,total,repescado)=>{
     const row=porTicker[t]; if(!row) return;
-    if(p){aplicarPrecoRadar(row,p);ok++;}
+    if(p){
+      aplicarPrecoRadar(row,p);ok++;
+      if(repescado){errs--;}   // já tinha contado como erro na primeira passada
+    }
     else{
       const c=row.querySelector('.cotacao-cell');
       c.classList.remove('loading');c.classList.add('error');c.textContent='Erro';errs++;
+      // ⚠️ SEM COTAÇÃO, SEM MARGEM. A margem que ficava na tela era a do último build,
+      // calculada contra um preço que a linha não mostra mais — a Bradsaúde exibia "Erro" ao
+      // lado de "−327%", número que não corresponde a nada visível. Número órfão ao lado de
+      // um erro é pior que campo vazio: parece dado.
+      // ⚠️ O Retorno Total é a VIZINHA da margem, não a célula 22. Escrever o índice aqui
+      // repetiria o erro que a seção 43 da metodologia acabou de arrancar do gerador: índice
+      // decorado é a aposta de que o layout nunca muda, e ele mudou três vezes numa semana.
+      const m=row.querySelector('.margem-cell');
+      if(m){
+        m.innerHTML='<span class="muted">—</span>';
+        const ret=m.nextElementSibling;
+        if(ret) ret.innerHTML='<span class="muted">—</span>';
+      }
     }
     // A linha atualiza assim que a resposta chega, em vez de tudo de uma vez no fim: com
     // seis por vez os 35 levam alguns segundos e a tela parada não dizia se estava andando.
