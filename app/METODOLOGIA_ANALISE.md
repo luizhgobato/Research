@@ -3745,3 +3745,86 @@ impresso na tela.
 
 **A lição é a de sempre, na terceira variação:** uma definição, N consumidores. Aqui o consumidor
 não recalculava o número — recalculava a **explicação** dele, e errava.
+
+
+---
+
+## 42. "Atualizar cotação não funciona" — o botão estava certo, a fonte não (20/09/2026)
+
+Pedido do usuário: *"no radar o atualizar cotação não está funcionando. Coloque pra pegar a
+cotação do yahoo finance"*.
+
+### 42.1 Primeiro descartar o óbvio: o botão
+
+Antes de trocar fonte, verificar se há botão para trocar. No browser de verdade, com a página
+publicada carregada: `#btnUpdate` existe, o `onclick` dispara `atualizarCotacoes`, **as 15
+funções de que ela depende estão todas definidas** e o console fica limpo. Nada de
+ReferenceError, nada de handler solto.
+
+O resultado do clique: `0 ok · 35 erros`. **O botão funciona perfeitamente e falha em buscar
+preço** — o problema é inteiramente de FONTE. Sem esse passo, a correção começaria no lugar
+errado.
+
+### 42.2 Quatro defeitos empilhados, não um
+
+| # | Defeito | Efeito |
+|---|---|---|
+| 1 | **O radar nem chegava no Yahoo** | `fetchCotacoesBatch` era brapi-só; Yahoo era fallback de quem voltasse vazio. Com a brapi fora, os 35 caíam juntos no fallback: **até 210 requisições simultâneas**, que derrubam qualquer proxy gratuito. O fallback morria de excesso de fallback. |
+| 2 | **`corsproxy.io` na forma deprecada** | `corsproxy.io/?<url>` não existe mais; a forma viva é `?url=<url>`. **100% das chamadas àquele proxy falhavam.** |
+| 3 | **Proxy morto custava o tempo todo** | Sem memória de falha, um proxy fora do ar era retentado para cada um dos 35 tickers — 35 timeouts enfileirados antes de passar adiante. A atualização parecia travada porque, na prática, estava. |
+| 4 | **As carteiras manuais não tinham fallback nenhum** | `carteira-manual.js` chama `fetchCotacoesBatch`, que era brapi-só. Flávia e Luiz: brapi fora, cotação fora. |
+
+### 42.3 O conserto é de seam, não de remendo
+
+`fetchCotacao` passa a ser **a única definição de "onde se busca preço"** — Yahoo direto →
+4 proxies CORS → brapi de reserva. `fetchCotacoesBatch` vira só a versão em lote dela, com
+**limite de 6 em paralelo**. Os três consumidores (radar, carteiras manuais, fundamentos)
+herdam a mesma cadeia. *Uma definição, N consumidores* — a lição que este projeto reaprendeu
+em quase toda seção.
+
+Quatro mudanças de comportamento:
+
+- **Yahoo primeiro**, como pedido. A tentativa **direta** abre a fila: custa uma requisição e
+  funciona quando a página roda como arquivo local.
+- **`v8/finance/chart` de propósito.** O `v7/finance/quote`, mais óbvio, exige `crumb` +
+  cookie desde 2023 e responde 401 para chamada anônima.
+- **Curto-circuito de proxy morto:** 3 falhas e ele sai da rodada. Com tudo fora do ar, a
+  busca faz **65 requisições em vez de 350** e termina em vez de pendurar.
+- **Timeout de 7s → 12s.** Dois saltos (browser → proxy → Yahoo) não cabem em sete segundos;
+  o timeout curto matava resposta que ia chegar.
+
+E o parse aceita resposta suja: tenta JSON, desembrulha envelope, e se o proxy mexeu no corpo
+extrai `regularMarketPrice` por regex. Perder cotação por causa do invólucro é jogar fora uma
+resposta que veio certa.
+
+### 42.4 Diagnóstico que sobrevive ao próximo "não funciona"
+
+`COT_DIAG` no console lista, por ticker, qual fonte respondeu e o que cada uma devolveu; a
+barra de status passa a dizer **"35 cotações às 13:27 · via yahoo/direto"** em vez de só "35
+cotações". Com zero respostas a mensagem vira **"Nenhuma fonte respondeu — veja COT_DIAG no
+console (F12)"**, que aponta para a causa em vez de acusar o botão.
+
+Foi exatamente essa distinção que faltou para achar os quatro bugs: *"não está funcionando"*
+não tem como virar causa sem saber qual fonte falhou e como.
+
+### 42.5 ⚠️ O que foi testado e o que NÃO foi
+
+**Testado, no Chromium de verdade, com a rede interceptada** — três cenários, todos passando:
+
+| cenário | resultado |
+|---|---|
+| Yahoo direto responde | 35 cotações · via `yahoo/direto` · ITUB3 R$ 33,33, **margem recalculada de +11% para +29%** |
+| direto cai, allorigins responde | 35 cotações · via `yahoo/allorigins` · **URL do proxy embrulha o host certo** |
+| tudo fora do ar | 35 erros, mensagem correta, **65 requisições em vez de 350**, sem pendurar |
+
+Carteiras manuais pelo mesmo caminho: **8 e 9 cotações**, zero erro de JS.
+
+**NÃO testado: se os proxies respondem de fato.** A rede deste contêiner bloqueia
+`finance.yahoo.com`, `brapi.dev` e os quatro proxies — todo CONNECT volta 403. Os testes
+provam que **a lógica está certa dada uma fonte que responde**; não provam que alguma
+responde do browser do usuário. Proxy CORS gratuito é infraestrutura de terceiro que cai sem
+aviso, e é por isso que agora são cinco caminhos com curto-circuito, e não um.
+
+Se ainda falhar: `COT_DIAG` no console diz qual caminho morreu e como. A solução definitiva
+seria um proxy próprio (Cloudflare Worker, ~20 linhas) — aí a cadeia deixa de depender de
+serviço gratuito alheio.
