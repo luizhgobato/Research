@@ -69,6 +69,7 @@ window.atualizarCotacoes = async function(){
 restaurarCarteira();   // lê o localStorage ANTES de desenhar os toggles (ver graficos.js)
 renderToggles();
 renderReportCells();
+if(typeof renderTeseCells==='function') renderTeseCells();
 applyMobileColHide();
 
 // Restaurar cotações do cache

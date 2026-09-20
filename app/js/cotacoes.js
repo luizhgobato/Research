@@ -94,8 +94,13 @@ async function fetchCotacao(ticker){
       }
     }
   }
-  // Reserva: brapi. Fica por último porque o plano free tem limite de chamadas e o usuário
-  // pediu o Yahoo — mas continua aqui porque já salvou o dia quando o Yahoo mudou endpoint.
+  // Reserva: brapi. Fica por último por dois motivos — o usuário pediu o Yahoo, e o achado
+  // de 17/09/2026 (commit c895971, sessão paralela): o plano grátis tem teto de 15.000
+  // requisições/mês a 1 ticker por requisição, e 35 tickers por clique estouram a cota rápido
+  // com uso normal. ⚠️ E quando estoura, FALHA EM SILÊNCIO: o `catch` apenas deixa de
+  // preencher o mapa e a tabela parava de atualizar sem mensagem nenhuma. Por isso toda
+  // falha aqui agora vira linha no COT_DIAG, com o status HTTP.
+  // Continua no fim da fila porque já salvou o dia quando o Yahoo mudou endpoint.
   try{
     const res = await fetch(`https://brapi.dev/api/quote/${ticker.replace('.SA','')}?token=${BRAPI_TOKEN}`,
                             {signal: AbortSignal.timeout(12000)});
@@ -114,6 +119,11 @@ async function fetchCotacao(ticker){
 // Lote com LIMITE DE PARALELISMO. `Promise.all` sobre 35 tickers é o que derrubava os proxies
 // gratuitos: eles cortam em poucas requisições por segundo e devolvem 429 para o resto. Seis
 // por vez atravessa; trinta e cinco de uma vez não.
+// ⚠️ APELIDO, nao uma segunda implementacao. A sessao paralela de 17/09/2026 criou
+// `fetchCotacoesBatchYahoo` para rodar o Yahoo antes da brapi; aqui a ordem das fontes ja
+// vive dentro de `fetchCotacao`, entao o nome aponta para a mesma funcao em vez de duplicar
+// a logica. Duas implementacoes de "buscar preco" foi exatamente o que deixou as carteiras
+// manuais sem fallback.
 async function fetchCotacoesBatch(tickers, aoResolver){
   // Estado de rodada zerado AQUI, não no radar: os três consumidores (radar, carteiras
   // manuais, fundamentos) passam por esta função, e um proxy marcado como morto numa busca
@@ -252,3 +262,5 @@ function recalcularKPIs(){
   const sub = document.querySelector('.carteira-header p');
   if(sub) sub.textContent=`Patrimônio total: R$ ${Math.round(totalPatr).toLocaleString('pt-BR')} · Ações + Prev. + Renda Fixa + ETFs · Atualizado agora`;
 }
+
+const fetchCotacoesBatchYahoo = fetchCotacoesBatch;

@@ -36,10 +36,18 @@ async function atualizarCotacaoCarteira(tbodyId, statusId, outrosFixos) {
 
   if (statusEl) statusEl.textContent = 'Buscando cotações...';
 
+  // 17/09/2026 — mesma correção de js/cotacoes.js: Yahoo primeiro (sem teto mensal de
+  // requisições), brapi.dev só como fallback do que faltar (o free dela tem limite de
+  // 15.000 req/mês e falhava em silêncio quando estourava).
   const tickers = rows.map(r => r.dataset.ticker);
   let map = {};
   try {
-    map = await fetchCotacoesBatch(tickers);
+    map = await fetchCotacoesBatchYahoo(tickers);
+    const faltando = tickers.filter(t => !map[t]);
+    if (faltando.length) {
+      const brapiMap = await fetchCotacoesBatch(faltando);
+      map = { ...map, ...brapiMap };
+    }
   } catch (e) { /* segue com map vazio, trata como erro por linha */ }
 
   _cwCalcular(tbodyId, outrosFixos, map, statusEl);

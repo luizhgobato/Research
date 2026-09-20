@@ -114,13 +114,29 @@ REGRA_METODO = {
              'acompanhando o minério, e nenhum múltiplo sobre esse lucro descreve o valor de '
              'uma participação na Vale. A razão entre os dois preços mede o desconto de '
              'holding que o mercado de fato pratica.'),
-    'FIN':  ('P/L', 'Banco ganha no spread de crédito e o lucro é a medida direta disso. '
-             'EV não se aplica: o passivo é a matéria-prima (depósito), não alavancagem.'),
-    'SEG':  ('P/L', 'Seguradora ganha na subscrição e no float, e o lucro captura os dois. '
-             'Como em banco, EV/EBITDA não se aplica — a provisão técnica é insumo, não dívida. '
-             'A separação entre pares de banco e de seguradora, feita em 13/09/2026, deixou '
-             'de afetar o preço justo em 14/09 — o múltiplo do setor saiu da conta —, mas '
-             'segue valendo para o fallback de quem não tem série própria utilizável.'),
+    # ⚠️ FIN e SEG TROCADOS de P/L para P/VP×ROE em 15/09/2026 — alinhado à seção 3.1 da
+    # METODOLOGIA_ANALISE.md, que sempre documentou P/VP×ROE como motor primário destes dois
+    # grupos. Até aqui o motor (motor_teto.py) decidia por P/L e esta tabela só descrevia o
+    # que ele fazia; agora os dois concordam. Ver comentário na `ordem` de `calcular()` em
+    # motor_teto.py para os números que motivaram a correção (BBAS3, IRBR3).
+    'FIN':  ('P/VP × ROE',
+             'Banco ganha no spread sobre o patrimônio que capta e empresta, não sobre uma '
+             '"produção" que o lucro contábil de um trimestre descreva bem. Provisão de '
+             'crédito e efeitos fiscais pontuais turbinam ou derrubam o LPA sem que o negócio '
+             'tenha mudado — a BBAS3 é o caso: o LPA caiu forte com o provisionamento da '
+             'carteira agro de 2025-26, mas o patrimônio líquido não levou o mesmo golpe. O '
+             'ROE mede a rentabilidade sobre o capital que o banco de fato tem, e o P/VP '
+             'aplicado ao VPA já carrega esse ajuste. EV não se aplica: o passivo é a '
+             'matéria-prima (depósito), não alavancagem. P/L entra só como verificação.'),
+    'SEG':  ('P/VP × ROE',
+             'Seguradora ganha na subscrição e no float sobre o patrimônio segurado, e o '
+             'lucro de um ano isolado pode ser dominado por sinistralidade ou efeito não '
+             'recorrente — a própria IRB é o exemplo que a metodologia cita nominalmente para '
+             'descartar histórico pré-turnaround, e mesmo restrito a 3 anos seu P/L segue '
+             'sendo o método mais ruidoso dos dois (P/L R$33,27 contra P/VP R$54,80, 65% de '
+             'diferença). O P/VP ajustado por ROE mede rentabilidade sobre capital sem '
+             'depender do lucro pontual. Como em banco, EV/EBITDA não se aplica — a provisão '
+             'técnica é insumo, não dívida. P/L entra só como verificação.'),
 }
 REGRA_PADRAO = ('P/L',
                 'Caso geral: o lucro é a medida do que o negócio entrega ao acionista, e o '
@@ -711,29 +727,42 @@ def main(alvos=None):
 
         # ── 2 · `precoTeto` do veredicto e do cabecalho viram `precoJusto` ────────────
         alvo = brl(justo) if (justo and justo > 0) else '—'
+        # ⚠️ FORMATO NUMÉRICO — 15/09/2026. ITUB3, BMEB4, ROXO34, BBSE3, CXSE3 e IRBR3 vêm
+        # de um schema AINDA MAIS ANTIGO que o pré-ALOS3: `precoTeto`, `cotacao` e `margem`
+        # gravados como NÚMERO JSON puro (31.2), não como string ("R$ 31,20"). As regex
+        # abaixo casavam só string e falhavam em silêncio nesses 6 — o cabeçalho e a margem
+        # do veredicto ficaram CONGELADOS na primeira coleta (25/08/2026) enquanto o bloco
+        # `valuation`, delimitado por outra regex, seguia sendo atualizado a cada rodada.
+        # `v.precoJusto` nem existia nesses relatórios (o campo se chamava `precoTeto`), e
+        # `_parseNumBR(v.precoJusto)` em js/navegacao.js:679 rodava sobre `undefined` sem
+        # avisar. Migra os três campos para STRING (o schema atual, usado por ALOS3/GMAT3),
+        # aceitando os dois formatos de entrada.
         # ⚠️ A SEGUNDA REGEX É A QUE FALTAVA (14/09/2026). A primeira converte o campo ANTIGO
         # `precoTeto`; quem já tinha sido convertido numa rodada anterior ficava com o
         # `precoJusto` CONGELADO do dia da conversão. Na ALOS3 o cabeçalho anunciava R$ 31,53
         # enquanto o card do veredicto, gerado nesta mesma passada, dizia R$ 30,07 — dois
         # preços justos diferentes na mesma tela, a três centímetros um do outro.
-        novo = re.sub(r'"precoTeto": "[^"]*"', f'"precoJusto": "{alvo}"', novo)
+        _ESCALAR = r'(?:"[^"]*"|-?[0-9]+(?:\.[0-9]+)?)'
+        novo = re.sub(r'"precoTeto": ' + _ESCALAR, f'"precoJusto": "{alvo}"', novo)
         # ⚠️ ANCORADO NO RECUO DO NÍVEL DE TOPO, e com count=1. A primeira versão usava
         # `^` com re.M e recuo livre — e reescreveu TODOS os "precoJusto" do arquivo,
         # inclusive os de dentro do array de cenários: conservador, base e otimista saíram
         # os três com R$ 30,07, cada um com o seu múltiplo e o seu FFO ao lado, sem que a
         # multiplicação fechasse. Só o campo do nível de topo do relatório pode ser tocado.
         ind_rel = m.group(1)
-        novo = re.sub(r'\n' + ind_rel + r'"precoJusto": "[^"]*"',
+        novo = re.sub(r'\n' + ind_rel + r'"precoJusto": ' + _ESCALAR,
                       f'\n{ind_rel}"precoJusto": "{alvo}"', novo, count=1)
 
         # ── 3 · a margem do veredicto, recalculada contra a cotacao DO RELATORIO ──────
         # Nao contra a cotacao ao vivo: o relatorio e um retrato datado, e trocar so um dos
         # dois numeros faria a conta nao fechar dentro da propria pagina.
-        mc = re.search(r'"cotacao": "([^"]*)"', novo)
-        cot = num_br(mc.group(1)) if mc else None
+        mc = re.search(r'"cotacao": (?:"([^"]*)"|(-?[0-9]+(?:\.[0-9]+)?))', novo)
+        cot = None
+        if mc:
+            cot = num_br(mc.group(1)) if mc.group(1) else float(mc.group(2))
         if cot and justo:
             mg = f'{(justo - cot) / justo * 100:+.1f}%'.replace('.', ',')
-            novo = re.sub(r'"margem": "[^"]*"', f'"margem": "{mg}"', novo, count=1)
+            novo = re.sub(r'"margem": ' + _ESCALAR, f'"margem": "{mg}"', novo, count=1)
 
         # ── 4 · o bloco colavel nao pode sair do app com numero contraditorio ─────────
         if justo and justo > 0:

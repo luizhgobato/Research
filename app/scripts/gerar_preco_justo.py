@@ -110,7 +110,7 @@ def tooltip(t, r):
 
 
 # A célula da coluna 16 quando não há múltiplo. `sep` mantém a divisória visual do grupo.
-CEL_MULT_VAZIA = '<td class="sep"><span class="muted">—</span></td>'
+CEL_MULT_VAZIA = '<td class="sep mult-cell"><span class="muted">—</span></td>'
 
 
 def main():
@@ -126,7 +126,7 @@ def main():
     # um bloco único e dizia "3 linhas atualizadas" sem erro nenhum. Gerador que não é
     # idempotente é gerador que mente na segunda vez.
     partes = re.split(r'(?=<tr )', s)
-    saida, mudou, sem = [], [], []
+    saida, mudou, sem, reparadas = [], [], [], []
     for bloco in partes:
         tk = re.search(r'<tr [^>]*data-ticker="([A-Z0-9]+)\.SA"', bloco)
         if not tk:
@@ -140,7 +140,7 @@ def main():
                    f'ⓘ</span></td>')
             attr = f'data-preco-justo="{justo:.2f}"'
             _rot, _val = extrair_multiplo((r.get('metodos') or [{}])[0])
-            cel_mult = (f'<td class="sep"><span style="font-weight:600;">{_val}</span>'
+            cel_mult = (f'<td class="sep mult-cell"><span style="font-weight:600;">{_val}</span>'
                         f'<span style="font-size:9px;color:#6b7280;margin-left:4px;">{_rot}</span>'
                         f'<span class="col-tip" data-tip="{esc(tooltip_multiplo(t, r))}">ⓘ</span></td>'
                         if _val else CEL_MULT_VAZIA)
@@ -158,30 +158,50 @@ def main():
         # aqui de propósito: o múltiplo e o preço saem do mesmo método, na mesma passada.
         # Gerar em lugares diferentes seria repetir o defeito que esta sessão passou o dia
         # corrigindo — dois números do mesmo conceito, escritos por donos diferentes.
-        # ⚠️ A MIGRAÇÃO É DETECTADA PELA CONTAGEM DE CÉLULAS, não por procurar a tooltip no
-        # texto. A primeira versão procurava 'APLICADO' no bloco e, numa linha que já tinha a
-        # célula do múltiplo vazia (um ticker recém-incluído), inseria em vez de substituir — o BBDC3
-        # ficou com 23 células e a linha inteira deslocada em relação ao cabeçalho. Contar é
-        # a única verificação que não depende do conteúdo ter sido escrito antes.
-        # ⚠️ OS ÍNDICES MUDARAM EM 14/09/2026 com a entrada da coluna ROE médio (16):
-        # Múltiplo 17→18, Preço Justo 18→19, e a linha completa passou de 23 para 24 células.
-        # A conferência continua sendo a contagem — é a que pegou o deslocamento duas vezes.
-        tds = [x for x in re.finditer(r'<td\b[^>]*>.*?</td>', bloco, re.S)]
-        if len(tds) == 25:
-            # REPARO. A primeira versão desta migração detectava "já migrado" procurando a
-            # tooltip do múltiplo no texto da linha. Nas 6 linhas SEM preço justo não há
-            # tooltip nenhuma, então a detecção dizia "ainda não migrou" toda vez e a segunda
-            # execução inseriu a célula de novo: VIVA3, ASAI3, ROXO34, PASS3, SAUD3 e AXIA3
-            # foram publicadas com 23 células e a linha inteira deslocada em relação ao
-            # cabeçalho — cotação aparecendo na coluna da margem, e assim por diante.
-            # Remove a duplicata e segue. O gerador conserta o arquivo em vez de exigir que
-            # alguém edite HTML à mão.
-            bloco = bloco[:tds[18].start()] + bloco[tds[18].end():]
-            tds = [x for x in re.finditer(r'<td\b[^>]*>.*?</td>', bloco, re.S)]
-        if len(tds) == 24:
-            bloco = bloco[:tds[18].start()] + cel_mult + bloco[tds[18].end():]
+        # ⚠️ A CÉLULA É ENCONTRADA POR MARCADOR, NÃO POR ÍNDICE — 20/09/2026.
+        #
+        # As duas versões anteriores contavam células e mexiam em `tds[18]`, com o número 18
+        # escrito à mão. A conferência era a CONTAGEM TOTAL (24, depois 25), e os comentários
+        # que este bloco substitui narram as duas vezes em que isso deslocou a linha inteira.
+        # Deslocou uma TERCEIRA, e desta vez apagando dado: quando a coluna "Cenário de Tese"
+        # entrou (commit 0b9de66) a linha legítima passou a ter 25 células, o ramo de REPARO
+        # — escrito para remover uma duplicata do múltiplo — leu 25 como "duplicou de novo" e
+        # DELETOU UMA CÉLULA REAL. O commit 97a3655 regenerou o arquivo e as 35 linhas
+        # perderam a célula `cotacao-cell`: cabeçalho com 25 colunas, linhas com 24, tudo da
+        # Cotação para a direita deslocado — e `aplicarPrecoRadar` estourando em
+        # `row.querySelector('.cotacao-cell').classList` para TODA linha. É esta a causa de
+        # "o atualizar cotação não está funcionando".
+        #
+        # A lição que a contagem não aprendeu: índice fixo e total fixo são a MESMA aposta —
+        # a de que o layout nunca muda. Ele mudou três vezes em uma semana. Marcador de
+        # classe não tem opinião sobre quantas colunas existem.
+        achou_mult = re.search(r'<td\b[^>]*class="[^"]*\bmult-cell\b[^"]*"[^>]*>.*?</td>',
+                               bloco, re.S)
+        if achou_mult:
+            bloco = bloco[:achou_mult.start()] + cel_mult + bloco[achou_mult.end():]
         else:
-            raise SystemExit(f'{t}: {len(tds)} células — esperado 24')
+            # PRIMEIRA MIGRAÇÃO desta linha (ou linha recém-incluída): ancora na célula do
+            # Preço Justo, que é única e identificável pela tooltip, e insere logo ANTES.
+            # Âncora real, não posição decorada.
+            anc = re.search(r'<td>[^<]*<span class="col-tip" data-tip="PREÇO JUSTO[^"]*">ⓘ</span></td>'
+                            r'|<td><span class="muted">—</span><span class="col-tip" '
+                            r'data-tip="SEM PREÇO JUSTO[^"]*">ⓘ</span></td>', bloco, re.S)
+            if not anc:
+                raise SystemExit(f'{t}: sem célula de múltiplo e sem âncora de preço justo — '
+                                 f'linha fora do layout, corrija à mão')
+            # ⚠️ SUBSTITUIR ou INSERIR, e a diferença importa: as linhas escritas antes deste
+            # commit JÁ TÊM a célula do múltiplo, só que sem o marcador. Inserir uma segunda
+            # deixaria a linha com uma célula a mais — foi o que o validador pegou na
+            # primeira execução (26 células contra 25 colunas). A vizinha imediata à esquerda
+            # da âncora é o múltiplo se, e só se, ela não for nenhuma das outras células
+            # marcadas. Vizinhança é âncora; índice não.
+            antes = [x for x in re.finditer(r'<td\b[^>]*>.*?</td>', bloco[:anc.start()], re.S)]
+            legado = antes[-1] if antes else None
+            outras = ('cotacao-cell', 'margem-cell', 'report-cell', 'tese-cell')
+            if legado and 'class="sep"' in legado.group(0) and not any(m in legado.group(0) for m in outras):
+                bloco = bloco[:legado.start()] + cel_mult + bloco[legado.end():]
+            else:
+                bloco = bloco[:anc.start()] + cel_mult + bloco[anc.start():]
 
         # A CÉLULA DO PREÇO JUSTO — identificada pela tooltip, que é única na linha.
         novo, n = re.subn(
@@ -195,11 +215,29 @@ def main():
             # o Preço Justo no layout de 24 colunas. Levantar erro obrigaria quem inclui um
             # ativo a colar a tooltip à mão antes de rodar o gerador, que é exatamente o
             # trabalho manual que estes scripts existem para eliminar.
-            tds2 = [x for x in re.finditer(r'<td\b[^>]*>.*?</td>', novo, re.S)]
-            if len(tds2) > 19:
-                novo = novo[:tds2[19].start()] + cel + novo[tds2[19].end():]
-            else:
-                raise SystemExit(f'{t}: linha com {len(tds2)} células, esperado 24')
+            # Mesma regra: ancora na célula do múltiplo, que acabou de ser escrita acima e
+            # é o vizinho imediato à esquerda do Preço Justo. Sem número decorado.
+            m_mult = re.search(r'<td\b[^>]*class="[^"]*\bmult-cell\b[^"]*"[^>]*>.*?</td>',
+                               novo, re.S)
+            if not m_mult:
+                raise SystemExit(f'{t}: sem âncora para inserir o preço justo')
+            novo = novo[:m_mult.end()] + cel + novo[m_mult.end():]
+
+        # ── AUTO-REPARO: A CÉLULA DA COTAÇÃO ────────────────────────────────────────
+        # Nove módulos de JS leem `.cotacao-cell` e `aplicarPrecoRadar` estoura sem ela. Se a
+        # linha perdeu a célula (como perdeu em 97a3655), o gerador devolve — ancorada logo
+        # DEPOIS do Preço Justo, que é a posição dela no cabeçalho. Consertar o arquivo é o
+        # que estes scripts existem para fazer; exigir edição de HTML à mão é o contrário.
+        if not re.search(r'class="[^"]*\bcotacao-cell\b', novo):
+            m_pj = re.search(r'<td>[^<]*<span class="col-tip" data-tip="PREÇO JUSTO[^"]*">ⓘ</span></td>'
+                             r'|<td><span class="muted">—</span><span class="col-tip" '
+                             r'data-tip="SEM PREÇO JUSTO[^"]*">ⓘ</span></td>', novo, re.S)
+            if not m_pj:
+                raise SystemExit(f'{t}: sem cotacao-cell e sem âncora de preço justo')
+            _cot = r.get('cot')
+            _txt = brl(_cot) if _cot and _cot > 0 else '<span class="muted">—</span>'
+            novo = novo[:m_pj.end()] + f'<td class="cotacao-cell">{_txt}</td>' + novo[m_pj.end():]
+            reparadas.append(t)
 
         # O ATRIBUTO — a fonte que o JS lê. Tem que sair junto ou volta a divergir da célula.
         # Escrito DEPOIS do data-ticker, para o corte acima continuar funcionando na próxima
@@ -211,8 +249,32 @@ def main():
         saida.append(novo)
         mudou.append(t)
 
-    ROWS.write_text(''.join(saida), encoding='utf-8', newline='')
-    print(f'{len(mudou)} linhas atualizadas em data/radar-rows.data.js')
+    saida_txt = ''.join(saida)
+
+    # ⚠️ CONFERÊNCIA CONTRA O CABEÇALHO DE VERDADE, não contra um número escrito aqui.
+    # O erro que este script cometeu três vezes foi comparar com uma constante (23, depois
+    # 24, depois 25) que envelhecia toda vez que uma coluna entrava. O `<colgroup>` do
+    # index.html É o layout; conferir contra ele nunca fica desatualizado.
+    idx = (ROWS.parent.parent / 'index.html').read_text(encoding='utf-8')
+    tabela = re.search(r'<colgroup>.*?</colgroup>', idx, re.S)
+    n_col = len(re.findall(r'<col\b', tabela.group(0))) if tabela else None
+    problemas = []
+    for bloco in re.split(r'(?=<tr )', saida_txt):
+        tk = re.search(r'data-ticker="([A-Z0-9]+)\.SA"', bloco)
+        if not tk: continue
+        n_td = len(re.findall(r'<td\b', bloco))
+        if n_col and n_td != n_col:
+            problemas.append(f'{tk.group(1)}: {n_td} células contra {n_col} colunas')
+        for marca in ('cotacao-cell', 'margem-cell', 'mult-cell'):
+            if marca not in bloco:
+                problemas.append(f'{tk.group(1)}: sem {marca}')
+    if problemas:
+        raise SystemExit('LAYOUT QUEBRADO — nada foi gravado:\n  ' + '\n  '.join(problemas[:12]))
+
+    ROWS.write_text(saida_txt, encoding='utf-8', newline='')
+    print(f'{len(mudou)} linhas atualizadas em data/radar-rows.data.js'
+          + (f' · {len(reparadas)} com cotacao-cell restaurada' if reparadas else '')
+          + (f' · layout conferido: {n_col} colunas' if n_col else ''))
     if sem:
         print('sem preço justo: ' + ', '.join(sem))
 

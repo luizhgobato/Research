@@ -1394,8 +1394,12 @@ def teto_pvp(t, A, com_pares=True):
         conta=f'VPA R$ {v:.2f} × P/VP {alvo:.2f}x', origem_mult=origem_mult,
         motor=f'P/VP {nota_pares or f"{alvo:.2f}x"} × VPA R$ {v:.2f} por papel',
         nota=f'P/VP-alvo = {nota} de {len(pv)} anos ({min(pv):.2f}x a {max(pv):.2f}x), corrigido para units. '
-             f'Não depende de lucro — é o método que sobrevive a prejuízo e a lucro contábil distorcido. '
-             f'⚠️ Ignora rentabilidade: patrimônio grande com ROE ruim vale menos que isto sugere.'
+             f'Não depende de lucro contábil de um ano só — é o método que sobrevive a prejuízo e a '
+             f'lucro distorcido por evento não-recorrente.'
+             + (f' {origem_mult}.' if nota_pares else
+                ' ⚠️ Sem ROE suficiente na série para ajustar pela rentabilidade — fica a mediana '
+                'histórica pura, que ignora se a empresa está mais ou menos rentável que o próprio '
+                'passado.')
              + (f' Restrito a partir de {q} por quebra de série.' if q else ''))
 
 def teto_ev_receita(t, A, com_pares=True):
@@ -1936,9 +1940,19 @@ def _calcular_bruto(t, A, H=None):
         ordem = [('EV/EBITDA', lambda: teto_ev(t, A, True)),
                  ('EV/Receita', lambda: teto_ev_receita(t, A)),
                  ('P/VP', lambda: teto_pvp(t, A))]
-    elif m == 'FIN':
-        ordem = [('P/L', lambda: teto_ep(t, A, pl_setor=PL_SETOR.get(m))),
-                 ('P/VP', lambda: teto_pvp(t, A))]
+    # ⚠️ FIN e SEG INVERTIDOS em 15/09/2026, a pedido do usuário e alinhado à seção 3.1 da
+    # METODOLOGIA_ANALISE.md: bancos e seguradoras têm motor primário P/VP × ROE, com P/L como
+    # validação — não o contrário. Até aqui P/L decidia (herdava a ordem genérica do `else`),
+    # e a divergência chegava a quase 2x (BBAS3: R$5,36 por P/L contra R$10,44 por P/VP;
+    # IRBR3: R$33,27 contra R$54,80). O P/VP aqui JÁ é ajustado por ROE — `teto_pvp` chama
+    # `alvo_com_pares` (mesma função do P/L), que multiplica o P/VP mediano da série própria
+    # pela razão ROE atual ÷ ROE mediano do período. Não é o Gordon `(ROE−g)/(Ke−g)` da doc
+    # (esse exige Ke observável, que saiu do motor em 13/09 — seção 30), mas é a mesma lógica
+    # de "rentabilidade acima da própria mediana merece múltiplo maior", já validada e em uso
+    # desde 14/09/2026 — só não estava decidindo para estes dois grupos.
+    elif m in ('FIN', 'SEG'):
+        ordem = [('P/VP', lambda: teto_pvp(t, A)),
+                 ('P/L', lambda: teto_ep(t, A, pl_setor=PL_SETOR.get(m)))]
     elif m in ('UTIL', 'VAREJO'):
         ordem = [('P/L', lambda: teto_ep(t, A, pl_setor=PL_SETOR.get(m))),
                  ('EV/EBITDA', lambda: teto_ev(t, A, False)),

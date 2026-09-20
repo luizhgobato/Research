@@ -3828,3 +3828,120 @@ aviso, e é por isso que agora são cinco caminhos com curto-circuito, e não um
 Se ainda falhar: `COT_DIAG` no console diz qual caminho morreu e como. A solução definitiva
 seria um proxy próprio (Cloudflare Worker, ~20 linhas) — aí a cadeia deixa de depender de
 serviço gratuito alheio.
+
+
+---
+
+## 43. A causa real do "atualizar cotação não funciona": a coluna Cotação tinha sumido (20/09/2026)
+
+A seção 42 consertou as fontes de cotação. Estava certo e não era suficiente — **a página
+publicada estava com o cabeçalho e as linhas desalinhados, e a célula da Cotação simplesmente
+não existia.**
+
+### 43.1 O sintoma que o merge revelou
+
+Ao mesclar o trabalho paralelo do master, a conferência de layout acusou: **25 `<th>`, 25
+`<col>`, 24 `<td>`.** Mapeando cabeçalho contra célula, tudo da coluna 20 em diante estava
+deslocado uma casa à esquerda:
+
+| idx | cabeçalho | célula que estava lá |
+|---|---|---|
+| 20 | **Cotação** | `margem-cell` |
+| 21 | Margem de Segurança | Retorno Total |
+| 22 | Retorno Total | `report-cell` |
+| 23 | Relatório | `tese-cell` |
+| 24 | Cenário de Tese | **‹ausente›** |
+
+`grep -c cotacao-cell` no arquivo de linhas: **zero, nas 35 linhas.**
+
+E nove módulos de JS leem `.cotacao-cell`. `aplicarPrecoRadar` começa assim:
+
+```js
+const cotacaoCell = row.querySelector('.cotacao-cell');
+cotacaoCell.classList.remove('loading','error');   // ← TypeError: null
+```
+
+**Toda linha estourava.** Nenhuma fonte de cotação do mundo faria aquele botão funcionar.
+
+### 43.2 O commit exato, e por que um gerador apagou dado
+
+`git bisect` sobre a contagem por commit encontra o ponto:
+
+| commit | cotacao-cell | tese-cell | |
+|---|---|---|---|
+| 0b9de66 | **35** | 35 | adiciona a coluna "Cenário de Tese" — correto, 25 células |
+| **97a3655** | **0** | 35 | *"Completa série de preço/múltiplos da VIVA3"* |
+
+O commit que apagou a coluna **não tinha nada a ver com a coluna**. Era uma mudança de dados
+da VIVA3 que, de passagem, rodou `gerar_preco_justo.py`. O gerador fez o resto.
+
+O script continha isto:
+
+```python
+tds = [x for x in re.finditer(r'<td\b[^>]*>.*?</td>', bloco, re.S)]
+if len(tds) == 25:          # ramo de REPARO: remove duplicata do múltiplo
+    bloco = bloco[:tds[18].start()] + bloco[tds[18].end():]
+if len(tds) == 24:
+    bloco = bloco[:tds[18].start()] + cel_mult + bloco[tds[18].end():]
+else:
+    raise SystemExit(f'{t}: {len(tds)} células — esperado 24')
+```
+
+O ramo `== 25` existia para consertar uma duplicação antiga. Quando a coluna "Cenário de
+Tese" entrou, **a linha legítima passou a ter 25 células** — e o ramo de reparo leu 25 como
+"duplicou de novo" e **deletou uma célula real**.
+
+### 43.3 A terceira vez do mesmo erro, e o que estava escrito ao lado dele
+
+O mais duro é que os comentários daquele bloco **narravam as duas vezes anteriores**:
+
+> *"⚠️ A MIGRAÇÃO É DETECTADA PELA CONTAGEM DE CÉLULAS, não por procurar a tooltip... o BBDC3
+> ficou com 23 células e a linha inteira deslocada em relação ao cabeçalho."*
+>
+> *"⚠️ OS ÍNDICES MUDARAM EM 14/09/2026 com a entrada da coluna ROE médio (16): Múltiplo
+> 17→18, Preço Justo 18→19... A conferência continua sendo a contagem — é a que pegou o
+> deslocamento duas vezes."*
+
+A conclusão registrada foi *"contar é a única verificação confiável"*. **Era a conclusão
+errada, e por isso o bug voltou.** Índice fixo (`tds[18]`) e total fixo (`== 24`) são a
+**mesma aposta**: a de que o layout não muda. Ele mudou três vezes em uma semana. Contar
+protege contra desalinhamento *dentro* de um layout congelado e não protege contra nada
+quando o layout anda — e ainda dá a sensação de estar protegido, que foi o que deixou o ramo
+de reparo destruir dado sem ninguém notar por quatro commits.
+
+### 43.4 O conserto: âncora, não posição
+
+`gerar_preco_justo.py` não conta mais células nem decora índice:
+
+- **A célula do múltiplo ganhou marcador** (`class="sep mult-cell"`) e é encontrada por ele.
+- **Sem marcador** (primeira migração), a âncora é a célula do Preço Justo, única e
+  identificável pela tooltip; a vizinha imediata à esquerda é o múltiplo **se não for nenhuma
+  das outras células marcadas** — vizinhança é âncora, índice não.
+- **Auto-reparo da cotação:** linha sem `.cotacao-cell` ganha a célula de volta, ancorada
+  depois do Preço Justo, com o valor de `tetos.json`. O script conserta o arquivo em vez de
+  exigir HTML editado à mão.
+- **A conferência final compara com o `<colgroup>` do `index.html`, não com uma constante.**
+  O cabeçalho *é* o layout; conferir contra ele nunca envelhece. Exige também a presença de
+  `cotacao-cell`, `margem-cell` e `mult-cell`, e **não grava nada** se algo não bater.
+
+O validador provou o valor na primeira execução: acusou **"26 células contra 25 colunas"**,
+porque a migração estava inserindo uma segunda célula de múltiplo em vez de substituir a
+antiga sem marcador. Um erro que a versão anterior teria gravado em silêncio.
+
+```
+35 linhas atualizadas · 35 com cotacao-cell restaurada · layout conferido: 25 colunas
+35 linhas atualizadas · layout conferido: 25 colunas          ← segunda execução, idempotente
+```
+
+### 43.5 Verificado
+
+Cabeçalho e células alinhados nas 25 colunas — Cotação **R$ 43,07**, Margem **−42%**, Retorno
+**−23,4%**, Relatório e Cenário de Tese cada um no seu lugar. **35 linhas, 25 `<col>` == 25
+`<th>` == 25 `<td>`, zero desalinho, zero erro de console.**
+
+Com a fonte simulada respondendo, a margem do ITUB3 recalcula na direção certa: **−42%** a
+R$ 43,07 → **−10%** a R$ 33,33 → **−46%** a R$ 44,44.
+
+**A lição, agora escrita do jeito certo:** *contar células não é conferir layout.* Conferir
+layout é comparar com a definição do layout — e a definição é o `<colgroup>`, não um número
+no meio de um script.
