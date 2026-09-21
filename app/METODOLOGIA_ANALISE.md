@@ -3978,3 +3978,86 @@ e Retorno Total passam a "—".
 ⚠️ E o Retorno Total é localizado como **vizinho da margem**, não pela célula 22. Escrever o
 índice ali repetiria, na mesma semana e no mesmo arquivo, o erro que a seção 43 acabou de
 arrancar do gerador.
+
+
+---
+
+## 44. O relatório da GMAT3 já existia — faltavam três blocos e um número que briga com o Radar (21/09/2026)
+
+Pedido: *"faça um relatório completo de GMAT no mesmo formato do relatório da ALLOS"*.
+
+**O relatório já estava escrito** (commits `d66e376` e `2c3a9e0`, sessão paralela de 15/09) e é
+bom — 34,9 mil caracteres contra 30,7 mil da ALOS3, com três "Testes" que dissecam a distorção
+fiscal que a seção 41.2 tinha levantado. Renderiza as **mesmas 41 seções** da ALOS3, sem erro
+de console. Escrever do zero teria jogado fora trabalho correto.
+
+O que faltava era mais estreito, e só apareceu comparando o JSON campo a campo contra o da
+ALOS3 e abrindo os dois modais lado a lado.
+
+### 44.1 O acordeão que terminava no meio
+
+`retornoTotal` da ALOS3 tem quatro sub-blocos; o da GMAT3 tinha dois. Na tela, o acordeão
+**"VER DETALHAMENTO (prêmio s/ Selic, cenários embutido e 5 anos)"** mostrava:
+
+| | o que aparecia |
+|---|---|
+| ALOS3 | prêmio Selic · retorno real · **Tabela A (projeção)** · **Tabela B (retorno embutido)** · retorno plurianual de 5 anos |
+| GMAT3 | prêmio Selic · retorno real · **fim** |
+
+O título prometia três coisas e entregava uma. E o renderer **omite em silêncio**:
+`secProjecaoLucro`, `embHtml` e `cincoHtml` retornam `''` quando o bloco falta — sem erro, sem
+aviso, sem buraco visível. Um relatório incompleto e um relatório completo são
+indistinguíveis para quem não tem o outro aberto ao lado.
+
+### 44.2 Os três blocos, calculados da própria série
+
+Nada digitado de fora: as premissas saem do que o relatório **já declarava** nos cenários de
+dividendo (LPA 0,73 / 0,89 / 0,93 e payout realizado de 32,35%).
+
+**Retorno embutido** — dividend yield + crescimento, com múltiplo constante:
+
+| | Pessimista | Média | Otimista |
+|---|---|---|---|
+| Dividend yield | 4,9% | 5,9% | 6,2% |
+| Crescimento (lucro) | −9,5% | +9,5% | +14,3% |
+| **Retorno embutido** | **−4,6%** | **+15,4%** | **+20,5%** |
+| Retorno real (Fisher) | −8,7% | **+10,4%** | +15,3% |
+
+**Cinco anos**, ponderado 30/50/20: **+5,7% real a.a.** contra **Selic real de 9,09%**.
+
+**O resultado é o achado, não o preenchimento.** Só o cenário base bate a Selic real, e por
+margem estreita. O ponderado **não bate**. Isso sustenta o veredicto de *Aguardar · 2 estrelas*
+que já estava lá — mas agora com o número que o justifica na tela, em vez de só na prosa.
+
+E a leitura registra a ressalva que fecha o círculo com a seção 41.2: o crescimento de +9,5%
+a.a. sai de regressão sobre uma série cujo último exercício fechado carrega R$ 511,9 mi de
+crédito fiscal. **Sobre o EBT — que caiu 12,1% em 2025 e 22,8% no LTM — o mesmo cálculo daria
+crescimento negativo e jogaria o embutido para perto do cenário conservador.**
+
+**Alerta de dividendos**: a GMAT3 distribuiu em **2 dos 6 exercícios**. O payout de 32,35% é
+"quando distribuiu, distribuiu isso", não "a empresa distribui isso" — e incide sobre lucro
+contábil inflado, enquanto a autuação de R$ 1,28 bi mira exatamente aquele crédito.
+
+### 44.3 ⚠️ O relatório e o Radar discordam sobre o MESMO número
+
+Isto não foi corrigido, e é o que resta:
+
+| | lucro projetado 2026 |
+|---|---|
+| **Relatório** (`veredicto.lucroProjetado2026`) | **R$ 1,62 bi** — LTM 2T26, com EBT em queda de 22,8% |
+| **Radar** (motor, coluna "Lucro Projetado 2026") | **R$ 2,01 bi** — 2025 × (1 + 9,5%) |
+
+Dois números do mesmo conceito, escritos por donos diferentes — a falha que este projeto
+combate desde a seção 12. `GMAT3` **não está em `LUCRO_2026_DECLARADO`**, então o motor segue
+projetando a partir do exercício contaminado e o preço justo continua **R$ 11,14**.
+
+A seção 41.2 listou três saídas. A primeira — *"escrever o relatório e declarar o lucro de 2026
+com cenário"* — agora tem o pré-requisito pronto: **o relatório existe e traz o número, com
+cenário e evidência.** Falta só a decisão de declará-lo, que muda o preço justo do Radar e é do
+usuário, não minha.
+
+### 44.4 Verificado
+
+41 seções em cada, **nenhuma só num dos dois**; texto da GMAT3 sobe de 17.277 para 18.100
+caracteres; zero erro de console. Radar intacto: 35 linhas, 25 `<col>` == 25 `<th>` ==
+25 `<td>`. Carteira da Flávia inalterada, seed idêntico ao calculado.
