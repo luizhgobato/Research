@@ -4061,3 +4061,90 @@ usuário, não minha.
 41 seções em cada, **nenhuma só num dos dois**; texto da GMAT3 sobe de 17.277 para 18.100
 caracteres; zero erro de console. Radar intacto: 35 linhas, 25 `<col>` == 25 `<th>` ==
 25 `<td>`. Carteira da Flávia inalterada, seed idêntico ao calculado.
+
+---
+
+## 45. A toggle "Carteira" nunca marcava certo — duas fontes de verdade escrevendo o mesmo atributo (25/09/2026)
+
+Pedido do usuário: *"mais uma vez a toggle de carteira não está correta ela não está marcando
+os ativos corretos que tem na carteira luiz ou flavia. Ajuste isso definitivamente"*.
+
+**"Mais uma vez" era o sinal certo.** Esse defeito já tinha sido "corrigido" duas vezes — em
+14/09 e em 16/09 — e continuava voltando. Quando um bug reaparece depois de duas correções
+supostamente definitivas, a causa não está em nenhuma das duas correções: está em as duas
+terem ficado **ativas ao mesmo tempo**.
+
+### 45.1 As duas correções que nunca se cancelaram
+
+| data | o que mudou | o que ficou |
+|---|---|---|
+| 14/09 | Toggle clicável passou a gravar por **ticker** (não por índice do DOM) num snapshot no **localStorage do navegador**, reaplicado a cada carga via `restaurarCarteira()` | `restaurarCarteira()` continuou no boot |
+| 16/09 | `scripts/atualizar_carteira_radar.py` virou a fonte de verdade: lê as tabelas de Posição (Luiz + Flávia) e grava `data-carteira` **direto no arquivo** | escreve certo, sempre |
+
+As duas nunca deixaram de coexistir. `main.js` chamava `restaurarCarteira()` **antes** de
+desenhar a tabela — exatamente como o comentário da época documentava: *"lê o localStorage
+ANTES de desenhar os toggles"*. A função lia o snapshot do navegador e **sobrescrevia**
+`data-carteira` com ele, por cima do valor que o script Python acabara de gravar certo no
+arquivo.
+
+### 45.2 O mecanismo exato do bug
+
+```
+① atualizar_carteira_radar.py roda → GMAT3 vira data-carteira="true" no arquivo (correto)
+② usuário abre a página → restaurarCarteira() lê localStorage
+③ localStorage tem um snapshot de ANTES da GMAT3 existir (da primeira visita, ou de
+   qualquer clique manual anterior)
+④ restaurarCarteira() aplica esse snapshot ANTIGO por cima do HTML — GMAT3 volta a "false"
+⑤ usuário vê a tabela errada, sem erro no console, sem qualquer sinal de que o navegador
+   dele está exibindo um retrato de dias atrás
+```
+
+Uma vez que o navegador tinha **qualquer** snapshot salvo, ele ficava **congelado para
+sempre**: toda atualização seguinte no arquivo (incluir a GMAT3, por exemplo) era desfeita no
+instante seguinte pelo próprio JS. Rodar o script de novo não ajudava — o script sempre
+escrevia certo, e o cliente sempre desfazia depois. Por isso "mais uma vez": a correção de
+16/09 nunca teve chance de aparecer na tela de quem já tinha visitado a página antes.
+
+### 45.3 O conserto: só uma fonte pode escrever
+
+Duas fontes de verdade escrevendo o mesmo atributo é o defeito — não uma das duas gravações
+em si. A correção não foi "ajustar o cálculo do localStorage" pela terceira vez; foi
+**eliminar a segunda fonte**:
+
+- `restaurarCarteira()`, `toggleCarteira()`, `_cartLer()`, `_cartGravar()`, `_cartAtual()` e
+  `refreshCarteira()` — removidas de `js/graficos.js`. Nenhuma escreve mais em
+  `data-carteira`, nenhuma lê `localStorage`.
+- O checkbox clicável virou um **selo somente-leitura** (`renderCarteiraBadges()`, ex-
+  `renderToggles()`): lê `data-carteira` — que já vem certo do arquivo — e desenha um `<span>`
+  estático. Não há `onchange`, não há estado para o clique alterar.
+- O CSS trocou `input:checked+label` (interativo) por `.toggle-badge.is-on` (estático), mesmo
+  desenho visual.
+- O tooltip do cabeçalho, que dizia *"Fonte: Manual"*, passou a dizer *"Fonte: automática —
+  soma as tabelas de Posição"*.
+- **O dado zumbi em si é removido**, não só deixado de ler: `main.js` limpa a chave
+  `radar_carteira_v1` do localStorage na primeira carga depois deste deploy. Não bastava parar
+  de ler — enquanto a chave existisse, qualquer código futuro que a reintroduzisse voltaria a
+  congelar a carteira sem aviso. Foi assim que o bug voltou da primeira vez.
+
+`scripts/atualizar_carteira_radar.py` não mudou de comportamento — já fazia a coisa certa
+desde 16/09. Ganhou só um parágrafo de aviso: é agora **a única coisa no projeto inteiro** que
+escreve `data-carteira`.
+
+### 45.4 Verificado — inclusive reproduzindo o bug antigo de propósito
+
+Três cenários no Chromium real:
+
+| cenário | resultado |
+|---|---|
+| Navegador limpo | `data-carteira="true"` nos 9 tickers certos (união Luiz+Flávia), badges visuais batendo 1:1 |
+| **localStorage com o snapshot clássico do bug** (sem GMAT3, sem FIQE3 — o retrato de antes das duas entrarem na carteira) | **os 9 tickers certos aparecem mesmo assim** — o snapshot é ignorado e a própria chave é removida do storage na carga |
+| Clique no selo | `data-carteira` não muda — o selo é inerte, como deveria ser |
+
+Filtro **💼 Carteira** conferido à parte: 9 linhas visíveis, contador batendo. Radar intacto:
+35 linhas, 25 `<col>` == 25 `<th>` == 25 `<td>`, zero erro de console.
+
+O segundo cenário é o que importa: é a reprodução exata do estado que o navegador do usuário
+provavelmente carrega agora — um snapshot antigo, gravado antes deste conserto. A página
+publicada vai corrigir isso sozinha na primeira visita, sem exigir nenhuma ação do usuário
+(limpar cache, aba anônima) — porque não há mais nada no cliente que possa discordar do
+arquivo.

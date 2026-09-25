@@ -15,6 +15,16 @@
 # muda uma posição nas tabelas (compra/venda de ativo), então o Radar nunca mais fica preso a
 # um toggle manual desmarcado sozinho.
 #
+# ⚠️ 25/09/2026 — ESTE SCRIPT É A ÚNICA COISA NO PROJETO INTEIRO QUE ESCREVE `data-carteira`.
+# Até essa data o js/graficos.js do CLIENTE também escrevia — um checkbox clicável que gravava
+# um snapshot no localStorage do navegador e o REAPLICAVA por cima do arquivo em toda carga de
+# página. Duas fontes de verdade para o mesmo atributo, e o navegador vencia: quando este
+# script marcava a GMAT3 como `true`, o snapshot antigo do usuário (de antes dela existir)
+# desfazia a marca no instante seguinte, sem erro, sem aviso. Era exatamente esse zumbi que o
+# usuário via como "a toggle não marca os ativos certos". O checkbox foi removido — o Radar
+# agora só EXIBE o que este script calcula; não há mais nada além dele para desalinhar. Ver
+# seção 45 da metodologia.
+#
 # LFTB11 (Tesouro Selic) é ignorado: é renda fixa, não existe linha correspondente no Radar
 # (que só lista ações).
 #

@@ -1,3 +1,10 @@
+// Limpa o snapshot zumbi de 'radar_carteira_v1' — a chave do localStorage que sustentava o
+// bug descrito em js/graficos.js (25/09/2026). Não basta parar de LER a chave: enquanto ela
+// existir no navegador do usuário, qualquer código futuro que a reintroduza volta a congelar
+// a carteira num retrato antigo sem aviso — foi exatamente assim que o defeito reapareceu da
+// primeira vez. Remover na primeira carga depois deste deploy fecha o vestígio de vez.
+try { localStorage.removeItem('radar_carteira_v1'); } catch {}
+
 let _dadosIniciados = false;
 let _flaviaChartsIniciados = false;
 let _luizChartsIniciados = false;
@@ -66,8 +73,16 @@ window.atualizarCotacoes = async function(){
   } catch {}
 })();
 
-restaurarCarteira();   // lê o localStorage ANTES de desenhar os toggles (ver graficos.js)
-renderToggles();
+// ⚠️ restaurarCarteira() FOI REMOVIDA em 25/09/2026 — era a causa raiz de "o toggle não marca
+// os ativos certos". Ela lia um snapshot gravado no localStorage NA PRIMEIRA VISITA e voltava
+// a aplicá-lo em TODA carga seguinte, sempre por cima do que o arquivo trazia — inclusive
+// depois que atualizar_carteira_radar.py recalculava data-carteira a partir das tabelas de
+// Posição (ex.: ao incluir a GMAT3). O navegador do usuário ficava congelado num retrato
+// antigo da carteira e nenhuma atualização no arquivo voltava a aparecer na tela, porque o
+// JS sempre sobrescrevia de volta. Duas fontes de verdade para o mesmo dado, e a errada
+// vencia. Ver seção 45 da metodologia. `renderCarteiraBadges()` (ex-`renderToggles`) agora só
+// LÊ o `data-carteira` que já vem certo no HTML — nunca escreve.
+renderCarteiraBadges();
 renderReportCells();
 if(typeof renderTeseCells==='function') renderTeseCells();
 applyMobileColHide();

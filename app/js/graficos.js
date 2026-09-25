@@ -228,87 +228,49 @@ function buildDivHistChart(){
     v => `R$${(v/1000).toFixed(0)}k`);
 }
 function renderDivProjTable(){const rows=getCarteiraRows().filter(r=>parseFloat(r.dataset.qtd)>0);rows.sort((a,b)=>(parseFloat(b.dataset.saldo)||0)-(parseFloat(a.dataset.saldo)||0));const tbody=document.getElementById('divProjBody');let html='',tots=[0,0,0,0,0];rows.forEach(row=>{const ticker=(row.dataset.ticker||'').replace('.SA',''),qtd=parseFloat(row.dataset.qtd)||0,divAcao=parseFloat(row.dataset.divAcao)||0,dyProj=parseFloat(row.dataset.dyProj)||0,saldo=parseFloat(row.dataset.saldo)||0;const cotacaoCell=row.querySelector('.cotacao-cell');let cot=parseFloat(row.dataset.pm)||0;if(cotacaoCell){const t=cotacaoCell.textContent.replace(/[^0-9,.]/g,'').replace(',','.');const p=parseFloat(t);if(p>0)cot=p;}const base=divAcao>0?qtd*divAcao:qtd*cot*dyProj,divs=[0,1,2,3,4].map(i=>base*Math.pow(1+DIV_GROWTH,i));divs.forEach((v,i)=>tots[i]+=v);const acum=divs.reduce((a,b)=>a+b,0),pctCap=saldo>0?(acum/saldo)*100:0;const divAcaoStr=divAcao>0?`R$ ${divAcao.toFixed(2).replace('.',',')}`:`<span style="color:var(--text3)">~R$ ${(cot*dyProj).toFixed(2).replace('.',',')}*</span>`;html+=`<tr><td><strong>${ticker}</strong></td><td>${qtd.toLocaleString('pt-BR')}</td><td>${divAcaoStr}</td>${divs.map(v=>`<td style="color:var(--teal);font-weight:600;">R$ ${Math.round(v).toLocaleString('pt-BR')}</td>`).join('')}<td style="font-weight:700;">R$ ${Math.round(acum).toLocaleString('pt-BR')}</td><td>${pctCap.toFixed(1).replace('.',',')}%</td></tr>`;});const acumTotal=tots.reduce((a,b)=>a+b,0),totalSaldo=getCarteiraRows().reduce((s,r)=>s+(parseFloat(r.dataset.saldo)||0),0);html+=`<tr><td>TOTAL</td><td>—</td><td>—</td>${tots.map(v=>`<td>R$ ${Math.round(v).toLocaleString('pt-BR')}</td>`).join('')}<td>R$ ${Math.round(acumTotal).toLocaleString('pt-BR')}</td><td>${totalSaldo>0?((acumTotal/totalSaldo)*100).toFixed(1).replace('.',',')+' %':'—'}</td></tr>`;tbody.innerHTML=html;}
-// ══ TOGGLE DE CARTEIRA — 14/09/2026 ═══════════════════════════════════════════════════════
-// Relato do usuário: "marquei umas ações que estão na minha carteira, e o formulário apagou".
-// Eram DOIS defeitos na mesma função, e os dois perdiam a marcação:
+// ══ MARCA DE CARTEIRA — SOMENTE LEITURA, 25/09/2026 ════════════════════════════════════════
+// Histórico do defeito, porque voltou a acontecer e a causa era mais funda que o comentário
+// de 14/09 abaixo (mantido por registro) resolvia:
 //
-//  1 · NADA ERA GRAVADO. `toggleCarteira` escrevia só `row.dataset.carteira`, que vive na
-//      memória da página. Qualquer recarga, F5 ou versão nova do arquivo zerava tudo, e as
-//      33 linhas do radar-rows.data.js nascem com data-carteira="false". O trabalho de marcar
-//      a carteira inteira se perdia sem aviso nenhum.
+//  14/09 — "marquei umas ações que estão na minha carteira, e o formulário apagou". Diagnóstico
+//  de então: a marcação não era gravada (sumia em qualquer F5) e o handler identificava a
+//  linha por ÍNDICE do DOM (quebrava ao reordenar a tabela). Corrigido com: gravação por
+//  TICKER num snapshot no localStorage do navegador, reaplicado a cada carga via
+//  `restaurarCarteira()`.
 //
-//  2 · A LINHA ERA IDENTIFICADA PELO ÍNDICE NO DOM. O handler recebia `i` da ordem de
-//      renderização e depois fazia querySelectorAll(...)[i]. Só que a tabela ORDENA: clicar
-//      em qualquer cabeçalho reordena o tbody e o índice passa a apontar para outra empresa.
-//      Marcar o ITUB3 depois de ordenar por margem marcava a linha que estivesse naquela
-//      posição. A identidade certa é o TICKER, que não muda de valor quando a ordem muda.
+//  16/09 — ficou claro que localStorage era a fonte errada mesmo gravando certo: ela vive só
+//  naquele navegador, some ao limpar dados do site, trocar de aparelho ou abrir aba anônima.
+//  `scripts/atualizar_carteira_radar.py` passou a ser a fonte de verdade: lê as tabelas de
+//  Posição (Luiz e Flávia), calcula a união, e grava `data-carteira` DIRETO NO ARQUIVO.
 //
-// A gravação é por ticker, no localStorage do próprio navegador (não sai do aparelho, não
-// acompanha outro computador nem aba anônima). Se o storage estiver bloqueado, a marcação
-// ainda funciona na sessão e o usuário é avisado uma vez — calar seria repetir o defeito.
-const CART_KEY = 'radar_carteira_v1';
-let _cartAvisou = false;
-
-// Devolve null quando NUNCA foi gravado — diferente de gravado-e-vazio. A distinção importa:
-// sem chave vale o padrão do HTML (RANI3, CXSE3, BBSE3 e IRBR3 nascem marcadas); com chave,
-// vale o que está gravado, inclusive lista vazia.
-function _cartLer(){
-  try {
-    const raw = localStorage.getItem(CART_KEY);
-    if (raw === null) return null;
-    const v = JSON.parse(raw);
-    return new Set(Array.isArray(v) ? v : []);
-  } catch { return null; }
-}
-function _cartGravar(set){
-  try { localStorage.setItem(CART_KEY, JSON.stringify([...set])); return true; }
-  catch { return false; }
-}
-function _cartAtual(){
-  return new Set(Array.from(document.querySelectorAll('#tableBody tr[data-carteira="true"]'))
-                      .map(r => r.dataset.ticker).filter(Boolean));
-}
-
-// Chamado no boot ANTES de renderToggles, para os checkboxes já nascerem no estado certo.
+//  25/09 — "a toggle não está marcando os ativos corretos que tem na carteira" — de novo, com
+//  o script já corrigindo o arquivo certinho a cada vez. O DEFEITO NÃO ERA NO SCRIPT, era no
+//  fato de as duas correções acima terem ficado as DUAS ATIVAS ao mesmo tempo:
+//  `restaurarCarteira()` continuava rodando no boot, lendo o snapshot do localStorage e
+//  SOBRESCREVENDO `data-carteira` com ele — por cima do valor que o arquivo acabara de trazer
+//  certo. Uma vez que o navegador do usuário tinha QUALQUER snapshot salvo (da primeira visita,
+//  ou de um clique manual antigo), aquele retrato ficava CONGELADO PARA SEMPRE: toda atualização
+//  seguinte no arquivo (incluir a GMAT3 na carteira, por exemplo) era desfeita no instante
+//  seguinte pelo próprio JS, sem erro, sem aviso — o usuário via a tela errada e não tinha como
+//  saber que a causa era um dado zumbi gravado dias atrás no seu próprio navegador.
 //
-// ⚠️ APLICA O CONJUNTO GRAVADO DE FORMA AUTORITÁRIA — marca E DESMARCA. A primeira versão só
-// adicionava, e aí desmarcar uma linha que vem marcada no HTML não sobrevivia à recarga: o
-// usuário tirava a BBSE3, dava F5 e ela voltava, porque o padrão do arquivo se reimpunha.
-// Quando não há chave gravada (primeira visita), o padrão do HTML vale e é GRAVADO na hora —
-// a partir daí o navegador do usuário é a fonte da verdade, não o arquivo.
-function restaurarCarteira(){
-  const salvos = _cartLer();
-  if (salvos === null) { _cartGravar(_cartAtual()); return; }
-  document.querySelectorAll('#tableBody tr[data-ticker]').forEach(r => {
-    const dentro = salvos.has(r.dataset.ticker);
-    r.dataset.carteira = dentro ? 'true' : 'false';
-    r.classList.toggle('in-carteira', dentro);
-  });
-}
-
-function renderToggles(){
-  document.querySelectorAll('#tableBody tr').forEach(row => {
+// Duas fontes de verdade escrevendo o mesmo atributo é o defeito, não uma das duas gravações.
+// A correção definitiva: só UMA fonte pode escrever `data-carteira` — o script Python, a partir
+// das tabelas de Posição, que é literalmente onde as ações da carteira são registradas. O
+// cliente (este arquivo) passa a ser PURAMENTE LEITOR: nunca grava, nunca lê localStorage,
+// nunca overrides o HTML. A coluna vira um selo informativo, não um controle — não há mais
+// "toggle" para marcar nada manualmente, porque não existe estado manual a marcar: pertencer
+// à carteira é derivado, não uma opinião guardada à parte.
+function renderCarteiraBadges(){
+  document.querySelectorAll('#tableBody tr[data-ticker]').forEach(row => {
     const cell = row.querySelector('.toggle-col');
     if (!cell) return;
-    const tk = row.dataset.ticker || '';
     const inCart = row.dataset.carteira === 'true';
-    const id = 'tog_' + tk.replace(/[^A-Za-z0-9]/g, '');
-    cell.innerHTML = `<div class="toggle-cart"><input type="checkbox" id="${id}" ${inCart ? 'checked' : ''} `
-                   + `onchange="toggleCarteira(this,'${tk}')"><label for="${id}"></label></div>`;
+    cell.innerHTML = `<div class="toggle-cart" title="${inCart ? 'Na carteira (Luiz ou Flávia)' : 'Fora da carteira'} — calculado automaticamente das tabelas de Posição"><span class="toggle-badge${inCart ? ' is-on' : ''}"></span></div>`;
     row.classList.toggle('in-carteira', inCart);
   });
 }
 
-function toggleCarteira(cb, tk){
-  const row = document.querySelector(`#tableBody tr[data-ticker="${tk}"]`);
-  if (!row) return;
-  row.dataset.carteira = cb.checked ? 'true' : 'false';
-  row.classList.toggle('in-carteira', cb.checked);
-  if (!_cartGravar(_cartAtual()) && !_cartAvisou) {
-    _cartAvisou = true;
-    if (typeof showToast === 'function')
-      showToast('⚠️ Sem acesso ao armazenamento do navegador — a marcação vale só nesta sessão.');
-  }
-  refreshCarteira();
-}
-function refreshCarteira(){renderPosicoes();renderMobileCards();buildCharts();renderDivProjTable();applyFilters();}
+// `refreshCarteira()` foi removida em 25/09/2026 junto com `toggleCarteira`: não existe mais
+// gravação manual de carteira, então não há mais o que "atualizar depois de marcar". Ela não
+// tinha mais nenhum chamador — órfã desde que o toggle virou selo somente-leitura.
